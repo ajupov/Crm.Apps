@@ -16,10 +16,12 @@ namespace Crm.Areas.Accounts.Controllers
     public class AccountsV1Controller : ControllerBase
     {
         private readonly AccountsStorage _storage;
+        private readonly CancellationToken _ct;
 
         public AccountsV1Controller(AccountsStorage storage)
         {
             _storage = storage;
+            _ct = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted).Token;
         }
 
         [HttpGet("")]
@@ -29,9 +31,7 @@ namespace Crm.Areas.Accounts.Controllers
         }
 
         [HttpGet("Get")]
-        public async Task<ActionResult<Account>> Get(
-            Guid id,
-            CancellationToken ct = default)
+        public async Task<ActionResult<Account>> Get(Guid id)
         {
             if (id == Guid.Empty)
             {
@@ -40,7 +40,7 @@ namespace Crm.Areas.Accounts.Controllers
 
             var account = await _storage.Accounts
                 .Include(x => x.Settings)
-                .FirstOrDefaultAsync(x => x.Id == id, ct)
+                .FirstOrDefaultAsync(x => x.Id == id, _ct)
                 .ConfigureAwait(false);
 
             if (account == null)
@@ -52,9 +52,7 @@ namespace Crm.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetList")]
-        public async Task<ActionResult<ICollection<Account>>> GetList(
-            IEnumerable<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult<ICollection<Account>>> GetList(IEnumerable<Guid> ids)
         {
             if (ids == null || !ids.Any(x => x != Guid.Empty))
             {
@@ -63,7 +61,7 @@ namespace Crm.Areas.Accounts.Controllers
 
             return await _storage.Accounts
                 .Where(x => ids.Contains(x.Id))
-                .ToListAsync(ct)
+                .ToListAsync(_ct)
                 .ConfigureAwait(false);
         }
 
@@ -76,8 +74,7 @@ namespace Crm.Areas.Accounts.Controllers
             int offset = default,
             int limit = 10,
             string sortBy = default,
-            string orderBy = default,
-            CancellationToken ct = default)
+            string orderBy = default)
         {
             return await _storage.Accounts
                 .Where(x =>
@@ -88,12 +85,12 @@ namespace Crm.Areas.Accounts.Controllers
                 .Sort(sortBy, orderBy)
                 .Skip(offset)
                 .Take(limit)
-                .ToListAsync(ct)
+                .ToListAsync(_ct)
                 .ConfigureAwait(false);
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<Guid>> Create(CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create()
         {
             var changerUserId = new Guid();
 
@@ -106,20 +103,18 @@ namespace Crm.Areas.Accounts.Controllers
             account.LogCreating(changerUserId);
 
             var entry = await _storage
-                .AddAsync(account, ct)
+                .AddAsync(account, _ct)
                 .ConfigureAwait(false);
 
             await _storage
-                .SaveChangesAsync(ct)
+                .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
             return CreatedAtAction(nameof(Account), entry.Entity.Id);
         }
 
         [HttpPost("Lock")]
-        public async Task<ActionResult> Lock(
-            ICollection<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Lock(ICollection<Guid> ids)
         {
             if (ids == null || !ids.Any(x => x != Guid.Empty))
             {
@@ -137,19 +132,17 @@ namespace Crm.Areas.Accounts.Controllers
                     x.IsLocked = true;
 
                     x.LogUpdating(changerUserId, nameof(x.IsLocked), oldValue, x.IsLocked);
-                }, ct);
+                }, _ct);
 
             await _storage
-                .SaveChangesAsync(ct)
+                .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Unlock")]
-        public async Task<ActionResult> Unlock(
-            ICollection<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Unlock(ICollection<Guid> ids)
         {
             if (ids == null || !ids.Any(x => x != Guid.Empty))
             {
@@ -167,19 +160,17 @@ namespace Crm.Areas.Accounts.Controllers
                     x.IsLocked = false;
 
                     x.LogUpdating(changerUserId, nameof(x.IsLocked), oldValue, x.IsLocked);
-                }, ct);
+                }, _ct);
 
             await _storage
-                .SaveChangesAsync(ct)
+                .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Delete")]
-        public async Task<ActionResult> Delete(
-            ICollection<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Delete(ICollection<Guid> ids)
         {
             if (ids == null || !ids.Any(x => x != Guid.Empty))
             {
@@ -197,19 +188,17 @@ namespace Crm.Areas.Accounts.Controllers
                     x.IsDeleted = true;
 
                     x.LogUpdating(changerUserId, nameof(x.IsDeleted), oldValue, x.IsDeleted);
-                }, ct);
+                }, _ct);
 
             await _storage
-                .SaveChangesAsync(ct)
+                .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Restore")]
-        public async Task<ActionResult> Restore(
-            ICollection<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Restore(ICollection<Guid> ids)
         {
             if (ids == null || !ids.Any(x => x != Guid.Empty))
             {
@@ -227,10 +216,10 @@ namespace Crm.Areas.Accounts.Controllers
                     x.IsDeleted = false;
 
                     x.LogUpdating(changerUserId, nameof(x.IsDeleted), oldValue, x.IsDeleted);
-                }, ct);
+                }, _ct);
 
             await _storage
-                .SaveChangesAsync(ct)
+                .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
             return NoContent();

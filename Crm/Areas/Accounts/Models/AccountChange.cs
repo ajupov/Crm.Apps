@@ -12,8 +12,10 @@ namespace Crm.Areas.Accounts.Models
 
         public Guid AccountId { get; set; }
 
-        public ICollection<ChangeItem> Items { get; set; }
+        public DateTime DateTime { get; set; }
 
-        public DateTime DateTIme { get; set; }
+        public string OldValueJson { get; set; }
+
+        public string NewValueJson { get; set; }
     }
 }

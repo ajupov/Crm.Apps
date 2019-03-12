@@ -16,7 +16,7 @@ namespace Crm.Areas.Accounts.Helpers
             {
                 AccountId = account.Id,
                 ChangerUserId = changerUserId,
-                DateTIme = DateTime.UtcNow,
+                DateTime = DateTime.UtcNow,
                 Items = new List<ChangeItem>
                     {
                         new ChangeItem
@@ -42,7 +42,7 @@ namespace Crm.Areas.Accounts.Helpers
             {
                 AccountId = account.Id,
                 ChangerUserId = changerUserId,
-                DateTIme = DateTime.UtcNow,
+                DateTime = DateTime.UtcNow,
                 Items = new List<ChangeItem>
                     {
                         new ChangeItem

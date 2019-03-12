@@ -1,5 +1,6 @@
 ﻿using System;
 using Crm.Areas.Accounts.Extensions;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,14 @@ namespace Crm
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureAccounts(Configuration);
+
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddCors();
 
-            services.ConfigureAccounts(Configuration);
         }
 
         public void Configure(IApplicationBuilder builder, IHostingEnvironment environment)
