@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Crm.Areas.Accounts.Models;
-using Crm.Common.Types;
 using Crm.Utils.Json;
 
 namespace Crm.Areas.Accounts.Helpers
@@ -17,15 +16,8 @@ namespace Crm.Areas.Accounts.Helpers
                 AccountId = account.Id,
                 ChangerUserId = changerUserId,
                 DateTime = DateTime.UtcNow,
-                Items = new List<ChangeItem>
-                    {
-                        new ChangeItem
-                        {
-                            ChangeType = ChangeType.Creating,
-                            FieldPath = null,
-                            NewValue = account.ToJsonString()
-                        }
-                    }
+                OldValueJson = string.Empty,
+                NewValueJson = account.ToJsonString()
             };
 
             account.AddChange(change);
@@ -34,7 +26,6 @@ namespace Crm.Areas.Accounts.Helpers
         public static void LogUpdating(
             this Account account,
             Guid changerUserId,
-            string fieldPath,
             object oldValue = null,
             object newValue = null)
         {
@@ -43,16 +34,8 @@ namespace Crm.Areas.Accounts.Helpers
                 AccountId = account.Id,
                 ChangerUserId = changerUserId,
                 DateTime = DateTime.UtcNow,
-                Items = new List<ChangeItem>
-                    {
-                        new ChangeItem
-                        {
-                            ChangeType = ChangeType.Updating,
-                            FieldPath = fieldPath.ToString(),
-                            OldValue = oldValue.ToString(),
-                            NewValue = newValue.ToString()
-                        }
-                    }
+                OldValueJson = oldValue.ToString(),
+                NewValueJson = newValue.ToJsonString()
             };
 
             account.AddChange(change);

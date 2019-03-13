@@ -127,11 +127,11 @@ namespace Crm.Areas.Accounts.Controllers
                 .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(x =>
                 {
-                    var oldValue = x.IsLocked;
+                    var oldValue = x;
 
                     x.IsLocked = true;
 
-                    x.LogUpdating(changerUserId, nameof(x.IsLocked), oldValue, x.IsLocked);
+                    x.LogUpdating(changerUserId, oldValue, x.IsLocked);
                 }, _ct);
 
             await _storage
