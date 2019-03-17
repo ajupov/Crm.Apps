@@ -1,5 +1,6 @@
 ﻿using Crm.Areas.Accounts.Configs;
 using Crm.Areas.Accounts.Consumers;
+using Crm.Areas.Accounts.Services;
 using Crm.Areas.Accounts.Storages;
 using Crm.Infrastructure.MessageBroking.Consuming.Configs;
 using FluentMigrator.Runner;
@@ -17,6 +18,7 @@ namespace Crm.Areas.Accounts.Extensions
             services.ConfigureOptions(configuration);
             services.ConfigureMigrator(configuration);
             services.ConfigureServices();
+            services.ConfigureHostedServices();
             services.ConfigureOrm();
 
             return services;
@@ -47,6 +49,13 @@ namespace Crm.Areas.Accounts.Extensions
         }
 
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IAccountsService, AccountsService>();
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureHostedServices(this IServiceCollection services)
         {
             services.AddHostedService<AccountsConsumer>();
 

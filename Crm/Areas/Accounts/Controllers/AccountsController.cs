@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Areas.Accounts.Helpers;
 using Crm.Areas.Accounts.Models;
-using Crm.Areas.Accounts.Storages;
+using Crm.Areas.Accounts.Services;
 using Crm.Common.Types;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Areas.Accounts.Controllers
 {
@@ -17,13 +15,15 @@ namespace Crm.Areas.Accounts.Controllers
     public class AccountsV1Controller : ControllerBase
     {
         private readonly UserContext _userContext;
-        private readonly AccountsStorage _storage;
+        private readonly IAccountsService _accountsService;
         private readonly CancellationToken _ct;
 
-        public AccountsV1Controller(UserContext userContext, AccountsStorage storage)
+        public AccountsV1Controller(
+            UserContext userContext,
+            IAccountsService accountsService)
         {
             _userContext = userContext;
-            _storage = storage;
+            _accountsService = accountsService;
             _ct = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted).Token;
         }
 
@@ -41,9 +41,7 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            var account = await _storage.Accounts
-                .Include(x => x.Settings)
-                .FirstOrDefaultAsync(x => x.Id == id, _ct)
+            var account = await _accountsService.GetByIdAsync(id, _ct)
                 .ConfigureAwait(false);
 
             if (account == null)
@@ -62,9 +60,7 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            return await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ToListAsync(_ct)
+            return await _accountsService.GetListAsync(ids, _ct)
                 .ConfigureAwait(false);
         }
 
@@ -79,37 +75,26 @@ namespace Crm.Areas.Accounts.Controllers
             string sortBy = default,
             string orderBy = default)
         {
-            return await _storage.Accounts
-                .Where(x =>
-                    (!isLocked.HasValue || x.IsLocked == isLocked) &&
-                    (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
-                    (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
-                    (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate))
-                .Sort(sortBy, orderBy)
-                .Skip(offset)
-                .Take(limit)
-                .ToListAsync(_ct)
+            return await _accountsService.GetPagedListAsync(
+                    isLocked,
+                    isDeleted,
+                    minCreateDate,
+                    maxCreateDate,
+                    offset,
+                    limit,
+                    sortBy,
+                    orderBy,
+                    _ct)
                 .ConfigureAwait(false);
         }
 
         [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create()
         {
-            var account = new Account().CreateWithLog(_userContext.UserId, x =>
-            {
-                x.Id = new Guid();
-                x.CreateDateTime = DateTime.UtcNow;
-            });
-
-            var entry = await _storage
-                .AddAsync(account, _ct)
+            var id = await _accountsService.CreateAsync(_userContext.UserId, _ct)
                 .ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(_ct)
-                .ConfigureAwait(false);
-
-            return Created(nameof(Get), entry.Entity.Id);
+            return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
@@ -120,7 +105,7 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            var account = await GetByIdAsync(id)
+            var account = await _accountsService.GetByIdAsync(id, _ct)
                 .ConfigureAwait(false);
 
             if (account == null)
@@ -128,17 +113,10 @@ namespace Crm.Areas.Accounts.Controllers
                 return NotFound();
             }
 
-            account.UpdateWithLog(_userContext.UserId, x => x.Settings = settings);
-
-            var entry = await _storage
-                .AddAsync(account, _ct)
+            await _accountsService.UpdateAsync(_userContext.UserId, account, settings, _ct)
                 .ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(_ct)
-                .ConfigureAwait(false);
-
-            return Created(nameof(Get), entry.Entity.Id);
+            return NoContent();
         }
 
         [HttpPost("Lock")]
@@ -149,13 +127,7 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsLocked = true), _ct)
-                .ConfigureAwait(false);
-
-            await _storage
-                .SaveChangesAsync(_ct)
+            await _accountsService.LockAsync(_userContext.UserId, ids, _ct)
                 .ConfigureAwait(false);
 
             return NoContent();
@@ -169,13 +141,7 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsLocked = false), _ct)
-                .ConfigureAwait(false);
-
-            await _storage
-                .SaveChangesAsync(_ct)
+            await _accountsService.UnlockAsync(_userContext.UserId, ids, _ct)
                 .ConfigureAwait(false);
 
             return NoContent();
@@ -189,13 +155,7 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsDeleted = true), _ct)
-                .ConfigureAwait(false);
-
-            await _storage
-                .SaveChangesAsync(_ct)
+            await _accountsService.DeleteAsync(_userContext.UserId, ids, _ct)
                 .ConfigureAwait(false);
 
             return NoContent();
@@ -209,24 +169,10 @@ namespace Crm.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsDeleted = false), _ct)
-                .ConfigureAwait(false);
-
-            await _storage
-                .SaveChangesAsync(_ct)
+            await _accountsService.RestoreAsync(_userContext.UserId, ids, _ct)
                 .ConfigureAwait(false);
 
             return NoContent();
-        }
-
-        [NonAction]
-        private Task<Account> GetByIdAsync(Guid id)
-        {
-            return _storage.Accounts
-                .Include(x => x.Settings)
-                .FirstOrDefaultAsync(x => x.Id == id, _ct);
         }
     }
 }

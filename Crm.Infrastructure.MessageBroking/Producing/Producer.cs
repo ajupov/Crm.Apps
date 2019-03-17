@@ -5,6 +5,7 @@ using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
 using Crm.Infrastructure.MessageBroking.Producing.Configs;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace Crm.Infrastructure.MessageBroking.Producing
 {
@@ -17,9 +18,9 @@ namespace Crm.Infrastructure.MessageBroking.Producing
             _host = options.Value.Host;
         }
 
-        public Task ProduceAsync(
+        public Task ProduceAsync<T>(
             string topic,
-            string message)
+            Message<T> message)
         {
             var config = new Dictionary<string, object>
             {
@@ -28,7 +29,9 @@ namespace Crm.Infrastructure.MessageBroking.Producing
 
             using (var producer = new Producer<Null, string>(config, null, new StringSerializer(Encoding.UTF8)))
             {
-                return producer.ProduceAsync(topic, null, message);
+                var serializedMessage = JsonConvert.SerializeObject(message);
+
+                return producer.ProduceAsync(topic, null, serializedMessage);
             }
         }
     }

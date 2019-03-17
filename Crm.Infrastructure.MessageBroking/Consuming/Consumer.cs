@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
 using Crm.Infrastructure.MessageBroking.Consuming.Configs;
+using Newtonsoft.Json;
 
 namespace Crm.Infrastructure.MessageBroking.Consuming
 {
@@ -17,16 +19,18 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
             _host = config.Host;
         }
 
-        public Task ConsumeAsync(
-            string[] topics,
-            Action<string> func)
+        public Task ConsumeAsync<T>(
+            Action<Message<T>, CancellationToken> func,
+            string topic,
+            CancellationToken ct)
         {
-            return ConsumeAsync(topics, x => Task.FromResult(func));
+            return ConsumeAsync<T>((x, y) => Task.FromResult(func), topic, ct);
         }
 
-        public Task ConsumeAsync(
-            string[] topics, 
-            Func<string, Task> action)
+        public Task ConsumeAsync<T>(
+            Func<Message<T>, CancellationToken, Task> action,
+            string topic,
+            CancellationToken ct)
         {
             var config = new Dictionary<string, object>
             {
@@ -39,11 +43,13 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
             {
                 using (var consumer = new Consumer<Null, string>(config, null, deserializer))
                 {
-                    consumer.Subscribe(topics);
+                    consumer.Subscribe(topic);
 
                     consumer.OnMessage += async (_, message) =>
                     {
-                        await action(message.Value)
+                        var deserializedMessage = JsonConvert.DeserializeObject<Message<T>>(message.Value);
+
+                        await action(deserializedMessage, ct)
                             .ConfigureAwait(false);
 
                         await consumer.CommitAsync(message)

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Crm.Common.Types\Crm.Common.Types.csproj" />
     <ProjectReference Include="..\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj" />
+    <ProjectReference Include="..\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
     <ProjectReference Include="..\Crm.Utils.Json\Crm.Utils.Json.csproj" />
   </ItemGroup>
 </Project>

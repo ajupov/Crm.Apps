@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Crm.Infrastructure.MessageBroking.Consuming
 {
     public interface IConsumer
     {
-        Task ConsumeAsync(string[] topics, Action<string> func);
+        Task ConsumeAsync<T>(
+            Action<Message<T>, CancellationToken> func,
+            string topic,
+            CancellationToken ct);
 
-        Task ConsumeAsync(string[] topics, Func<string, Task> action);
+        Task ConsumeAsync<T>(
+            Func<Message<T>, CancellationToken, Task> action,
+            string topic,
+            CancellationToken ct);
     }
 }
