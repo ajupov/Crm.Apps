@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Crm.Common.Types;
 
 namespace Crm.Areas.Accounts.Models
 {

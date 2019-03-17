@@ -4,14 +4,15 @@
     <AssemblyName>Crm</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Confluent.Kafka" Version="0.11.6" />
     <PackageReference Include="FluentMigrator" Version="3.1.3" />
     <PackageReference Include="FluentMigrator.Runner" Version="3.1.3" />
+    <PackageReference Include="kafka-net-core" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Crm.Common.Types\Crm.Common.Types.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj" />
     <ProjectReference Include="..\Crm.Utils.Json\Crm.Utils.Json.csproj" />
   </ItemGroup>
 </Project>

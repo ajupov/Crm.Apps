@@ -1,27 +1,26 @@
-﻿using Crm.Areas.Accounts.Models;
-using FluentMigrator;
+﻿using FluentMigrator;
 
 namespace Crm.Areas.Accounts.Migrations
 {
     [Migration(20190313000217)]
-    public class Migration_20190313000217_AddTableAccountSettings : Migration
+    public class Migration20190313000217AddTableAccountSettings : Migration
     {
         public override void Down()
         {
             Create.Table("AccountSettings")
                 .WithColumn("Id")
-                    .AsGuid()
-                    .NotNullable()
-                    .PrimaryKey("PK_AccountSettings_Id")
+                .AsGuid()
+                .NotNullable()
+                .PrimaryKey("PK_AccountSettings_Id")
                 .WithColumn("AccountId")
-                    .AsGuid()
-                    .NotNullable()
+                .AsGuid()
+                .NotNullable()
                 .WithColumn("Type")
-                    .AsByte()
-                    .NotNullable()
+                .AsByte()
+                .NotNullable()
                 .WithColumn("Value")
-                    .AsString()
-                    .NotNullable();
+                .AsString()
+                .NotNullable();
 
             Create.UniqueConstraint("UQ_AccountSettings_AccountId_Type")
                 .OnTable("AccountSettings")
@@ -30,9 +29,9 @@ namespace Crm.Areas.Accounts.Migrations
             Create.Index("IX_AccountSettings_AccountId_Type")
                 .OnTable("AccountSettings")
                 .OnColumn("AccountId")
-                    .Descending()
+                .Descending()
                 .OnColumn("Type")
-                    .Ascending()
+                .Ascending()
                 .WithOptions()
                 .NonClustered();
         }

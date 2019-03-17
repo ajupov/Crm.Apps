@@ -1,5 +1,7 @@
-﻿using Crm.Areas.Accounts.Settings;
+﻿using Crm.Areas.Accounts.Configs;
+using Crm.Areas.Accounts.Consumers;
 using Crm.Areas.Accounts.Storages;
+using Crm.Infrastructure.MessageBroking.Consuming.Configs;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,7 @@ namespace Crm.Areas.Accounts.Extensions
         {
             services.ConfigureOptions(configuration);
             services.ConfigureMigrator(configuration);
+            services.ConfigureServices();
             services.ConfigureOrm();
 
             return services;
@@ -23,16 +26,18 @@ namespace Crm.Areas.Accounts.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var section = configuration.GetSection(nameof(AccountsStorageSettings));
+            var accountsStorageConfig = configuration.GetSection(nameof(AccountsStorageConfig));
+            services.Configure<AccountsStorageConfig>(accountsStorageConfig);
 
-            services.Configure<AccountsStorageSettings>(section);
+            var consumerConfig = configuration.GetSection(nameof(ConsumerConfig));
+            services.Configure<ConsumerConfig>(consumerConfig);
         }
 
         private static void ConfigureMigrator(
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var connectionString = configuration.Get<AccountsStorageSettings>().ConnectionString;
+            var connectionString = configuration.Get<AccountsStorageConfig>().ConnectionString;
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(builder =>
@@ -41,11 +46,18 @@ namespace Crm.Areas.Accounts.Extensions
                         .ScanIn(typeof(object).Assembly).For.Migrations());
         }
 
+        private static IServiceCollection ConfigureServices(this IServiceCollection services)
+        {
+            services.AddHostedService<AccountsConsumer>();
+
+            return services;
+        }
+
         private static void ConfigureOrm(this IServiceCollection services)
         {
             services.AddEntityFrameworkNpgsql()
-               .AddDbContext<AccountsStorage>()
-               .BuildServiceProvider();
+                .AddDbContext<AccountsStorage>()
+                .BuildServiceProvider();
         }
     }
 }

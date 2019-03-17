@@ -1,10 +1,7 @@
-﻿using System;
-using Crm.Areas.Accounts.Extensions;
-using FluentMigrator.Runner;
+﻿using Crm.Areas.Accounts.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,13 +19,9 @@ namespace Crm
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureAccounts(Configuration);
-
-
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             services.AddCors();
-
         }
 
         public void Configure(IApplicationBuilder builder, IHostingEnvironment environment)
@@ -39,7 +32,6 @@ namespace Crm
             }
             else
             {
-                builder.UseHsts();
                 builder.UseHttpsRedirection();
             }
 

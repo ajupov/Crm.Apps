@@ -7,35 +7,43 @@ namespace Crm.Areas.Accounts.Helpers
 {
     public static class AccountsChangesHelper
     {
-        public static void LogCreating(
+        public static Account CreateWithLog(
             this Account account,
-            Guid changerUserId)
+            Guid userId,
+            Action<Account> action)
         {
+            action(account);
+
             var change = new AccountChange
             {
                 AccountId = account.Id,
-                ChangerUserId = changerUserId,
+                ChangerUserId = userId,
                 DateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
                 NewValueJson = account.ToJsonString()
             };
 
             account.AddChange(change);
+
+            return account;
         }
 
-        public static void LogUpdating(
+        public static void UpdateWithLog(
             this Account account,
-            Guid changerUserId,
-            object oldValue = null,
-            object newValue = null)
+            Guid userId,
+            Action<Account> action)
         {
+            var oldValueJson = account.ToJsonString();
+
+            action(account);
+
             var change = new AccountChange
             {
                 AccountId = account.Id,
-                ChangerUserId = changerUserId,
+                ChangerUserId = userId,
                 DateTime = DateTime.UtcNow,
-                OldValueJson = oldValue.ToString(),
-                NewValueJson = newValue.ToJsonString()
+                OldValueJson = oldValueJson,
+                NewValueJson = account.ToJsonString()
             };
 
             account.AddChange(change);

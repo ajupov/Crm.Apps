@@ -1,40 +1,39 @@
-﻿using Crm.Areas.Accounts.Models;
-using FluentMigrator;
+﻿using FluentMigrator;
 
 namespace Crm.Areas.Accounts.Migrations
 {
     [Migration(20190313005044)]
-    public class Migration_20190313005044_AddTableAccountChanges : Migration
+    public class Migration20190313005044AddTableAccountChanges : Migration
     {
         public override void Down()
         {
             Create.Table("AccountChanges")
                 .WithColumn("Id")
-                    .AsGuid()
-                    .NotNullable()
-                    .PrimaryKey("PK_AccountChanges_Id")
+                .AsGuid()
+                .NotNullable()
+                .PrimaryKey("PK_AccountChanges_Id")
                 .WithColumn("ChangerUserId")
-                    .AsGuid()
-                    .NotNullable()
+                .AsGuid()
+                .NotNullable()
                 .WithColumn("AccountId")
-                    .AsGuid()
-                    .NotNullable()
+                .AsGuid()
+                .NotNullable()
                 .WithColumn("DateTime")
-                    .AsDateTime2()
-                    .NotNullable()
+                .AsDateTime2()
+                .NotNullable()
                 .WithColumn("OldValueJson")
-                    .AsString()
-                    .NotNullable()
+                .AsString()
+                .NotNullable()
                 .WithColumn("NewValueJson")
-                    .AsString()
-                    .NotNullable();
+                .AsString()
+                .NotNullable();
 
             Create.Index("IX_AccountChanges_ChangerUserId_AccountId")
                 .OnTable("AccountChanges")
                 .OnColumn("ChangerUserId")
-                    .Ascending()
+                .Ascending()
                 .OnColumn("AccountId")
-                    .Ascending()
+                .Ascending()
                 .WithOptions()
                 .NonClustered();
         }

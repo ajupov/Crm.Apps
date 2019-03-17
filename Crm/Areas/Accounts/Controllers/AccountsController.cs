@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 using Crm.Areas.Accounts.Helpers;
 using Crm.Areas.Accounts.Models;
 using Crm.Areas.Accounts.Storages;
+using Crm.Common.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Areas.Accounts.Controllers
 {
     [ApiController]
-    [Route("api/v1/accounts")]
+    [Route("api/accounts")]
     public class AccountsV1Controller : ControllerBase
     {
+        private readonly UserContext _userContext;
         private readonly AccountsStorage _storage;
         private readonly CancellationToken _ct;
 
-        public AccountsV1Controller(AccountsStorage storage)
+        public AccountsV1Controller(UserContext userContext, AccountsStorage storage)
         {
+            _userContext = userContext;
             _storage = storage;
             _ct = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted).Token;
         }
@@ -52,9 +55,9 @@ namespace Crm.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetList")]
-        public async Task<ActionResult<ICollection<Account>>> GetList(IEnumerable<Guid> ids)
+        public async Task<ActionResult<ICollection<Account>>> GetList(ICollection<Guid> ids)
         {
-            if (ids == null || !ids.Any(x => x != Guid.Empty))
+            if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
@@ -92,15 +95,11 @@ namespace Crm.Areas.Accounts.Controllers
         [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create()
         {
-            var changerUserId = new Guid();
-
-            var account = new Account
+            var account = new Account().CreateWithLog(_userContext.UserId, x =>
             {
-                Id = new Guid(),
-                CreateDateTime = DateTime.UtcNow
-            };
-
-            account.LogCreating(changerUserId);
+                x.Id = new Guid();
+                x.CreateDateTime = DateTime.UtcNow;
+            });
 
             var entry = await _storage
                 .AddAsync(account, _ct)
@@ -110,29 +109,50 @@ namespace Crm.Areas.Accounts.Controllers
                 .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
-            return CreatedAtAction(nameof(Account), entry.Entity.Id);
+            return Created(nameof(Get), entry.Entity.Id);
+        }
+
+        [HttpPost("Update")]
+        public async Task<ActionResult<Guid>> Update(Guid id, ICollection<AccountSetting> settings)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var account = await GetByIdAsync(id)
+                .ConfigureAwait(false);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            account.UpdateWithLog(_userContext.UserId, x => x.Settings = settings);
+
+            var entry = await _storage
+                .AddAsync(account, _ct)
+                .ConfigureAwait(false);
+
+            await _storage
+                .SaveChangesAsync(_ct)
+                .ConfigureAwait(false);
+
+            return Created(nameof(Get), entry.Entity.Id);
         }
 
         [HttpPost("Lock")]
         public async Task<ActionResult> Lock(ICollection<Guid> ids)
         {
-            if (ids == null || !ids.Any(x => x != Guid.Empty))
+            if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            var changerUserId = new Guid();
-
             await _storage.Accounts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x =>
-                {
-                    var oldValue = x;
-
-                    x.IsLocked = true;
-
-                    x.LogUpdating(changerUserId, oldValue, x.IsLocked);
-                }, _ct);
+                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsLocked = true), _ct)
+                .ConfigureAwait(false);
 
             await _storage
                 .SaveChangesAsync(_ct)
@@ -144,23 +164,15 @@ namespace Crm.Areas.Accounts.Controllers
         [HttpPost("Unlock")]
         public async Task<ActionResult> Unlock(ICollection<Guid> ids)
         {
-            if (ids == null || !ids.Any(x => x != Guid.Empty))
+            if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            var changerUserId = new Guid();
-
             await _storage.Accounts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x =>
-                {
-                    var oldValue = x.IsLocked;
-
-                    x.IsLocked = false;
-
-                    x.LogUpdating(changerUserId, nameof(x.IsLocked), oldValue, x.IsLocked);
-                }, _ct);
+                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsLocked = false), _ct)
+                .ConfigureAwait(false);
 
             await _storage
                 .SaveChangesAsync(_ct)
@@ -172,23 +184,15 @@ namespace Crm.Areas.Accounts.Controllers
         [HttpPost("Delete")]
         public async Task<ActionResult> Delete(ICollection<Guid> ids)
         {
-            if (ids == null || !ids.Any(x => x != Guid.Empty))
+            if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            var changerUserId = new Guid();
-
             await _storage.Accounts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x =>
-                {
-                    var oldValue = x.IsDeleted;
-
-                    x.IsDeleted = true;
-
-                    x.LogUpdating(changerUserId, nameof(x.IsDeleted), oldValue, x.IsDeleted);
-                }, _ct);
+                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsDeleted = true), _ct)
+                .ConfigureAwait(false);
 
             await _storage
                 .SaveChangesAsync(_ct)
@@ -200,29 +204,29 @@ namespace Crm.Areas.Accounts.Controllers
         [HttpPost("Restore")]
         public async Task<ActionResult> Restore(ICollection<Guid> ids)
         {
-            if (ids == null || !ids.Any(x => x != Guid.Empty))
+            if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            var changerUserId = new Guid();
-
             await _storage.Accounts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x =>
-                {
-                    var oldValue = x.IsDeleted;
-
-                    x.IsDeleted = false;
-
-                    x.LogUpdating(changerUserId, nameof(x.IsDeleted), oldValue, x.IsDeleted);
-                }, _ct);
+                .ForEachAsync(a => a.UpdateWithLog(_userContext.UserId, x => x.IsDeleted = false), _ct)
+                .ConfigureAwait(false);
 
             await _storage
                 .SaveChangesAsync(_ct)
                 .ConfigureAwait(false);
 
             return NoContent();
+        }
+
+        [NonAction]
+        private Task<Account> GetByIdAsync(Guid id)
+        {
+            return _storage.Accounts
+                .Include(x => x.Settings)
+                .FirstOrDefaultAsync(x => x.Id == id, _ct);
         }
     }
 }

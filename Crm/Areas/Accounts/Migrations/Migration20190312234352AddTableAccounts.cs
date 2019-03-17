@@ -1,36 +1,35 @@
-﻿using Crm.Areas.Accounts.Models;
-using FluentMigrator;
+﻿using FluentMigrator;
 
 namespace Crm.Areas.Accounts.Migrations
 {
     [Migration(20190312234352)]
-    public class Migration_20190312234352_AddTableAccounts : Migration
+    public class Migration20190312234352AddTableAccounts : Migration
     {
         public override void Down()
         {
             Create.Table("Accounts")
                 .WithColumn("Id")
-                    .AsGuid()
-                    .NotNullable()
-                    .PrimaryKey("PK_Accounts_Id")
+                .AsGuid()
+                .NotNullable()
+                .PrimaryKey("PK_Accounts_Id")
                 .WithColumn("IsLocked")
-                    .AsBoolean()
-                    .NotNullable()
+                .AsBoolean()
+                .NotNullable()
                 .WithColumn("IsDeleted")
-                    .AsBoolean()
-                    .NotNullable()
+                .AsBoolean()
+                .NotNullable()
                 .WithColumn("CreateDateTime")
-                    .AsDateTime2()
-                    .NotNullable();
+                .AsDateTime2()
+                .NotNullable();
 
             Create.Index("IX_Accounts_CreateDateTime_IsLocked_IsDeleted")
                 .OnTable("Accounts")
                 .OnColumn("CreateDateTime")
-                    .Descending()
+                .Descending()
                 .OnColumn("IsLocked")
-                    .Descending()
+                .Descending()
                 .OnColumn("IsDeleted")
-                    .Descending()
+                .Descending()
                 .WithOptions()
                 .NonClustered();
         }
