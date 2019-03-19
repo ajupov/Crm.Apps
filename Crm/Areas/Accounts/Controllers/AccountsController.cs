@@ -7,6 +7,7 @@ using Crm.Areas.Accounts.Models;
 using Crm.Areas.Accounts.Services;
 using Crm.Areas.Accounts.UserContext;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Crm.Areas.Accounts.Controllers
 {
@@ -14,13 +15,16 @@ namespace Crm.Areas.Accounts.Controllers
     [Route("Api/Accounts")]
     public class AccountsV1Controller : ControllerBase
     {
+        private readonly ILogger<AccountsV1Controller> _logger;
         private readonly IUserContext _userContext;
         private readonly IAccountsService _accountsService;
 
         public AccountsV1Controller(
+            ILogger<AccountsV1Controller> logger,
             IUserContext userContext,
             IAccountsService accountsService)
         {
+            _logger = logger;
             _userContext = userContext;
             _accountsService = accountsService;
         }
@@ -28,6 +32,10 @@ namespace Crm.Areas.Accounts.Controllers
         [HttpGet("")]
         public ActionResult Status()
         {
+            _logger.LogInformation("Ololo: {0}", 5);
+            _logger.LogWarning("Olololo: {0}", 5);
+            _logger.LogError("Ololololo: {0}", 5);
+
             return Ok();
         }
 

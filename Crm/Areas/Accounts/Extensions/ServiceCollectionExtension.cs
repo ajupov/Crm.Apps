@@ -3,19 +3,39 @@ using Crm.Areas.Accounts.Consumers;
 using Crm.Areas.Accounts.Services;
 using Crm.Areas.Accounts.Storages;
 using Crm.Areas.Accounts.UserContext;
-using Crm.Common.Types;
 using Crm.Infrastructure.MessageBroking.Consuming.Configs;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Crm.Areas.Accounts.Extensions
 {
     public static class ServiceCollectionExtension
     {
+        public static IWebHostBuilder ConfigureSerilog(this IWebHostBuilder builder)
+        {
+            builder.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate:
+                        "[{Timestamp:o} - {Level:u3}]: {Message:lj}{NewLine}{Exception}")
+                    .CreateLogger();
+
+                logging.AddSerilog(Log.Logger);
+            });
+
+            return builder;
+        }
+
         public static IServiceCollection ConfigureAccounts(
             this IServiceCollection services,
             IConfiguration configuration)

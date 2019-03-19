@@ -23,7 +23,9 @@ namespace Crm
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        public void Configure(IApplicationBuilder builder, IHostingEnvironment environment)
+        public void Configure(
+            IApplicationBuilder builder,
+            IHostingEnvironment environment)
         {
             if (environment.IsDevelopment())
             {
@@ -33,7 +35,6 @@ namespace Crm
             {
                 builder.UseHttpsRedirection();
             }
-
 
             builder.UseMvc();
         }
