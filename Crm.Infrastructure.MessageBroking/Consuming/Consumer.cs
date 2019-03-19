@@ -19,24 +19,22 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
             _host = config.Host;
         }
 
-        public Task ConsumeAsync<T>(
-            Action<Message<T>, CancellationToken> func,
-            string topic,
+        public Task ConsumeAsync(string topic,
+            Action<Message, CancellationToken> func,
             CancellationToken ct)
         {
-            return ConsumeAsync<T>((x, y) => Task.FromResult(func), topic, ct);
+            return ConsumeAsync(topic, (x, y) => Task.FromResult(func), ct);
         }
 
-        public Task ConsumeAsync<T>(
-            Func<Message<T>, CancellationToken, Task> action,
-            string topic,
+        public Task ConsumeAsync(string topic,
+            Func<Message, CancellationToken, Task> action,
             CancellationToken ct)
         {
             var config = new Dictionary<string, object>
             {
                 {"bootstrap.servers", _host},
                 {"enable.auto.commit", "false"},
-                //{ "group.id", group },
+                { "group.id", "1" },
             };
 
             using (var deserializer = new StringDeserializer(Encoding.UTF8))
@@ -47,13 +45,10 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
 
                     consumer.OnMessage += async (_, message) =>
                     {
-                        var deserializedMessage = JsonConvert.DeserializeObject<Message<T>>(message.Value);
+                        var result = JsonConvert.DeserializeObject<Message>(message.Value);
 
-                        await action(deserializedMessage, ct)
-                            .ConfigureAwait(false);
-
-                        await consumer.CommitAsync(message)
-                            .ConfigureAwait(false);
+                        await action(result, ct).ConfigureAwait(false);
+                        await consumer.CommitAsync(message).ConfigureAwait(false);
                     };
 
                     while (true)

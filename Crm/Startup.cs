@@ -21,7 +21,6 @@ namespace Crm
             services.ConfigureAccounts(Configuration);
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddCors();
         }
 
         public void Configure(IApplicationBuilder builder, IHostingEnvironment environment)
@@ -34,6 +33,7 @@ namespace Crm
             {
                 builder.UseHttpsRedirection();
             }
+
 
             builder.UseMvc();
         }

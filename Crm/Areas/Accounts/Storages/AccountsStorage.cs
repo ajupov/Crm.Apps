@@ -20,7 +20,5 @@ namespace Crm.Areas.Accounts.Storages
         }
 
         public DbSet<Account> Accounts { get; set; }
-
-        public DbSet<AccountSetting> AccountSettings { get; set; }
     }
 }

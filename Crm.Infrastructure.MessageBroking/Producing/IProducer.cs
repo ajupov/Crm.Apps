@@ -4,8 +4,8 @@ namespace Crm.Infrastructure.MessageBroking.Producing
 {
     public interface IProducer
     {
-        Task ProduceAsync<T>(
+        Task ProduceAsync(
             string topic,
-            Message<T> message);
+            Message message);
     }
 }

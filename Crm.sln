@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crm.Common.OAuth.Vkontakte"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crm.Infrastructure.MessageBroking", "Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj", "{4E17116D-51BC-4362-A1A5-1C3833E36831}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Utils.Enums", "Crm.Utils.Enums\Crm.Utils.Enums.csproj", "{70B76E49-1901-4A97-8699-758694AAAB00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crm.Utils.Enums", "Crm.Utils.Enums\Crm.Utils.Enums.csproj", "{70B76E49-1901-4A97-8699-758694AAAB00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

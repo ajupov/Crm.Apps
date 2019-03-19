@@ -5,26 +5,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Areas.Accounts.Models;
 using Crm.Areas.Accounts.Services;
-using Crm.Common.Types;
+using Crm.Areas.Accounts.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Areas.Accounts.Controllers
 {
     [ApiController]
-    [Route("api/accounts")]
+    [Route("Api/Accounts")]
     public class AccountsV1Controller : ControllerBase
     {
-        private readonly UserContext _userContext;
+        private readonly IUserContext _userContext;
         private readonly IAccountsService _accountsService;
-        private readonly CancellationToken _ct;
 
         public AccountsV1Controller(
-            UserContext userContext,
+            IUserContext userContext,
             IAccountsService accountsService)
         {
             _userContext = userContext;
             _accountsService = accountsService;
-            _ct = CancellationTokenSource.CreateLinkedTokenSource(HttpContext.RequestAborted).Token;
         }
 
         [HttpGet("")]
@@ -34,14 +32,16 @@ namespace Crm.Areas.Accounts.Controllers
         }
 
         [HttpGet("Get")]
-        public async Task<ActionResult<Account>> Get(Guid id)
+        public async Task<ActionResult<Account>> Get(
+            Guid id,
+            CancellationToken ct = default)
         {
             if (id == Guid.Empty)
             {
                 return BadRequest();
             }
 
-            var account = await _accountsService.GetByIdAsync(id, _ct)
+            var account = await _accountsService.GetByIdAsync(id, ct)
                 .ConfigureAwait(false);
 
             if (account == null)
@@ -53,14 +53,16 @@ namespace Crm.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetList")]
-        public async Task<ActionResult<ICollection<Account>>> GetList(ICollection<Guid> ids)
+        public async Task<ActionResult<ICollection<Account>>> GetList(
+            ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            return await _accountsService.GetListAsync(ids, _ct)
+            return await _accountsService.GetListAsync(ids, ct)
                 .ConfigureAwait(false);
         }
 
@@ -73,7 +75,8 @@ namespace Crm.Areas.Accounts.Controllers
             int offset = default,
             int limit = 10,
             string sortBy = default,
-            string orderBy = default)
+            string orderBy = default,
+            CancellationToken ct = default)
         {
             return await _accountsService.GetPagedListAsync(
                     isLocked,
@@ -84,92 +87,102 @@ namespace Crm.Areas.Accounts.Controllers
                     limit,
                     sortBy,
                     orderBy,
-                    _ct)
+                    ct)
                 .ConfigureAwait(false);
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<Guid>> Create()
+        public async Task<ActionResult<Guid>> Create(CancellationToken ct = default)
         {
-            var id = await _accountsService.CreateAsync(_userContext.UserId, _ct)
+            var id = await _accountsService.CreateAsync(_userContext.UserId, ct)
                 .ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
-        public async Task<ActionResult<Guid>> Update(Guid id, ICollection<AccountSetting> settings)
+        public async Task<ActionResult<Guid>> Update(
+            Account newAccount,
+            CancellationToken ct = default)
         {
-            if (id == Guid.Empty)
+            if (newAccount.Id == Guid.Empty)
             {
                 return BadRequest();
             }
 
-            var account = await _accountsService.GetByIdAsync(id, _ct)
+            var oldAccount = await _accountsService.GetByIdAsync(newAccount.Id, ct)
                 .ConfigureAwait(false);
 
-            if (account == null)
+            if (oldAccount == null)
             {
                 return NotFound();
             }
 
-            await _accountsService.UpdateAsync(_userContext.UserId, account, settings, _ct)
+            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, newAccount, ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Lock")]
-        public async Task<ActionResult> Lock(ICollection<Guid> ids)
+        public async Task<ActionResult> Lock(
+            ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            await _accountsService.LockAsync(_userContext.UserId, ids, _ct)
+            await _accountsService.LockAsync(_userContext.UserId, ids, ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Unlock")]
-        public async Task<ActionResult> Unlock(ICollection<Guid> ids)
+        public async Task<ActionResult> Unlock(
+            ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            await _accountsService.UnlockAsync(_userContext.UserId, ids, _ct)
+            await _accountsService.UnlockAsync(_userContext.UserId, ids, ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Delete")]
-        public async Task<ActionResult> Delete(ICollection<Guid> ids)
+        public async Task<ActionResult> Delete(
+            ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            await _accountsService.DeleteAsync(_userContext.UserId, ids, _ct)
+            await _accountsService.DeleteAsync(_userContext.UserId, ids, ct)
                 .ConfigureAwait(false);
 
             return NoContent();
         }
 
         [HttpPost("Restore")]
-        public async Task<ActionResult> Restore(ICollection<Guid> ids)
+        public async Task<ActionResult> Restore(
+            ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return BadRequest();
             }
 
-            await _accountsService.RestoreAsync(_userContext.UserId, ids, _ct)
+            await _accountsService.RestoreAsync(_userContext.UserId, ids, ct)
                 .ConfigureAwait(false);
 
             return NoContent();

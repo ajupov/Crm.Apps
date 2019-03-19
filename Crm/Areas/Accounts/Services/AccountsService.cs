@@ -81,21 +81,22 @@ namespace Crm.Areas.Accounts.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(
+        public Task UpdateAsync(
             Guid userId,
-            Account account,
-            ICollection<AccountSetting> settings,
+            Account oldAccount,
+            Account newAccount,
             CancellationToken ct)
         {
-            account.UpdateWithLog(userId, x => x.Settings = settings);
+            oldAccount.UpdateWithLog(userId, x =>
+            {
+                x.Settings = newAccount.Settings;
+                x.IsLocked = newAccount.IsLocked;
+                x.IsDeleted = newAccount.IsDeleted;
+            });
 
-            var entry = await _storage
-                .AddAsync(account, ct)
-                .ConfigureAwait(false);
+            _storage.Update(oldAccount);
 
-            await _storage
-                .SaveChangesAsync(ct)
-                .ConfigureAwait(false);
+            return _storage.SaveChangesAsync(ct);
         }
 
         public async Task LockAsync(

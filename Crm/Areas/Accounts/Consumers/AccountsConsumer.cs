@@ -1,9 +1,14 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Crm.Areas.Accounts.Models;
 using Crm.Areas.Accounts.Services;
 using Crm.Infrastructure.MessageBroking;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Consuming.Configs;
+using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -11,8 +16,6 @@ namespace Crm.Areas.Accounts.Consumers
 {
     public class AccountsConsumer : IHostedService
     {
-        private const string AccountsTopic = "accounts";
-
         private readonly IAccountsService _accountsService;
         private readonly ConsumerConfig _config;
         private IConsumer _consumer;
@@ -29,7 +32,7 @@ namespace Crm.Areas.Accounts.Consumers
         {
             _consumer = new Consumer(_config);
 
-            return _consumer.ConsumeAsync<object>(ActionAsync, AccountsTopic, ct);
+            return _consumer.ConsumeAsync("Accounts", ActionAsync, ct);
         }
 
         public Task StopAsync(CancellationToken ct)
@@ -37,20 +40,102 @@ namespace Crm.Areas.Accounts.Consumers
             return Task.CompletedTask;
         }
 
-        private Task ActionAsync(Message<object> message, CancellationToken ct)
+        private Task ActionAsync(Message message, CancellationToken ct)
         {
             switch (message.Type)
             {
-                case "create":
-                    return _accountsService.CreateAsync(message.UserId, ct);
-                case "update":
-                    {
-                        var 
-                        return _accountsService.UpdateAsync(message.UserId, ct);
-                    }
+                case "Create":
+                    return CreateAsync(message, ct);
+                case "Update":
+                    return UpdateAsync(message, ct);
+                case "Lock":
+                    return LockAsync(message, ct);
+                case "Unlock":
+                    return UnlockAsync(message, ct);
+                case "Delete":
+                    return DeleteAsync(message, ct);
+                case "Restore":
+                    return RestoreAsync(message, ct);
+                default:
+                    return Task.CompletedTask;
+            }
+        }
+
+        private Task CreateAsync(Message message, CancellationToken ct)
+        {
+            return _accountsService.CreateAsync(message.UserId, ct);
+        }
+
+        private async Task UpdateAsync(Message message, CancellationToken ct)
+        {
+            var newAccount = message.Data.FromJsonString<Account>();
+
+            if (newAccount.Id == Guid.Empty)
+            {
+                return;
             }
 
-            return Task.CompletedTask;
+            var oldAccount = await _accountsService.GetByIdAsync(newAccount.Id, ct)
+                .ConfigureAwait(false);
+
+            if (oldAccount == null)
+            {
+                return;
+            }
+
+            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct)
+                .ConfigureAwait(false);
+        }
+
+        private async Task LockAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return;
+            }
+
+            await _accountsService.LockAsync(message.UserId, ids, ct)
+                .ConfigureAwait(false);
+        }
+
+        private async Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return;
+            }
+
+            await _accountsService.RestoreAsync(message.UserId, ids, ct)
+                .ConfigureAwait(false);
+        }
+
+        private async Task DeleteAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return;
+            }
+
+            await _accountsService.DeleteAsync(message.UserId, ids, ct)
+                .ConfigureAwait(false);
+        }
+
+        private async Task UnlockAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return;
+            }
+
+            await _accountsService.UnlockAsync(message.UserId, ids, ct)
+                .ConfigureAwait(false);
         }
     }
 }

@@ -18,9 +18,9 @@ namespace Crm.Infrastructure.MessageBroking.Producing
             _host = options.Value.Host;
         }
 
-        public Task ProduceAsync<T>(
+        public Task ProduceAsync(
             string topic,
-            Message<T> message)
+            Message message)
         {
             var config = new Dictionary<string, object>
             {

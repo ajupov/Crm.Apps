@@ -33,8 +33,8 @@ namespace Crm.Areas.Accounts.Services
 
         Task UpdateAsync(
             Guid userId,
-            Account account,
-            ICollection<AccountSetting> settings,
+            Account oldAccount,
+            Account newAccount,
             CancellationToken ct);
 
         Task LockAsync(

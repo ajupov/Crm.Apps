@@ -2,10 +2,15 @@
 using Crm.Areas.Accounts.Consumers;
 using Crm.Areas.Accounts.Services;
 using Crm.Areas.Accounts.Storages;
+using Crm.Areas.Accounts.UserContext;
+using Crm.Common.Types;
 using Crm.Infrastructure.MessageBroking.Consuming.Configs;
 using FluentMigrator.Runner;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace Crm.Areas.Accounts.Extensions
 {
@@ -51,13 +56,15 @@ namespace Crm.Areas.Accounts.Extensions
         private static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             services.AddSingleton<IAccountsService, AccountsService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IUserContext, UserContext.UserContext>();
 
             return services;
         }
 
         private static IServiceCollection ConfigureHostedServices(this IServiceCollection services)
         {
-            services.AddHostedService<AccountsConsumer>();
+            services.AddSingleton<IHostedService, AccountsConsumer>();
 
             return services;
         }
@@ -65,7 +72,7 @@ namespace Crm.Areas.Accounts.Extensions
         private static void ConfigureOrm(this IServiceCollection services)
         {
             services.AddEntityFrameworkNpgsql()
-                .AddDbContext<AccountsStorage>()
+                .AddDbContext<AccountsStorage>(ServiceLifetime.Singleton)
                 .BuildServiceProvider();
         }
     }
