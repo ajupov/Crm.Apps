@@ -7,16 +7,16 @@ namespace Crm.Areas.Accounts.Storages
 {
     public class AccountsStorage : DbContext
     {
-        private readonly AccountsStorageConfig _config;
+        private readonly DbSqlSettings _config;
 
-        public AccountsStorage(IOptions<AccountsStorageConfig> options)
+        public AccountsStorage(IOptions<DbSqlSettings> options)
         {
             _config = options.Value;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseNpgsql(_config.ConnectionString);
+            builder.UseNpgsql(_config.MainConnectionString);
         }
 
         public DbSet<Account> Accounts { get; set; }

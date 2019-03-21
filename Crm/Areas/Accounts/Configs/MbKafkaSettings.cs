@@ -1,6 +1,6 @@
 ﻿namespace Crm.Areas.Accounts.Configs
 {
-    public class AccountsStorageConfig
+    public class MbKafkaSettings
     {
         public string ConnectionString { get; set; }
     }

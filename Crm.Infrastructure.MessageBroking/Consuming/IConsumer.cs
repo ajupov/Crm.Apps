@@ -6,12 +6,14 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
 {
     public interface IConsumer
     {
-        Task ConsumeAsync(string topic,
-            Action<Message, CancellationToken> func,
-            CancellationToken ct);
+        void Consume(
+            string topic,
+            Action<Message, CancellationToken> func);
 
-        Task ConsumeAsync(string topic,
-            Func<Message, CancellationToken, Task> action,
-            CancellationToken ct);
+        void Consume(
+            string topic,
+            Func<Message, CancellationToken, Task> action);
+
+        void UnConsume();
     }
 }
