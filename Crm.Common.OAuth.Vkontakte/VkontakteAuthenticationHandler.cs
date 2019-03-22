@@ -9,26 +9,22 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
-namespace Crm.Libs.OAuth.Vkontakte
+namespace Crm.Common.OAuth.Vkontakte
 {
     public class VkontakteAuthenticationHandler : OAuthHandler<VkontakteAuthenticationOptions>
     {
-        public VkontakteAuthenticationHandler(
-            IOptionsMonitor<VkontakteAuthenticationOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock)
+        public VkontakteAuthenticationHandler(IOptionsMonitor<VkontakteAuthenticationOptions> options,
+            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
         }
 
-        protected override async Task<AuthenticationTicket> CreateTicketAsync(
-            ClaimsIdentity identity,
-            AuthenticationProperties properties,
-            OAuthTokenResponse tokens)
+        protected override async Task<AuthenticationTicket> CreateTicketAsync(ClaimsIdentity identity,
+            AuthenticationProperties properties, OAuthTokenResponse tokens)
         {
             var address =
                 QueryHelpers.AddQueryString(Options.UserInformationEndpoint, "access_token", tokens.AccessToken);
+
             address = QueryHelpers.AddQueryString(address, "v", Options.ApiVersion);
 
             if (Options.Fields.Count != 0)

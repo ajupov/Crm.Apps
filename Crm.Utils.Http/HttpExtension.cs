@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using Newtonsoft.Json;
+using Crm.Utils.Json;
 
 namespace Crm.Utils.Http
 {
@@ -20,7 +20,7 @@ namespace Crm.Utils.Http
 
         public static StringContent ToStringContent(this object model)
         {
-            return new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            return new StringContent(model.ToJsonString(), Encoding.UTF8, "application/json");
         }
     }
 }

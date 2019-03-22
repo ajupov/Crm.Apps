@@ -1,4 +1,4 @@
-﻿namespace Crm.Libs.OAuth.Odnoklassniki
+﻿namespace Crm.Common.OAuth.Odnoklassniki
 {
     public class OdnoklassnikiAuthenticationDefaults
     {

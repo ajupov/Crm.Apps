@@ -4,7 +4,7 @@ namespace Crm.Utils.Generator
 {
     public class Generator
     {
-        public static string GenerateAlphaNumbericString(int length)
+        public static string GenerateAlphaNumericString(int length)
         {
             const string allowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
             var chars = new char[length];

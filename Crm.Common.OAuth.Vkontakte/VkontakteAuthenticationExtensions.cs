@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Libs.OAuth.Vkontakte
+namespace Crm.Common.OAuth.Vkontakte
 {
     public static class VkontakteAuthenticationExtensions
     {
@@ -11,24 +11,20 @@ namespace Crm.Libs.OAuth.Vkontakte
             return builder.AddVkontakte(VkontakteAuthenticationDefaults.AuthenticationScheme, options => { });
         }
 
-        public static AuthenticationBuilder AddVkontakte(
-            this AuthenticationBuilder builder,
+        public static AuthenticationBuilder AddVkontakte(this AuthenticationBuilder builder,
             Action<VkontakteAuthenticationOptions> configuration)
         {
             return builder.AddVkontakte(VkontakteAuthenticationDefaults.AuthenticationScheme, configuration);
         }
 
-        public static AuthenticationBuilder AddVkontakte(
-            this AuthenticationBuilder builder, string scheme,
+        public static AuthenticationBuilder AddVkontakte(this AuthenticationBuilder builder, string scheme,
             Action<VkontakteAuthenticationOptions> configuration)
         {
             return builder.AddVkontakte(scheme, VkontakteAuthenticationDefaults.DisplayName, configuration);
         }
 
-        public static AuthenticationBuilder AddVkontakte(
-            this AuthenticationBuilder builder,
-            string scheme, string caption,
-            Action<VkontakteAuthenticationOptions> configuration)
+        public static AuthenticationBuilder AddVkontakte(this AuthenticationBuilder builder,
+            string scheme, string caption, Action<VkontakteAuthenticationOptions> configuration)
         {
             return builder.AddOAuth<VkontakteAuthenticationOptions, VkontakteAuthenticationHandler>(scheme, caption,
                 configuration);

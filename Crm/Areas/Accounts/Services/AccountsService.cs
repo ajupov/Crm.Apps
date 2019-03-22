@@ -19,37 +19,20 @@ namespace Crm.Areas.Accounts.Services
             _storage = storage;
         }
 
-        public Task<Account> GetByIdAsync(
-            Guid id,
-            CancellationToken ct)
+        public Task<Account> GetByIdAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Accounts
-                .Include(x => x.Settings)
-                .FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.Accounts.Include(x => x.Settings).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<Account>> GetListAsync(
-            ICollection<Guid> ids,
-            CancellationToken ct)
+        public Task<List<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct)
         {
-            return _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ToListAsync(ct);
+            return _storage.Accounts.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<Account>> GetPagedListAsync(
-            bool? isLocked,
-            bool? isDeleted,
-            DateTime? minCreateDate,
-            DateTime? maxCreateDate,
-            int offset,
-            int limit,
-            string sortBy,
-            string orderBy,
-            CancellationToken ct)
+        public Task<List<Account>> GetPagedListAsync(bool? isLocked, bool? isDeleted, DateTime? minCreateDate,
+            DateTime? maxCreateDate, int offset, int limit, string sortBy, string orderBy, CancellationToken ct)
         {
-            return _storage.Accounts
-                .Where(x =>
+            return _storage.Accounts.Where(x =>
                     (!isLocked.HasValue || x.IsLocked == isLocked) &&
                     (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
                     (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
@@ -60,9 +43,7 @@ namespace Crm.Areas.Accounts.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(
-            Guid userId,
-            CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, CancellationToken ct)
         {
             var account = new Account().CreateWithLog(userId, x =>
             {
@@ -70,22 +51,14 @@ namespace Crm.Areas.Accounts.Services
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage
-                .AddAsync(account, ct)
-                .ConfigureAwait(false);
+            var entry = await _storage.AddAsync(account, ct).ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(ct)
-                .ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public Task UpdateAsync(
-            Guid userId,
-            Account oldAccount,
-            Account newAccount,
-            CancellationToken ct)
+        public Task UpdateAsync(Guid userId, Account oldAccount, Account newAccount, CancellationToken ct)
         {
             oldAccount.UpdateWithLog(userId, x =>
             {
@@ -99,64 +72,36 @@ namespace Crm.Areas.Accounts.Services
             return _storage.SaveChangesAsync(ct);
         }
 
-        public async Task LockAsync(
-            Guid userId,
-            ICollection<Guid> ids,
-            CancellationToken ct)
+        public async Task LockAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = true), ct)
-                .ConfigureAwait(false);
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = true), ct).ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(ct)
-                .ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task UnlockAsync(
-            Guid userId,
-            ICollection<Guid> ids,
-            CancellationToken ct)
+        public async Task UnlockAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = false), ct)
-                .ConfigureAwait(false);
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = false), ct).ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(ct)
-                .ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task DeleteAsync(
-            Guid userId,
-            ICollection<Guid> ids,
-            CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct)
-                .ConfigureAwait(false);
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(ct)
-                .ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task RestoreAsync(
-            Guid userId,
-            ICollection<Guid> ids,
-            CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts
-                .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct)
-                .ConfigureAwait(false);
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
 
-            await _storage
-                .SaveChangesAsync(ct)
-                .ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
     }
 }

@@ -4,9 +4,7 @@ namespace Crm.Utils.Phone
 {
     public static class PhoneExtension
     {
-        public static string ExtractPhone(
-            this string value,
-            int maxLength = 10)
+        public static string ExtractPhone(this string value, int maxLength = 10)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

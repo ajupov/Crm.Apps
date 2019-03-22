@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 
-namespace Crm.Libs.OAuth.Vkontakte
+namespace Crm.Common.OAuth.Vkontakte
 {
     public class VkontakteAuthenticationOptions : OAuthOptions
     {

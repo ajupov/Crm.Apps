@@ -24,9 +24,7 @@ namespace Crm.Utils.Password
             return Convert.ToBase64String(array);
         }
 
-        public static bool IsVerifiedPassword(
-            this string value,
-            string hashedValue)
+        public static bool IsVerifiedPassword(this string value, string hashedValue)
         {
             var hashedPasswordArray = Convert.FromBase64String(hashedValue);
             if (hashedPasswordArray.Length != HashLength)
@@ -55,9 +53,7 @@ namespace Crm.Utils.Password
             return salt;
         }
 
-        private static byte[] GetBytes(
-            string password,
-            byte[] salt)
+        private static byte[] GetBytes(string password, byte[] salt)
         {
             return KeyDerivation.Pbkdf2(password, salt, KeyDerivationPrf.HMACSHA512, IterationsCount,
                 HashLength - SaltLength - 1);
@@ -73,9 +69,7 @@ namespace Crm.Utils.Password
             return array;
         }
 
-        private static void CopyArray(
-            byte[] bytes,
-            byte[] result)
+        private static void CopyArray(byte[] bytes, byte[] result)
         {
             Buffer.BlockCopy(bytes, 0, result, SaltLength + 1, HashLength - SaltLength - 1);
         }
@@ -99,9 +93,7 @@ namespace Crm.Utils.Password
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static bool IsEqual(
-            IReadOnlyList<byte> byteArray1,
-            IReadOnlyList<byte> byteArray2)
+        private static bool IsEqual(IReadOnlyList<byte> byteArray1, IReadOnlyList<byte> byteArray2)
         {
             if (byteArray1 == null && byteArray2 == null)
             {

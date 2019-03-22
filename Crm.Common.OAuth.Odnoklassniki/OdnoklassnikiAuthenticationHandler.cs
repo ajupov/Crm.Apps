@@ -11,23 +11,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
-namespace Crm.Libs.OAuth.Odnoklassniki
+namespace Crm.Common.OAuth.Odnoklassniki
 {
     public class OdnoklassnikiAuthenticationHandler : OAuthHandler<OdnoklassnikiAuthenticationOptions>
     {
-        public OdnoklassnikiAuthenticationHandler(
-            IOptionsMonitor<OdnoklassnikiAuthenticationOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock)
+        public OdnoklassnikiAuthenticationHandler(IOptionsMonitor<OdnoklassnikiAuthenticationOptions> options,
+            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
         }
 
-        protected override async Task<AuthenticationTicket> CreateTicketAsync(
-            ClaimsIdentity identity,
-            AuthenticationProperties properties,
-            OAuthTokenResponse tokens)
+        protected override async Task<AuthenticationTicket> CreateTicketAsync(ClaimsIdentity identity,
+            AuthenticationProperties properties, OAuthTokenResponse tokens)
         {
             var md5Inner = GetMd5(tokens.AccessToken + Options.ClientSecret);
             var parametersForSig = PrepareParametersForSig(md5Inner);
@@ -79,9 +74,7 @@ namespace Crm.Libs.OAuth.Odnoklassniki
                    $"{md5Inner}";
         }
 
-        private string PrepareUserInfoAddress(
-            string accessToken,
-            string sig)
+        private string PrepareUserInfoAddress(string accessToken, string sig)
         {
             var address = QueryHelpers.AddQueryString(Options.UserInformationEndpoint, "application_key",
                 Options.ApplicationKey);

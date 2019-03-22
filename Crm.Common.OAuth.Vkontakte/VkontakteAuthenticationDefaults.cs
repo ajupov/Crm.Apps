@@ -1,4 +1,4 @@
-﻿namespace Crm.Libs.OAuth.Vkontakte
+﻿namespace Crm.Common.OAuth.Vkontakte
 {
     public static class VkontakteAuthenticationDefaults
     {

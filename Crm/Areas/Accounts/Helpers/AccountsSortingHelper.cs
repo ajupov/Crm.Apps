@@ -5,9 +5,7 @@ namespace Crm.Areas.Accounts.Helpers
 {
     public static class AccountsSortingHelper
     {
-        public static IOrderedQueryable<Account> Sort(
-            this IQueryable<Account> queryable,
-            string sortBy,
+        public static IOrderedQueryable<Account> Sort(this IQueryable<Account> queryable, string sortBy,
             string orderBy)
         {
             var isDesc = orderBy == "desc";
@@ -16,14 +14,14 @@ namespace Crm.Areas.Accounts.Helpers
             {
                 case nameof(Account.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Id)
-                        : queryable.OrderBy(x => x.Id);
+                        ? queryable.OrderByDescending(account => account.Id)
+                        : queryable.OrderBy(account => account.Id);
                 case nameof(Account.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.CreateDateTime)
-                        : queryable.OrderBy(x => x.CreateDateTime);
+                        ? queryable.OrderByDescending(account => account.CreateDateTime)
+                        : queryable.OrderBy(account => account.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(x => x.CreateDateTime);
+                    return queryable.OrderByDescending(account => account.CreateDateTime);
             }
         }
     }

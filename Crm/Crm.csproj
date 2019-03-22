@@ -4,22 +4,16 @@
     <AssemblyName>Crm</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentMigrator" Version="3.1.3" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Crm.Common.Types\Crm.Common.Types.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure.Logging\Crm.Infrastructure.Logging.csproj" />
     <ProjectReference Include="..\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure.Migrations\Crm.Infrastructure.Migrations.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure.Orm\Crm.Infrastructure.Orm.csproj" />
     <ProjectReference Include="..\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
     <ProjectReference Include="..\Crm.Utils.Json\Crm.Utils.Json.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>

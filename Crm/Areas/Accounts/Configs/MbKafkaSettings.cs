@@ -2,6 +2,6 @@
 {
     public class MbKafkaSettings
     {
-        public string ConnectionString { get; set; }
+        public string Host { get; set; }
     }
 }

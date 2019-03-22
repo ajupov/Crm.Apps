@@ -20,13 +20,11 @@ namespace Crm.Areas.Accounts.Consumers
         private readonly IAccountsService _accountsService;
         private readonly IConsumer _consumer;
 
-        public AccountsConsumer(
-            IOptions<MbKafkaSettings> options,
-            IAccountsService accountsService)
+        public AccountsConsumer(IOptions<MbKafkaSettings> options, IAccountsService accountsService)
         {
             var config = new ConsumerConfig
             {
-                Host = options.Value.ConnectionString
+                Host = options.Value.Host
             };
 
             _accountsService = accountsService;
@@ -47,9 +45,7 @@ namespace Crm.Areas.Accounts.Consumers
             return Task.CompletedTask;
         }
 
-        private Task ActionAsync(
-            Message message,
-            CancellationToken ct)
+        private Task ActionAsync(Message message, CancellationToken ct)
         {
             switch (message.Type)
             {
@@ -70,44 +66,31 @@ namespace Crm.Areas.Accounts.Consumers
             }
         }
 
-        private Task CreateAsync(
-            Message message,
-            CancellationToken ct)
+        private Task CreateAsync(Message message, CancellationToken ct)
         {
             return _accountsService.CreateAsync(message.UserId, ct);
         }
 
-        private async Task UpdateAsync(
-            Message message,
-            CancellationToken ct)
+        private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newAccount = message.Data
-                .FromJsonString<Account>();
-
+            var newAccount = message.Data.FromJsonString<Account>();
             if (newAccount.Id == Guid.Empty)
             {
                 return;
             }
 
-            var oldAccount = await _accountsService.GetByIdAsync(newAccount.Id, ct)
-                .ConfigureAwait(false);
-
+            var oldAccount = await _accountsService.GetByIdAsync(newAccount.Id, ct).ConfigureAwait(false);
             if (oldAccount == null)
             {
                 return;
             }
 
-            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct)
-                .ConfigureAwait(false);
+            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct).ConfigureAwait(false);
         }
 
-        private Task LockAsync(
-            Message message,
-            CancellationToken ct)
+        private Task LockAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data
-                .FromJsonString<ICollection<Guid>>();
-
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;
@@ -116,13 +99,9 @@ namespace Crm.Areas.Accounts.Consumers
             return _accountsService.LockAsync(message.UserId, ids, ct);
         }
 
-        private Task RestoreAsync(
-            Message message,
-            CancellationToken ct)
+        private Task RestoreAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data
-                .FromJsonString<ICollection<Guid>>();
-
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;
@@ -131,13 +110,9 @@ namespace Crm.Areas.Accounts.Consumers
             return _accountsService.RestoreAsync(message.UserId, ids, ct);
         }
 
-        private Task DeleteAsync(
-            Message message,
-            CancellationToken ct)
+        private Task DeleteAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data
-                .FromJsonString<ICollection<Guid>>();
-
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;
@@ -146,13 +121,9 @@ namespace Crm.Areas.Accounts.Consumers
             return _accountsService.DeleteAsync(message.UserId, ids, ct);
         }
 
-        private Task UnlockAsync(
-            Message message,
-            CancellationToken ct)
+        private Task UnlockAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data
-                .FromJsonString<ICollection<Guid>>();
-
+            var ids = message.Data.FromJsonString<ICollection<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;

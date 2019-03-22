@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
 using Crm.Infrastructure.MessageBroking.Consuming.Configs;
-using Newtonsoft.Json;
+using Crm.Utils.Json;
 
 namespace Crm.Infrastructure.MessageBroking.Consuming
 {
@@ -28,28 +28,21 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
             _consumer = new Consumer<Null, string>(kafkaConfig, null, deserializer);
         }
 
-        public void Consume(
-            string topic,
-            Action<Message, CancellationToken> func)
+        public void Consume(string topic, Action<Message, CancellationToken> func)
         {
             Consume(topic, (x, y) => Task.FromResult(func));
         }
 
-        public void Consume(
-            string topic,
-            Func<Message, CancellationToken, Task> action)
+        public void Consume(string topic, Func<Message, CancellationToken, Task> action)
         {
             _consumer.Subscribe(topic);
 
             _consumer.OnMessage += async (_, message) =>
             {
-                var result = JsonConvert.DeserializeObject<Message>(message.Value);
+                var result = message.Value.FromJsonString<Message>();
 
-                await action(result, CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                await _consumer.CommitAsync(message)
-                    .ConfigureAwait(false);
+                await action(result, CancellationToken.None).ConfigureAwait(false); 
+                await _consumer.CommitAsync(message).ConfigureAwait(false);
             };
 
             _isWorking = true;
