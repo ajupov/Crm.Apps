@@ -57,11 +57,24 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
 
         public static IServiceCollection ConfigureUserContext<TUserContext, TUserContextImplementation>(
             this IServiceCollection services)
-            where TUserContext : class
-            where TUserContextImplementation : class, TUserContext
+                where TUserContext : class
+                where TUserContextImplementation : class, TUserContext
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<TUserContext, TUserContextImplementation>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureConsumers<TConsumer, TSettings>(this IServiceCollection services,
+            WebHostBuilderContext webHostBuilder, string settingsKey)
+                where TConsumer : class, IHostedService
+                where TSettings : class
+        {
+            var settings = webHostBuilder.Configuration.GetSection(settingsKey);
+
+            services.Configure<TSettings>(settings);
+            services.AddSingleton<IHostedService, TConsumer>();
 
             return services;
         }
@@ -92,27 +105,14 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
 
         public static IServiceCollection ConfigureOrm<TStorage, TSettings>(this IServiceCollection services,
             WebHostBuilderContext webHostBuilder, string settingsKey)
-            where TStorage : DbContext
-            where TSettings : class
+                where TStorage : DbContext
+                where TSettings : class
         {
             var settings = webHostBuilder.Configuration.GetSection(settingsKey);
 
             services.Configure<TSettings>(settings);
             services.AddEntityFrameworkNpgsql().AddDbContext<TStorage>(ServiceLifetime.Singleton)
                 .BuildServiceProvider();
-
-            return services;
-        }
-
-        public static IServiceCollection ConfigureConsumers<TConsumer, TSettings>(this IServiceCollection services,
-            WebHostBuilderContext webHostBuilder, string settingsKey) 
-                where TConsumer : class, IHostedService
-                where TSettings : class
-        {
-            var settings = webHostBuilder.Configuration.GetSection(settingsKey);
-
-            services.Configure<TSettings>(settings);
-            services.AddSingleton<IHostedService, TConsumer>();
 
             return services;
         }

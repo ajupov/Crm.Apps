@@ -21,17 +21,17 @@ namespace Crm
                 .ConfigureServices((builder, services) =>
                 {
                     services.ConfigureConfiguration(builder)
-                        .ConfigureMigrator(builder, Assembly.GetExecutingAssembly(), "DbSqlMain")
-                        .ConfigureOrm<AccountsStorage, AccountsStorageSettings>(builder, "DbSql")
-                        .ConfigureConsumers<AccountsConsumer, AccountsConsumerSettings>(builder, "MbKafka")
                         .ConfigureUserContext<IUserContext, UserContext>()
                         .AddSingleton<IAccountsService, AccountsService>()
+                        .ConfigureConsumers<AccountsConsumer, AccountsConsumerSettings>(builder, "MbKafka")
+                        .ConfigureMigrator(builder, Assembly.GetExecutingAssembly(), "DbSqlMain")
+                        .ConfigureOrm<AccountsStorage, AccountsStorageSettings>(builder, "DbSql")
                         .ConfigureMvc();
                 })
                 .Configure(builder =>
                 {
-                    builder.Migrate();
                     builder.ConfigureMiddlewares();
+                    builder.Migrate();
                 })
                 .Build()
                 .RunAsync();
