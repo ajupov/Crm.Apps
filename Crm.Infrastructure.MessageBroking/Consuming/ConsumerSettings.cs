@@ -1,4 +1,4 @@
-﻿namespace Crm.Infrastructure.MessageBroking.Consuming.Configs
+﻿namespace Crm.Infrastructure.MessageBroking.Consuming
 {
     public class ConsumerConfig
     {

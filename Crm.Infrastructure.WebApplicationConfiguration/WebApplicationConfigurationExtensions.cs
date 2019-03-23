@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -63,6 +64,19 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<TUserContext, TUserContextImplementation>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureMetrics<TCollector, TSettings>(this IServiceCollection services,
+            WebHostBuilderContext webHostBuilder, string settingsKey)
+                where TCollector : class, IHostedService
+                where TSettings : class
+        {
+            var settings = webHostBuilder.Configuration.GetSection(settingsKey);
+
+            services.Configure<TSettings>(settings);
+            services.AddSingleton<IHostedService, TCollector>();
 
             return services;
         }
@@ -136,6 +150,7 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
             applicationBuilder.UseSwagger();
             applicationBuilder.UseSwaggerUI(options => options.SwaggerEndpoint($"/swagger/{apiVersion}/swagger.json", 
                 applicationName));
+            applicationBuilder.UseHttpMetrics();
             applicationBuilder.UseMvc();
 
             return applicationBuilder;

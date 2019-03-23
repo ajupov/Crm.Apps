@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
-using Crm.Infrastructure.MessageBroking.Consuming.Configs;
 using Crm.Utils.Json;
 
 namespace Crm.Infrastructure.MessageBroking.Consuming

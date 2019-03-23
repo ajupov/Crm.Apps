@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
-using Crm.Infrastructure.MessageBroking.Producing.Configs;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Options;
 

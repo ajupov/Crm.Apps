@@ -1,4 +1,4 @@
-﻿namespace Crm.Infrastructure.MessageBroking.Producing.Configs
+﻿namespace Crm.Infrastructure.MessageBroking.Producing
 {
     public class ProducerConfig
     {

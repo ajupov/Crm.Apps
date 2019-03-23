@@ -7,7 +7,6 @@ using Crm.Areas.Accounts.Models;
 using Crm.Areas.Accounts.Services;
 using Crm.Infrastructure.MessageBroking;
 using Crm.Infrastructure.MessageBroking.Consuming;
-using Crm.Infrastructure.MessageBroking.Consuming.Configs;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
