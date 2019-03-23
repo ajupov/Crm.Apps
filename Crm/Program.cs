@@ -13,6 +13,9 @@ namespace Crm
 {
     public class Program
     {
+        private const string ApplicationName = "Accounts";
+        private const string ApplicationVersion = "v1";
+
         public static Task Main()
         {
             return new WebHostBuilder()
@@ -26,11 +29,13 @@ namespace Crm
                         .ConfigureConsumers<AccountsConsumer, AccountsConsumerSettings>(builder, "MbKafka")
                         .ConfigureMigrator(builder, Assembly.GetExecutingAssembly(), "DbSqlMain")
                         .ConfigureOrm<AccountsStorage, AccountsStorageSettings>(builder, "DbSql")
+                        .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
                         .ConfigureMvc();
+
                 })
                 .Configure(builder =>
                 {
-                    builder.ConfigureMiddlewares();
+                    builder.ConfigureMiddlewares(ApplicationName, ApplicationVersion);
                     builder.Migrate();
                 })
                 .Build()

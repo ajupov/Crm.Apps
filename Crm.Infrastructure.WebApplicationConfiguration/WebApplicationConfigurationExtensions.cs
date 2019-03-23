@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Crm.Infrastructure.WebApplicationConfiguration
 {
@@ -94,15 +95,6 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
             return services;
         }
 
-        public static void Migrate(this IApplicationBuilder applicationBuilder)
-        {
-            using (var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                scope.ServiceProvider.GetService<IMigrationRunner>().MigrateUp();
-            }
-        }
-
         public static IServiceCollection ConfigureOrm<TStorage, TSettings>(this IServiceCollection services,
             WebHostBuilderContext webHostBuilder, string settingsKey)
                 where TStorage : DbContext
@@ -124,11 +116,38 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
             return services;
         }
 
-        public static IApplicationBuilder ConfigureMiddlewares(this IApplicationBuilder applicationBuilder)
+        public static IServiceCollection ConfigureApiDocumentation(this IServiceCollection services,
+            string applicationName, string apiVersion)
         {
+            var info = new Info
+            { 
+                Title = applicationName,
+                Version = apiVersion
+            };
+
+            services.AddSwaggerGen(options => options.SwaggerDoc(apiVersion, info));
+
+            return services;
+        }
+
+        public static IApplicationBuilder ConfigureMiddlewares(this IApplicationBuilder applicationBuilder, 
+            string applicationName, string apiVersion)
+        {
+            applicationBuilder.UseSwagger();
+            applicationBuilder.UseSwaggerUI(options => options.SwaggerEndpoint($"/swagger/{apiVersion}/swagger.json", 
+                applicationName));
             applicationBuilder.UseMvc();
 
             return applicationBuilder;
+        }
+
+        public static void Migrate(this IApplicationBuilder applicationBuilder)
+        {
+            using (var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                scope.ServiceProvider.GetService<IMigrationRunner>().MigrateUp();
+            }
         }
     }
 }
