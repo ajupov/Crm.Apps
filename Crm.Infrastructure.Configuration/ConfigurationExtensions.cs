@@ -1,16 +1,23 @@
 ﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
 namespace Crm.Infrastructure.Configuration
 {
     public static class ConfigurationExtensions
     {
-        public static void ConfigureAppConfiguration(this IConfigurationBuilder builder)
+        public static IWebHostBuilder ConfigureHost(this IWebHostBuilder webHostBuilder)
         {
-            builder.SetBasePath(Environment.CurrentDirectory)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", false)
-                .AddEnvironmentVariables()
-                .Build();
+            return webHostBuilder.ConfigureAppConfiguration(builder =>
+            {
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                builder.SetBasePath(Environment.CurrentDirectory)
+                    .AddJsonFile($"appsettings.{environment}.json")
+                    .AddEnvironmentVariables()
+                    .Build();
+            })
+            .UseKestrel();
         }
     }
 }

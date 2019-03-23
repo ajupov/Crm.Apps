@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Areas.Accounts.Configs;
 using Crm.Areas.Accounts.Models;
 using Crm.Areas.Accounts.Services;
 using Crm.Infrastructure.MessageBroking;
@@ -20,7 +19,7 @@ namespace Crm.Areas.Accounts.Consumers
         private readonly IAccountsService _accountsService;
         private readonly IConsumer _consumer;
 
-        public AccountsConsumer(IOptions<MbKafkaSettings> options, IAccountsService accountsService)
+        public AccountsConsumer(IOptions<AccountsConsumerSettings> options, IAccountsService accountsService)
         {
             var config = new ConsumerConfig
             {
