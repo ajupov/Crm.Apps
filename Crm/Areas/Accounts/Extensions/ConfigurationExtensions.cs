@@ -1,4 +1,5 @@
-﻿using Crm.Areas.Accounts.Configs;
+﻿using System.Reflection;
+using Crm.Areas.Accounts.Configs;
 using Crm.Areas.Accounts.Consumers;
 using Crm.Areas.Accounts.Services;
 using Crm.Areas.Accounts.Storages;
@@ -22,10 +23,10 @@ namespace Crm.Areas.Accounts.Extensions
                 .AddOptions()
                 .Configure<DbSqlSettings>(settings => configuration.GetSection("DbSql").Bind(settings))
                 .Configure<MbKafkaSettings>(settings => configuration.GetSection("MbKafka").Bind(settings))
-                .ConfigureMigrator(configuration.GetConnectionString("DbSqlMainConnectionString"))
+                .ConfigureMigrator(configuration.GetConnectionString("DbSqlMain"), Assembly.GetExecutingAssembly())
                 .ConfigureOrm<AccountsStorage>()
-                .AddSingleton<IAccountsService, AccountsService>()
                 .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                .AddSingleton<IAccountsService, AccountsService>()
                 .AddSingleton<IHostedService, AccountsConsumer>()
                 .AddScoped<IUserContext, UserContext.UserContext>()
                 .AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

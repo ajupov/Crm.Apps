@@ -11,11 +11,11 @@ namespace Crm
         public static Task Main()
         {
             return new WebHostBuilder()
-                .UseKestrel()
                 .ConfigureAppConfiguration(builder => builder.ConfigureAppConfiguration())
                 .ConfigureLogging(builder => builder.ConfigureLogging())
                 .ConfigureServices((builder, services) => services.ConfigureServices(builder.Configuration))
                 .Configure(builder => builder.Configure())
+                .UseKestrel()
                 .Build()
                 .RunAsync();
         }
