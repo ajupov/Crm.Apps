@@ -28,6 +28,7 @@ namespace Crm
                         .ConfigureUserContext<IUserContext, UserContext>()
                         .AddSingleton<IAccountsService, AccountsService>()
                         .ConfigureMetrics<MetricsCollector, MetricsSettings>(builder, "Metrics")
+                        .ConfigureTracing(ApplicationName)
                         .ConfigureConsumers<AccountsConsumer, AccountsConsumerSettings>(builder, "MbKafka")
                         .ConfigureMigrator(builder, Assembly.GetExecutingAssembly(), "DbSqlMain")
                         .ConfigureOrm<AccountsStorage, AccountsStorageSettings>(builder, "DbSql")

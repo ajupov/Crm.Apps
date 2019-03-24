@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using FluentMigrator.Runner;
+using Jaeger;
+using Jaeger.Samplers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTracing;
+using OpenTracing.Util;
 using Prometheus;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
@@ -123,9 +127,30 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
             return services;
         }
 
+        public static IServiceCollection ConfigureTracing(this IServiceCollection services,
+          string applicationName)
+        {
+            services.AddOpenTracing();
+            services.AddSingleton<ITracer>(serviceProvider =>
+            {
+                var tracer = new Tracer.Builder(applicationName)
+                    .WithSampler(new ConstSampler(true))
+                    .Build();
+
+                GlobalTracer.Register(tracer);
+
+                return tracer;
+            });
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureMvc(this IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options => 
+            {
+                options.Filters.Add<TracingActionFilter>();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             return services;
         }
