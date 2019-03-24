@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.WebAppli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.Metrics", "Crm.Infrastructure.Metrics\Crm.Infrastructure.Metrics.csproj", "{C29058E2-87A6-46C7-A057-C9D008A9DFFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Tests", "Crm.Tests\Crm.Tests.csproj", "{A1F4D573-78C0-40C4-82AE-8B53DF56BB7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{C29058E2-87A6-46C7-A057-C9D008A9DFFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C29058E2-87A6-46C7-A057-C9D008A9DFFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C29058E2-87A6-46C7-A057-C9D008A9DFFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1F4D573-78C0-40C4-82AE-8B53DF56BB7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F4D573-78C0-40C4-82AE-8B53DF56BB7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F4D573-78C0-40C4-82AE-8B53DF56BB7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F4D573-78C0-40C4-82AE-8B53DF56BB7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
