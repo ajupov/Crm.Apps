@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Crm.Infrastructure.Metrics;
 using FluentMigrator.Runner;
 using Jaeger;
 using Jaeger.Samplers;
@@ -24,12 +25,10 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
     {
         public static IWebHostBuilder ConfigureHost(this IWebHostBuilder webHostBuilder)
         {
-            return webHostBuilder.ConfigureAppConfiguration(builder =>
+            return webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
             {
-                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-                builder.SetBasePath(Environment.CurrentDirectory)
-                    .AddJsonFile($"appsettings.{environment}.json")
+                configurationBuilder.SetBasePath(Environment.CurrentDirectory)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
                     .AddEnvironmentVariables()
                     .Build();
             })
@@ -38,17 +37,17 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
 
         public static IWebHostBuilder ConfigureLogging(this IWebHostBuilder webHostBuilder)
         {
-            return webHostBuilder.ConfigureLogging(builder =>
+            return webHostBuilder.ConfigureLogging(loggingBuilder =>
             {
-                builder.ClearProviders();
+                loggingBuilder.ClearProviders();
 
                 Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
+                    .MinimumLevel.Information()
                     .Enrich.FromLogContext()
                     .WriteTo.Console(outputTemplate: "[{Timestamp:o} - {Level:u3}]: {Message:lj}{NewLine}{Exception}")
                     .CreateLogger();
 
-                builder.AddSerilog(Log.Logger);
+                loggingBuilder.AddSerilog(Log.Logger);
             });
         }
 
@@ -72,15 +71,11 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
             return services;
         }
 
-        public static IServiceCollection ConfigureMetrics<TCollector, TSettings>(this IServiceCollection services,
-            WebHostBuilderContext webHostBuilder, string settingsKey)
-                where TCollector : class, IHostedService
-                where TSettings : class
+        public static IServiceCollection ConfigureMetrics(this IServiceCollection services,
+            WebHostBuilderContext webHostBuilder)
         {
-            var settings = webHostBuilder.Configuration.GetSection(settingsKey);
-
-            services.Configure<TSettings>(settings);
-            services.AddSingleton<IHostedService, TCollector>();
+            services.Configure<MetricsSettings>(webHostBuilder.Configuration.GetSection("Metrics"));
+            services.AddSingleton<IHostedService, MetricsCollector>();
 
             return services;
         }
@@ -99,9 +94,9 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
         }
 
         public static IServiceCollection ConfigureMigrator(this IServiceCollection services,
-            WebHostBuilderContext webHostBuilder, Assembly callerAssembly, string connectionStringKey)
+            WebHostBuilderContext webHostBuilder, Assembly callerAssembly)
         {
-            var connectionString = webHostBuilder.Configuration.GetConnectionString(connectionStringKey);
+            var connectionString = webHostBuilder.Configuration.GetConnectionString("Migrations");
 
             services.AddFluentMigratorCore().ConfigureRunner(builder =>
                     builder.AddPostgres()

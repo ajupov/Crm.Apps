@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace Crm.Utils.Password
 {
-    public static class PasswordExtension
+    public static class Password
     {
         private const int IterationsCount = 1000;
         private const int HashLength = 256;
         private const int SaltLength = 16;
 
-        public static string ToPasswordHash(this string value)
+        public static string ToPasswordHash(string value)
         {
             var salt = GetSalt();
             var bytes = GetBytes(value, salt);
@@ -24,7 +24,7 @@ namespace Crm.Utils.Password
             return Convert.ToBase64String(array);
         }
 
-        public static bool IsVerifiedPassword(this string value, string hashedValue)
+        public static bool IsVerifiedPassword(string value, string hashedValue)
         {
             var hashedPasswordArray = Convert.FromBase64String(hashedValue);
             if (hashedPasswordArray.Length != HashLength)
