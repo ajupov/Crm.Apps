@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -9,13 +10,15 @@ namespace Crm.Infrastructure.Migrations
     public static class MigrationsExtensions
     {
         public static IServiceCollection ConfigureMigrator(this IServiceCollection services,
-            IConfiguration configuration, Assembly callerAssembly)
+            IConfiguration configuration)
         {
+            var assembly = Assembly.GetCallingAssembly();
+
             services.AddFluentMigratorCore()
                 .ConfigureRunner(builder =>
                     builder.AddPostgres()
                         .WithGlobalConnectionString(configuration.GetConnectionString("MigrationsConnectionString"))
-                        .ScanIn(callerAssembly)
+                        .ScanIn(assembly)
                         .For.Migrations())
                 .AddLogging(builder => builder.AddFluentMigratorConsole());
 
