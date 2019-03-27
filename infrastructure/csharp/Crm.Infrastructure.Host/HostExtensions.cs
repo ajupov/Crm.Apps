@@ -8,14 +8,15 @@ namespace Crm.Infrastructure.Host
     {
         public static IWebHostBuilder ConfigureHost(this IWebHostBuilder webHostBuilder)
         {
-            return webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
-                {
-                    configurationBuilder.SetBasePath(Environment.CurrentDirectory)
-                        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json")
-                        .AddEnvironmentVariables()
-                        .Build();
-                })
-                .UseKestrel();
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            return webHostBuilder
+                .UseConfiguration(configuration)
+                .UseKestrel(options => options.ListenLocalhost(5000));
         }
     }
 }

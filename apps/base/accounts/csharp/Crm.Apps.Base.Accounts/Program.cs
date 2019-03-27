@@ -37,7 +37,7 @@ namespace Crm.Apps.Base.Accounts
                         services
                             .ConfigureConfiguration(webHostBuilder)
                             .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
-                            .ConfigureMetrics(configuration)
+                            .ConfigureMetrics()
                             .ConfigureTracing(ApplicationName)
                             .ConfigureMigrator(configuration)
                             .ConfigureOrm<AccountsStorage>(configuration)

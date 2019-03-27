@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Prometheus;
 
 namespace Crm.Infrastructure.Metrics.Collector
@@ -10,9 +9,9 @@ namespace Crm.Infrastructure.Metrics.Collector
     {
         private readonly KestrelMetricServer _metricsServer;
 
-        public MetricsCollector(IOptions<MetricsCollectorSettings> options)
+        public MetricsCollector()
         {
-            _metricsServer = new KestrelMetricServer(options.Value.Host, options.Value.Port);
+            _metricsServer = new KestrelMetricServer("localhost", 5001);
         }
 
         public Task StartAsync(CancellationToken ct)

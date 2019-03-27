@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Crm.Tests
+namespace Crm.Apps.Tests
 {
     public class AccountsTest
     {
@@ -15,7 +15,7 @@ namespace Crm.Tests
 
             using (var client = httpClientFactory.CreateClient())
             {
-                var result = await client.GetAsync("localhost:9000/Api/Accounts");
+                var result = await client.GetAsync("http://localhost:9000/Api/Accounts");
 
                 Assert.True(result.IsSuccessStatusCode);
             }

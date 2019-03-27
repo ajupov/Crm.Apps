@@ -60,6 +60,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.Configur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.Mvc", "infrastructure\csharp\Crm.Infrastructure.Mvc\Crm.Infrastructure.Mvc.csproj", "{76DA45EA-A105-42A5-8506-835C8D940ED5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{32FC60B6-60E1-4369-A171-B9486B411748}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.Tests", "apps\tests\csharp\Crm.Apps.Tests\Crm.Apps.Tests.csproj", "{8514FFBF-591A-43E9-AF7D-1D215399909C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +96,8 @@ Global
 		{CA6862BB-5280-4816-A1F3-66E6D71E6132} = {20FFA149-FCBC-4657-AE7F-65448F82FC16}
 		{FEFBC715-A9A1-4A93-80E2-F9AD4BF5645C} = {20FFA149-FCBC-4657-AE7F-65448F82FC16}
 		{76DA45EA-A105-42A5-8506-835C8D940ED5} = {20FFA149-FCBC-4657-AE7F-65448F82FC16}
+		{32FC60B6-60E1-4369-A171-B9486B411748} = {3A72C00E-2091-4619-944A-3909F3AEDD39}
+		{8514FFBF-591A-43E9-AF7D-1D215399909C} = {32FC60B6-60E1-4369-A171-B9486B411748}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{60838BAE-A59A-47B3-809C-19DE51C3CCDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -178,5 +184,9 @@ Global
 		{76DA45EA-A105-42A5-8506-835C8D940ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76DA45EA-A105-42A5-8506-835C8D940ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76DA45EA-A105-42A5-8506-835C8D940ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8514FFBF-591A-43E9-AF7D-1D215399909C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8514FFBF-591A-43E9-AF7D-1D215399909C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8514FFBF-591A-43E9-AF7D-1D215399909C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8514FFBF-591A-43E9-AF7D-1D215399909C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

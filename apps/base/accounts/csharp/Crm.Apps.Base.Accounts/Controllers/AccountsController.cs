@@ -23,12 +23,6 @@ namespace Crm.Apps.Base.Accounts.Controllers
             _accountsService = accountsService;
         }
 
-        [HttpGet("")]
-        public ActionResult Status()
-        {
-            return Ok();
-        }
-
         [HttpGet("Get")]
         public async Task<ActionResult<Account>> Get(Guid id, CancellationToken ct = default)
         {

@@ -8,7 +8,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\..\common\csharp\Crm.Common.UserContext\Crm.Common.UserContext.csproj" />
-      <ProjectReference Include="..\..\..\..\..\infrastructure\csharp\Crm.Infrastructure.All\Crm.Infrastructure.All.csproj" />
       <ProjectReference Include="..\..\..\..\..\infrastructure\csharp\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj" />
       <ProjectReference Include="..\..\..\..\..\infrastructure\csharp\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
       <ProjectReference Include="..\..\..\..\..\infrastructure\csharp\Crm.Infrastructure.Host\Crm.Infrastructure.Host.csproj" />

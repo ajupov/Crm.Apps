@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +17,13 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
         private readonly Consumer<Null, string> _consumer;
         private bool _isWorking;
 
-        public Consumer(IOptions<ConsumerSettings> options)
+        public Consumer(IOptions<MessageBrokingConsumerSettings> options)
         {
+            var settings = GetSettings(options);
+
             var kafkaConfig = new Dictionary<string, object>
             {
-                {"bootstrap.servers", options.Value.Host},
+                {"bootstrap.servers", $"{settings["Host"]}:{settings["Port"]}"},
                 {"enable.auto.commit", "false"},
                 {"group.id", "1"}
             };
@@ -42,7 +45,7 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
             {
                 var result = message.Value.FromJsonString<Message>();
 
-                await action(result, CancellationToken.None).ConfigureAwait(false); 
+                await action(result, CancellationToken.None).ConfigureAwait(false);
                 await _consumer.CommitAsync(message).ConfigureAwait(false);
             };
 
@@ -58,6 +61,20 @@ namespace Crm.Infrastructure.MessageBroking.Consuming
         {
             _consumer.Unsubscribe();
             _consumer.Dispose();
+        }
+
+        private static Dictionary<string, string> GetSettings(IOptions<MessageBrokingConsumerSettings> options)
+        {
+            return options.Value.MainConnectionString.Split(';')
+                .Select(x =>
+                {
+                    var pair = x.Split('=');
+
+                    return (Key: pair[0], Value: pair[1]);
+                })
+                .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+                .GroupBy(x => x.Key)
+                .ToDictionary(k => k.Key, v => v.FirstOrDefault().Value);
         }
     }
 }
