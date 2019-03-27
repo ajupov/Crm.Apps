@@ -27,7 +27,7 @@ namespace Crm.Apps.Base.Accounts
         public static Task Main()
         {
             return
-                new WebHostBuilder()
+                Builder.GetConfiguration()
                     .ConfigureHost()
                     .ConfigureLogging()
                     .ConfigureServices((webHostBuilder, services) =>
@@ -35,7 +35,6 @@ namespace Crm.Apps.Base.Accounts
                         var configuration = webHostBuilder.Configuration;
 
                         services
-                            .ConfigureConfiguration(webHostBuilder)
                             .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
                             .ConfigureMetrics()
                             .ConfigureTracing(ApplicationName)

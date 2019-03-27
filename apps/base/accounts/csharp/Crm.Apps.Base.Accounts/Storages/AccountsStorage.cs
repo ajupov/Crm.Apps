@@ -1,4 +1,5 @@
 ﻿using Crm.Apps.Base.Accounts.Models;
+using Crm.Infrastructure.Orm;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -6,9 +7,9 @@ namespace Crm.Apps.Base.Accounts.Storages
 {
     public class AccountsStorage : DbContext
     {
-        private readonly AccountsStorageSettings _config;
+        private readonly OrmSettings _config;
 
-        public AccountsStorage(IOptions<AccountsStorageSettings> options)
+        public AccountsStorage(IOptions<OrmSettings> options)
         {
             _config = options.Value;
         }

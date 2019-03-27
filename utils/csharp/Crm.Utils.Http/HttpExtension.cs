@@ -18,7 +18,7 @@ namespace Crm.Utils.Http
             return result.Any() ? $"?{string.Join("&", result)}" : string.Empty;
         }
 
-        public static StringContent ToStringContent(this object model)
+        public static StringContent ToJsonStringContent(this object model)
         {
             return new StringContent(model.ToJsonString(), Encoding.UTF8, "application/json");
         }

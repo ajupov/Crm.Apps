@@ -1,20 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
 namespace Crm.Infrastructure.Host
 {
     public static class HostExtensions
     {
-        public static IWebHostBuilder ConfigureHost(this IWebHostBuilder webHostBuilder)
+        public static IWebHostBuilder ConfigureHost(this IConfiguration configuration)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Environment.CurrentDirectory)
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
-
-            return webHostBuilder
+            return new WebHostBuilder()
                 .UseConfiguration(configuration)
                 .UseKestrel(options => options.ListenLocalhost(5000));
         }
