@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Crm.Apps.Base.Accounts.Models
+namespace Crm.Apps.Base.Areas.Accounts.Models
 {
     public class Account
     {

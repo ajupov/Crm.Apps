@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Crm.Apps.Base.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Models;
 using Crm.Utils.Json;
 
-namespace Crm.Apps.Base.Accounts.Helpers
+namespace Crm.Apps.Base.Areas.Accounts.Helpers
 {
     public static class AccountsChangesHelper
     {

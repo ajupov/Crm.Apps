@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Crm.Apps.Base.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Models;
 
-namespace Crm.Apps.Base.Accounts.Helpers
+namespace Crm.Apps.Base.Areas.Accounts.Helpers
 {
     public static class AccountsSortingHelper
     {

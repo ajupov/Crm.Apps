@@ -1,13 +1,19 @@
-﻿using Crm.Apps.Base.Accounts.Models;
+﻿using Crm.Apps.Base.Areas.Accounts.Models;
 using Crm.Infrastructure.Orm;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Apps.Base.Accounts.Storages
+namespace Crm.Apps.Base.Areas.Accounts.Storages
 {
     public class AccountsStorage : DbContext
     {
         private readonly OrmSettings _config;
+
+        public DbSet<Account> Accounts { get; set; }
+
+        public DbSet<AccountSetting> AccountSettings { get; set; }
+
+        public DbSet<AccountChange> AccountChanges { get; set; }
 
         public AccountsStorage(IOptions<OrmSettings> options)
         {
@@ -18,7 +24,5 @@ namespace Crm.Apps.Base.Accounts.Storages
         {
             builder.UseNpgsql(_config.MainConnectionString);
         }
-
-        public DbSet<Account> Accounts { get; set; }
     }
 }

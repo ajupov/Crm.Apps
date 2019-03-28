@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Apps.Base.Accounts.Models
+namespace Crm.Apps.Base.Areas.Accounts.Models
 {
     public class AccountChange
     {

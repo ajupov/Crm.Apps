@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Base.Accounts.Helpers;
-using Crm.Apps.Base.Accounts.Models;
-using Crm.Apps.Base.Accounts.Storages;
+using Crm.Apps.Base.Areas.Accounts.Helpers;
+using Crm.Apps.Base.Areas.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Storages;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Base.Accounts.Services
+namespace Crm.Apps.Base.Areas.Accounts.Services
 {
     public class AccountsService : IAccountsService
     {
@@ -53,7 +53,14 @@ namespace Crm.Apps.Base.Accounts.Services
 
             var entry = await _storage.AddAsync(account, ct).ConfigureAwait(false);
 
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            try
+            {
+                await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             return entry.Entity.Id;
         }

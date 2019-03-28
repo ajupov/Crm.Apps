@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Crm.Apps.Base.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Models;
 using Crm.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Base.Accounts.Controllers
+namespace Crm.Apps.Base.Areas.Accounts.Controllers
 {
     [ApiController]
     [Route("Api/Accounts/Settings")]

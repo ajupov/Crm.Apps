@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Base.Accounts.Models;
-using Crm.Apps.Base.Accounts.Services;
+using Crm.Apps.Base.Areas.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Base.Accounts.Consumers
+namespace Crm.Apps.Base.Areas.Accounts.Consumers
 {
     public class AccountsConsumer : IHostedService
     {

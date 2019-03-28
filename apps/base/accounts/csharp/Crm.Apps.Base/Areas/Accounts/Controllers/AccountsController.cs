@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Base.Accounts.Models;
-using Crm.Apps.Base.Accounts.Services;
+using Crm.Apps.Base.Areas.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Services;
 using Crm.Common.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Base.Accounts.Controllers
+namespace Crm.Apps.Base.Areas.Accounts.Controllers
 {
     [ApiController]
     [Route("Api/Accounts")]

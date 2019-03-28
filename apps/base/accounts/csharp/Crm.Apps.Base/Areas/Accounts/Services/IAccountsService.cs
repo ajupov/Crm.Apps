@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Base.Accounts.Models;
+using Crm.Apps.Base.Areas.Accounts.Models;
 
-namespace Crm.Apps.Base.Accounts.Services
+namespace Crm.Apps.Base.Areas.Accounts.Services
 {
     public interface IAccountsService
     {

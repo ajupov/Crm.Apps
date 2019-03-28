@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Crm.Apps.Base.Accounts.Consumers;
-using Crm.Apps.Base.Accounts.Services;
-using Crm.Apps.Base.Accounts.Storages;
+using Crm.Apps.Base.Areas.Accounts.Consumers;
+using Crm.Apps.Base.Areas.Accounts.Services;
+using Crm.Apps.Base.Areas.Accounts.Storages;
 using Crm.Common.UserContext;
 using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
@@ -17,7 +17,7 @@ using Crm.Infrastructure.UserContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Apps.Base.Accounts
+namespace Crm.Apps.Base
 {
     public static class Program
     {

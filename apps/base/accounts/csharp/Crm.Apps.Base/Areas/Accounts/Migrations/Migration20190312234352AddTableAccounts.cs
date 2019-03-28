@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Crm.Apps.Base.Accounts.Migrations
+namespace Crm.Apps.Base.Areas.Accounts.Migrations
 {
     [Migration(20190312234352)]
     public class Migration20190312234352AddTableAccounts : Migration
@@ -23,7 +23,6 @@ namespace Crm.Apps.Base.Accounts.Migrations
         public override void Down()
         {
             Delete.Index("IX_Accounts_CreateDateTime_IsLocked_IsDeleted").OnTable("Accounts");
-
             Delete.Table("Accounts");
         }
     }

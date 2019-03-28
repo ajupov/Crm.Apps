@@ -21,4 +21,7 @@
         <ProjectReference Include="..\..\..\..\..\infrastructure\csharp\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj" />
         <ProjectReference Include="..\..\..\..\..\utils\csharp\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Areas\Accounts" />
+    </ItemGroup>
 </Project>

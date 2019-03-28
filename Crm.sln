@@ -40,7 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "base", "base", "{D9DA1909-2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "accounts", "accounts", "{47EBCE76-FEE6-4AFB-B13E-0D32D722A911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.Base.Accounts", "apps\base\accounts\csharp\Crm.Apps.Base.Accounts\Crm.Apps.Base.Accounts.csproj", "{A407E324-4881-4310-AB05-FF0AEFE8D6C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.Base", "apps\base\accounts\csharp\Crm.Apps.Base\Crm.Apps.Base.csproj", "{A407E324-4881-4310-AB05-FF0AEFE8D6C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.ApiDocumentation", "infrastructure\csharp\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj", "{A84A4B94-F390-41D6-9A1F-53241702C3E6}"
 EndProject
