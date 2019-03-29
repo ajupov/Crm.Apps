@@ -12,7 +12,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         [HttpGet("GetTypes")]
         public ActionResult<ICollection<AccountSettingType>> GetTypes()
         {
-            return EnumsExtension.GetValues<AccountSettingType>();
+            return EnumsExtensions.GetValues<AccountSettingType>();
         }
     }
 }

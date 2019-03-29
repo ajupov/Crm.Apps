@@ -2,7 +2,7 @@
 
 namespace Crm.Infrastructure.Di
 {
-    public static class DiExtension
+    public static class DiExtensions
     {
         public static IServiceCollection GetServiceCollection()
         {
@@ -11,8 +11,7 @@ namespace Crm.Infrastructure.Di
         
        public static ServiceProvider GetServiceProvider(this IServiceCollection services)
         {
-            return services
-                .BuildServiceProvider();
+            return services.BuildServiceProvider();
         }
     }
 }

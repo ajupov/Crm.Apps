@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Crm.Infrastructure.Configuration
 {
-    public static class Builder
+    public static class ConfigurationExtensions
     {
         public static IConfiguration GetConfiguration()
         {

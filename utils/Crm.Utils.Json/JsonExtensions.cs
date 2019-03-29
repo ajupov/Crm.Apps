@@ -2,7 +2,7 @@
 
 namespace Crm.Utils.Json
 {
-    public static class JsonExtension
+    public static class JsonExtensions
     {
         public static T FromJsonString<T>(this string value)
         {

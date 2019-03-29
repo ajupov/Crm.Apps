@@ -2,7 +2,7 @@
 
 namespace Crm.Utils.Phone
 {
-    public static class PhoneExtension
+    public static class PhoneExtensions
     {
         private const int DefaultMaxLength = 10;
 

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using OpenTracing;
 
-namespace Crm.Infrastructure.WebApplicationConfiguration
+namespace Crm.Infrastructure.Tracing
 {
     public class TracingActionFilter : IAsyncActionFilter
     {
@@ -17,7 +17,7 @@ namespace Crm.Infrastructure.WebApplicationConfiguration
         {
             using (var scope = _tracer.BuildSpan(context.HttpContext.Request.Path).StartActive(true))
             {
-                await next();
+                await next().ConfigureAwait(false);
             }
         }
     }

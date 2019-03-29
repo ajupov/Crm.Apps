@@ -53,14 +53,7 @@ namespace Crm.Apps.Areas.Accounts.Services
 
             var entry = await _storage.AddAsync(account, ct).ConfigureAwait(false);
 
-            try
-            {
-                await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }

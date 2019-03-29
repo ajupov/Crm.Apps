@@ -4,7 +4,7 @@ using SystemDateTime = System.DateTime;
 
 namespace Crm.Utils.DateTime
 {
-    public static class DateTimeExtension
+    public static class DateTimeExtensions
     {
         private const string DefaultDateFormat = "dd.MM.yyyy";
         private const string DefaultTimeFormat = "HH:mm:ss";

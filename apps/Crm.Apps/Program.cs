@@ -21,13 +21,13 @@ namespace Crm.Apps
 {
     public static class Program
     {
-        private const string ApplicationName = "Accounts";
+        private const string ApplicationName = "Crm";
         private const string ApplicationVersion = "v1";
 
         public static Task Main()
         {
             return
-                Builder.GetConfiguration()
+                ConfigurationExtensions.GetConfiguration()
                     .ConfigureHost()
                     .ConfigureLogging()
                     .ConfigureServices((webHostBuilder, services) =>

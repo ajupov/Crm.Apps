@@ -6,7 +6,7 @@ using Crm.Utils.Json;
 
 namespace Crm.Utils.Http
 {
-    public static class HttpExtension
+    public static class HttpExtensions
     {
         public static string ToQueryParams(this object parameters)
         {
