@@ -99,7 +99,7 @@ namespace Crm.Apps.Areas.Accounts.Services
         public async Task RestoreAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
             await _storage.Accounts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
+                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
 
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }

@@ -28,8 +28,7 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         public Task<ICollection<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<Account>>($"{_settings.Host}/Api/Accounts/GetList",
-                new {ids}, ct);
+            return _httpClientFactory.GetAsync<ICollection<Account>>($"{_settings.Host}/Api/Accounts/GetList", ids, ct);
         }
 
         public Task<ICollection<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
@@ -52,22 +51,22 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         public Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Lock", new {ids}, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Lock", ids, ct);
         }
 
         public Task UnlockAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Unlock", new {ids}, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Unlock", ids, ct);
         }
 
         public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Delete", new {ids}, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Delete", ids, ct);
         }
 
         public Task RestoreAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Restore", new {ids}, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Restore", ids, ct);
         }
     }
 }

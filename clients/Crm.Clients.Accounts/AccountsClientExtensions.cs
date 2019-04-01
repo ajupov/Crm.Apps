@@ -14,7 +14,7 @@ namespace Crm.Clients.Accounts
         {
             return services
                 .AddHttpClient()
-                .Configure<AccountsClientSettings>(configuration.GetSection("MessageBrokingConsumerSettings"))
+                .Configure<AccountsClientSettings>(configuration.GetSection("AccountsClientSettings"))
                 .AddSingleton<IAccountsDefaultClient, AccountsDefaultClient>()
                 .AddSingleton<IAccountsClient, AccountsClient>()
                 .AddSingleton<IAccountsSettingsClient, AccountsSettingsClient>();

@@ -35,7 +35,7 @@ namespace Crm.Apps.ApiTests.Accounts
         {
             var types = await _accountsSettingsClient.GetTypesAsync().ConfigureAwait(false);
 
-            Assert.NotNull(types);
+            Assert.NotEmpty(types);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace Crm.Apps.ApiTests.Accounts
             var account = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.NotNull(account);
-            Assert.NotEqual(id, account.Id);
+            Assert.Equal(id, account.Id);
         }
 
         [Fact]
