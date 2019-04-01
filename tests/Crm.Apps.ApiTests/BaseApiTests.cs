@@ -1,7 +1,7 @@
-using System.Net.Http;
+using System;
+using Crm.Clients.Accounts;
 using Crm.Infrastructure.Di;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using ConfigurationExtensions = Crm.Infrastructure.Configuration.ConfigurationExtensions;
 
 namespace Crm.Apps.ApiTests
@@ -9,17 +9,15 @@ namespace Crm.Apps.ApiTests
     public class BaseApiTests
     {
         protected readonly IConfiguration Configuration;
-        protected readonly IHttpClientFactory HttpClientFactory;
+        protected readonly IServiceProvider ServiceProvider;
 
         protected BaseApiTests()
         {
             Configuration = ConfigurationExtensions.GetConfiguration();
 
-            HttpClientFactory = DiExtensions
-                .GetServiceCollection()
-                .AddHttpClient()
-                .GetServiceProvider()
-                .GetService<IHttpClientFactory>();
+            ServiceProvider = DiExtensions.GetServiceCollection()
+                .ConfigureAccountsClient(Configuration)
+                .GetServiceProvider();
         }
     }
 }

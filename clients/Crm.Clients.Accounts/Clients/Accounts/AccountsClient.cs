@@ -1,64 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Accounts.Models;
+using Crm.Clients.Accounts.Settings;
+using Crm.Utils.Http;
+using Microsoft.Extensions.Options;
 
 namespace Crm.Clients.Accounts.Clients.Accounts
 {
-    public class AccountsClient : HttpClient, IAccountsClient
+    public class AccountsClient : IAccountsClient
     {
-        public AccountsClient(string host) : base($"{host}/api/v1/Accounts")
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly AccountsClientSettings _settings;
+
+        public AccountsClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
+            _settings = options.Value;
         }
 
         public Task<Account> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return GetAsync<Account>("Get", new {id});
+            return _httpClientFactory.GetAsync<Account>($"{_settings.Host}/Api/Accounts/Get", new {id}, ct);
         }
 
-        public Task<List<Account>> GetListAsync(params int[] ids)
+        public Task<ICollection<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return PostAsync<List<Account>>("GetList", new {ids});
+            return _httpClientFactory.GetAsync<ICollection<Account>>($"{_settings.Host}/Api/Accounts/GetList",
+                new {ids}, ct);
         }
 
-        public Task<List<Account>> GetListAsync(
-            bool? isLocked = null,
-            bool? isDeleted = null,
-            DateTime? minCreateDate = null,
-            DateTime? maxCreateDate = null,
-            int offset = 0,
-            int limit = 10,
-            string sortBy = null,
-            string orderBy = null)
+        public Task<ICollection<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
+            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
+            int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
-            return GetAsync<List<Account>>("GetList",
-                new {isLocked, isDeleted, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy});
+            return _httpClientFactory.GetAsync<ICollection<Account>>($"{_settings.Host}/Api/Accounts/GetPagedList",
+                new {isLocked, isDeleted, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy}, ct);
         }
 
-        public Task<int> CreateAsync(int changerUserId)
+        public Task<Guid> CreateAsync(CancellationToken ct = default)
         {
-            return PostAsync<int>("Create", new {changerUserId});
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Accounts/Create", ct: ct);
         }
 
-        public Task LockAsync(int changerUserId, params int[] ids)
+        public Task UpdateAsync(Account newAccount, CancellationToken ct = default)
         {
-            return PostAsync("Lock", new {changerUserId, ids});
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Update", new {newAccount}, ct);
         }
 
-        public Task UnlockAsync(int changerUserId, params int[] ids)
+        public Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return PostAsync("Unlock", new {changerUserId, ids});
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Lock", new {ids}, ct);
         }
 
-        public Task DeleteAsync(int changerUserId, params int[] ids)
+        public Task UnlockAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return PostAsync("Delete", new {changerUserId, ids});
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Unlock", new {ids}, ct);
         }
 
-        public Task RestoreAsync(int changerUserId, params int[] ids)
+        public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return PostAsync("Restore", new {changerUserId, ids});
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Delete", new {ids}, ct);
+        }
+
+        public Task RestoreAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        {
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Restore", new {ids}, ct);
         }
     }
 }

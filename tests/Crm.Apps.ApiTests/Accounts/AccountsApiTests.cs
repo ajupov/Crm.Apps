@@ -1,85 +1,150 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Crm.Apps.ApiTests.Accounts.Models;
-using Crm.Utils.Http;
+using Crm.Clients.Accounts.Clients.Accounts;
+using Crm.Clients.Accounts.Clients.AccountsDefault;
+using Crm.Clients.Accounts.Clients.AccountSettings;
+using Crm.Clients.Accounts.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Crm.Apps.ApiTests.Accounts
 {
     public class AccountsApiTests : BaseApiTests
     {
-        private readonly string _host;
+        private readonly IAccountsDefaultClient _accountsDefaultClient;
+        private readonly IAccountsClient _accountsClient;
+        private readonly IAccountsSettingsClient _accountsSettingsClient;
 
         public AccountsApiTests()
         {
-            _host = Configuration["AccountsHost"];
+            _accountsDefaultClient = ServiceProvider.GetService<IAccountsDefaultClient>();
+            _accountsClient = ServiceProvider.GetService<IAccountsClient>();
+            _accountsSettingsClient = ServiceProvider.GetService<IAccountsSettingsClient>();
         }
 
         [Fact]
         public Task Status()
         {
-            return HttpClientFactory.GetAsync(_host);
+            return _accountsDefaultClient.StatusAsync();
         }
 
         [Fact]
         public async Task GetAccountSettingsTypes()
         {
-            var types = await GetAccountSettingTypesAsync().ConfigureAwait(false);
+            var types = await _accountsSettingsClient.GetTypesAsync().ConfigureAwait(false);
 
             Assert.NotNull(types);
         }
 
         [Fact]
-        public async Task Get()
+        public async Task GetAccount()
         {
-            var id = await CreateAccountAsync().ConfigureAwait(false);
-            var account = await GetAccountAsync(id).ConfigureAwait(false);
-
-            Assert.NotNull(account);
-            Assert.NotEqual(id, account.Id);
-        }
-        
-        [Fact]
-        public async Task GetList()
-        {
-            var id1 = await CreateAccountAsync().ConfigureAwait(false);
-            var id2 = await CreateAccountAsync().ConfigureAwait(false);
-            
-            var account = await GetAccountAsync(id).ConfigureAwait(false);
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+            var account = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.NotNull(account);
             Assert.NotEqual(id, account.Id);
         }
 
         [Fact]
-        public async Task Create()
+        public async Task GetAccountsList()
         {
-            var id = await CreateAccountAsync().ConfigureAwait(false);
+            var ids = await Task.WhenAll(_accountsClient.CreateAsync(), _accountsClient.CreateAsync())
+                .ConfigureAwait(false);
+            var accounts = await _accountsClient.GetListAsync(ids).ConfigureAwait(false);
+
+            Assert.NotEmpty(accounts);
+            Assert.Equal(ids.Length, accounts.Count);
+        }
+
+        [Fact]
+        public async Task GetPagedList()
+        {
+            await Task.WhenAll(_accountsClient.CreateAsync(), _accountsClient.CreateAsync()).ConfigureAwait(false);
+            var accounts = await _accountsClient.GetPagedListAsync(sortBy: "CreateDateTime", orderBy: "desc")
+                .ConfigureAwait(false);
+
+            Assert.NotEmpty(accounts);
+
+            var results = accounts.Skip(1).Zip(accounts,
+                (current, previous) => current.CreateDateTime > previous.CreateDateTime);
+
+            Assert.All(results, Assert.True);
+        }
+
+        [Fact]
+        public async Task CreateAccount()
+        {
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
             Assert.NotEqual(id, Guid.Empty);
         }
-        
-        
 
-        private Task<ICollection<AccountSettingType>> GetAccountSettingTypesAsync()
+        [Fact]
+        public async Task UpdateAccount()
         {
-            return HttpClientFactory.GetAsync<ICollection<AccountSettingType>>($"{_host}/Api/Accounts/Settings");
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+            var account = await _accountsClient.GetAsync(id).ConfigureAwait(false);
+
+            account.IsLocked = true;
+            account.IsDeleted = true;
+            account.Settings = new List<AccountSetting>
+            {
+                new AccountSetting
+                {
+                    Type = AccountSettingType.None,
+                    Value = "Test"
+                }
+            };
+
+            await _accountsClient.UpdateAsync(account).ConfigureAwait(false);
+            var updatedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
+
+            Assert.Equal(account.IsLocked, updatedAccount.IsLocked);
+            Assert.Equal(account.IsDeleted, updatedAccount.IsDeleted);
+            Assert.Equal(account.Settings, updatedAccount.Settings);
         }
 
-        private Task<Account> GetAccountAsync(Guid id)
+        [Fact]
+        public async Task LockAccount()
         {
-            return HttpClientFactory.GetAsync<Account>($"{_host}/Api/Accounts/Get", new {id});
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+            await _accountsClient.LockAsync(new List<Guid> {id}).ConfigureAwait(false);
+            var lockedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
+
+            Assert.True(lockedAccount.IsLocked);
         }
 
-        private Task<ICollection<Account>> GetAccountsListAsync(ICollection<Guid> ids)
+        [Fact]
+        public async Task UnlockAccount()
         {
-            return HttpClientFactory.GetAsync<ICollection<Account>>($"{_host}/Api/Accounts/GetList", new {ids});
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+            await _accountsClient.UnlockAsync(new List<Guid> {id}).ConfigureAwait(false);
+            var unlockedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
+
+            Assert.False(unlockedAccount.IsLocked);
         }
-        
-        private Task<Guid> CreateAccountAsync()
+
+        [Fact]
+        public async Task DeleteAccount()
         {
-            return HttpClientFactory.PostAsync<Guid>($"{_host}/Api/Accounts/Create");
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+            await _accountsClient.DeleteAsync(new List<Guid> {id}).ConfigureAwait(false);
+            var deletedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
+
+            Assert.True(deletedAccount.IsDeleted);
+        }
+
+        [Fact]
+        public async Task RestoreAccount()
+        {
+            var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+            await _accountsClient.RestoreAsync(new List<Guid> {id}).ConfigureAwait(false);
+            var restoredAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
+
+            Assert.False(restoredAccount.IsDeleted);
         }
     }
 }

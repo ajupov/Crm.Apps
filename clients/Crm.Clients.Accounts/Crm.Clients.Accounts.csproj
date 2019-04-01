@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
-
     <ItemGroup>
-      <Folder Include="Clients" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0"/>
     </ItemGroup>
-
+    <ItemGroup>
+        <ProjectReference Include="..\..\utils\Crm.Utils.Http\Crm.Utils.Http.csproj"/>
+    </ItemGroup>
 </Project>

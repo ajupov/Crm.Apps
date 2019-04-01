@@ -12,9 +12,9 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         Task<ICollection<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default);
 
-        Task<List<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default);
+        Task<ICollection<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
+            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
+            int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default);
 
         Task<Guid> CreateAsync(CancellationToken ct = default);
 

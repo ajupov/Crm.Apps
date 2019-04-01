@@ -16,6 +16,7 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Di\Crm.Infrastructure.Di.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.Http\Crm.Utils.Http.csproj" />
