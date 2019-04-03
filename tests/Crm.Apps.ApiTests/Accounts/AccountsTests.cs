@@ -11,13 +11,13 @@ using Xunit;
 
 namespace Crm.Apps.ApiTests.Accounts
 {
-    public class AccountsApiTests : BaseApiTests
+    public class AccountsTests : BaseApiTests
     {
         private readonly IAccountsDefaultClient _accountsDefaultClient;
         private readonly IAccountsClient _accountsClient;
         private readonly IAccountsSettingsClient _accountsSettingsClient;
 
-        public AccountsApiTests()
+        public AccountsTests()
         {
             _accountsDefaultClient = ServiceProvider.GetService<IAccountsDefaultClient>();
             _accountsClient = ServiceProvider.GetService<IAccountsClient>();
