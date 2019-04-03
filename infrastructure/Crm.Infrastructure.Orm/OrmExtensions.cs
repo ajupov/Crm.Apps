@@ -10,7 +10,7 @@ namespace Crm.Infrastructure.Orm
             IConfiguration configuration) where TStorage : DbContext
         {
             services.Configure<OrmSettings>(configuration.GetSection("OrmSettings"))
-                .AddEntityFrameworkNpgsql().AddDbContext<TStorage>(ServiceLifetime.Singleton)
+                .AddEntityFrameworkNpgsql().AddDbContext<TStorage>(ServiceLifetime.Transient)
                 .BuildServiceProvider();
 
             return services;

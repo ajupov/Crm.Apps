@@ -43,7 +43,7 @@ namespace Crm.Apps
                             .ConfigureConsumer<AccountsConsumer>(configuration)
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
-                            .AddSingleton<IAccountsService, AccountsService>();
+                            .AddTransient<IAccountsService, AccountsService>();
                     })
                     .Configure(applicationBuilder => applicationBuilder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)

@@ -28,7 +28,8 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         public Task<ICollection<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<Account>>($"{_settings.Host}/Api/Accounts/GetList", ids, ct);
+            return _httpClientFactory.GetAsync<ICollection<Account>>($"{_settings.Host}/Api/Accounts/GetList",
+                new {ids}, ct);
         }
 
         public Task<ICollection<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,

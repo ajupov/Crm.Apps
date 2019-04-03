@@ -44,6 +44,7 @@ namespace Crm.Apps.Tests.Accounts
         public async Task GetAccount()
         {
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+
             var account = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.NotNull(account);
@@ -55,6 +56,7 @@ namespace Crm.Apps.Tests.Accounts
         {
             var ids = await Task.WhenAll(_accountsClient.CreateAsync(), _accountsClient.CreateAsync())
                 .ConfigureAwait(false);
+
             var accounts = await _accountsClient.GetListAsync(ids).ConfigureAwait(false);
 
             Assert.NotEmpty(accounts);
@@ -62,17 +64,18 @@ namespace Crm.Apps.Tests.Accounts
         }
 
         [Fact]
-        public async Task GetPagedList()
+        public async Task GetAccountsPagedList()
         {
             await Task.WhenAll(_accountsClient.CreateAsync(), _accountsClient.CreateAsync()).ConfigureAwait(false);
-            var accounts = await _accountsClient.GetPagedListAsync(sortBy: "CreateDateTime", orderBy: "desc")
+
+            var accounts = await _accountsClient
+                .GetPagedListAsync(sortBy: nameof(Account.CreateDateTime), orderBy: "desc")
                 .ConfigureAwait(false);
 
-            Assert.NotEmpty(accounts);
-
             var results = accounts.Skip(1).Zip(accounts,
-                (current, previous) => current.CreateDateTime > previous.CreateDateTime);
+                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
+            Assert.NotEmpty(accounts);
             Assert.All(results, Assert.True);
         }
 
@@ -102,6 +105,7 @@ namespace Crm.Apps.Tests.Accounts
             };
 
             await _accountsClient.UpdateAsync(account).ConfigureAwait(false);
+
             var updatedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.Equal(account.IsLocked, updatedAccount.IsLocked);
@@ -113,7 +117,9 @@ namespace Crm.Apps.Tests.Accounts
         public async Task LockAccount()
         {
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+
             await _accountsClient.LockAsync(new List<Guid> {id}).ConfigureAwait(false);
+
             var lockedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.True(lockedAccount.IsLocked);
@@ -123,7 +129,9 @@ namespace Crm.Apps.Tests.Accounts
         public async Task UnlockAccount()
         {
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+
             await _accountsClient.UnlockAsync(new List<Guid> {id}).ConfigureAwait(false);
+
             var unlockedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.False(unlockedAccount.IsLocked);
@@ -133,7 +141,9 @@ namespace Crm.Apps.Tests.Accounts
         public async Task DeleteAccount()
         {
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+
             await _accountsClient.DeleteAsync(new List<Guid> {id}).ConfigureAwait(false);
+
             var deletedAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.True(deletedAccount.IsDeleted);
@@ -143,7 +153,9 @@ namespace Crm.Apps.Tests.Accounts
         public async Task RestoreAccount()
         {
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
+
             await _accountsClient.RestoreAsync(new List<Guid> {id}).ConfigureAwait(false);
+
             var restoredAccount = await _accountsClient.GetAsync(id).ConfigureAwait(false);
 
             Assert.False(restoredAccount.IsDeleted);

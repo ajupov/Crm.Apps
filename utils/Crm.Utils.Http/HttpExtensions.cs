@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -10,10 +13,25 @@ namespace Crm.Utils.Http
     {
         public static string ToQueryParams(this object parameters)
         {
-            var result = TypeDescriptor.GetProperties(parameters)
-                .Cast<PropertyDescriptor>()
-                .Select(p => $"{p.Name}={p.GetValue(parameters)}")
-                .ToList();
+            var properties = TypeDescriptor.GetProperties(parameters);
+            var result = new List<string>();
+
+            foreach (PropertyDescriptor property in properties)
+            {
+                var type = property.GetType();
+                var value = property.GetValue(parameters);
+
+                if (value is IEnumerable enumerable)
+                {
+                    var items = enumerable.Cast<object>().Select(x => x.ToString());
+
+                    result.AddRange(items.Select(item => $"{property.Name}={item}"));
+                }
+                else
+                {
+                    result.Add($"{property.Name}={value}");
+                }
+            }
 
             return result.Any() ? $"?{string.Join("&", result)}" : string.Empty;
         }
@@ -21,6 +39,11 @@ namespace Crm.Utils.Http
         public static StringContent ToJsonStringContent(this object model)
         {
             return new StringContent(model.ToJsonString(), Encoding.UTF8, "application/json");
+        }
+
+        public static bool IsCollectionType(Type type)
+        {
+            return (type.GetInterface(nameof(IEnumerable)) != null);
         }
     }
 }

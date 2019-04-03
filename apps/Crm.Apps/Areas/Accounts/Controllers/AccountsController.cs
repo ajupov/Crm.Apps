@@ -24,7 +24,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpGet("Get")]
-        public async Task<ActionResult<Account>> Get(Guid id, CancellationToken ct = default)
+        public async Task<ActionResult<Account>> Get(
+            [FromQuery] Guid id,
+            CancellationToken ct = default)
         {
             if (id == Guid.Empty)
             {
@@ -41,7 +43,8 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetList")]
-        public async Task<ActionResult<ICollection<Account>>> GetList(ICollection<Guid> ids,
+        public async Task<ActionResult<ICollection<Account>>> GetList(
+            [FromQuery] ICollection<Guid> ids,
             CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
@@ -53,9 +56,15 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetPagedList")]
-        public async Task<ActionResult<ICollection<Account>>> GetPagedList(bool? isLocked = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public async Task<ActionResult<ICollection<Account>>> GetPagedList(
+            [FromQuery] bool? isLocked = default,
+            [FromQuery] bool? isDeleted = default,
+            [FromQuery] DateTime? minCreateDate = default,
+            [FromQuery] DateTime? maxCreateDate = default,
+            [FromQuery] int offset = default,
+            [FromQuery] int limit = 10,
+            [FromQuery] string sortBy = default,
+            [FromQuery] string orderBy = default,
             CancellationToken ct = default)
         {
             return await _accountsService.GetPagedListAsync(isLocked, isDeleted, minCreateDate, maxCreateDate, offset,
@@ -71,7 +80,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Update")]
-        public async Task<ActionResult<Guid>> Update(Account newAccount, CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Update(
+            [FromBody] Account newAccount,
+            CancellationToken ct = default)
         {
             if (newAccount.Id == Guid.Empty)
             {
@@ -90,7 +101,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Lock")]
-        public async Task<ActionResult> Lock(ICollection<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Lock(
+            [FromBody] ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
@@ -103,7 +116,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Unlock")]
-        public async Task<ActionResult> Unlock(ICollection<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Unlock(
+            [FromBody] ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
@@ -116,7 +131,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Delete")]
-        public async Task<ActionResult> Delete(ICollection<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Delete(
+            [FromBody] ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
@@ -129,7 +146,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Restore")]
-        public async Task<ActionResult> Restore(ICollection<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Restore(
+            [FromBody] ICollection<Guid> ids,
+            CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
