@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{92665C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps", "apps\Crm.Apps\Crm.Apps.csproj", "{6ADEA938-63C2-4199-BD99-B15BE22C35A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.ApiTests", "tests\Crm.Apps.ApiTests\Crm.Apps.ApiTests.csproj", "{C5D27B21-1183-48E8-B0B7-F46395D06C8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.Tests", "tests\Crm.Apps.Tests\Crm.Apps.Tests.csproj", "{C5D27B21-1183-48E8-B0B7-F46395D06C8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.ApiDocumentation", "infrastructure\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj", "{821520AB-54FF-44ED-AEF0-A7ACC7509228}"
 EndProject

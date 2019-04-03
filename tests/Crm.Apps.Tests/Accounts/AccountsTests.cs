@@ -6,22 +6,24 @@ using Crm.Clients.Accounts.Clients.Accounts;
 using Crm.Clients.Accounts.Clients.AccountsDefault;
 using Crm.Clients.Accounts.Clients.AccountSettings;
 using Crm.Clients.Accounts.Models;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Crm.Apps.ApiTests.Accounts
+namespace Crm.Apps.Tests.Accounts
 {
-    public class AccountsTests : BaseApiTests
+    public class AccountsTests
     {
         private readonly IAccountsDefaultClient _accountsDefaultClient;
         private readonly IAccountsClient _accountsClient;
         private readonly IAccountsSettingsClient _accountsSettingsClient;
 
-        public AccountsTests()
+        public AccountsTests(
+            IAccountsDefaultClient accountsDefaultClient,
+            IAccountsClient accountsClient,
+            IAccountsSettingsClient accountsSettingsClient)
         {
-            _accountsDefaultClient = ServiceProvider.GetService<IAccountsDefaultClient>();
-            _accountsClient = ServiceProvider.GetService<IAccountsClient>();
-            _accountsSettingsClient = ServiceProvider.GetService<IAccountsSettingsClient>();
+            _accountsDefaultClient = accountsDefaultClient;
+            _accountsClient = accountsClient;
+            _accountsSettingsClient = accountsSettingsClient;
         }
 
         [Fact]
