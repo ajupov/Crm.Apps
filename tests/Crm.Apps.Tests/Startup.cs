@@ -1,9 +1,10 @@
 using Crm.Clients.Accounts;
 using Crm.Infrastructure.Configuration;
-using Crm.Infrastructure.Di;
+using Crm.Infrastructure.DependencyInjection.Tests;
+using Crm.Infrastructure.DependencyInjection.Tests.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: DiAttribute("Crm.Apps.Tests.Startup", "Crm.Apps.Tests")]
+[assembly: DependencyInject("Crm.Apps.Tests.Startup", "Crm.Apps.Tests")]
 
 namespace Crm.Apps.Tests
 {

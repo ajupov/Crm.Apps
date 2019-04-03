@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit.DependencyInjection;
 using Xunit.Sdk;
 
-namespace Crm.Infrastructure.Di
+namespace Crm.Infrastructure.DependencyInjection.Tests
 {
     public class BaseStartup : DependencyInjectionTestFramework
     {

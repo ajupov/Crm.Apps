@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.ApiDocum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.Configuration", "infrastructure\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj", "{A9599546-EDFF-41FF-9ECA-48C3E6740A2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.Di", "infrastructure\Crm.Infrastructure.Di\Crm.Infrastructure.Di.csproj", "{608EACCF-5F08-48F1-B5F4-0011C0AC84E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.DependencyInjection.Tests", "infrastructure\Crm.Infrastructure.DependencyInjection.Tests\Crm.Infrastructure.DependencyInjection.Tests.csproj", "{608EACCF-5F08-48F1-B5F4-0011C0AC84E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.Host", "infrastructure\Crm.Infrastructure.Host\Crm.Infrastructure.Host.csproj", "{045554BE-A60E-4920-9127-7449C78BDC4C}"
 EndProject

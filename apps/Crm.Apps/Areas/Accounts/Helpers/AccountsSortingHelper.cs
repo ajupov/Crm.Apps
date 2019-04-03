@@ -9,6 +9,7 @@ namespace Crm.Apps.Areas.Accounts.Helpers
             string orderBy)
         {
             var isDesc = orderBy == "desc";
+            sortBy = sortBy.Substring(0, 1).ToUpper() + sortBy.Substring(1);
 
             switch (sortBy)
             {
