@@ -110,7 +110,8 @@ namespace Crm.Apps.Tests.Accounts
 
             Assert.Equal(account.IsLocked, updatedAccount.IsLocked);
             Assert.Equal(account.IsDeleted, updatedAccount.IsDeleted);
-            Assert.Equal(account.Settings, updatedAccount.Settings);
+            Assert.Equal(account.Settings.Select(x => new {x.Type, x.Value}),
+                updatedAccount.Settings.Select(x => new {x.Type, x.Value}));
         }
 
         [Fact]
