@@ -45,9 +45,9 @@ namespace Crm.Clients.Accounts.Clients.Accounts
             return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Accounts/Create", ct: ct);
         }
 
-        public Task UpdateAsync(Account newAccount, CancellationToken ct = default)
+        public Task UpdateAsync(Account account, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Update", newAccount, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Accounts/Update", account, ct);
         }
 
         public Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default)

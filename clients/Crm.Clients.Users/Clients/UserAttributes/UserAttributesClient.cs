@@ -58,9 +58,9 @@ namespace Crm.Clients.Users.Clients.UserAttributes
             return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserAttributes/Create", attribute, ct);
         }
 
-        public Task UpdateAsync(UserAttribute newAttribute, CancellationToken ct = default)
+        public Task UpdateAsync(UserAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserAttributes/Update", newAttribute, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserAttributes/Update", attribute, ct);
         }
 
         public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)

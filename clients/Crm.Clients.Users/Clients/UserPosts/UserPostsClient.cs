@@ -49,9 +49,9 @@ namespace Crm.Clients.Users.Clients.UserPosts
             return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserPosts/Create", post, ct);
         }
 
-        public Task UpdateAsync(UserPost newPost, CancellationToken ct = default)
+        public Task UpdateAsync(UserPost post, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserPosts/Update", newPost, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserPosts/Update", post, ct);
         }
 
         public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)

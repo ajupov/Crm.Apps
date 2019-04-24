@@ -22,7 +22,7 @@ namespace Crm.Clients.Users.Clients.UserAttributes
 
         Task<Guid> CreateAsync(UserAttribute attribute, CancellationToken ct = default);
 
-        Task UpdateAsync(UserAttribute newAttribute, CancellationToken ct = default);
+        Task UpdateAsync(UserAttribute attribute, CancellationToken ct = default);
 
         Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default);
 

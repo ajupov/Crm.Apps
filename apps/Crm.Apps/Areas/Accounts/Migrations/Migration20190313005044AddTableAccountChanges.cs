@@ -11,7 +11,7 @@ namespace Crm.Apps.Areas.Accounts.Migrations
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_AccountChanges_Id")
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
-                .WithColumn("DateTime").AsDateTime2().NotNullable()
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 

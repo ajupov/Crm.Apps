@@ -20,7 +20,7 @@ namespace Crm.Clients.Users.Clients.UserGroups
 
         Task<Guid> CreateAsync(UserGroup group, CancellationToken ct = default);
 
-        Task UpdateAsync(UserGroup newGroup, CancellationToken ct = default);
+        Task UpdateAsync(UserGroup @group, CancellationToken ct = default);
 
         Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default);
 

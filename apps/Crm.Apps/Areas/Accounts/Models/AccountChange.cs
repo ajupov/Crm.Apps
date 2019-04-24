@@ -10,7 +10,7 @@ namespace Crm.Apps.Areas.Accounts.Models
 
         public Guid AccountId { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public DateTime CreateDateTime { get; set; }
 
         public string OldValueJson { get; set; }
 

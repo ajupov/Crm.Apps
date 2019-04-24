@@ -27,7 +27,7 @@ namespace Crm.Clients.Users.Clients.Users
 
         Task<Guid> CreateAsync(User user, CancellationToken ct = default);
 
-        Task UpdateAsync(User newUser, CancellationToken ct = default);
+        Task UpdateAsync(User user, CancellationToken ct = default);
 
         Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default);
 

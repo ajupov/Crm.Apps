@@ -15,7 +15,7 @@ namespace Crm.Clients.Users
 {
     public static class UsersClientExtensions
     {
-        public static IServiceCollection ConfigureAccountsClient(this IServiceCollection services,
+        public static IServiceCollection ConfigureUsersClient(this IServiceCollection services,
             IConfiguration configuration)
         {
             return services

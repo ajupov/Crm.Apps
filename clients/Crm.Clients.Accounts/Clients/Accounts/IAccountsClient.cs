@@ -18,7 +18,7 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         Task<Guid> CreateAsync(CancellationToken ct = default);
 
-        Task UpdateAsync(Account newAccount, CancellationToken ct = default);
+        Task UpdateAsync(Account account, CancellationToken ct = default);
 
         Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default);
 

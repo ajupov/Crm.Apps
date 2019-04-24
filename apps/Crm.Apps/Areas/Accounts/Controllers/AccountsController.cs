@@ -81,21 +81,21 @@ namespace Crm.Apps.Areas.Accounts.Controllers
 
         [HttpPost("Update")]
         public async Task<ActionResult<Guid>> Update(
-            [FromBody] Account newAccount,
+            [FromBody] Account account,
             CancellationToken ct = default)
         {
-            if (newAccount.Id == Guid.Empty)
+            if (account.Id == Guid.Empty)
             {
                 return BadRequest();
             }
 
-            var oldAccount = await _accountsService.GetByIdAsync(newAccount.Id, ct).ConfigureAwait(false);
+            var oldAccount = await _accountsService.GetByIdAsync(account.Id, ct).ConfigureAwait(false);
             if (oldAccount == null)
             {
                 return NotFound();
             }
 
-            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, newAccount, ct).ConfigureAwait(false);
+            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct).ConfigureAwait(false);
 
             return NoContent();
         }

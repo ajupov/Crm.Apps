@@ -49,9 +49,9 @@ namespace Crm.Clients.Users.Clients.UserGroups
             return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserGroups/Create", group, ct);
         }
 
-        public Task UpdateAsync(UserGroup newGroup, CancellationToken ct = default)
+        public Task UpdateAsync(UserGroup group, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserGroups/Update", newGroup, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserGroups/Update", group, ct);
         }
 
         public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)

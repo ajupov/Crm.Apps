@@ -19,7 +19,7 @@ namespace Crm.Clients.Users.Clients.UserPosts
 
         Task<Guid> CreateAsync(UserPost post, CancellationToken ct = default);
 
-        Task UpdateAsync(UserPost newPost, CancellationToken ct = default);
+        Task UpdateAsync(UserPost post, CancellationToken ct = default);
 
         Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default);
 

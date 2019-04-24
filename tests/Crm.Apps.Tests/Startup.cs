@@ -1,4 +1,5 @@
 using Crm.Clients.Accounts;
+using Crm.Clients.Users;
 using Crm.Infrastructure.Configuration;
 using Crm.Infrastructure.DependencyInjection.Tests;
 using Crm.Infrastructure.DependencyInjection.Tests.Attributes;
@@ -12,7 +13,11 @@ namespace Crm.Apps.Tests
     {
         protected override void Configure(IServiceCollection services)
         {
-            services.ConfigureAccountsClient(ConfigurationExtensions.GetConfiguration());
+            var configuration = ConfigurationExtensions.GetConfiguration();
+            
+            services
+                .ConfigureAccountsClient(configuration)
+                .ConfigureUsersClient(configuration);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Crm.Apps.Areas.Accounts.Helpers
             {
                 AccountId = account.Id,
                 ChangerUserId = userId,
-                DateTime = DateTime.UtcNow,
+                CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
                 NewValueJson = account.ToJsonString()
             };
@@ -35,7 +35,7 @@ namespace Crm.Apps.Areas.Accounts.Helpers
             {
                 AccountId = account.Id,
                 ChangerUserId = userId,
-                DateTime = DateTime.UtcNow,
+                CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,
                 NewValueJson = account.ToJsonString()
             };

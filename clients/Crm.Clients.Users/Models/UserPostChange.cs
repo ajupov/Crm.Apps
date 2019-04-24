@@ -10,7 +10,7 @@ namespace Crm.Clients.Users.Models
 
         public Guid PostId { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public DateTime CreateDateTime { get; set; }
 
         public string OldValueJson { get; set; }
 
