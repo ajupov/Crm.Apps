@@ -17,7 +17,7 @@ namespace Crm.Clients.Accounts
                 .Configure<AccountsClientSettings>(configuration.GetSection("AccountsClientSettings"))
                 .AddSingleton<IAccountsDefaultClient, AccountsDefaultClient>()
                 .AddSingleton<IAccountsClient, AccountsClient>()
-                .AddSingleton<IAccountsSettingsClient, AccountsSettingsClient>();
+                .AddSingleton<IAccountsSettingsClient, AccountSettingsClient>();
         }
     }
 }

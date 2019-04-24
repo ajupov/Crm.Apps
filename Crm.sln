@@ -61,6 +61,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "clients", "clients", "{E69B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Accounts", "clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj", "{4E433ED9-537B-447E-AC8B-B6733A996984}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Users", "clients\Crm.Clients.Users\Crm.Clients.Users.csproj", "{2DE4698C-253E-4239-8D13-77E99450DFB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,7 @@ Global
 		{772E13DA-5FE5-4B9F-BFC0-680BEE7DA145} = {92665CE1-122C-43D1-B98C-15ED275AC75F}
 		{E238FD0C-05B7-440D-8342-9C8582E42E74} = {92665CE1-122C-43D1-B98C-15ED275AC75F}
 		{4E433ED9-537B-447E-AC8B-B6733A996984} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
+		{2DE4698C-253E-4239-8D13-77E99450DFB0} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
 	EndGlobalSection
 GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6ADEA938-63C2-4199-BD99-B15BE22C35A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -194,5 +197,9 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 	{4E433ED9-537B-447E-AC8B-B6733A996984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	{4E433ED9-537B-447E-AC8B-B6733A996984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	{4E433ED9-537B-447E-AC8B-B6733A996984}.Release|Any CPU.Build.0 = Release|Any CPU
+	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Release|Any CPU.Build.0 = Release|Any CPU
 EndGlobalSection
 EndGlobal

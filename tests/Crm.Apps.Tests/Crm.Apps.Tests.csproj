@@ -15,6 +15,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj" />
+        <ProjectReference Include="..\..\clients\Crm.Clients.Users\Crm.Clients.Users.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.DependencyInjection.Tests\Crm.Infrastructure.DependencyInjection.Tests.csproj" />
     </ItemGroup>
 </Project>
