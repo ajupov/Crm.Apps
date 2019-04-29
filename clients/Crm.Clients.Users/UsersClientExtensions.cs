@@ -24,11 +24,11 @@ namespace Crm.Clients.Users
                 .AddSingleton<IUsersDefaultClient, UsersDefaultClient>()
                 .AddSingleton<IUsersClient, UsersClient>()
                 .AddSingleton<IUserAttributesClient, UserAttributesClient>()
-                .AddSingleton<IUserAttributeLinksClient, IUserAttributeLinksClient>()
+                .AddSingleton<IUserAttributeLinksClient, UserAttributeLinksClient>()
                 .AddSingleton<IUserGroupsClient, UserGroupsClient>()
-                .AddSingleton<IUserGroupLinksClient, IUserGroupLinksClient>()
+                .AddSingleton<IUserGroupLinksClient, UserGroupLinksClient>()
                 .AddSingleton<IUserPostsClient, UserPostsClient>()
-                .AddSingleton<IUserPostLinksClient, IUserPostLinksClient>()
+                .AddSingleton<IUserPostLinksClient, UserPostLinksClient>()
                 .AddSingleton<IUsersSettingsClient, UsersSettingsClient>();
         }
     }

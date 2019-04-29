@@ -14,9 +14,10 @@ namespace Crm.Apps.Tests
         protected override void Configure(IServiceCollection services)
         {
             var configuration = ConfigurationExtensions.GetConfiguration();
-            
+
             services
-                .ConfigureAccountsClient(configuration)
+                .ConfigureAccountsClient(configuration);
+            services
                 .ConfigureUsersClient(configuration);
         }
     }

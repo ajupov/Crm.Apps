@@ -15,8 +15,8 @@ namespace Crm.Apps.Areas.Accounts.Migrations
 
             Create.Index("IX_Accounts_CreateDateTime_IsLocked_IsDeleted").OnTable("Accounts")
                 .OnColumn("CreateDateTime").Descending()
-                .OnColumn("IsLocked").Descending()
-                .OnColumn("IsDeleted").Descending()
+                .OnColumn("IsLocked").Ascending()
+                .OnColumn("IsDeleted").Ascending()
                 .WithOptions().NonClustered();
         }
 

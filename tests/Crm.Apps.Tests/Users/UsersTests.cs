@@ -50,6 +50,14 @@ namespace Crm.Apps.Tests.Users
         {
             return _usersDefaultClient.StatusAsync();
         }
+        
+        [Fact]
+        public async Task GetGenders()
+        {
+            var genders = await _usersClient.GetGendersAsync().ConfigureAwait(false);
+
+            Assert.NotEmpty(genders);
+        }
 
         [Fact]
         public async Task GetUserSettingsTypes()
