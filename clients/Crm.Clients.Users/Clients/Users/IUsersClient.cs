@@ -21,9 +21,8 @@ namespace Crm.Clients.Users.Clients.Users
             bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             bool? allAttributeIds = default, ICollection<Guid> attributeIds = default, bool? allPermissions = default,
             ICollection<Permission> permissions = default, bool? allGroupIds = default,
-            ICollection<Guid> groupIds = default, bool? allPostIds = default, ICollection<Guid> postIds = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
-            CancellationToken ct = default);
+            ICollection<Guid> groupIds = default, int offset = default, int limit = 10, string sortBy = default,
+            string orderBy = default, CancellationToken ct = default);
 
         Task<Guid> CreateAsync(User user, CancellationToken ct = default);
 

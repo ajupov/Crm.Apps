@@ -8,7 +8,7 @@ namespace Crm.Apps.Areas.Accounts.Services
 {
     public interface IAccountsService
     {
-        Task<Account> GetByIdAsync(Guid id, CancellationToken ct);
+        Task<Account> GetAsync(Guid id, CancellationToken ct);
 
         Task<List<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct);
 

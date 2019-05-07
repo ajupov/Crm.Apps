@@ -2,6 +2,7 @@
 using Crm.Apps.Areas.Accounts.Consumers;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Apps.Areas.Accounts.Storages;
+using Crm.Apps.Areas.Users.Services;
 using Crm.Common.UserContext;
 using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
@@ -30,9 +31,9 @@ namespace Crm.Apps
                 ConfigurationExtensions.GetConfiguration()
                     .ConfigureHost()
                     .ConfigureLogging()
-                    .ConfigureServices((webHostBuilder, services) =>
+                    .ConfigureServices((builder, services) =>
                     {
-                        var configuration = webHostBuilder.Configuration;
+                        var configuration = builder.Configuration;
 
                         services
                             .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
@@ -43,9 +44,10 @@ namespace Crm.Apps
                             .ConfigureConsumer<AccountsConsumer>(configuration)
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
-                            .AddTransient<IAccountsService, AccountsService>();
+                            .AddTransient<IAccountsService, AccountsService>()
+                            .AddTransient<IUsersService, UsersService>();
                     })
-                    .Configure(applicationBuilder => applicationBuilder
+                    .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()

@@ -71,7 +71,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return;
             }
 
-            var oldAccount = await _accountsService.GetByIdAsync(newAccount.Id, ct).ConfigureAwait(false);
+            var oldAccount = await _accountsService.GetAsync(newAccount.Id, ct).ConfigureAwait(false);
             if (oldAccount == null)
             {
                 return;

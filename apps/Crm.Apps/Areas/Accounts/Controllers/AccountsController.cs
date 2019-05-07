@@ -33,7 +33,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            var account = await _accountsService.GetByIdAsync(id, ct).ConfigureAwait(false);
+            var account = await _accountsService.GetAsync(id, ct).ConfigureAwait(false);
             if (account == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
                 return BadRequest();
             }
 
-            var oldAccount = await _accountsService.GetByIdAsync(account.Id, ct).ConfigureAwait(false);
+            var oldAccount = await _accountsService.GetAsync(account.Id, ct).ConfigureAwait(false);
             if (oldAccount == null)
             {
                 return NotFound();

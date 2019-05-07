@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Accounts", "cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Users", "clients\Crm.Clients.Users\Crm.Clients.Users.csproj", "{2DE4698C-253E-4239-8D13-77E99450DFB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Utils.String", "utils\Crm.Utils.String\Crm.Utils.String.csproj", "{B02FFC40-E210-4C31-A221-4911B2BCF977}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,7 @@ Global
 		{E238FD0C-05B7-440D-8342-9C8582E42E74} = {92665CE1-122C-43D1-B98C-15ED275AC75F}
 		{4E433ED9-537B-447E-AC8B-B6733A996984} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
 		{2DE4698C-253E-4239-8D13-77E99450DFB0} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
+		{B02FFC40-E210-4C31-A221-4911B2BCF977} = {205533D4-E234-419B-91A4-BDF7D7022310}
 	EndGlobalSection
 GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6ADEA938-63C2-4199-BD99-B15BE22C35A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -201,5 +204,9 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	{2DE4698C-253E-4239-8D13-77E99450DFB0}.Release|Any CPU.Build.0 = Release|Any CPU
+	{B02FFC40-E210-4C31-A221-4911B2BCF977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{B02FFC40-E210-4C31-A221-4911B2BCF977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{B02FFC40-E210-4C31-A221-4911B2BCF977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{B02FFC40-E210-4C31-A221-4911B2BCF977}.Release|Any CPU.Build.0 = Release|Any CPU
 EndGlobalSection
 EndGlobal

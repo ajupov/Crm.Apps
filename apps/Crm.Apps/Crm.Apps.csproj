@@ -21,6 +21,7 @@
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Tracing\Crm.Infrastructure.Tracing.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Areas\Accounts" />

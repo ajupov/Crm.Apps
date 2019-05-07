@@ -19,7 +19,7 @@ namespace Crm.Apps.Areas.Accounts.Services
             _storage = storage;
         }
 
-        public Task<Account> GetByIdAsync(Guid id, CancellationToken ct)
+        public Task<Account> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.Accounts.Include(x => x.Settings).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
@@ -62,9 +62,9 @@ namespace Crm.Apps.Areas.Accounts.Services
         {
             oldAccount.UpdateWithLog(userId, x =>
             {
-                x.Settings = newAccount.Settings;
                 x.IsLocked = newAccount.IsLocked;
                 x.IsDeleted = newAccount.IsDeleted;
+                x.Settings = newAccount.Settings;
             });
 
             _storage.Update(oldAccount);
