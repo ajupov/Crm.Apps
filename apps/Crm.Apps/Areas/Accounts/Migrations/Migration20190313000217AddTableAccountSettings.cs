@@ -9,7 +9,7 @@ namespace Crm.Apps.Areas.Accounts.Migrations
         {
             Create.Table("AccountSettings")
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_AccountSettings_Id")
-                .WithColumn("AccountId").AsGuid().NotNullable().ForeignKey()
+                .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Value").AsString().NotNullable();
 
@@ -30,7 +30,7 @@ namespace Crm.Apps.Areas.Accounts.Migrations
         {
             Delete.Index("IX_AccountSettings_AccountId_Type").OnTable("AccountSettings");
             Delete.UniqueConstraint("UQ_AccountSettings_AccountId_Type").FromTable("AccountSettings");
-            Delete.ForeignKey("FK_AccountSettings_AccountId");
+            Delete.ForeignKey("FK_AccountSettings_AccountId").OnTable("AccountSettings");
             Delete.Table("AccountSettings");
         }
     }

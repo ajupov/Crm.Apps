@@ -9,7 +9,7 @@ namespace Crm.Apps.Areas.Users.Migrations
         {
             Create.Table("UserSettings")
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_UserSettings_Id")
-                .WithColumn("UserId").AsGuid().NotNullable().ForeignKey()
+                .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Value").AsString().NotNullable();
 
@@ -30,7 +30,7 @@ namespace Crm.Apps.Areas.Users.Migrations
         {
             Delete.Index("IX_UserSettings_UserId_Type").OnTable("UserSettings");
             Delete.UniqueConstraint("UQ_UserSettings_UserId_Type").FromTable("UserSettings");
-            Delete.ForeignKey("FK_UserSettings_UserId");
+            Delete.ForeignKey("FK_UserSettings_UserId").OnTable("UserSettings");
             Delete.Table("UserSettings");
         }
     }

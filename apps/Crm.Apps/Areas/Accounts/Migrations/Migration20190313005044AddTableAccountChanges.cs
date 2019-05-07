@@ -20,15 +20,15 @@ namespace Crm.Apps.Areas.Accounts.Migrations
                 .ToTable("Accounts").PrimaryColumn("Id");
 
             Create.Index("IX_AccountChanges_ChangerUserId_AccountId").OnTable("AccountChanges")
-                .OnColumn("ChangerUserId").Ascending()
-                .OnColumn("AccountId").Ascending()
+                .OnColumn("ChangerUserId").Descending()
+                .OnColumn("AccountId").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
             Delete.Index("IX_AccountChanges_ChangerUserId_AccountId").OnTable("AccountChanges");
-            Delete.ForeignKey("FK_AccountChanges_AccountId");
+            Delete.ForeignKey("FK_AccountChanges_AccountId").OnTable("AccountChanges");
             Delete.Table("AccountChanges");
         }
     }

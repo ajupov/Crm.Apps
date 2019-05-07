@@ -27,9 +27,9 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .OnColumn("Name").Ascending()
                 .OnColumn("Patronymic").Ascending()
                 .OnColumn("Gender").Descending()
-                .OnColumn("CreateDateTime").Descending()
                 .OnColumn("IsLocked").Ascending()
                 .OnColumn("IsDeleted").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
