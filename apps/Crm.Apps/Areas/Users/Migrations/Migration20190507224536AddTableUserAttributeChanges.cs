@@ -8,7 +8,7 @@ namespace Crm.Apps.Areas.Users.Migrations
         public override void Up()
         {
             Create.Table("UserAttributesChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_UserAttributesChangesId")
+                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_UserAttributesChanges_Id")
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()

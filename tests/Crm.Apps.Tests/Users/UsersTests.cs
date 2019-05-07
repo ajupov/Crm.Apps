@@ -6,8 +6,6 @@ using Crm.Clients.Users.Clients.UserAttributeLinks;
 using Crm.Clients.Users.Clients.UserAttributes;
 using Crm.Clients.Users.Clients.UserGroupLinks;
 using Crm.Clients.Users.Clients.UserGroups;
-using Crm.Clients.Users.Clients.UserPostLinks;
-using Crm.Clients.Users.Clients.UserPosts;
 using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Clients.UsersDefault;
 using Crm.Clients.Users.Clients.UserSettings;
@@ -24,14 +22,11 @@ namespace Crm.Apps.Tests.Users
         private readonly IUserAttributeLinksClient _userAttributeLinksClient;
         private readonly IUserGroupsClient _userGroupsClient;
         private readonly IUserGroupLinksClient _userGroupLinksClient;
-        private readonly IUserPostsClient _userPostsClient;
-        private readonly IUserPostLinksClient _userPostLinksClient;
         private readonly IUsersSettingsClient _usersSettingsClient;
 
         public UsersTests(IUsersDefaultClient usersDefaultClient, IUsersClient usersClient,
             IUserAttributesClient userAttributesClient, IUserAttributeLinksClient userAttributeLinksClient,
             IUserGroupsClient userGroupsClient, IUserGroupLinksClient userGroupLinksClient,
-            IUserPostsClient userPostsClient, IUserPostLinksClient userPostLinksClient,
             IUsersSettingsClient usersSettingsClient)
         {
             _usersDefaultClient = usersDefaultClient;
@@ -40,8 +35,6 @@ namespace Crm.Apps.Tests.Users
             _userAttributeLinksClient = userAttributeLinksClient;
             _userGroupsClient = userGroupsClient;
             _userGroupLinksClient = userGroupLinksClient;
-            _userPostsClient = userPostsClient;
-            _userPostLinksClient = userPostLinksClient;
             _usersSettingsClient = usersSettingsClient;
         }
 
@@ -50,7 +43,7 @@ namespace Crm.Apps.Tests.Users
         {
             return _usersDefaultClient.StatusAsync();
         }
-        
+
         [Fact]
         public async Task GetGenders()
         {

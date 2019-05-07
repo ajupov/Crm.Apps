@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Crm.Clients.Users.Models
+namespace Crm.Apps.Areas.Users.Models
 {
-    public class UserPostChange
+    public class UserAttributeChange
     {
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }
 
-        public Guid PostId { get; set; }
+        public Guid AttributeId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

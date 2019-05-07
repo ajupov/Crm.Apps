@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Crm.Common.UserContext;
 
-namespace Crm.Clients.Users.Models
+namespace Crm.Apps.Areas.Users.Models
 {
     public class User
     {
