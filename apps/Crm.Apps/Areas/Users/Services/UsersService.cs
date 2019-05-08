@@ -52,8 +52,7 @@ namespace Crm.Apps.Areas.Users.Services
                     (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate) &&
                     (!attributes.Any() || x.FilterByAttributes(allAttributes, attributes)) &&
                     (!permissions.Any() || x.FilterByPermissions(allPermissions, permissions)) &&
-                    (!groupIds.Any() || x.FilterByGroupIds(allGroupIds, groupIds))
-                )
+                    (!groupIds.Any() || x.FilterByGroupIds(allGroupIds, groupIds)))
                 .Sort(sortBy, orderBy)
                 .Skip(offset)
                 .Take(limit)
@@ -97,7 +96,6 @@ namespace Crm.Apps.Areas.Users.Services
                 x.Permissions = newUser.Permissions;
                 x.GroupLinks = newUser.GroupLinks;
                 x.Settings = newUser.Settings;
-                x.Changes = newUser.Changes;
             });
 
             _storage.Update(oldUser);

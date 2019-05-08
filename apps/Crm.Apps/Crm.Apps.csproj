@@ -7,23 +7,23 @@
         <PackageReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\common\Crm.Common.Types\Crm.Common.Types.csproj"/>
-        <ProjectReference Include="..\..\common\Crm.Common.UserContext\Crm.Common.UserContext.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Hosting\Crm.Infrastructure.Hosting.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Logging\Crm.Infrastructure.Logging.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Metrics\Crm.Infrastructure.Metrics.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Migrations\Crm.Infrastructure.Migrations.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Mvc\Crm.Infrastructure.Mvc.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Orm\Crm.Infrastructure.Orm.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Tracing\Crm.Infrastructure.Tracing.csproj"/>
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj"/>
-        <ProjectReference Include="..\..\utils\Crm.Utils.Enums\Crm.Utils.Enums.csproj"/>
-        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj"/>
+        <ProjectReference Include="..\..\common\Crm.Common.Types\Crm.Common.Types.csproj" />
+        <ProjectReference Include="..\..\common\Crm.Common.UserContext\Crm.Common.UserContext.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Hosting\Crm.Infrastructure.Hosting.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Logging\Crm.Infrastructure.Logging.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Metrics\Crm.Infrastructure.Metrics.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Migrations\Crm.Infrastructure.Migrations.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Mvc\Crm.Infrastructure.Mvc.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Orm\Crm.Infrastructure.Orm.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Tracing\Crm.Infrastructure.Tracing.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Areas\Accounts"/>
+        <Folder Include="Areas\Accounts" />
     </ItemGroup>
 </Project>
