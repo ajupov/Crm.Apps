@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace Crm.Infrastructure.Host
+namespace Crm.Infrastructure.Hosting
 {
     public static class HostExtensions
     {

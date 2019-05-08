@@ -6,7 +6,7 @@ using Crm.Apps.Areas.Users.Services;
 using Crm.Common.UserContext;
 using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
-using Crm.Infrastructure.Host;
+using Crm.Infrastructure.Hosting;
 using Crm.Infrastructure.Logging;
 using Crm.Infrastructure.MessageBroking;
 using Crm.Infrastructure.Metrics;

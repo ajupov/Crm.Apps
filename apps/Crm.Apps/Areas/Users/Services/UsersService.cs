@@ -23,13 +23,8 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<User> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Users
-                .Include(x => x.AttributeLinks)
-                .Include(x => x.Permissions)
-                .Include(x => x.GroupLinks)
-                .Include(x => x.Settings)
-                .Include(x => x.Changes)
-                .FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.Users.Include(x => x.AttributeLinks).Include(x => x.Permissions).Include(x => x.GroupLinks)
+                .Include(x => x.Settings).Include(x => x.Changes).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<User>> GetListAsync(ICollection<Guid> ids, CancellationToken ct)
@@ -39,23 +34,25 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<List<User>> GetPagedListAsync(Guid? accountId, string surname, string name, string patronymic,
             DateTime? minBirthDate, DateTime? maxBirthDate, UserGender? gender, bool? isLocked, bool? isDeleted,
-            DateTime? minCreateDate, DateTime? maxCreateDate, bool? allAttributeIds, ICollection<Guid> attributeIds,
+            DateTime? minCreateDate, DateTime? maxCreateDate, bool? allAttributes, IDictionary<Guid, string> attributes,
             bool? allPermissions, ICollection<Permission> permissions, bool? allGroupIds, ICollection<Guid> groupIds,
             int offset, int limit, string sortBy, string orderBy, CancellationToken ct)
         {
             return _storage.Users.Where(x =>
-                        (!accountId.HasValue || x.AccountId == accountId) &&
-                        (surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{surname}%")) &&
-                        (name.IsEmpty() || EF.Functions.Like(x.Name, $"{name}%")) &&
-                        (patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{patronymic}%")) &&
-                        (!minBirthDate.HasValue || x.BirthDate >= minBirthDate) &&
-                        (!maxBirthDate.HasValue || x.BirthDate <= maxBirthDate) &&
-                        (!gender.HasValue || x.Gender == gender) &&
-                        (!isLocked.HasValue || x.IsLocked == isLocked) &&
-                        (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
-                        (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
-                        (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate)
-                    // TODO: add filter by collections
+                    (!accountId.HasValue || x.AccountId == accountId) &&
+                    (surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{surname}%")) &&
+                    (name.IsEmpty() || EF.Functions.Like(x.Name, $"{name}%")) &&
+                    (patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{patronymic}%")) &&
+                    (!minBirthDate.HasValue || x.BirthDate >= minBirthDate) &&
+                    (!maxBirthDate.HasValue || x.BirthDate <= maxBirthDate) &&
+                    (!gender.HasValue || x.Gender == gender) &&
+                    (!isLocked.HasValue || x.IsLocked == isLocked) &&
+                    (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
+                    (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
+                    (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate) &&
+                    (!attributes.Any() || x.FilterByAttributes(allAttributes, attributes)) &&
+                    (!permissions.Any() || x.FilterByPermissions(allPermissions, permissions)) &&
+                    (!groupIds.Any() || x.FilterByGroupIds(allGroupIds, groupIds))
                 )
                 .Sort(sortBy, orderBy)
                 .Skip(offset)
@@ -111,7 +108,7 @@ namespace Crm.Apps.Areas.Users.Services
         public async Task LockAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = true), ct).ConfigureAwait(false);
+                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsLocked = true), ct).ConfigureAwait(false);
 
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
@@ -119,7 +116,7 @@ namespace Crm.Apps.Areas.Users.Services
         public async Task UnlockAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = false), ct).ConfigureAwait(false);
+                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsLocked = false), ct).ConfigureAwait(false);
 
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
@@ -127,7 +124,7 @@ namespace Crm.Apps.Areas.Users.Services
         public async Task DeleteAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
+                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
 
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
@@ -135,7 +132,7 @@ namespace Crm.Apps.Areas.Users.Services
         public async Task RestoreAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
+                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
 
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }

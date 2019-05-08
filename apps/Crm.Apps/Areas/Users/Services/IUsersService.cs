@@ -15,7 +15,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         Task<List<User>> GetPagedListAsync(Guid? accountId, string surname, string name, string patronymic,
             DateTime? minBirthDate, DateTime? maxBirthDate, UserGender? gender, bool? isLocked, bool? isDeleted,
-            DateTime? minCreateDate, DateTime? maxCreateDate, bool? allAttributeIds, ICollection<Guid> attributeIds,
+            DateTime? minCreateDate, DateTime? maxCreateDate, bool? allAttributes, IDictionary<Guid, string> attributes,
             bool? allPermissions, ICollection<Permission> permissions, bool? allGroupIds, ICollection<Guid> groupIds,
             int offset, int limit, string sortBy, string orderBy, CancellationToken ct);
 
