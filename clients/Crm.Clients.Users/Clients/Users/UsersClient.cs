@@ -43,16 +43,16 @@ namespace Crm.Clients.Users.Clients.Users
             string name = default, string patronymic = default, DateTime? minBirthDate = default,
             DateTime? maxBirthDate = default, UserGender? gender = default, bool? isLocked = default,
             bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            bool? allAttributeIds = default, ICollection<Guid> attributeIds = default, bool? allPermissions = default,
-            ICollection<Permission> permissions = default, bool? allGroupIds = default,
+            bool? allAttributes = default, IDictionary<Guid, string> attributes = default,
+            bool? allPermissions = default, ICollection<Permission> permissions = default, bool? allGroupIds = default,
             ICollection<Guid> groupIds = default, int offset = default, int limit = 10, string sortBy = default,
             string orderBy = default, CancellationToken ct = default)
         {
             return _httpClientFactory.GetAsync<ICollection<User>>($"{_settings.Host}/Api/Users/GetPagedList", new
             {
                 accountId, surname, name, patronymic, minBirthDate, maxBirthDate, gender, isLocked, isDeleted,
-                minCreateDate, maxCreateDate, allAttributeIds, attributeIds, allPermissions, permissions,
-                allGroupIds, groupIds, offset, limit, sortBy, orderBy
+                minCreateDate, maxCreateDate, allAttributes, attributes, allPermissions, permissions, allGroupIds,
+                groupIds, offset, limit, sortBy, orderBy
             }, ct);
         }
 
