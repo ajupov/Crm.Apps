@@ -5,11 +5,11 @@ using Crm.Common.UserContext.Attributes;
 using Crm.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Areas.Accounts.Controllers
+namespace Crm.Apps.Areas.Users.Controllers
 {
     [ApiController]
-    [Route("Api/Accounts/Settings")]
-    public class AccountSettingsController : ControllerBase
+    [Route("Api/Users/Settings")]
+    public class UserSettingsController : ControllerBase
     {
         [HttpGet("GetTypes")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]

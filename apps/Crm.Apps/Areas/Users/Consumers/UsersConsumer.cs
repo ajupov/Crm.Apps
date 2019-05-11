@@ -3,29 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Areas.Accounts.Models;
-using Crm.Apps.Areas.Accounts.Services;
+using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Areas.Accounts.Consumers
+namespace Crm.Apps.Areas.Users.Consumers
 {
-    public class AccountsConsumer : IHostedService
+    public class UsersConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IAccountsService _accountsService;
+        private readonly IUsersService _usersService;
 
-        public AccountsConsumer(IConsumer consumer, IAccountsService accountsService)
+        public UsersConsumer(IConsumer consumer, IUsersService usersService)
         {
             _consumer = consumer;
-            _accountsService = accountsService;
+            _usersService = usersService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("Accounts", ActionAsync);
+            _consumer.Consume("Users", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -60,24 +60,30 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            return _accountsService.CreateAsync(message.UserId, ct);
+            var user = message.Data.FromJsonString<User>();
+            if (user.Id == Guid.Empty)
+            {
+                return Task.CompletedTask;
+            }
+
+            return _usersService.CreateAsync(message.UserId, message.AccountId, user, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newAccount = message.Data.FromJsonString<Account>();
-            if (newAccount.Id == Guid.Empty)
+            var newUser = message.Data.FromJsonString<User>();
+            if (newUser.Id == Guid.Empty)
             {
                 return;
             }
 
-            var oldAccount = await _accountsService.GetAsync(newAccount.Id, ct).ConfigureAwait(false);
-            if (oldAccount == null)
+            var oldUser = await _usersService.GetAsync(newUser.Id, ct).ConfigureAwait(false);
+            if (oldUser == null)
             {
                 return;
             }
 
-            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct).ConfigureAwait(false);
+            await _usersService.UpdateAsync(message.UserId, oldUser, newUser, ct).ConfigureAwait(false);
         }
 
         private Task LockAsync(Message message, CancellationToken ct)
@@ -88,9 +94,9 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.LockAsync(message.UserId, ids, ct);
+            return _usersService.LockAsync(message.UserId, ids, ct);
         }
-        
+
         private Task UnlockAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<ICollection<Guid>>();
@@ -99,7 +105,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.UnlockAsync(message.UserId, ids, ct);
+            return _usersService.UnlockAsync(message.UserId, ids, ct);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -110,7 +116,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.RestoreAsync(message.UserId, ids, ct);
+            return _usersService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -121,7 +127,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.DeleteAsync(message.UserId, ids, ct);
+            return _usersService.DeleteAsync(message.UserId, ids, ct);
         }
     }
 }

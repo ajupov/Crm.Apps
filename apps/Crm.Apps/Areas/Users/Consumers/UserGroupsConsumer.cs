@@ -3,29 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Areas.Accounts.Models;
-using Crm.Apps.Areas.Accounts.Services;
+using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Areas.Accounts.Consumers
+namespace Crm.Apps.Areas.Users.Consumers
 {
-    public class AccountsConsumer : IHostedService
+    public class UserGroupsConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IAccountsService _accountsService;
+        private readonly IUserGroupsService _userGroupsService;
 
-        public AccountsConsumer(IConsumer consumer, IAccountsService accountsService)
+        public UserGroupsConsumer(IConsumer consumer, IUserGroupsService userGroupsService)
         {
             _consumer = consumer;
-            _accountsService = accountsService;
+            _userGroupsService = userGroupsService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("Accounts", ActionAsync);
+            _consumer.Consume("UserGroups", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -45,10 +45,6 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                     return CreateAsync(message, ct);
                 case "Update":
                     return UpdateAsync(message, ct);
-                case "Lock":
-                    return LockAsync(message, ct);
-                case "Unlock":
-                    return UnlockAsync(message, ct);
                 case "Delete":
                     return DeleteAsync(message, ct);
                 case "Restore":
@@ -60,46 +56,30 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            return _accountsService.CreateAsync(message.UserId, ct);
+            var userGroup = message.Data.FromJsonString<UserGroup>();
+            if (userGroup.Id == Guid.Empty)
+            {
+                return Task.CompletedTask;
+            }
+
+            return _userGroupsService.CreateAsync(message.UserId, userGroup, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newAccount = message.Data.FromJsonString<Account>();
-            if (newAccount.Id == Guid.Empty)
+            var newUserGroup = message.Data.FromJsonString<UserGroup>();
+            if (newUserGroup.Id == Guid.Empty)
             {
                 return;
             }
 
-            var oldAccount = await _accountsService.GetAsync(newAccount.Id, ct).ConfigureAwait(false);
-            if (oldAccount == null)
+            var oldUserGroup = await _userGroupsService.GetAsync(newUserGroup.Id, ct).ConfigureAwait(false);
+            if (oldUserGroup == null)
             {
                 return;
             }
 
-            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct).ConfigureAwait(false);
-        }
-
-        private Task LockAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<ICollection<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _accountsService.LockAsync(message.UserId, ids, ct);
-        }
-        
-        private Task UnlockAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<ICollection<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _accountsService.UnlockAsync(message.UserId, ids, ct);
+            await _userGroupsService.UpdateAsync(message.UserId, oldUserGroup, newUserGroup, ct).ConfigureAwait(false);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -110,7 +90,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.RestoreAsync(message.UserId, ids, ct);
+            return _userGroupsService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -121,7 +101,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.DeleteAsync(message.UserId, ids, ct);
+            return _userGroupsService.DeleteAsync(message.UserId, ids, ct);
         }
     }
 }

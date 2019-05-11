@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Models;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Common.UserContext;
+using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Accounts.Controllers
@@ -24,6 +25,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpGet("Get")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult<Account>> Get(
             [FromQuery] Guid id,
             CancellationToken ct = default)
@@ -43,6 +45,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetList")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult<ICollection<Account>>> GetList(
             [FromQuery] ICollection<Guid> ids,
             CancellationToken ct = default)
@@ -56,6 +59,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpGet("GetPagedList")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult<ICollection<Account>>> GetPagedList(
             [FromQuery] bool? isLocked = default,
             [FromQuery] bool? isDeleted = default,
@@ -72,6 +76,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Create")]
+        [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult<Guid>> Create(CancellationToken ct = default)
         {
             var id = await _accountsService.CreateAsync(_userContext.UserId, ct).ConfigureAwait(false);
@@ -80,6 +85,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Update")]
+        [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult<Guid>> Update(
             [FromBody] Account account,
             CancellationToken ct = default)
@@ -101,6 +107,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Lock")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult> Lock(
             [FromBody] ICollection<Guid> ids,
             CancellationToken ct = default)
@@ -116,6 +123,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Unlock")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult> Unlock(
             [FromBody] ICollection<Guid> ids,
             CancellationToken ct = default)
@@ -131,6 +139,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Delete")]
+        [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult> Delete(
             [FromBody] ICollection<Guid> ids,
             CancellationToken ct = default)
@@ -146,6 +155,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         }
 
         [HttpPost("Restore")]
+        [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult> Restore(
             [FromBody] ICollection<Guid> ids,
             CancellationToken ct = default)

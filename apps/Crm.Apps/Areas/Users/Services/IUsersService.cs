@@ -19,7 +19,7 @@ namespace Crm.Apps.Areas.Users.Services
             bool? allPermissions, ICollection<Permission> permissions, bool? allGroupIds, ICollection<Guid> groupIds,
             int offset, int limit, string sortBy, string orderBy, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, User user, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid userId, Guid accountId, User user, CancellationToken ct);
 
         Task UpdateAsync(Guid userId, User oldUser, User newUser, CancellationToken ct);
 

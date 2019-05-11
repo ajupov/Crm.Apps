@@ -59,11 +59,12 @@ namespace Crm.Apps.Areas.Users.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, User user, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Guid accountId, User user, CancellationToken ct)
         {
             var newUser = new User().CreateWithLog(userId, x =>
             {
                 x.Id = new Guid();
+                x.AccountId = accountId;
                 x.Surname = user.Surname;
                 x.Name = user.Name;
                 x.Patronymic = user.Patronymic;

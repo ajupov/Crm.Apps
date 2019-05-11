@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Users.Models;
-using Crm.Common.Types;
 
 namespace Crm.Clients.Users.Clients.UserGroups
 {

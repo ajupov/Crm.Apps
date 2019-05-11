@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 namespace Crm.Common.UserContext
 {
     public class UserContext : IUserContext
     {
-
         public UserContext(IHttpContextAccessor httpContextAccessor)
         {
             var claims = httpContextAccessor.HttpContext.User.Claims;
@@ -27,5 +27,20 @@ namespace Crm.Common.UserContext
         public string AvatarUrl { get; }
 
         public ICollection<Permission> Permissions { get; }
+
+        public bool HasAny(params Permission[] permissions)
+        {
+            return permissions.Intersect(Permissions).Any();
+        }
+
+        public bool HasAll(params Permission[] permissions)
+        {
+            return !permissions.Except(Permissions).Any();
+        }
+
+        public bool Belongs(params Guid[] accountIds)
+        {
+            return accountIds.All(x => x == AccountId);
+        }
     }
 }
