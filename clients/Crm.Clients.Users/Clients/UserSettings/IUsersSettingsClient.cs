@@ -7,6 +7,6 @@ namespace Crm.Clients.Users.Clients.UserSettings
 {
     public interface IUsersSettingsClient
     {
-        Task<ICollection<UserSettingType>> GetTypesAsync(CancellationToken ct = default);
+        Task<List<UserSettingType>> GetTypesAsync(CancellationToken ct = default);
     }
 }

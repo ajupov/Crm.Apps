@@ -22,31 +22,31 @@ namespace Crm.Clients.Users.Clients.UserAttributes
             _settings = options.Value;
         }
 
-        public Task<ICollection<AttributeType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<AttributeType>>(
-                $"{_settings.Host}/Api/UserAttributes/GetTypes", ct: ct);
+            return _httpClientFactory.GetAsync<List<AttributeType>>(
+                $"{_settings.Host}/Api/Users/Attributes/GetTypes", ct: ct);
         }
 
         public Task<UserAttribute> GetAsync(Guid id, CancellationToken ct = default)
         {
             return _httpClientFactory.GetAsync<UserAttribute>(
-                $"{_settings.Host}/Api/UserAttributes/Get", new {id}, ct);
+                $"{_settings.Host}/Api/Users/Attributes/Get", new {id}, ct);
         }
 
-        public Task<ICollection<UserAttribute>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task<List<UserAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<UserAttribute>>(
-                $"{_settings.Host}/Api/UserAttributes/GetList", new {ids}, ct);
+            return _httpClientFactory.GetAsync<List<UserAttribute>>(
+                $"{_settings.Host}/Api/Users/Attributes/GetList", new {ids}, ct);
         }
 
-        public Task<ICollection<UserAttribute>> GetPagedListAsync(Guid? accountId = default, bool? allTypes = default,
-            ICollection<Type> types = default, string key = default, bool? isDeleted = default,
+        public Task<List<UserAttribute>> GetPagedListAsync(Guid? accountId = default, bool? allTypes = default,
+            List<Type> types = default, string key = default, bool? isDeleted = default,
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
             string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<UserAttribute>>(
-                $"{_settings.Host}/Api/UserAttributes/GetPagedList", new
+            return _httpClientFactory.GetAsync<List<UserAttribute>>(
+                $"{_settings.Host}/Api/Users/Attributes/GetPagedList", new
                 {
                     accountId, allTypes, types, key, isDeleted,
                     minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy
@@ -55,22 +55,22 @@ namespace Crm.Clients.Users.Clients.UserAttributes
 
         public Task<Guid> CreateAsync(UserAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserAttributes/Create", attribute, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Users/Attributes/Create", attribute, ct);
         }
 
         public Task UpdateAsync(UserAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserAttributes/Update", attribute, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Attributes/Update", attribute, ct);
         }
 
-        public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserAttributes/Delete", ids, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Attributes/Delete", ids, ct);
         }
 
-        public Task RestoreAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserAttributes/Restore", ids, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Attributes/Restore", ids, ct);
         }
     }
 }

@@ -20,9 +20,9 @@ namespace Crm.Clients.Accounts.Clients.AccountSettings
             _settings = options.Value;
         }
 
-        public Task<ICollection<AccountSettingType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<List<AccountSettingType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<AccountSettingType>>(
+            return _httpClientFactory.GetAsync<List<AccountSettingType>>(
                 $"{_settings.Host}/Api/Accounts/Settings/GetTypes", ct: ct);
         }
     }

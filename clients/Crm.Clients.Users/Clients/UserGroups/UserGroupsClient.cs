@@ -23,21 +23,21 @@ namespace Crm.Clients.Users.Clients.UserGroups
 
         public Task<UserGroup> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<UserGroup>($"{_settings.Host}/Api/UserGroups/Get", new {id}, ct);
+            return _httpClientFactory.GetAsync<UserGroup>($"{_settings.Host}/Api/Users/Groups/Get", new {id}, ct);
         }
 
-        public Task<ICollection<UserGroup>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task<List<UserGroup>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<UserGroup>>($"{_settings.Host}/Api/UserGroups/GetList",
+            return _httpClientFactory.GetAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetList",
                 new {ids}, ct);
         }
 
-        public Task<ICollection<UserGroup>> GetPagedListAsync(Guid? accountId = default, string name = default,
+        public Task<List<UserGroup>> GetPagedListAsync(Guid? accountId = default, string name = default,
             bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<UserGroup>>($"{_settings.Host}/Api/UserGroups/GetPagedList",
+            return _httpClientFactory.GetAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetPagedList",
                 new
                 {
                     accountId, name, isDeleted, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy
@@ -46,22 +46,22 @@ namespace Crm.Clients.Users.Clients.UserGroups
 
         public Task<Guid> CreateAsync(UserGroup group, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserGroups/Create", group, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Users/Groups/Create", group, ct);
         }
 
         public Task UpdateAsync(UserGroup group, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/UserGroups/Update", group, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Users/Groups/Update", group, ct);
         }
 
-        public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserGroups/Delete", ids, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Groups/Delete", ids, ct);
         }
 
-        public Task RestoreAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/UserGroups/Restore", ids, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Groups/Restore", ids, ct);
         }
     }
 }

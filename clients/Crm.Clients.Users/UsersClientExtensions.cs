@@ -1,6 +1,4 @@
-﻿using Crm.Clients.Users.Clients.UserAttributeLinks;
-using Crm.Clients.Users.Clients.UserAttributes;
-using Crm.Clients.Users.Clients.UserGroupLinks;
+﻿using Crm.Clients.Users.Clients.UserAttributes;
 using Crm.Clients.Users.Clients.UserGroups;
 using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Clients.UsersDefault;
@@ -22,9 +20,7 @@ namespace Crm.Clients.Users
                 .AddSingleton<IUsersDefaultClient, UsersDefaultClient>()
                 .AddSingleton<IUsersClient, UsersClient>()
                 .AddSingleton<IUserAttributesClient, UserAttributesClient>()
-                .AddSingleton<IUserAttributeLinksClient, UserAttributeLinksClient>()
                 .AddSingleton<IUserGroupsClient, UserGroupsClient>()
-                .AddSingleton<IUserGroupLinksClient, UserGroupLinksClient>()
                 .AddSingleton<IUsersSettingsClient, UsersSettingsClient>();
         }
     }

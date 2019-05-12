@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.Services;
+using Crm.Common.Types;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
@@ -12,41 +13,41 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Areas.Users.Controllers
 {
     [ApiController]
-    [Route("Api/Users")]
-    public class UsersController : ControllerBase
+    [Route("Api/Users/Groups")]
+    public class UserGroupsController : ControllerBase
     {
         private readonly IUserContext _userContext;
-        private readonly IUsersService _usersService;
+        private readonly IUserGroupsService _userGroupsService;
 
-        public UsersController(IUserContext userContext, IUsersService usersService)
+        public UserGroupsController(IUserContext userContext, IUserGroupsService userGroupsService)
         {
             _userContext = userContext;
-            _usersService = usersService;
+            _userGroupsService = userGroupsService;
         }
 
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<User>> Get([FromQuery] Guid id, CancellationToken ct = default)
+        public async Task<ActionResult<UserGroup>> Get([FromQuery] Guid id, CancellationToken ct = default)
         {
             if (id == Guid.Empty)
             {
                 return BadRequest();
             }
 
-            var user = await _usersService.GetAsync(id, ct).ConfigureAwait(false);
-            if (user == null)
+            var group = await _userGroupsService.GetAsync(id, ct).ConfigureAwait(false);
+            if (group == null)
             {
                 return NotFound();
             }
 
-            return ReturnIfAllowed(user, new[] {user.AccountId});
+            return ReturnIfAllowed(group, new[] {group.AccountId});
         }
 
         [HttpGet("GetList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<List<User>>> GetList([FromQuery] List<Guid> ids,
+        public async Task<ActionResult<List<UserGroup>>> GetList([FromQuery] List<Guid> ids,
             CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
@@ -54,51 +55,38 @@ namespace Crm.Apps.Areas.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var groups = await _userGroupsService.GetListAsync(ids, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(users, users.Select(x => x.AccountId));
+            return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
         }
 
         [HttpGet("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<List<User>>> GetPagedList(
+        public async Task<ActionResult<List<UserGroup>>> GetPagedList(
             [FromQuery] Guid? accountId = default,
-            [FromQuery] string surname = default,
             [FromQuery] string name = default,
-            [FromQuery] string patronymic = default,
-            [FromQuery] DateTime? minBirthDate = default,
-            [FromQuery] DateTime? maxBirthDate = default,
-            [FromQuery] UserGender? gender = default,
-            [FromQuery] bool? isLocked = default,
             [FromQuery] bool? isDeleted = default,
             [FromQuery] DateTime? minCreateDate = default,
             [FromQuery] DateTime? maxCreateDate = default,
-            [FromQuery] bool? allAttributes = default,
-            [FromQuery] IDictionary<Guid, string> attributes = default,
-            [FromQuery] bool? allPermissions = default,
-            [FromQuery] List<Permission> permissions = default,
-            [FromQuery] bool? allGroupIds = default,
-            [FromQuery] List<Guid> groupIds = default,
             [FromQuery] int offset = default,
             [FromQuery] int limit = 10,
             [FromQuery] string sortBy = default,
             [FromQuery] string orderBy = default,
             CancellationToken ct = default)
         {
-            var users = await _usersService.GetPagedListAsync(accountId, surname, name, patronymic, minBirthDate,
-                    maxBirthDate, gender, isLocked, isDeleted, minCreateDate, maxCreateDate, allAttributes, attributes,
-                    allPermissions, permissions, allGroupIds, groupIds, offset, limit, sortBy, orderBy, ct)
+            var groups = await _userGroupsService.GetPagedListAsync(accountId, name, isDeleted, minCreateDate,
+                    maxCreateDate, offset, limit, sortBy, orderBy, ct)
                 .ConfigureAwait(false);
 
-            return ReturnIfAllowed(users, users.Select(x => x.AccountId));
+            return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration)]
-        public async Task<ActionResult<Guid>> Create([FromBody] User user, CancellationToken ct = default)
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning)]
+        public async Task<ActionResult<Guid>> Create([FromBody] UserGroup group, CancellationToken ct = default)
         {
-            if (user == null)
+            if (group == null)
             {
                 return BadRequest();
             }
@@ -106,65 +94,31 @@ namespace Crm.Apps.Areas.Users.Controllers
             if (!_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                user.AccountId = _userContext.AccountId;
+                group.AccountId = _userContext.AccountId;
             }
 
-            var id = await _usersService.CreateAsync(_userContext.UserId, user, ct).ConfigureAwait(false);
+            var id = await _userGroupsService.CreateAsync(_userContext.UserId, group, ct).ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult> Update([FromBody] User user, CancellationToken ct = default)
+        public async Task<ActionResult> Update([FromBody] UserGroup group, CancellationToken ct = default)
         {
-            if (user.Id == Guid.Empty)
+            if (group.Id == Guid.Empty)
             {
                 return BadRequest();
             }
 
-            var oldUser = await _usersService.GetAsync(user.Id, ct).ConfigureAwait(false);
-            if (oldUser == null)
+            var oldGroup = await _userGroupsService.GetAsync(group.Id, ct).ConfigureAwait(false);
+            if (oldGroup == null)
             {
                 return NotFound();
             }
 
-            return await ActionIfAllowed(() => _usersService.UpdateAsync(_userContext.UserId, oldUser, user, ct),
-                new[] {oldUser.AccountId});
-        }
-
-        [HttpPost("Lock")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning)]
-        public async Task<ActionResult> Lock([FromBody] List<Guid> ids, CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return BadRequest();
-            }
-
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
-
-            return await ActionIfAllowed(
-                () => _usersService.LockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
-        }
-
-        [HttpPost("Unlock")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning)]
-        public async Task<ActionResult> Unlock([FromBody] List<Guid> ids, CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return BadRequest();
-            }
-
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
-
-            return await ActionIfAllowed(
-                () => _usersService.UnlockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+            return await ActionIfAllowed(() => _userGroupsService.UpdateAsync(_userContext.UserId, oldGroup, group, ct),
+                new[] {oldGroup.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -177,11 +131,11 @@ namespace Crm.Apps.Areas.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _userGroupsService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _usersService.DeleteAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+                () => _userGroupsService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -194,11 +148,11 @@ namespace Crm.Apps.Areas.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _userGroupsService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _usersService.RestoreAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+                () => _userGroupsService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]

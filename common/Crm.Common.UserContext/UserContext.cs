@@ -26,7 +26,7 @@ namespace Crm.Common.UserContext
 
         public string AvatarUrl { get; }
 
-        public ICollection<Permission> Permissions { get; }
+        public List<Permission> Permissions { get; }
 
         public bool HasAny(params Permission[] permissions)
         {

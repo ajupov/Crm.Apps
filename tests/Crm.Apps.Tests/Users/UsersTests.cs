@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Clients.UserAttributeLinks;
+using Crm.Clients.Accounts.Clients.Accounts;
 using Crm.Clients.Users.Clients.UserAttributes;
-using Crm.Clients.Users.Clients.UserGroupLinks;
 using Crm.Clients.Users.Clients.UserGroups;
 using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Clients.UsersDefault;
@@ -16,40 +15,29 @@ namespace Crm.Apps.Tests.Users
 {
     public class UsersTests
     {
+        private readonly IAccountsClient _accountsClient;
         private readonly IUsersDefaultClient _usersDefaultClient;
         private readonly IUsersClient _usersClient;
         private readonly IUserAttributesClient _userAttributesClient;
-        private readonly IUserAttributeLinksClient _userAttributeLinksClient;
         private readonly IUserGroupsClient _userGroupsClient;
-        private readonly IUserGroupLinksClient _userGroupLinksClient;
         private readonly IUsersSettingsClient _usersSettingsClient;
 
-        public UsersTests(IUsersDefaultClient usersDefaultClient, IUsersClient usersClient,
-            IUserAttributesClient userAttributesClient, IUserAttributeLinksClient userAttributeLinksClient,
-            IUserGroupsClient userGroupsClient, IUserGroupLinksClient userGroupLinksClient,
+        public UsersTests(IAccountsClient accountsClient, IUsersDefaultClient usersDefaultClient,
+            IUsersClient usersClient, IUserAttributesClient userAttributesClient, IUserGroupsClient userGroupsClient,
             IUsersSettingsClient usersSettingsClient)
         {
             _usersDefaultClient = usersDefaultClient;
             _usersClient = usersClient;
             _userAttributesClient = userAttributesClient;
-            _userAttributeLinksClient = userAttributeLinksClient;
             _userGroupsClient = userGroupsClient;
-            _userGroupLinksClient = userGroupLinksClient;
             _usersSettingsClient = usersSettingsClient;
+            _accountsClient = accountsClient;
         }
 
         [Fact]
         public Task Status()
         {
             return _usersDefaultClient.StatusAsync();
-        }
-
-        [Fact]
-        public async Task GetGenders()
-        {
-            var genders = await _usersClient.GetGendersAsync().ConfigureAwait(false);
-
-            Assert.NotEmpty(genders);
         }
 
         [Fact]
@@ -61,13 +49,34 @@ namespace Crm.Apps.Tests.Users
         }
 
         [Fact]
+        public async Task GetGenders()
+        {
+            var genders = await _usersClient.GetGendersAsync().ConfigureAwait(false);
+
+            Assert.NotEmpty(genders);
+        }
+
+        [Fact]
         public async Task GetUser()
         {
-            var id = await _usersClient.CreateAsync(new User()).ConfigureAwait(false);
+            var accountId = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
-            var user = await _usersClient.GetAsync(id).ConfigureAwait(false);
+            var user = new User
+            {
+                AccountId = accountId,
+                Surname = "Test",
+                Name = "Test",
+                Patronymic = "Test",
+                BirthDate = DateTime.Today.AddYears(21),
+                Gender = UserGender.Female,
+                AvatarUrl = ""
+            };
 
-            Assert.NotNull(user);
+            var id = await _usersClient.CreateAsync(user).ConfigureAwait(false);
+
+            var createdUser = await _usersClient.GetAsync(id).ConfigureAwait(false);
+
+            Assert.NotNull(createdUser);
             Assert.Equal(id, user.Id);
         }
 

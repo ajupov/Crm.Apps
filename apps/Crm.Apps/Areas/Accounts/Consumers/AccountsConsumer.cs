@@ -82,7 +82,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task LockAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+            var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;
@@ -93,7 +93,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
         
         private Task UnlockAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+            var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;
@@ -104,7 +104,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task RestoreAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+            var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;
@@ -115,7 +115,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<ICollection<Guid>>();
+            var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x == Guid.Empty))
             {
                 return Task.CompletedTask;

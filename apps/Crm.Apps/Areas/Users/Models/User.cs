@@ -28,14 +28,14 @@ namespace Crm.Apps.Areas.Users.Models
         
         public DateTime CreateDateTime { get; set; }
         
-        public ICollection<UserAttributeLink> AttributeLinks { get; set; }
+        public List<UserAttributeLink> AttributeLinks { get; set; }
         
-        public ICollection<Permission> Permissions { get; set; }
+        public List<Permission> Permissions { get; set; }
         
-        public ICollection<UserGroupLink> GroupLinks { get; set; }
+        public List<UserGroupLink> GroupLinks { get; set; }
 
-        public ICollection<UserSetting> Settings { get; set; }
+        public List<UserSetting> Settings { get; set; }
         
-        public ICollection<UserChange> Changes { get; set; }
+        public List<UserChange> Changes { get; set; }
     }
 }

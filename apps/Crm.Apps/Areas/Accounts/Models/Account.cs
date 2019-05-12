@@ -13,8 +13,8 @@ namespace Crm.Apps.Areas.Accounts.Models
 
         public DateTime CreateDateTime { get; set; }
 
-        public ICollection<AccountSetting> Settings { get; set; }
+        public List<AccountSetting> Settings { get; set; }
 
-        public ICollection<AccountChange> Changes { get; set; }
+        public List<AccountChange> Changes { get; set; }
     }
 }

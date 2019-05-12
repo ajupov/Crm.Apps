@@ -10,9 +10,9 @@ namespace Crm.Clients.Accounts.Clients.Accounts
     {
         Task<Account> GetAsync(Guid id, CancellationToken ct = default);
 
-        Task<ICollection<Account>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default);
+        Task<List<Account>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task<ICollection<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
+        Task<List<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
             int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default);
 
@@ -20,12 +20,12 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         Task UpdateAsync(Account account, CancellationToken ct = default);
 
-        Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default);
+        Task LockAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task UnlockAsync(ICollection<Guid> ids, CancellationToken ct = default);
+        Task UnlockAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(ICollection<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

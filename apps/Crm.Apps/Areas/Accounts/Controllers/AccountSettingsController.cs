@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Crm.Apps.Areas.Accounts.Models;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
@@ -14,9 +15,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
         [HttpGet("GetTypes")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public ActionResult<ICollection<AccountSettingType>> GetTypes()
+        public ActionResult<List<AccountSettingType>> GetTypes()
         {
-            return EnumsExtensions.GetValues<AccountSettingType>();
+            return EnumsExtensions.GetValues<AccountSettingType>().ToList();
         }
     }
 }

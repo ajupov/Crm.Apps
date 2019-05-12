@@ -22,9 +22,9 @@ namespace Crm.Clients.Users.Clients.Users
             _settings = options.Value;
         }
 
-        public Task<ICollection<UserGender>> GetGendersAsync(CancellationToken ct = default)
+        public Task<List<UserGender>> GetGendersAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<UserGender>>($"{_settings.Host}/Api/Users/GetGenders",
+            return _httpClientFactory.GetAsync<List<UserGender>>($"{_settings.Host}/Api/Users/GetGenders",
                 ct: ct);
         }
 
@@ -33,22 +33,22 @@ namespace Crm.Clients.Users.Clients.Users
             return _httpClientFactory.GetAsync<User>($"{_settings.Host}/Api/Users/Get", new {id}, ct);
         }
 
-        public Task<ICollection<User>> GetListAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task<List<User>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<User>>($"{_settings.Host}/Api/Users/GetList",
+            return _httpClientFactory.GetAsync<List<User>>($"{_settings.Host}/Api/Users/GetList",
                 new {ids}, ct);
         }
 
-        public Task<ICollection<User>> GetPagedListAsync(Guid? accountId = default, string surname = default,
+        public Task<List<User>> GetPagedListAsync(Guid? accountId = default, string surname = default,
             string name = default, string patronymic = default, DateTime? minBirthDate = default,
             DateTime? maxBirthDate = default, UserGender? gender = default, bool? isLocked = default,
             bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             bool? allAttributes = default, IDictionary<Guid, string> attributes = default,
-            bool? allPermissions = default, ICollection<Permission> permissions = default, bool? allGroupIds = default,
-            ICollection<Guid> groupIds = default, int offset = default, int limit = 10, string sortBy = default,
+            bool? allPermissions = default, List<Permission> permissions = default, bool? allGroupIds = default,
+            List<Guid> groupIds = default, int offset = default, int limit = 10, string sortBy = default,
             string orderBy = default, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ICollection<User>>($"{_settings.Host}/Api/Users/GetPagedList", new
+            return _httpClientFactory.GetAsync<List<User>>($"{_settings.Host}/Api/Users/GetPagedList", new
             {
                 accountId, surname, name, patronymic, minBirthDate, maxBirthDate, gender, isLocked, isDeleted,
                 minCreateDate, maxCreateDate, allAttributes, attributes, allPermissions, permissions, allGroupIds,
@@ -61,27 +61,27 @@ namespace Crm.Clients.Users.Clients.Users
             return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Users/Create", user, ct);
         }
 
-        public Task UpdateAsync(User newUser, CancellationToken ct = default)
+        public Task UpdateAsync(User user, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Update", newUser, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Update", user, ct);
         }
 
-        public Task LockAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task LockAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Lock", ids, ct);
         }
 
-        public Task UnlockAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task UnlockAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Unlock", ids, ct);
         }
 
-        public Task DeleteAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Delete", ids, ct);
         }
 
-        public Task RestoreAsync(ICollection<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Restore", ids, ct);
         }

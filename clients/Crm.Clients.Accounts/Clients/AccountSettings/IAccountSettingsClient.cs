@@ -7,6 +7,6 @@ namespace Crm.Clients.Accounts.Clients.AccountSettings
 {
     public interface IAccountsSettingsClient
     {
-        Task<ICollection<AccountSettingType>> GetTypesAsync(CancellationToken ct = default);
+        Task<List<AccountSettingType>> GetTypesAsync(CancellationToken ct = default);
     }
 }

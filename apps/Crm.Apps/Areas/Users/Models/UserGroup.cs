@@ -15,10 +15,10 @@ namespace Crm.Apps.Areas.Users.Models
         
         public DateTime CreateDateTime { get; set; }
 
-        public ICollection<UserGroupLink> Links { get; set; }
+        public List<UserGroupLink> Links { get; set; }
 
-        public ICollection<UserGroupPermission> Permissions { get; set; }
+        public List<UserGroupPermission> Permissions { get; set; }
         
-        public ICollection<UserGroupChange> Changes { get; set; }
+        public List<UserGroupChange> Changes { get; set; }
     }
 }

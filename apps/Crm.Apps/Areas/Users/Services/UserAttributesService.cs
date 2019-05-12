@@ -27,7 +27,7 @@ namespace Crm.Apps.Areas.Users.Services
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<UserAttribute>> GetListAsync(ICollection<Guid> ids, CancellationToken ct)
+        public Task<List<UserAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.UserAttributes.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
@@ -81,7 +81,7 @@ namespace Crm.Apps.Areas.Users.Services
             return _storage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.UserAttributes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
@@ -89,7 +89,7 @@ namespace Crm.Apps.Areas.Users.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task RestoreAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.UserAttributes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
