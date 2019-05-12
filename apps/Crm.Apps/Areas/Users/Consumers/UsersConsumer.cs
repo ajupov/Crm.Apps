@@ -66,7 +66,7 @@ namespace Crm.Apps.Areas.Users.Consumers
                 return Task.CompletedTask;
             }
 
-            return _usersService.CreateAsync(message.UserId, message.AccountId, user, ct);
+            return _usersService.CreateAsync(message.UserId, user, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)

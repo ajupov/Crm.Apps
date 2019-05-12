@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Crm.Common.UserContext;
+﻿using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +10,7 @@ namespace Crm.Apps.Areas.Accounts.Controllers
     {
         [HttpGet("")]
         [RequireAny(Permission.System, Permission.Development)]
-        public ActionResult Status(CancellationToken ct = default)
+        public ActionResult Status()
         {
             return Ok();
         }

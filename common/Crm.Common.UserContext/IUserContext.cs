@@ -16,9 +16,11 @@ namespace Crm.Common.UserContext
         ICollection<Permission> Permissions { get; }
 
         bool HasAny(params Permission[] permissions);
-        
+
         bool HasAll(params Permission[] permissions);
 
+        bool Belongs(IEnumerable<Guid> accountIds);
+        
         bool Belongs(params Guid[] accountIds);
     }
 }

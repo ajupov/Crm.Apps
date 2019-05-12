@@ -12,7 +12,8 @@ namespace Crm.Apps.Areas.Accounts.Controllers
     public class AccountSettingsController : ControllerBase
     {
         [HttpGet("GetTypes")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
         public ActionResult<ICollection<AccountSettingType>> GetTypes()
         {
             return EnumsExtensions.GetValues<AccountSettingType>();

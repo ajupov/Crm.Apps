@@ -27,7 +27,7 @@ namespace Crm.Apps.Areas.Users.Services
                 .Include(x => x.Settings).Include(x => x.Changes).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<User>> GetListAsync(ICollection<Guid> ids, CancellationToken ct)
+        public Task<List<User>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.Users.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
@@ -59,12 +59,12 @@ namespace Crm.Apps.Areas.Users.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, Guid accountId, User user, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, User user, CancellationToken ct)
         {
             var newUser = new User().CreateWithLog(userId, x =>
             {
                 x.Id = new Guid();
-                x.AccountId = accountId;
+                x.AccountId = user.AccountId;
                 x.Surname = user.Surname;
                 x.Name = user.Name;
                 x.Patronymic = user.Patronymic;
@@ -104,7 +104,7 @@ namespace Crm.Apps.Areas.Users.Services
             return _storage.SaveChangesAsync(ct);
         }
 
-        public async Task LockAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
+        public async Task LockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsLocked = true), ct).ConfigureAwait(false);
@@ -112,7 +112,7 @@ namespace Crm.Apps.Areas.Users.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task UnlockAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
+        public async Task UnlockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsLocked = false), ct).ConfigureAwait(false);
@@ -120,7 +120,7 @@ namespace Crm.Apps.Areas.Users.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task DeleteAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
@@ -128,7 +128,7 @@ namespace Crm.Apps.Areas.Users.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task RestoreAsync(Guid userId, ICollection<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Users.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);

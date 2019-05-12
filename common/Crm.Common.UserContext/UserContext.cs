@@ -38,6 +38,11 @@ namespace Crm.Common.UserContext
             return !permissions.Except(Permissions).Any();
         }
 
+        public bool Belongs(IEnumerable<Guid> accountIds)
+        {
+            return accountIds.All(x => x == AccountId);
+        }
+        
         public bool Belongs(params Guid[] accountIds)
         {
             return accountIds.All(x => x == AccountId);

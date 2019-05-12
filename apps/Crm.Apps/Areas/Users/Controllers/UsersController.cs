@@ -27,9 +27,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<User>> Get(
-            [FromQuery] Guid id,
-            CancellationToken ct = default)
+        public async Task<ActionResult<User>> Get([FromQuery] Guid id, CancellationToken ct = default)
         {
             if (id == Guid.Empty)
             {
@@ -42,12 +40,13 @@ namespace Crm.Apps.Areas.Users.Controllers
                 return NotFound();
             }
 
-            return ReturnIfAllowed(user, user.AccountId);
+            return ReturnIfAllowed(user, new[] {user.AccountId});
         }
 
         [HttpGet("GetList")]
-        public async Task<ActionResult<ICollection<User>>> GetList(
-            [FromQuery] ICollection<Guid> ids,
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
+        public async Task<ActionResult<ICollection<User>>> GetList([FromQuery] ICollection<Guid> ids,
             CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x == Guid.Empty))
@@ -57,10 +56,12 @@ namespace Crm.Apps.Areas.Users.Controllers
 
             var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(users, users.Select(x => x.AccountId).ToArray());
+            return ReturnIfAllowed<ICollection<User>>(users, users.Select(x => x.AccountId));
         }
 
         [HttpGet("GetPagedList")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
         public async Task<ActionResult<ICollection<User>>> GetPagedList(
             [FromQuery] Guid? accountId = default,
             [FromQuery] string surname = default,
@@ -90,132 +91,161 @@ namespace Crm.Apps.Areas.Users.Controllers
                     allPermissions, permissions, allGroupIds, groupIds, offset, limit, sortBy, orderBy, ct)
                 .ConfigureAwait(false);
 
+            return ReturnIfAllowed<ICollection<User>>(users, users.Select(x => x.AccountId));
+        }
+
+        [HttpPost("Create")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration)]
+        public async Task<ActionResult<Guid>> Create([FromBody] User user, CancellationToken ct = default)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            if (!_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
+                Permission.TechnicalSupport))
+            {
+                user.AccountId = _userContext.AccountId;
+            }
+
+            var id = await _usersService.CreateAsync(_userContext.UserId, user, ct).ConfigureAwait(false);
+
+            return Created(nameof(Get), id);
+        }
+
+        [HttpPost("Update")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
+        public async Task<ActionResult> Update([FromBody] User user, CancellationToken ct = default)
+        {
+            if (user.Id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var oldUser = await _usersService.GetAsync(user.Id, ct).ConfigureAwait(false);
+            if (oldUser == null)
+            {
+                return NotFound();
+            }
+
+            return await ActionIfAllowed(() => _usersService.UpdateAsync(_userContext.UserId, oldUser, user, ct),
+                new[] {oldUser.AccountId});
+        }
+
+        [HttpPost("Lock")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
+        public async Task<ActionResult> Lock([FromBody] ICollection<Guid> ids, CancellationToken ct = default)
+        {
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return BadRequest();
+            }
+
+            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+
+            return await ActionIfAllowed(
+                () => _usersService.LockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                users.Select(x => x.AccountId));
+        }
+
+        [HttpPost("Unlock")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
+        public async Task<ActionResult> Unlock([FromBody] ICollection<Guid> ids, CancellationToken ct = default)
+        {
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return BadRequest();
+            }
+
+            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+
+            return await ActionIfAllowed(
+                () => _usersService.UnlockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                users.Select(x => x.AccountId));
+        }
+
+        [HttpPost("Delete")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
+        public async Task<ActionResult> Delete([FromBody] ICollection<Guid> ids, CancellationToken ct = default)
+        {
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return BadRequest();
+            }
+
+            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+
+            return await ActionIfAllowed(
+                () => _usersService.DeleteAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                users.Select(x => x.AccountId));
+        }
+
+        [HttpPost("Restore")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
+        public async Task<ActionResult> Restore([FromBody] ICollection<Guid> ids, CancellationToken ct = default)
+        {
+            if (ids == null || ids.All(x => x == Guid.Empty))
+            {
+                return BadRequest();
+            }
+
+            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+
+            return await ActionIfAllowed(
+                () => _usersService.RestoreAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                users.Select(x => x.AccountId));
+        }
+
+        [NonAction]
+        private ActionResult<TResult> ReturnIfAllowed<TResult>(TResult result, IEnumerable<Guid> accountIds)
+        {
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                return users;
+                return result;
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning))
-            {
-                if (_userContext.Belongs(users.Select(x => x.AccountId).ToArray()))
-                {
-                    return users;
-                }
+            var accountIdsAsArray = accountIds.ToArray();
 
+            if (_userContext.HasAny(Permission.AccountOwning) && _userContext.Belongs(accountIdsAsArray))
+            {
+                return result;
+            }
+
+            if (_userContext.HasAny(Permission.AccountOwning) && !_userContext.Belongs(accountIdsAsArray))
+            {
                 return Forbid();
             }
 
             throw new Exception();
         }
 
-        [HttpPost("Create")]
-        public async Task<ActionResult<Guid>> Create(User user, CancellationToken ct = default)
-        {
-            var id = await _usersService.CreateAsync(_userContext.UserId, _userContext.AccountId, user, ct)
-                .ConfigureAwait(false);
-
-            return Created(nameof(Get), id);
-        }
-
-        [HttpPost("Update")]
-        public async Task<ActionResult<Guid>> Update(
-            [FromBody] User account,
-            CancellationToken ct = default)
-        {
-            if (account.Id == Guid.Empty)
-            {
-                return BadRequest();
-            }
-
-            var oldUser = await _usersService.GetAsync(account.Id, ct).ConfigureAwait(false);
-            if (oldUser == null)
-            {
-                return NotFound();
-            }
-
-            await _usersService.UpdateAsync(_userContext.UserId, oldUser, account, ct).ConfigureAwait(false);
-
-            return NoContent();
-        }
-
-        [HttpPost("Lock")]
-        public async Task<ActionResult> Lock(
-            [FromBody] ICollection<Guid> ids,
-            CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return BadRequest();
-            }
-
-            await _usersService.LockAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
-
-            return NoContent();
-        }
-
-        [
-            HttpPost("Unlock")]
-        public async Task<ActionResult> Unlock(
-            [FromBody] ICollection<Guid> ids,
-            CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return BadRequest();
-            }
-
-            await _usersService.UnlockAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
-
-            return NoContent();
-        }
-
-        [
-            HttpPost("Delete")]
-        public async Task<ActionResult> Delete(
-            [FromBody] ICollection<Guid> ids,
-            CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return BadRequest();
-            }
-
-            await _usersService.DeleteAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
-
-            return NoContent();
-        }
-
-        [
-            HttpPost("Restore")]
-        public async Task<ActionResult> Restore(
-            [FromBody] ICollection<Guid> ids,
-            CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x == Guid.Empty))
-            {
-                return BadRequest();
-            }
-
-            await _usersService.RestoreAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
-
-            return NoContent();
-        }
-
-        private ActionResult<T> ReturnIfAllowed<T>(T result, params Guid[] accountIds)
+        [NonAction]
+        private async Task<ActionResult> ActionIfAllowed(Func<Task> action, IEnumerable<Guid> accountIds)
         {
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                return result;
+                await action().ConfigureAwait(false);
+
+                return NoContent();
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning) && _userContext.Belongs(accountIds))
+            var accountIdsAsArray = accountIds.ToArray();
+
+            if (_userContext.HasAny(Permission.AccountOwning) && _userContext.Belongs(accountIdsAsArray))
             {
-                return result;
+                await action().ConfigureAwait(false);
+
+                return NoContent();
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning) && !_userContext.Belongs(accountIds))
+            if (_userContext.HasAny(Permission.AccountOwning) && !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();
             }
