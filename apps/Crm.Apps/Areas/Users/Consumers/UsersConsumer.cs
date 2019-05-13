@@ -7,6 +7,7 @@ using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
+using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
@@ -61,7 +62,7 @@ namespace Crm.Apps.Areas.Users.Consumers
         private Task CreateAsync(Message message, CancellationToken ct)
         {
             var user = message.Data.FromJsonString<User>();
-            if (user.Id == Guid.Empty)
+            if (user.Id.IsEmpty())
             {
                 return Task.CompletedTask;
             }
@@ -72,7 +73,7 @@ namespace Crm.Apps.Areas.Users.Consumers
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
             var newUser = message.Data.FromJsonString<User>();
-            if (newUser.Id == Guid.Empty)
+            if (newUser.Id.IsEmpty())
             {
                 return;
             }
@@ -89,7 +90,7 @@ namespace Crm.Apps.Areas.Users.Consumers
         private Task LockAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }
@@ -100,7 +101,7 @@ namespace Crm.Apps.Areas.Users.Consumers
         private Task UnlockAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }
@@ -111,7 +112,7 @@ namespace Crm.Apps.Areas.Users.Consumers
         private Task RestoreAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }
@@ -122,7 +123,7 @@ namespace Crm.Apps.Areas.Users.Consumers
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }

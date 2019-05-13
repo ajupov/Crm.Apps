@@ -17,5 +17,8 @@
         <ProjectReference Include="..\..\clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj" />
         <ProjectReference Include="..\..\clients\Crm.Clients.Users\Crm.Clients.Users.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.DependencyInjection.Tests\Crm.Infrastructure.DependencyInjection.Tests.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.DateTime\Crm.Utils.DateTime.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
     </ItemGroup>
 </Project>

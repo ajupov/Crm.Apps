@@ -21,7 +21,8 @@ namespace Crm.Apps.Areas.Accounts.Services
 
         public Task<Account> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Accounts.Include(x => x.Settings).FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.Accounts.Include(x => x.Settings).Include(x => x.Changes)
+                .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<Account>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
@@ -47,7 +48,7 @@ namespace Crm.Apps.Areas.Accounts.Services
         {
             var account = new Account().CreateWithLog(userId, x =>
             {
-                x.Id = new Guid();
+                x.Id = Guid.NewGuid();
                 x.CreateDateTime = DateTime.UtcNow;
             });
 

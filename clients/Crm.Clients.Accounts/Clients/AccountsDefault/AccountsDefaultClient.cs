@@ -21,7 +21,7 @@ namespace Crm.Clients.Accounts.Clients.AccountsDefault
 
         public Task StatusAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync(_settings.Host, ct: ct);
+            return _httpClientFactory.GetAsync($"{_settings.Host}/Api/Accounts", ct: ct);
         }
     }
 }

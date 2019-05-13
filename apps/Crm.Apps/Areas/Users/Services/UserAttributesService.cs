@@ -53,7 +53,7 @@ namespace Crm.Apps.Areas.Users.Services
         {
             var newAttribute = new UserAttribute().CreateWithLog(userId, x =>
             {
-                x.Id = new Guid();
+                x.Id = Guid.NewGuid();
                 x.Type = attribute.Type;
                 x.Key = attribute.Key;
                 x.CreateDateTime = DateTime.UtcNow;

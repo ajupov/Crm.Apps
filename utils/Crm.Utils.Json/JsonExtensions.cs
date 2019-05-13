@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Crm.Utils.Json
 {
@@ -9,9 +10,18 @@ namespace Crm.Utils.Json
             return JsonConvert.DeserializeObject<T>(value);
         }
 
-        public static string ToJsonString(this object value)
+        public static string ToJsonString(this object value, bool ignoreChanges = false)
         {
-            return JsonConvert.SerializeObject(value);
+            if (!ignoreChanges)
+            {
+                return JsonConvert.SerializeObject(value);
+            }
+            
+            var jObject = JObject.FromObject(value);
+
+            jObject["Changes"].Parent.Remove();
+
+            return jObject.ToString();
         }
     }
 }

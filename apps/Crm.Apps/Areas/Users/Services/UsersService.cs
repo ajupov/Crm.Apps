@@ -63,7 +63,7 @@ namespace Crm.Apps.Areas.Users.Services
         {
             var newUser = new User().CreateWithLog(userId, x =>
             {
-                x.Id = new Guid();
+                x.Id = Guid.NewGuid();
                 x.AccountId = user.AccountId;
                 x.Surname = user.Surname;
                 x.Name = user.Name;

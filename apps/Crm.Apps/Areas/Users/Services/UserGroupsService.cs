@@ -51,7 +51,7 @@ namespace Crm.Apps.Areas.Users.Services
         {
             var newAttribute = new UserGroup().CreateWithLog(userId, x =>
             {
-                x.Id = new Guid();
+                x.Id = Guid.NewGuid();
                 x.Name = group.Name;
                 x.CreateDateTime = DateTime.UtcNow;
             });

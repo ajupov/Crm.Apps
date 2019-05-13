@@ -7,6 +7,7 @@ using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Users.Controllers
@@ -29,7 +30,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult<User>> Get([FromQuery] Guid id, CancellationToken ct = default)
         {
-            if (id == Guid.Empty)
+            if (id.IsEmpty())
             {
                 return BadRequest();
             }
@@ -49,7 +50,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         public async Task<ActionResult<List<User>>> GetList([FromQuery] List<Guid> ids,
             CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
@@ -118,7 +119,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult> Update([FromBody] User user, CancellationToken ct = default)
         {
-            if (user.Id == Guid.Empty)
+            if (user.Id.IsEmpty())
             {
                 return BadRequest();
             }
@@ -138,7 +139,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult> Lock([FromBody] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
@@ -155,7 +156,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult> Unlock([FromBody] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
@@ -172,7 +173,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult> Delete([FromBody] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
@@ -189,7 +190,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult> Restore([FromBody] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }

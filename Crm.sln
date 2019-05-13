@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.MailSend
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.SmsSending", "infrastructure\Crm.Infrastructure.SmsSending\Crm.Infrastructure.SmsSending.csproj", "{808CD229-5A98-41F4-AA8F-1D25FD7FDEC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Utils.Guid", "utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj", "{416376AD-9099-4C47-90B1-B8C15F2687F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,7 @@ Global
 		{B02FFC40-E210-4C31-A221-4911B2BCF977} = {205533D4-E234-419B-91A4-BDF7D7022310}
 		{42ABDDF5-407A-4A92-9F8A-E97FC558504B} = {8C3BB657-F1FF-4FE9-BB5D-1C3430438118}
 		{808CD229-5A98-41F4-AA8F-1D25FD7FDEC3} = {8C3BB657-F1FF-4FE9-BB5D-1C3430438118}
+		{416376AD-9099-4C47-90B1-B8C15F2687F4} = {205533D4-E234-419B-91A4-BDF7D7022310}
 	EndGlobalSection
 GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6ADEA938-63C2-4199-BD99-B15BE22C35A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -222,5 +225,9 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 	{808CD229-5A98-41F4-AA8F-1D25FD7FDEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	{808CD229-5A98-41F4-AA8F-1D25FD7FDEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	{808CD229-5A98-41F4-AA8F-1D25FD7FDEC3}.Release|Any CPU.Build.0 = Release|Any CPU
+	{416376AD-9099-4C47-90B1-B8C15F2687F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{416376AD-9099-4C47-90B1-B8C15F2687F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{416376AD-9099-4C47-90B1-B8C15F2687F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{416376AD-9099-4C47-90B1-B8C15F2687F4}.Release|Any CPU.Build.0 = Release|Any CPU
 EndGlobalSection
 EndGlobal

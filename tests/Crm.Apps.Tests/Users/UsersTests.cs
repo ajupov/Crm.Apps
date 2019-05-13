@@ -9,6 +9,7 @@ using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Clients.UsersDefault;
 using Crm.Clients.Users.Clients.UserSettings;
 using Crm.Clients.Users.Models;
+using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Users
@@ -114,7 +115,7 @@ namespace Crm.Apps.Tests.Users
         {
             var id = await _usersClient.CreateAsync(new User()).ConfigureAwait(false);
 
-            Assert.NotEqual(id, Guid.Empty);
+            Assert.True(!id.IsEmpty());
         }
 
         [Fact]

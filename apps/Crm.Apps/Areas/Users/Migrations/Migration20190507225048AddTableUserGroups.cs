@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.UniqueConstraint("UQ_UserGroups_AccountId_Name").OnTable("UserGroups")
                 .Columns("AccountId", "Name");
 
-            Create.Index("IX_UserGroups_AccountId_Name").OnTable("UserAttributes")
+            Create.Index("IX_UserGroups_AccountId_Name").OnTable("UserGroups")
                 .OnColumn("AccountId").Descending()
                 .OnColumn("Name").Ascending()
                 .OnColumn("IsDeleted").Ascending()
@@ -28,7 +28,7 @@ namespace Crm.Apps.Areas.Users.Migrations
         {
             Delete.Index("IX_UserGroups_AccountId_Name").OnTable("UserGroups");
             Delete.UniqueConstraint("UQ_UserGroups_AccountId_Name").FromTable("UserGroups");
-            Delete.Table("UserAttributes");
+            Delete.Table("UserGroups");
         }
     }
 }

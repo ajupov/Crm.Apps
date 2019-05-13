@@ -7,6 +7,7 @@ using Crm.Apps.Areas.Accounts.Models;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
+using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
@@ -66,7 +67,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
             var newAccount = message.Data.FromJsonString<Account>();
-            if (newAccount.Id == Guid.Empty)
+            if (newAccount.Id.IsEmpty())
             {
                 return;
             }
@@ -83,7 +84,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
         private Task LockAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }
@@ -94,7 +95,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
         private Task UnlockAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }
@@ -105,7 +106,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
         private Task RestoreAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }
@@ -116,7 +117,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return Task.CompletedTask;
             }

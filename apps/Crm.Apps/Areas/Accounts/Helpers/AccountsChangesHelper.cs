@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Accounts.Helpers
                 ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
-                NewValueJson = account.ToJsonString()
+                NewValueJson = account.ToJsonString(true)
             };
 
             account.AddChange(change);

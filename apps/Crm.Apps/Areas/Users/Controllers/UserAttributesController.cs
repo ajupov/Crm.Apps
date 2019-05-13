@@ -8,6 +8,7 @@ using Crm.Apps.Areas.Users.Services;
 using Crm.Common.Types;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Users.Controllers
@@ -30,7 +31,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult<UserAttribute>> Get([FromQuery] Guid id, CancellationToken ct = default)
         {
-            if (id == Guid.Empty)
+            if (id.IsEmpty())
             {
                 return BadRequest();
             }
@@ -50,7 +51,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         public async Task<ActionResult<List<UserAttribute>>> GetList([FromQuery] List<Guid> ids,
             CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
@@ -107,7 +108,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
         public async Task<ActionResult> Update([FromBody] UserAttribute attribute, CancellationToken ct = default)
         {
-            if (attribute.Id == Guid.Empty)
+            if (attribute.Id.IsEmpty())
             {
                 return BadRequest();
             }
@@ -128,7 +129,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult> Delete([FromBody] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
@@ -145,7 +146,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             Permission.AccountOwning)]
         public async Task<ActionResult> Restore([FromBody] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x == Guid.Empty))
+            if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }

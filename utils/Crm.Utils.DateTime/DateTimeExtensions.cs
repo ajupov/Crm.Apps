@@ -59,14 +59,24 @@ namespace Crm.Utils.DateTime
             return DateTimeFormatInfo.CurrentInfo?.GetMonthName(month);
         }
 
-        public static SystemDateTime FirstDayOfYear(this SystemDateTime date)
+        public static SystemDateTime FirstDayOfYear(this SystemDateTime value)
         {
-            return new SystemDateTime(date.Year, 1, 1);
+            return new SystemDateTime(value.Year, 1, 1);
         }
 
-        public static SystemDateTime FirstDayOfMonth(this SystemDateTime date)
+        public static SystemDateTime FirstDayOfMonth(this SystemDateTime value)
         {
-            return new SystemDateTime(date.Year, date.Month, 1);
+            return new SystemDateTime(value.Year, value.Month, 1);
+        }
+
+        public static bool IsMoreThanMinValue(this SystemDateTime value)
+        {
+            return value > SystemDateTime.MinValue;
+        }
+
+        public static bool IsLessThanMaxValue(this SystemDateTime value)
+        {
+            return value < SystemDateTime.MaxValue;
         }
     }
 }

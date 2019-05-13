@@ -2,7 +2,9 @@
 using Crm.Apps.Areas.Accounts.Consumers;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Apps.Areas.Accounts.Storages;
+using Crm.Apps.Areas.Users.Consumers;
 using Crm.Apps.Areas.Users.Services;
+using Crm.Apps.Areas.Users.Storages;
 using Crm.Common.UserContext;
 using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
@@ -41,11 +43,17 @@ namespace Crm.Apps
                             .ConfigureTracing(ApplicationName)
                             .ConfigureMigrator(configuration)
                             .ConfigureOrm<AccountsStorage>(configuration)
+                            .ConfigureOrm<UsersStorage>(configuration)
                             .ConfigureConsumer<AccountsConsumer>(configuration)
+                            .ConfigureConsumer<UsersConsumer>(configuration)
+                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
+                            .ConfigureConsumer<UserGroupsConsumer>(configuration)
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .AddTransient<IAccountsService, AccountsService>()
-                            .AddTransient<IUsersService, UsersService>();
+                            .AddTransient<IUsersService, UsersService>()
+                            .AddTransient<IUserAttributesService, UserAttributesService>()
+                            .AddTransient<IUserGroupsService, UserGroupsService>();
                     })
                     .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)

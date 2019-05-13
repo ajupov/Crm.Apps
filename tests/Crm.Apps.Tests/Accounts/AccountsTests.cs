@@ -6,6 +6,8 @@ using Crm.Clients.Accounts.Clients.Accounts;
 using Crm.Clients.Accounts.Clients.AccountsDefault;
 using Crm.Clients.Accounts.Clients.AccountSettings;
 using Crm.Clients.Accounts.Models;
+using Crm.Utils.DateTime;
+using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Accounts
@@ -16,9 +18,7 @@ namespace Crm.Apps.Tests.Accounts
         private readonly IAccountsClient _accountsClient;
         private readonly IAccountsSettingsClient _accountsSettingsClient;
 
-        public AccountsTests(
-            IAccountsDefaultClient accountsDefaultClient,
-            IAccountsClient accountsClient,
+        public AccountsTests(IAccountsDefaultClient accountsDefaultClient, IAccountsClient accountsClient,
             IAccountsSettingsClient accountsSettingsClient)
         {
             _accountsDefaultClient = accountsDefaultClient;
@@ -46,9 +46,17 @@ namespace Crm.Apps.Tests.Accounts
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
             var account = await _accountsClient.GetAsync(id).ConfigureAwait(false);
-
+            var change = account.Changes.First();
+            
             Assert.NotNull(account);
             Assert.Equal(id, account.Id);
+            Assert.False(account.IsLocked);
+            Assert.False(account.IsDeleted);
+            Assert.True(account.CreateDateTime.IsMoreThanMinValue());
+            Assert.Empty(account.Settings);
+            
+            Assert.NotNull(change);
+            Assert.True(!change.Id.IsEmpty());
         }
 
         [Fact]
@@ -84,7 +92,7 @@ namespace Crm.Apps.Tests.Accounts
         {
             var id = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
-            Assert.NotEqual(id, Guid.Empty);
+            Assert.True(!id.IsEmpty());
         }
 
         [Fact]
