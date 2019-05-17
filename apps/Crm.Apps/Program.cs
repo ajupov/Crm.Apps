@@ -51,9 +51,13 @@ namespace Crm.Apps
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .AddTransient<IAccountsService, AccountsService>()
+                            .AddTransient<IAccountChangesService, AccountChangesService>()
                             .AddTransient<IUsersService, UsersService>()
+                            .AddTransient<IUserChangesService, UserChangesService>()
                             .AddTransient<IUserAttributesService, UserAttributesService>()
-                            .AddTransient<IUserGroupsService, UserGroupsService>();
+                            .AddTransient<IUserAttributeChangesService, UserAttributeChangesService>()
+                            .AddTransient<IUserGroupsService, UserGroupsService>()
+                            .AddTransient<IUserGroupChangesService, UserGroupChangesService>();
                     })
                     .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)

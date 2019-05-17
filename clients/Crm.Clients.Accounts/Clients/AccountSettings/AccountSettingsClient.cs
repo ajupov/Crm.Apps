@@ -9,15 +9,15 @@ using Microsoft.Extensions.Options;
 
 namespace Crm.Clients.Accounts.Clients.AccountSettings
 {
-    public class AccountSettingsClient : IAccountsSettingsClient
+    public class AccountSettingsClient : IAccountSettingsClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly AccountsClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public AccountSettingsClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<AccountSettingType>> GetTypesAsync(CancellationToken ct = default)

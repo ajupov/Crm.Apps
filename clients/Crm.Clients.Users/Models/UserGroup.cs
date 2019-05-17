@@ -18,7 +18,5 @@ namespace Crm.Clients.Users.Models
         public List<UserGroupLink> Links { get; set; }
 
         public List<UserGroupPermission> Permissions { get; set; }
-        
-        public List<UserGroupChange> Changes { get; set; }
     }
 }

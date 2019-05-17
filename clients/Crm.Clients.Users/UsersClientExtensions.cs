@@ -1,7 +1,9 @@
-﻿using Crm.Clients.Users.Clients.UserAttributes;
+﻿using Crm.Clients.Users.Clients.UserAttributeChanges;
+using Crm.Clients.Users.Clients.UserAttributes;
+using Crm.Clients.Users.Clients.UserChanges;
+using Crm.Clients.Users.Clients.UserGroupChanges;
 using Crm.Clients.Users.Clients.UserGroups;
 using Crm.Clients.Users.Clients.Users;
-using Crm.Clients.Users.Clients.UsersDefault;
 using Crm.Clients.Users.Clients.UserSettings;
 using Crm.Clients.Users.Settings;
 using Microsoft.Extensions.Configuration;
@@ -17,11 +19,13 @@ namespace Crm.Clients.Users
             return services
                 .AddHttpClient()
                 .Configure<UsersClientSettings>(configuration.GetSection("UsersClientSettings"))
-                .AddSingleton<IUsersDefaultClient, UsersDefaultClient>()
                 .AddSingleton<IUsersClient, UsersClient>()
+                .AddSingleton<IUserChangesClient, UserChangesClient>()
                 .AddSingleton<IUserAttributesClient, UserAttributesClient>()
+                .AddSingleton<IUserAttributeChangesClient, UserAttributeChangesClient>()
                 .AddSingleton<IUserGroupsClient, UserGroupsClient>()
-                .AddSingleton<IUsersSettingsClient, UsersSettingsClient>();
+                .AddSingleton<IUserGroupChangesClient, UserGroupChangesClient>()
+                .AddSingleton<IUserSettingsClient, UserSettingsClient>();
         }
     }
 }

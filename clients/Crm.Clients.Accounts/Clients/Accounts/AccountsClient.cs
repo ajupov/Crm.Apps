@@ -12,13 +12,13 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 {
     public class AccountsClient : IAccountsClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly AccountsClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public AccountsClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<Account> GetAsync(Guid id, CancellationToken ct = default)

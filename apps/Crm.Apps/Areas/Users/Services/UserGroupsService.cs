@@ -22,8 +22,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<UserGroup> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.UserGroups.Include(x => x.Links).Include(x => x.Changes)
-                .FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.UserGroups.Include(x => x.Links).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<UserGroup>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
@@ -49,46 +48,55 @@ namespace Crm.Apps.Areas.Users.Services
 
         public async Task<Guid> CreateAsync(Guid userId, UserGroup group, CancellationToken ct)
         {
-            var newAttribute = new UserGroup().CreateWithLog(userId, x =>
+            var newGroup = new UserGroup();
+            var change = newGroup.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
                 x.Name = group.Name;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(newAttribute, ct).ConfigureAwait(false);
-
+            var entry = await _storage.AddAsync(newGroup, ct).ConfigureAwait(false);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public Task UpdateAsync(Guid userId, UserGroup oldGroup, UserGroup newGroup, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, UserGroup oldGroup, UserGroup newGroup, CancellationToken ct)
         {
-            oldGroup.UpdateWithLog(userId, x =>
+            var change = oldGroup.WithUpdateLog(userId, x =>
             {
                 x.Name = newGroup.Name;
                 x.IsDeleted = newGroup.IsDeleted;
             });
 
             _storage.Update(oldGroup);
-
-            return _storage.SaveChangesAsync(ct);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.UserGroups.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
+            var changes = new List<UserGroupChange>();
 
+            await _storage.UserGroups.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.UserGroups.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
+            var changes = new List<UserGroupChange>();
 
+            await _storage.UserGroups.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
     }

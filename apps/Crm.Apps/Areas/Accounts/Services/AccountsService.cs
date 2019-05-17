@@ -21,8 +21,7 @@ namespace Crm.Apps.Areas.Accounts.Services
 
         public Task<Account> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Accounts.Include(x => x.Settings).Include(x => x.Changes)
-                .FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.Accounts.Include(x => x.Settings).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<Account>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
@@ -46,22 +45,23 @@ namespace Crm.Apps.Areas.Accounts.Services
 
         public async Task<Guid> CreateAsync(Guid userId, CancellationToken ct)
         {
-            var account = new Account().CreateWithLog(userId, x =>
+            var account = new Account();
+            var change = account.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
             var entry = await _storage.AddAsync(account, ct).ConfigureAwait(false);
-
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public Task UpdateAsync(Guid userId, Account oldAccount, Account newAccount, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Account oldAccount, Account newAccount, CancellationToken ct)
         {
-            oldAccount.UpdateWithLog(userId, x =>
+            var change = oldAccount.WithUpdateLog(userId, x =>
             {
                 x.IsLocked = newAccount.IsLocked;
                 x.IsDeleted = newAccount.IsDeleted;
@@ -69,39 +69,55 @@ namespace Crm.Apps.Areas.Accounts.Services
             });
 
             _storage.Update(oldAccount);
-
-            return _storage.SaveChangesAsync(ct);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task LockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = true), ct).ConfigureAwait(false);
+            var changes = new List<AccountChange>();
 
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsLocked = true)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task UnlockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsLocked = false), ct).ConfigureAwait(false);
+            var changes = new List<AccountChange>();
 
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsLocked = false)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
+            var changes = new List<AccountChange>();
 
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Accounts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(a => a.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
+            var changes = new List<AccountChange>();
 
+            await _storage.Accounts.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
     }

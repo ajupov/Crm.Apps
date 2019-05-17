@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Crm.Apps.Areas.Accounts.Models
 {
@@ -15,7 +14,5 @@ namespace Crm.Apps.Areas.Accounts.Models
         public DateTime CreateDateTime { get; set; }
 
         public List<AccountSetting> Settings { get; set; }
-
-        public List<AccountChange> Changes { get; set; }
     }
 }

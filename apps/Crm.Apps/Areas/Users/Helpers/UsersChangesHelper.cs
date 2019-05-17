@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Utils.Json;
 
@@ -7,11 +6,11 @@ namespace Crm.Apps.Areas.Users.Helpers
 {
     public static class UsersChangesHelper
     {
-        public static User CreateWithLog(this User user, Guid userId, Action<User> action)
+        public static UserChange CreateWithLog(this User user, Guid userId, Action<User> action)
         {
             action(user);
 
-            var change = new UserChange
+            return new UserChange
             {
                 UserId = user.Id,
                 ChangerUserId = userId,
@@ -19,19 +18,15 @@ namespace Crm.Apps.Areas.Users.Helpers
                 OldValueJson = string.Empty,
                 NewValueJson = user.ToJsonString()
             };
-
-            user.AddChange(change);
-
-            return user;
         }
 
-        public static void UpdateWithLog(this User user, Guid userId, Action<User> action)
+        public static UserChange UpdateWithLog(this User user, Guid userId, Action<User> action)
         {
             var oldValueJson = user.ToJsonString();
 
             action(user);
 
-            var change = new UserChange
+            return new UserChange
             {
                 UserId = user.Id,
                 ChangerUserId = userId,
@@ -39,18 +34,6 @@ namespace Crm.Apps.Areas.Users.Helpers
                 OldValueJson = oldValueJson,
                 NewValueJson = user.ToJsonString()
             };
-
-            user.AddChange(change);
-        }
-
-        private static void AddChange(this User user, UserChange change)
-        {
-            if (user.Changes == null)
-            {
-                user.Changes = new List<UserChange>();
-            }
-
-            user.Changes.Add(change);
         }
     }
 }

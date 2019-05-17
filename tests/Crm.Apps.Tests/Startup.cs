@@ -16,8 +16,7 @@ namespace Crm.Apps.Tests
             var configuration = ConfigurationExtensions.GetConfiguration();
 
             services
-                .ConfigureAccountsClient(configuration);
-            services
+                .ConfigureAccountsClient(configuration)
                 .ConfigureUsersClient(configuration);
         }
     }

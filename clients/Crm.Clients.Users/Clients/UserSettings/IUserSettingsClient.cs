@@ -5,7 +5,7 @@ using Crm.Clients.Users.Models;
 
 namespace Crm.Clients.Users.Clients.UserSettings
 {
-    public interface IUsersSettingsClient
+    public interface IUserSettingsClient
     {
         Task<List<UserSettingType>> GetTypesAsync(CancellationToken ct = default);
     }

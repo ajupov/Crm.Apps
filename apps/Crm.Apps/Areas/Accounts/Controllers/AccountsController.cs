@@ -14,12 +14,12 @@ namespace Crm.Apps.Areas.Accounts.Controllers
 {
     [ApiController]
     [Route("Api/Accounts")]
-    public class AccountsV1Controller : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IAccountsService _accountsService;
 
-        public AccountsV1Controller(IUserContext userContext, IAccountsService accountsService)
+        public AccountsController(IUserContext userContext, IAccountsService accountsService)
         {
             _userContext = userContext;
             _accountsService = accountsService;

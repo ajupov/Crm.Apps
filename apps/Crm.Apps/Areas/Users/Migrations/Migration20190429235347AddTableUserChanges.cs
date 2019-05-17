@@ -15,10 +15,6 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.ForeignKey("FK_UserChanges_UserId")
-                .FromTable("UserChanges").ForeignColumn("UserId")
-                .ToTable("Users").PrimaryColumn("Id");
-
             Create.Index("IX_UserChanges_ChangerUserId_UserId").OnTable("UserChanges")
                 .OnColumn("ChangerUserId").Descending()
                 .OnColumn("UserId").Descending()
@@ -28,7 +24,6 @@ namespace Crm.Apps.Areas.Users.Migrations
         public override void Down()
         {
             Delete.Index("IX_UserChanges_ChangerUserId_UserId").OnTable("UserChanges");
-            Delete.ForeignKey("FK_UserChanges_UserId").OnTable("UserChanges");
             Delete.Table("UserChanges");
         }
     }

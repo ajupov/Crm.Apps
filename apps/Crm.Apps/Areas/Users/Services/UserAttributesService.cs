@@ -23,8 +23,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<UserAttribute> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.UserAttributes.Include(x => x.Links).Include(x => x.Changes)
-                .FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.UserAttributes.Include(x => x.Links).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<UserAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
@@ -51,7 +50,8 @@ namespace Crm.Apps.Areas.Users.Services
 
         public async Task<Guid> CreateAsync(Guid userId, UserAttribute attribute, CancellationToken ct)
         {
-            var newAttribute = new UserAttribute().CreateWithLog(userId, x =>
+            var newAttribute = new UserAttribute();
+            var change = newAttribute.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
                 x.Type = attribute.Type;
@@ -60,16 +60,16 @@ namespace Crm.Apps.Areas.Users.Services
             });
 
             var entry = await _storage.AddAsync(newAttribute, ct).ConfigureAwait(false);
-
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public Task UpdateAsync(Guid userId, UserAttribute oldAttribute, UserAttribute newAttribute,
+        public async Task UpdateAsync(Guid userId, UserAttribute oldAttribute, UserAttribute newAttribute,
             CancellationToken ct)
         {
-            oldAttribute.UpdateWithLog(userId, x =>
+            var change = oldAttribute.WithUpdateLog(userId, x =>
             {
                 x.Type = newAttribute.Type;
                 x.Key = newAttribute.Key;
@@ -77,23 +77,31 @@ namespace Crm.Apps.Areas.Users.Services
             });
 
             _storage.Update(oldAttribute);
-
-            return _storage.SaveChangesAsync(ct);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.UserAttributes.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = true), ct).ConfigureAwait(false);
+            var changes = new List<UserAttributeChange>();
 
+            await _storage.UserAttributes.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.UserAttributes.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => u.UpdateWithLog(userId, x => x.IsDeleted = false), ct).ConfigureAwait(false);
+            var changes = new List<UserAttributeChange>();
 
+            await _storage.UserAttributes.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
+                .ConfigureAwait(false);
+
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
     }

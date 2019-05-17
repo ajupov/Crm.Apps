@@ -9,12 +9,12 @@ using Microsoft.Extensions.Options;
 
 namespace Crm.Clients.Users.Clients.UserSettings
 {
-    public class UsersSettingsClient : IUsersSettingsClient
+    public class UserSettingsClient : IUserSettingsClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly UsersClientSettings _settings;
 
-        public UsersSettingsClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
+        public UserSettingsClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             _settings = options.Value;

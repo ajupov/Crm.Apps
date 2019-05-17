@@ -15,10 +15,6 @@ namespace Crm.Apps.Areas.Accounts.Migrations
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.ForeignKey("FK_AccountChanges_AccountId")
-                .FromTable("AccountChanges").ForeignColumn("AccountId")
-                .ToTable("Accounts").PrimaryColumn("Id");
-
             Create.Index("IX_AccountChanges_ChangerUserId_AccountId").OnTable("AccountChanges")
                 .OnColumn("ChangerUserId").Descending()
                 .OnColumn("AccountId").Descending()
@@ -28,7 +24,6 @@ namespace Crm.Apps.Areas.Accounts.Migrations
         public override void Down()
         {
             Delete.Index("IX_AccountChanges_ChangerUserId_AccountId").OnTable("AccountChanges");
-            Delete.ForeignKey("FK_AccountChanges_AccountId").OnTable("AccountChanges");
             Delete.Table("AccountChanges");
         }
     }

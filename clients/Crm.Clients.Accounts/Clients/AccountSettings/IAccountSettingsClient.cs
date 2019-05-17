@@ -5,7 +5,7 @@ using Crm.Clients.Accounts.Models;
 
 namespace Crm.Clients.Accounts.Clients.AccountSettings
 {
-    public interface IAccountsSettingsClient
+    public interface IAccountSettingsClient
     {
         Task<List<AccountSettingType>> GetTypesAsync(CancellationToken ct = default);
     }

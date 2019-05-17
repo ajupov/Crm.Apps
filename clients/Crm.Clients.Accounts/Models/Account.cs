@@ -14,7 +14,5 @@ namespace Crm.Clients.Accounts.Models
         public DateTime CreateDateTime { get; set; }
 
         public List<AccountSetting> Settings { get; set; }
-
-        public List<AccountChange> Changes { get; set; }
     }
 }

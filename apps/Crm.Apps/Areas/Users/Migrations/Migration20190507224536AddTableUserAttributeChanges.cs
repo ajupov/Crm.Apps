@@ -15,10 +15,6 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.ForeignKey("FK_UserAttributesChanges_AttributeId")
-                .FromTable("UserAttributesChanges").ForeignColumn("AttributeId")
-                .ToTable("UserAttributes").PrimaryColumn("Id");
-
             Create.Index("IX_UserAttributesChanges_ChangerUserId_AttributeId").OnTable("UserAttributesChanges")
                 .OnColumn("ChangerUserId").Descending()
                 .OnColumn("AttributeId").Descending()
@@ -28,7 +24,6 @@ namespace Crm.Apps.Areas.Users.Migrations
         public override void Down()
         {
             Delete.Index("IX_UserAttributesChanges_ChangerUserId_AttributeId").OnTable("UserAttributesChanges");
-            Delete.ForeignKey("FK_UserAttributesChanges_AttributeId").OnTable("UserAttributesChanges");
             Delete.Table("UserAttributesChanges");
         }
     }

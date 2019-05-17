@@ -35,7 +35,5 @@ namespace Crm.Clients.Users.Models
         public List<UserGroupLink> GroupLinks { get; set; }
 
         public List<UserSetting> Settings { get; set; }
-        
-        public List<UserChange> Changes { get; set; }
     }
 }
