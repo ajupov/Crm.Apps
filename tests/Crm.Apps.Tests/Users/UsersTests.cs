@@ -173,7 +173,7 @@ namespace Crm.Apps.Tests.Users
         }
 
         [Fact]
-        public async Task UnlockUser()
+        public async Task WhenUnlock_ThenSuccess()
         {
             var accountId = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
@@ -190,7 +190,7 @@ namespace Crm.Apps.Tests.Users
         }
 
         [Fact]
-        public async Task DeleteUser()
+        public async Task WhenDelete_ThenSuccess()
         {
             var accountId = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
@@ -207,7 +207,7 @@ namespace Crm.Apps.Tests.Users
         }
 
         [Fact]
-        public async Task RestoreUser()
+        public async Task WhenRestore_ThenSuccess()
         {
             var accountId = await _accountsClient.CreateAsync().ConfigureAwait(false);
 
