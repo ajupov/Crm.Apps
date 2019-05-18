@@ -28,7 +28,7 @@ namespace Crm.Clients.Users.Clients.UserGroups
 
         public Task<List<UserGroup>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetList",
+            return _httpClientFactory.PostAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetList",
                 new {ids}, ct);
         }
 
@@ -37,11 +37,21 @@ namespace Crm.Clients.Users.Clients.UserGroups
             int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetPagedList",
-                new
-                {
-                    accountId, name, isDeleted, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy
-                }, ct);
+            var parameter = new
+            {
+                AccountId = accountId,
+                Name = name,
+                IsDeleted = isDeleted,
+                MinCreateDate = minCreateDate,
+                MaxCreateDate = maxCreateDate,
+                Offset = offset,
+                Limit = limit,
+                SortBy = sortBy,
+                OrderBy = orderBy
+            };
+
+            return _httpClientFactory.PostAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetPagedList",
+                parameter, ct);
         }
 
         public Task<Guid> CreateAsync(UserGroup group, CancellationToken ct = default)

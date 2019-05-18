@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Helpers;
 using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
 using Crm.Apps.Areas.Users.Storages;
-using Crm.Common.UserContext;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,30 +32,28 @@ namespace Crm.Apps.Areas.Users.Services
             return _storage.Users.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<User>> GetPagedListAsync(Guid? accountId, string surname, string name, string patronymic,
-            DateTime? minBirthDate, DateTime? maxBirthDate, UserGender? gender, bool? isLocked, bool? isDeleted,
-            DateTime? minCreateDate, DateTime? maxCreateDate, bool? allAttributes, IDictionary<Guid, string> attributes,
-            bool? allPermissions, List<Permission> permissions, bool? allGroupIds, List<Guid> groupIds,
-            int offset, int limit, string sortBy, string orderBy, CancellationToken ct)
+        public Task<List<User>> GetPagedListAsync(UserGetPagedListParameter parameter, CancellationToken ct)
         {
             return _storage.Users.Where(x =>
-                    (!accountId.HasValue || x.AccountId == accountId) &&
-                    (surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{surname}%")) &&
-                    (name.IsEmpty() || EF.Functions.Like(x.Name, $"{name}%")) &&
-                    (patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{patronymic}%")) &&
-                    (!minBirthDate.HasValue || x.BirthDate >= minBirthDate) &&
-                    (!maxBirthDate.HasValue || x.BirthDate <= maxBirthDate) &&
-                    (!gender.HasValue || x.Gender == gender) &&
-                    (!isLocked.HasValue || x.IsLocked == isLocked) &&
-                    (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
-                    (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
-                    (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate) &&
-                    (!attributes.Any() || x.FilterByAttributes(allAttributes, attributes)) &&
-                    (!permissions.Any() || x.FilterByPermissions(allPermissions, permissions)) &&
-                    (!groupIds.Any() || x.FilterByGroupIds(allGroupIds, groupIds)))
-                .Sort(sortBy, orderBy)
-                .Skip(offset)
-                .Take(limit)
+                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
+                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
+                    (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
+                    (!parameter.MinBirthDate.HasValue || x.BirthDate >= parameter.MinBirthDate) &&
+                    (!parameter.MaxBirthDate.HasValue || x.BirthDate <= parameter.MaxBirthDate) &&
+                    (!parameter.Gender.HasValue || x.Gender == parameter.Gender) &&
+                    (!parameter.IsLocked.HasValue || x.IsLocked == parameter.IsLocked) &&
+                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
+                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
+                    (!parameter.Attributes.Any() ||
+                     x.FilterByAttributes(parameter.AllAttributes, parameter.Attributes)) &&
+                    (!parameter.Permissions.Any() ||
+                     x.FilterByPermissions(parameter.AllPermissions, parameter.Permissions)) &&
+                    (!parameter.GroupIds.Any() || x.FilterByGroupIds(parameter.AllGroupIds, parameter.GroupIds)))
+                .Sort(parameter.SortBy, parameter.OrderBy)
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToListAsync(ct);
         }
 

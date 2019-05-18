@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
@@ -33,11 +34,11 @@ namespace Crm.Apps.Areas.Users.Controllers
         {
             return EnumsExtensions.GetValues<UserGender>().ToList();
         }
-        
+
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<User>> Get([FromQuery] Guid id, CancellationToken ct = default)
+        public async Task<ActionResult<User>> Get(Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
             {
@@ -53,11 +54,10 @@ namespace Crm.Apps.Areas.Users.Controllers
             return ReturnIfAllowed(user, new[] {user.AccountId});
         }
 
-        [HttpGet("GetList")]
+        [HttpPost("GetList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<List<User>>> GetList([FromQuery] List<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult<List<User>>> GetList(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
@@ -69,45 +69,20 @@ namespace Crm.Apps.Areas.Users.Controllers
             return ReturnIfAllowed(users, users.Select(x => x.AccountId));
         }
 
-        [HttpGet("GetPagedList")]
+        [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult<List<User>>> GetPagedList(
-            [FromQuery] Guid? accountId = default,
-            [FromQuery] string surname = default,
-            [FromQuery] string name = default,
-            [FromQuery] string patronymic = default,
-            [FromQuery] DateTime? minBirthDate = default,
-            [FromQuery] DateTime? maxBirthDate = default,
-            [FromQuery] UserGender? gender = default,
-            [FromQuery] bool? isLocked = default,
-            [FromQuery] bool? isDeleted = default,
-            [FromQuery] DateTime? minCreateDate = default,
-            [FromQuery] DateTime? maxCreateDate = default,
-            [FromQuery] bool? allAttributes = default,
-            [FromQuery] IDictionary<Guid, string> attributes = default,
-            [FromQuery] bool? allPermissions = default,
-            [FromQuery] List<Permission> permissions = default,
-            [FromQuery] bool? allGroupIds = default,
-            [FromQuery] List<Guid> groupIds = default,
-            [FromQuery] int offset = default,
-            [FromQuery] int limit = 10,
-            [FromQuery] string sortBy = default,
-            [FromQuery] string orderBy = default,
+        public async Task<ActionResult<List<User>>> GetPagedList(UserGetPagedListParameter parameter,
             CancellationToken ct = default)
-        // http://localhost:5000/Api/Users/GetPagedList?attributes[5705463B-96F6-4B4D-9BEF-1ACF556A373E]="asd"
         {
-            var users = await _usersService.GetPagedListAsync(accountId, surname, name, patronymic, minBirthDate,
-                    maxBirthDate, gender, isLocked, isDeleted, minCreateDate, maxCreateDate, allAttributes, attributes,
-                    allPermissions, permissions, allGroupIds, groupIds, offset, limit, sortBy, orderBy, ct)
-                .ConfigureAwait(false);
+            var users = await _usersService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
             return ReturnIfAllowed(users, users.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration)]
-        public async Task<ActionResult<Guid>> Create([FromBody] User user, CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(User user, CancellationToken ct = default)
         {
             if (user == null)
             {
@@ -127,7 +102,7 @@ namespace Crm.Apps.Areas.Users.Controllers
 
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult> Update([FromBody] User user, CancellationToken ct = default)
+        public async Task<ActionResult> Update(User user, CancellationToken ct = default)
         {
             if (user.Id.IsEmpty())
             {
@@ -147,7 +122,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [HttpPost("Lock")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult> Lock([FromBody] List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Lock(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
@@ -164,7 +139,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [HttpPost("Unlock")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult> Unlock([FromBody] List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Unlock(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
@@ -181,7 +156,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [HttpPost("Delete")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult> Delete([FromBody] List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
@@ -198,7 +173,7 @@ namespace Crm.Apps.Areas.Users.Controllers
         [HttpPost("Restore")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
-        public async Task<ActionResult> Restore([FromBody] List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {

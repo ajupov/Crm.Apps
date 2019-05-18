@@ -35,8 +35,7 @@ namespace Crm.Clients.Users.Clients.Users
 
         public Task<List<User>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<User>>($"{_settings.Host}/Api/Users/GetList",
-                new {ids}, ct);
+            return _httpClientFactory.PostAsync<List<User>>($"{_settings.Host}/Api/Users/GetList", ids, ct);
         }
 
         public Task<List<User>> GetPagedListAsync(Guid? accountId = default, string surname = default,
@@ -48,12 +47,32 @@ namespace Crm.Clients.Users.Clients.Users
             List<Guid> groupIds = default, int offset = default, int limit = 10, string sortBy = default,
             string orderBy = default, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<User>>($"{_settings.Host}/Api/Users/GetPagedList", new
+            var parameter = new
             {
-                accountId, surname, name, patronymic, minBirthDate, maxBirthDate, gender, isLocked, isDeleted,
-                minCreateDate, maxCreateDate, allAttributes, attributes, allPermissions, permissions, allGroupIds,
-                groupIds, offset, limit, sortBy, orderBy
-            }, ct);
+                AccountId = accountId,
+                Surname = surname,
+                Name = name,
+                Patronymic = patronymic,
+                MinBirthDate = minBirthDate,
+                MaxBirthDate = maxBirthDate,
+                Gender = gender,
+                IsLocked = isLocked,
+                IsDeleted = isDeleted,
+                MinCreateDate = minCreateDate,
+                MaxCreateDate = maxCreateDate,
+                AllAttributes = allAttributes,
+                Attributes = attributes,
+                AllPermissions = allPermissions,
+                Permissions = permissions,
+                AllGroupIds = allGroupIds,
+                GgroupIds = groupIds,
+                Offset = offset,
+                Limit = limit,
+                SortBy = sortBy,
+                OrderBy = orderBy
+            };
+
+            return _httpClientFactory.PostAsync<List<User>>($"{_settings.Host}/Api/Users/GetPagedList", parameter, ct);
         }
 
         public Task<Guid> CreateAsync(User user, CancellationToken ct = default)

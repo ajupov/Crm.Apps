@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Helpers;
 using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
 using Crm.Apps.Areas.Users.Storages;
 using Crm.Common.Types;
 using Crm.Utils.String;
@@ -31,20 +32,19 @@ namespace Crm.Apps.Areas.Users.Services
             return _storage.UserAttributes.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<UserAttribute>> GetPagedListAsync(Guid? accountId, AttributeType? type, string key,
-            bool? isDeleted, DateTime? minCreateDate, DateTime? maxCreateDate, int offset, int limit, string sortBy,
-            string orderBy, CancellationToken ct)
+        public Task<List<UserAttribute>> GetPagedListAsync(UserAttributeGetPagedListParameter parameter,
+            CancellationToken ct)
         {
             return _storage.UserAttributes.Where(x =>
-                    (!accountId.HasValue || x.AccountId == accountId) &&
-                    (!type.HasValue || x.Type == type) &&
-                    (key.IsEmpty() || EF.Functions.Like(x.Key, $"{key}%")) &&
-                    (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
-                    (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
-                    (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate))
-                .Sort(sortBy, orderBy)
-                .Skip(offset)
-                .Take(limit)
+                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (!parameter.Type.HasValue || x.Type == parameter.Type) &&
+                    (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
+                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
+                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
+                .Sort(parameter.SortBy, parameter.OrderBy)
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToListAsync(ct);
         }
 

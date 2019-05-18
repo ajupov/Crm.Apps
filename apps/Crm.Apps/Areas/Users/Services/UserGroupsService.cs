@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Helpers;
 using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
 using Crm.Apps.Areas.Users.Storages;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
@@ -30,19 +31,17 @@ namespace Crm.Apps.Areas.Users.Services
             return _storage.UserGroups.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<UserGroup>> GetPagedListAsync(Guid? accountId, string name, bool? isDeleted,
-            DateTime? minCreateDate, DateTime? maxCreateDate, int offset, int limit, string sortBy, string orderBy,
-            CancellationToken ct)
+        public Task<List<UserGroup>> GetPagedListAsync(UserGroupGetPagedListParameter parameter, CancellationToken ct)
         {
             return _storage.UserGroups.Where(x =>
-                    (!accountId.HasValue || x.AccountId == accountId) &&
-                    (name.IsEmpty() || EF.Functions.Like(x.Name, $"{name}%")) &&
-                    (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
-                    (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
-                    (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate))
-                .Sort(sortBy, orderBy)
-                .Skip(offset)
-                .Take(limit)
+                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
+                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
+                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
+                .Sort(parameter.SortBy, parameter.OrderBy)
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToListAsync(ct);
         }
 

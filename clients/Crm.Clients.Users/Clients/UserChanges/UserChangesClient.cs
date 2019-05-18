@@ -25,8 +25,20 @@ namespace Crm.Clients.Users.Clients.UserChanges
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
             int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserChange>>($"{_settings.Host}/Api/Users/Changes/GetPagedList",
-                new {changerUserId, userId, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy}, ct);
+            var parameter = new
+            {
+                ChangerUserId = changerUserId,
+                UserId = userId,
+                MinCreateDate = minCreateDate,
+                MaxCreateDate = maxCreateDate,
+                Offset = offset,
+                Limit = limit,
+                SortBy = sortBy,
+                OrderBy = orderBy
+            };
+
+            return _httpClientFactory.PostAsync<List<UserChange>>($"{_settings.Host}/Api/Users/Changes/GetPagedList",
+                parameter, ct);
         }
     }
 }

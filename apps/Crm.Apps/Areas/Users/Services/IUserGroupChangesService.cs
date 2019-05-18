@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
 
 namespace Crm.Apps.Areas.Users.Services
 {
     public interface IUserGroupChangesService
     {
-        Task<List<UserGroupChange>> GetPagedListAsync(Guid? changerUserId, Guid? groupId, DateTime? minCreateDate,
-            DateTime? maxCreateDate, int offset, int limit, string sortBy, string orderBy, CancellationToken ct);
+        Task<List<UserGroupChange>> GetPagedListAsync(UserGroupChangeGetPagedListParameter parameter,
+            CancellationToken ct);
     }
 }

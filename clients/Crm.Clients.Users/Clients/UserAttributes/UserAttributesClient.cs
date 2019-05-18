@@ -36,8 +36,8 @@ namespace Crm.Clients.Users.Clients.UserAttributes
 
         public Task<List<UserAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserAttribute>>(
-                $"{_settings.Host}/Api/Users/Attributes/GetList", new {ids}, ct);
+            return _httpClientFactory.PostAsync<List<UserAttribute>>($"{_settings.Host}/Api/Users/Attributes/GetList",
+                new {ids}, ct);
         }
 
         public Task<List<UserAttribute>> GetPagedListAsync(Guid? accountId = default, bool? allTypes = default,
@@ -45,12 +45,23 @@ namespace Crm.Clients.Users.Clients.UserAttributes
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
             string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserAttribute>>(
-                $"{_settings.Host}/Api/Users/Attributes/GetPagedList", new
-                {
-                    accountId, allTypes, types, key, isDeleted,
-                    minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy
-                }, ct);
+            var parameter = new
+            {
+                AccountId = accountId,
+                AllTypes = allTypes,
+                Types = types,
+                Key = key,
+                IsDeleted = isDeleted,
+                MinCreateDate = minCreateDate,
+                MaxCreateDate = maxCreateDate,
+                Offset = offset,
+                Limit = limit,
+                SortBy = sortBy,
+                OrderBy = orderBy
+            };
+
+            return _httpClientFactory.PostAsync<List<UserAttribute>>(
+                $"{_settings.Host}/Api/Users/Attributes/GetPagedList", parameter, ct);
         }
 
         public Task<Guid> CreateAsync(UserAttribute attribute, CancellationToken ct = default)

@@ -133,13 +133,13 @@ namespace Crm.Apps.Tests.Users
             createdUser.Settings.Add(new UserSetting {Type = UserSettingType.None, Value = "Test"});
             var createdUserSettings = createdUser.Settings.Select(x => new {x.Type, x.Value});
             createdUser.Permissions.Add(new UserPermission{Permission = Permission.Administration});
-            var createdUserPermissions = createdUser.Permissions;
+            var createdUserPermissions = createdUser.Permissions.Select(x => x.Permission);
 
             await _usersClient.UpdateAsync(createdUser).ConfigureAwait(false);
 
             var updatedUser = await _usersClient.GetAsync(id).ConfigureAwait(false);
             var updatedUserSettings = updatedUser.Settings.Select(x => new {x.Type, x.Value});
-            var updatedUserPermissions = updatedUser.Permissions;
+            var updatedUserPermissions = updatedUser.Permissions.Select(x => x.Permission);
 
             Assert.Equal(createdUser.Surname, updatedUser.Surname);
             Assert.Equal(createdUser.Name, updatedUser.Name);
