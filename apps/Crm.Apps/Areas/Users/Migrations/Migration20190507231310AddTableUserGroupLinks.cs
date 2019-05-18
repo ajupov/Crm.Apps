@@ -20,7 +20,7 @@ namespace Crm.Apps.Areas.Users.Migrations
 
             Create.ForeignKey("FK_UserGroupLinks_GroupId")
                 .FromTable("UserGroupLinks").ForeignColumn("GroupId")
-                .ToTable("UserAttributes").PrimaryColumn("Id");
+                .ToTable("UserGroups").PrimaryColumn("Id");
 
             Create.UniqueConstraint("UQ_UserGroupLinks_UserId_GroupId").OnTable("UserGroupLinks")
                 .Columns("UserId", "GroupId");

@@ -30,7 +30,7 @@ namespace Crm.Apps.Areas.Users.Models
         
         public List<UserAttributeLink> AttributeLinks { get; set; }
         
-        public List<Permission> Permissions { get; set; }
+        public List<UserPermission> Permissions { get; set; }
         
         public List<UserGroupLink> GroupLinks { get; set; }
 

@@ -15,8 +15,6 @@ namespace Crm.Apps.Areas.Users.Models
         
         public DateTime CreateDateTime { get; set; }
 
-        public List<UserGroupLink> Links { get; set; }
-
         public List<UserGroupPermission> Permissions { get; set; }
     }
 }

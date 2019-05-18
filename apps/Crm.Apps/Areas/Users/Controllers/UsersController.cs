@@ -7,6 +7,7 @@ using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,14 @@ namespace Crm.Apps.Areas.Users.Controllers
             _usersService = usersService;
         }
 
+        [HttpGet("GetGenders")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning)]
+        public ActionResult<List<UserGender>> GetGenders()
+        {
+            return EnumsExtensions.GetValues<UserGender>().ToList();
+        }
+        
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
@@ -86,6 +95,7 @@ namespace Crm.Apps.Areas.Users.Controllers
             [FromQuery] string sortBy = default,
             [FromQuery] string orderBy = default,
             CancellationToken ct = default)
+        // http://localhost:5000/Api/Users/GetPagedList?attributes[5705463B-96F6-4B4D-9BEF-1ACF556A373E]="asd"
         {
             var users = await _usersService.GetPagedListAsync(accountId, surname, name, patronymic, minBirthDate,
                     maxBirthDate, gender, isLocked, isDeleted, minCreateDate, maxCreateDate, allAttributes, attributes,

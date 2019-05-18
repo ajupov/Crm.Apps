@@ -17,6 +17,8 @@ namespace Crm.Apps.Areas.Users.Storages
 
         public DbSet<UserAttributeLink> UserAttributeLinks { get; set; }
 
+        public DbSet<UserPermission> UserPermissions { get; set; }
+
         public DbSet<UserChange> UserChanges { get; set; }
 
         public DbSet<UserGroup> UserGroups { get; set; }

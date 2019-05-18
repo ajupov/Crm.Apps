@@ -18,6 +18,6 @@ namespace Crm.Apps.Areas.Users.Models
         
         public DateTime CreateDateTime { get; set; }
 
-        public List<UserAttributeLink> Links { get; set; }
+//        public List<UserAttributeLink> Links { get; set; }
     }
 }

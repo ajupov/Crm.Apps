@@ -39,7 +39,7 @@ namespace Crm.Apps.Areas.Users.Helpers
 
         private static bool PermissionPredicate(User user, Permission permission)
         {
-            return user.Permissions.Any(x => x == permission);
+            return user.Permissions.Any(x => x.Permission == permission);
         }
 
         private static bool GroupIdPredicate(User user, Guid id)

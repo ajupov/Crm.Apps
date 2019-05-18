@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Clients.Accounts.Clients.Accounts;
@@ -7,7 +6,6 @@ using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Models;
 using Crm.Common.UserContext;
 using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Users
@@ -134,7 +132,7 @@ namespace Crm.Apps.Tests.Users
             createdUser.IsDeleted = true;
             createdUser.Settings.Add(new UserSetting {Type = UserSettingType.None, Value = "Test"});
             var createdUserSettings = createdUser.Settings.Select(x => new {x.Type, x.Value});
-            createdUser.Permissions.Add(Permission.Administration);
+            createdUser.Permissions.Add(new UserPermission{Permission = Permission.Administration});
             var createdUserPermissions = createdUser.Permissions;
 
             await _usersClient.UpdateAsync(createdUser).ConfigureAwait(false);

@@ -23,7 +23,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<UserAttribute> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.UserAttributes.Include(x => x.Links).FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.UserAttributes.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<UserAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)

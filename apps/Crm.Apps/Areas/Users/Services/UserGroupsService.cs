@@ -22,7 +22,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<UserGroup> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.UserGroups.Include(x => x.Links).FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.UserGroups.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<UserGroup>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)

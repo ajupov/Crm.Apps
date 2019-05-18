@@ -16,7 +16,7 @@ namespace Crm.Infrastructure.Mvc
                     {
                         options.Filters.Add(filter);
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                }).SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             return services;
         }

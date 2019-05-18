@@ -33,7 +33,7 @@ namespace Crm.Apps.Tests.Accounts
             await _accountsClient.UpdateAsync(account).ConfigureAwait(false);
 
             var changes = await _accountChangesClient
-                .GetPagedListAsync(accountId: accountId, sortBy: nameof(Account.CreateDateTime), orderBy: "desc")
+                .GetPagedListAsync(accountId: accountId, sortBy: nameof(AccountChange.CreateDateTime), orderBy: "asc")
                 .ConfigureAwait(false);
 
             Assert.NotEmpty(changes);
@@ -47,8 +47,8 @@ namespace Crm.Apps.Tests.Accounts
 
             Assert.True(!changes.Last().OldValueJson.IsEmpty());
             Assert.True(!changes.Last().NewValueJson.IsEmpty());
-            Assert.False(changes.First().OldValueJson.FromJsonString<Account>().IsLocked);
-            Assert.True(changes.First().NewValueJson.FromJsonString<Account>().IsLocked);
+            Assert.False(changes.Last().OldValueJson.FromJsonString<Account>().IsLocked);
+            Assert.True(changes.Last().NewValueJson.FromJsonString<Account>().IsLocked);
         }
     }
 }

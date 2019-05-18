@@ -10,12 +10,16 @@ namespace Crm.Common.UserContext
         public UserContext(IHttpContextAccessor httpContextAccessor)
         {
             var claims = httpContextAccessor.HttpContext.User.Claims;
+            var headers = httpContextAccessor.HttpContext.Request.Headers;
 
             UserId = Guid.NewGuid();
             AccountId = Guid.NewGuid();
             Name = Guid.NewGuid().ToString();
             AvatarUrl = Guid.NewGuid().ToString();
-            Permissions = new List<Permission>();
+            Permissions = new List<Permission>
+            {
+                Permission.Administration
+            };
         }
 
         public Guid UserId { get; }

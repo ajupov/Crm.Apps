@@ -18,10 +18,8 @@ namespace Crm.Utils.Http
 
             foreach (PropertyDescriptor property in properties)
             {
-                var type = property.GetType();
                 var value = property.GetValue(parameters);
-
-                if (value is IEnumerable enumerable)
+                if (value is IEnumerable enumerable && !(value is string))
                 {
                     var items = enumerable.Cast<object>().Select(x => x.ToString());
 
