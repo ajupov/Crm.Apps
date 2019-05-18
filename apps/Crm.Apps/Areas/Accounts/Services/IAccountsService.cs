@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Models;
+using Crm.Apps.Areas.Accounts.Parameters;
 
 namespace Crm.Apps.Areas.Accounts.Services
 {
@@ -12,8 +13,7 @@ namespace Crm.Apps.Areas.Accounts.Services
 
         Task<List<Account>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<Account>> GetPagedListAsync(bool? isLocked, bool? isDeleted, DateTime? minCreateDate,
-            DateTime? maxCreateDate, int offset, int limit, string sortBy, string orderBy, CancellationToken ct);
+        Task<List<Account>> GetPagedListAsync(AccountGetPagedListParameter parameter, CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, CancellationToken ct);
 

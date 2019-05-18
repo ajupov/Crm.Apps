@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Helpers;
 using Crm.Apps.Areas.Accounts.Models;
+using Crm.Apps.Areas.Accounts.Parameters;
 using Crm.Apps.Areas.Accounts.Storages;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,17 +30,16 @@ namespace Crm.Apps.Areas.Accounts.Services
             return _storage.Accounts.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<Account>> GetPagedListAsync(bool? isLocked, bool? isDeleted, DateTime? minCreateDate,
-            DateTime? maxCreateDate, int offset, int limit, string sortBy, string orderBy, CancellationToken ct)
+        public Task<List<Account>> GetPagedListAsync(AccountGetPagedListParameter parameter, CancellationToken ct)
         {
             return _storage.Accounts.Where(x =>
-                    (!isLocked.HasValue || x.IsLocked == isLocked) &&
-                    (!isDeleted.HasValue || x.IsDeleted == isDeleted) &&
-                    (!minCreateDate.HasValue || x.CreateDateTime >= minCreateDate) &&
-                    (!maxCreateDate.HasValue || x.CreateDateTime <= maxCreateDate))
-                .Sort(sortBy, orderBy)
-                .Skip(offset)
-                .Take(limit)
+                    (!parameter.IsLocked.HasValue || x.IsLocked == parameter.IsLocked) &&
+                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
+                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
+                .Sort(parameter.SortBy, parameter.OrderBy)
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToListAsync(ct);
         }
 

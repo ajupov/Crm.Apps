@@ -28,16 +28,27 @@ namespace Crm.Clients.Accounts.Clients.Accounts
 
         public Task<List<Account>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<Account>>($"{_settings.Host}/Api/Accounts/GetList",
-                new {ids}, ct);
+            return _httpClientFactory.PostAsync<List<Account>>($"{_settings.Host}/Api/Accounts/GetList", ids, ct);
         }
 
         public Task<List<Account>> GetPagedListAsync(bool? isLocked = default, bool? isDeleted = default,
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
             int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<Account>>($"{_settings.Host}/Api/Accounts/GetPagedList",
-                new {isLocked, isDeleted, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy}, ct);
+            var parameter = new
+            {
+                IsLocked = isLocked,
+                IsDeleted = isDeleted,
+                MinCreateDate = minCreateDate,
+                MaxCreateDate = maxCreateDate,
+                Offset = offset,
+                Limit = limit,
+                SortBy = sortBy,
+                OrderBy = orderBy
+            };
+
+            return _httpClientFactory.PostAsync<List<Account>>($"{_settings.Host}/Api/Accounts/GetPagedList",
+                parameter, ct);
         }
 
         public Task<Guid> CreateAsync(CancellationToken ct = default)
