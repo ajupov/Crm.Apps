@@ -31,15 +31,15 @@ namespace Crm.Apps.Areas.Users.Parameters
         
         public bool? AllAttributes { get; set; }
         
-        public IDictionary<Guid, string> Attributes { get; set; } = new Dictionary<Guid, string>();
+        public IDictionary<Guid, string> Attributes { get; set; }
         
         public bool? AllPermissions { get; set; }
         
-        public List<Permission> Permissions { get; set; } = new List<Permission>();
+        public List<Permission> Permissions { get; set; }
         
         public bool? AllGroupIds { get; set; }
         
-        public List<Guid> GroupIds { get; set; } = new List<Guid>();
+        public List<Guid> GroupIds { get; set; }
         
         public int Offset { get; set; }
         

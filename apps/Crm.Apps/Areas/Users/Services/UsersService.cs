@@ -46,11 +46,7 @@ namespace Crm.Apps.Areas.Users.Services
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.Attributes.Any() ||
-                     x.FilterByAttributes(parameter.AllAttributes, parameter.Attributes)) &&
-                    (!parameter.Permissions.Any() ||
-                     x.FilterByPermissions(parameter.AllPermissions, parameter.Permissions)) &&
-                    (!parameter.GroupIds.Any() || x.FilterByGroupIds(parameter.AllGroupIds, parameter.GroupIds)))
+                    x.FilterByAdditional(parameter))
                 .Sort(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
