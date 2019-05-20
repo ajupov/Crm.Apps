@@ -61,7 +61,13 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            return _accountsService.CreateAsync(message.UserId, ct);
+            var account = message.Data.FromJsonString<Account>();
+            if (account.Id.IsEmpty())
+            {
+                return Task.CompletedTask;
+            }
+            
+            return _accountsService.CreateAsync(message.UserId, account, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)

@@ -66,9 +66,9 @@ namespace Crm.Apps.Areas.Accounts.Controllers
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<Guid>> Create(CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(Account account, CancellationToken ct = default)
         {
-            var id = await _accountsService.CreateAsync(_userContext.UserId, ct).ConfigureAwait(false);
+            var id = await _accountsService.CreateAsync(_userContext.UserId, account, ct).ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }

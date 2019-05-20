@@ -15,7 +15,7 @@ namespace Crm.Apps.Areas.Accounts.Services
 
         Task<List<Account>> GetPagedListAsync(AccountGetPagedListParameter parameter, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid userId, Account account, CancellationToken ct);
 
         Task UpdateAsync(Guid userId, Account oldAccount, Account newAccount, CancellationToken ct);
 

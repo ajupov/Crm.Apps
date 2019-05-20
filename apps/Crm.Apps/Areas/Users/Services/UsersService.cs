@@ -66,6 +66,8 @@ namespace Crm.Apps.Areas.Users.Services
                 x.BirthDate = user.BirthDate;
                 x.Gender = user.Gender;
                 x.AvatarUrl = user.AvatarUrl;
+                x.IsLocked = user.IsLocked;
+                x.IsDeleted = user.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
                 x.AttributeLinks = user.AttributeLinks;
                 x.Permissions = user.Permissions;

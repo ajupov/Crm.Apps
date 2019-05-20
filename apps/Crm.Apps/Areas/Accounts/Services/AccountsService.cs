@@ -43,16 +43,19 @@ namespace Crm.Apps.Areas.Accounts.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Account account, CancellationToken ct)
         {
-            var account = new Account();
-            var change = account.WithCreateLog(userId, x =>
+            var newAccount = new Account();
+            var change = newAccount.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
+                x.Settings = account.Settings;
+                x.IsLocked = account.IsLocked;
+                x.IsDeleted = account.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(account, ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newAccount, ct).ConfigureAwait(false);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 

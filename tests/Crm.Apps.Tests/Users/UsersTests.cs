@@ -213,7 +213,7 @@ namespace Crm.Apps.Tests.Users
                     _usersClient.CreateAsync(Create.User(createdAccountId).Build()))
                 .ConfigureAwait(false);
 
-            await _usersClient.LockAsync(createdUserIds).ConfigureAwait(false);
+            await _usersClient.DeleteAsync(createdUserIds).ConfigureAwait(false);
             var deletedUsers = await _usersClient.GetListAsync(createdUserIds).ConfigureAwait(false);
 
             Assert.All(deletedUsers, x => Assert.True(x.IsDeleted));
