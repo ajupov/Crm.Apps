@@ -51,7 +51,9 @@ namespace Crm.Apps.Areas.Users.Services
             var change = newGroup.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
+                x.AccountId = group.AccountId;
                 x.Name = group.Name;
+                x.IsDeleted = group.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 

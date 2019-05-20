@@ -54,8 +54,10 @@ namespace Crm.Apps.Areas.Users.Services
             var change = newAttribute.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
+                x.AccountId = attribute.AccountId;
                 x.Type = attribute.Type;
                 x.Key = attribute.Key;
+                x.IsDeleted = attribute.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 

@@ -11,7 +11,6 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_UserGroupLinks_Id")
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("GroupId").AsGuid().NotNullable()
-                .WithColumn("Value").AsString().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
             Create.ForeignKey("FK_UserGroupLinks_UserId")

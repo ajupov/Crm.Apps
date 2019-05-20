@@ -17,7 +17,5 @@ namespace Crm.Clients.Users.Models
         public bool IsDeleted { get; set; }
         
         public DateTime CreateDateTime { get; set; }
-
-        public List<UserAttributeLink> Links { get; set; }
     }
 }

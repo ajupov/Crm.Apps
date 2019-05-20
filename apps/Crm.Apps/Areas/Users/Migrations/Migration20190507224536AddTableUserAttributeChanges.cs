@@ -7,15 +7,15 @@ namespace Crm.Apps.Areas.Users.Migrations
     {
         public override void Up()
         {
-            Create.Table("UserAttributesChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_UserAttributesChanges_Id")
+            Create.Table("UserAttributeChanges")
+                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_UserAttributeChanges_Id")
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_UserAttributesChanges_ChangerUserId_AttributeId").OnTable("UserAttributesChanges")
+            Create.Index("IX_UserAttributeChanges_ChangerUserId_AttributeId").OnTable("UserAttributeChanges")
                 .OnColumn("ChangerUserId").Descending()
                 .OnColumn("AttributeId").Descending()
                 .WithOptions().NonClustered();
@@ -23,8 +23,8 @@ namespace Crm.Apps.Areas.Users.Migrations
 
         public override void Down()
         {
-            Delete.Index("IX_UserAttributesChanges_ChangerUserId_AttributeId").OnTable("UserAttributesChanges");
-            Delete.Table("UserAttributesChanges");
+            Delete.Index("IX_UserAttributeChanges_ChangerUserId_AttributeId").OnTable("UserAttributeChanges");
+            Delete.Table("UserAttributeChanges");
         }
     }
 }

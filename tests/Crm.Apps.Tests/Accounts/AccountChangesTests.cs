@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Dsl;
 using Crm.Clients.Accounts.Clients.AccountChanges;
 using Crm.Clients.Accounts.Clients.Accounts;
 using Crm.Clients.Accounts.Models;
@@ -25,26 +26,23 @@ namespace Crm.Apps.Tests.Accounts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var accountId = await _accountsClient.CreateAsync().ConfigureAwait(false);
-            var account = await _accountsClient.GetAsync(accountId).ConfigureAwait(false);
+            var createdAccountId = await _accountsClient.CreateAsync(Create.Account().Build()).ConfigureAwait(false);
+            var createdAccount = await _accountsClient.GetAsync(createdAccountId).ConfigureAwait(false);
 
-            account.IsLocked = true;
+            createdAccount.IsLocked = true;
 
-            await _accountsClient.UpdateAsync(account).ConfigureAwait(false);
-
+            await _accountsClient.UpdateAsync(createdAccount).ConfigureAwait(false);
             var changes = await _accountChangesClient
-                .GetPagedListAsync(accountId: accountId, sortBy: nameof(AccountChange.CreateDateTime), orderBy: "asc")
+                .GetPagedListAsync(accountId: createdAccountId, sortBy: "CreateDateTime", orderBy: "asc")
                 .ConfigureAwait(false);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));
-            Assert.True(changes.All(x => x.AccountId == accountId));
+            Assert.True(changes.All(x => x.AccountId == createdAccountId));
             Assert.True(changes.All(x => x.CreateDateTime.IsMoreThanMinValue()));
-
             Assert.True(changes.First().OldValueJson.IsEmpty());
             Assert.True(!changes.First().NewValueJson.IsEmpty());
             Assert.NotNull(changes.First().NewValueJson.FromJsonString<Account>());
-
             Assert.True(!changes.Last().OldValueJson.IsEmpty());
             Assert.True(!changes.Last().NewValueJson.IsEmpty());
             Assert.False(changes.Last().OldValueJson.FromJsonString<Account>().IsLocked);

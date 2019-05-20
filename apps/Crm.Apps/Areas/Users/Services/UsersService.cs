@@ -67,6 +67,10 @@ namespace Crm.Apps.Areas.Users.Services
                 x.Gender = user.Gender;
                 x.AvatarUrl = user.AvatarUrl;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.AttributeLinks = user.AttributeLinks;
+                x.Permissions = user.Permissions;
+                x.GroupLinks = user.GroupLinks;
+                x.Settings = user.Settings;
             });
 
             var entry = await _storage.AddAsync(newUser, ct).ConfigureAwait(false);

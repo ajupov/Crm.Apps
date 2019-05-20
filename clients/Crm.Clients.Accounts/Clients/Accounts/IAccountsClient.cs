@@ -16,7 +16,7 @@ namespace Crm.Clients.Accounts.Clients.Accounts
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
             int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(CancellationToken ct = default);
+        Task<Guid> CreateAsync(Account account, CancellationToken ct = default);
 
         Task UpdateAsync(Account account, CancellationToken ct = default);
 
