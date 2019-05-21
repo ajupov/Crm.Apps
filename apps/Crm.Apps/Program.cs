@@ -38,16 +38,16 @@ namespace Crm.Apps
                         var configuration = builder.Configuration;
 
                         services
-                            .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
-                            .ConfigureMetrics()
-                            .ConfigureTracing(ApplicationName)
+//                            .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
+//                            .ConfigureMetrics()
+//                            .ConfigureTracing(ApplicationName)
                             .ConfigureMigrator(configuration)
                             .ConfigureOrm<AccountsStorage>(configuration)
                             .ConfigureOrm<UsersStorage>(configuration)
-                            .ConfigureConsumer<AccountsConsumer>(configuration)
-                            .ConfigureConsumer<UsersConsumer>(configuration)
-                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
-                            .ConfigureConsumer<UserGroupsConsumer>(configuration)
+//                            .ConfigureConsumer<AccountsConsumer>(configuration)
+//                            .ConfigureConsumer<UsersConsumer>(configuration)
+//                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
+//                            .ConfigureConsumer<UserGroupsConsumer>(configuration)
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .AddTransient<IAccountsService, AccountsService>()
@@ -60,9 +60,9 @@ namespace Crm.Apps
                             .AddTransient<IUserGroupChangesService, UserGroupChangesService>();
                     })
                     .Configure(builder => builder
-                        .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
+//                        .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
                         .UseMigrationsMiddleware()
-                        .UseMetricsMiddleware()
+//                        .UseMetricsMiddleware()
                         .UseMvcMiddleware())
                     .Build()
                     .RunAsync();

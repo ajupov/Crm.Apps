@@ -81,7 +81,7 @@ namespace Crm.Apps.Tests.Accounts
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = Create.Account().WithSetting("test").Build();
+            var account = Create.Account().Build();
             var createdAccountId = await _accountsClient.CreateAsync(account).ConfigureAwait(false);
             var createdAccount = await _accountsClient.GetAsync(createdAccountId).ConfigureAwait(false);
 
