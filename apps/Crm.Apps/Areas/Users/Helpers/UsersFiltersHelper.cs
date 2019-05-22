@@ -31,17 +31,18 @@ namespace Crm.Apps.Areas.Users.Helpers
         {
             var (key, value) = pair;
 
-            return user.AttributeLinks.Any(x => x.AttributeId == key && (value.IsEmpty() || x.Value == value));
+            return user.AttributeLinks != null && user.AttributeLinks.Any(x =>
+                       x.AttributeId == key && (value.IsEmpty() || x.Value == value));
         }
 
         private static bool PermissionPredicate(User user, Permission permission)
         {
-            return user.Permissions.Any(x => x.Permission == permission);
+            return user.Permissions != null && user.Permissions.Any(x => x.Permission == permission);
         }
 
         private static bool GroupIdPredicate(User user, Guid id)
         {
-            return user.GroupLinks.Any(x => x.GroupId == id);
+            return user.GroupLinks != null && user.GroupLinks.Any(x => x.GroupId == id);
         }
     }
 }

@@ -32,9 +32,10 @@ namespace Crm.Apps.Areas.Users.Services
             return _storage.Users.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<User>> GetPagedListAsync(UserGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<User>> GetPagedListAsync(UserGetPagedListParameter parameter, CancellationToken ct)
         {
-            return _storage.Users.Where(x =>
+            var temp = await _storage.Users.Include(x => x.AttributeLinks).Include(x => x.Permissions)
+                .Include(x => x.GroupLinks).Include(x => x.Settings).Where(x =>
                     (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
                     (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
@@ -45,12 +46,12 @@ namespace Crm.Apps.Areas.Users.Services
                     (!parameter.IsLocked.HasValue || x.IsLocked == parameter.IsLocked) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    x.FilterByAdditional(parameter))
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
-                .ToListAsync(ct);
+                .ToListAsync(ct).ConfigureAwait(false);
+
+            return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
+                .ToList();
         }
 
         public async Task<Guid> CreateAsync(Guid userId, User user, CancellationToken ct)

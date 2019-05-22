@@ -77,13 +77,21 @@ namespace Crm.Apps.Tests.Users
             var account = Create.Account().Build();
             var createdAccountId = await _accountsClient.CreateAsync(account).ConfigureAwait(false);
 
-            await Task.WhenAll(
-                    _usersClient.CreateAsync(Create.User(createdAccountId).Build()),
-                    _usersClient.CreateAsync(Create.User(createdAccountId).Build()))
-                .ConfigureAwait(false);
+            var userAttribute = Create.UserAttribute(createdAccountId).Build();
+            var createdAttributeId = await _userAttributesClient.CreateAsync(userAttribute).ConfigureAwait(false);
 
-            var anyUsers = await _usersClient
-                .GetPagedListAsync(createdAccountId, sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
+            var user1 = Create.User(createdAccountId).WithAttributeLink(createdAttributeId, "test").Build();
+            var user2 = Create.User(createdAccountId).WithAttributeLink(createdAttributeId, "test").Build();
+
+            await Task.WhenAll(_usersClient.CreateAsync(user1), _usersClient.CreateAsync(user2)).ConfigureAwait(false);
+
+            var filterAttributes = new Dictionary<Guid, string>
+            {
+                {createdAttributeId, "test"}
+            };
+
+            var anyUsers = await _usersClient.GetPagedListAsync(createdAccountId, sortBy: "CreateDateTime",
+                orderBy: "desc", allAttributes: false, attributes: filterAttributes).ConfigureAwait(false);
 
             var results = anyUsers.Skip(1)
                 .Zip(anyUsers, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -140,6 +148,12 @@ namespace Crm.Apps.Tests.Users
             var createdUserId = await _usersClient.CreateAsync(user).ConfigureAwait(false);
             var createdUser = await _usersClient.GetAsync(createdUserId).ConfigureAwait(false);
 
+            var userAttribute = Create.UserAttribute(createdAccountId).Build();
+            var createdAttributeId = await _userAttributesClient.CreateAsync(userAttribute).ConfigureAwait(false);
+
+            var userGroup = Create.UserGroup(createdAccountId).WithPermission(Permission.TechnicalSupport).Build();
+            var createdGroupId = await _userGroupsClient.CreateAsync(userGroup).ConfigureAwait(false);
+
             createdUser.Surname = "Test2";
             createdUser.Name = "Test2";
             createdUser.Patronymic = "Test2";
@@ -150,6 +164,8 @@ namespace Crm.Apps.Tests.Users
             createdUser.IsDeleted = true;
             createdUser.Settings.Add(new UserSetting {Type = UserSettingType.None, Value = "Test"});
             createdUser.Permissions.Add(new UserPermission {Permission = Permission.Administration});
+            createdUser.AttributeLinks.Add(new UserAttributeLink {AttributeId = createdAttributeId, Value = "test"});
+            createdUser.GroupLinks.Add(new UserGroupLink {GroupId = createdGroupId});
 
             await _usersClient.UpdateAsync(createdUser).ConfigureAwait(false);
             var updatedUser = await _usersClient.GetAsync(createdUserId).ConfigureAwait(false);
@@ -162,10 +178,13 @@ namespace Crm.Apps.Tests.Users
             Assert.Equal(createdUser.AvatarUrl, updatedUser.AvatarUrl);
             Assert.Equal(createdUser.IsLocked, updatedUser.IsLocked);
             Assert.Equal(createdUser.IsDeleted, updatedUser.IsDeleted);
-            Assert.Equal(createdUser.Settings.Select(x => new {x.Type, x.Value}),
-                updatedUser.Settings.Select(x => new {x.Type, x.Value}));
-            Assert.Equal(createdUser.Permissions.Select(x => x.Permission),
-                updatedUser.Permissions.Select(x => x.Permission));
+            Assert.Equal(createdUser.Settings.Single().Type, updatedUser.Settings.Single().Type);
+            Assert.Equal(createdUser.Settings.Single().Value, updatedUser.Settings.Single().Value);
+            Assert.Equal(createdUser.Permissions.Single().Permission, updatedUser.Permissions.Single().Permission);
+            Assert.Equal(createdUser.AttributeLinks.Single().AttributeId,
+                updatedUser.AttributeLinks.Single().AttributeId);
+            Assert.Equal(createdUser.AttributeLinks.Single().Value, updatedUser.AttributeLinks.Single().Value);
+            Assert.Equal(createdUser.GroupLinks.Single().GroupId, updatedUser.GroupLinks.Single().GroupId);
         }
 
         [Fact]
