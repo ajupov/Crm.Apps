@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Models;
 using Crm.Common.UserContext;
+using Crm.Utils.Guid;
 
-namespace Crm.Apps.Tests.Dsl.Builders
+namespace Crm.Apps.Tests.Dsl.Builders.User
 {
-    public class UserBuilder
+    public class UserBuilder : IUserBuilder
     {
-        private readonly User _user;
+        private readonly Clients.Users.Models.User _user;
+        private readonly IUsersClient _usersClient;
 
-        public UserBuilder(Guid accountId)
+        public UserBuilder(IUsersClient usersClient)
         {
-            _user = new User
+            _usersClient = usersClient;
+            _user = new Clients.Users.Models.User
             {
-                AccountId = accountId,
+                AccountId = Guid.Empty,
                 Surname = "Test",
                 Name = "Test",
                 Patronymic = "Test",
@@ -23,6 +28,12 @@ namespace Crm.Apps.Tests.Dsl.Builders
             };
         }
 
+        public UserBuilder WithAccountId(Guid accountId)
+        {
+            _user.AccountId = accountId;
+
+            return this;
+        }
 
         public UserBuilder WithSurname(string surname)
         {
@@ -65,7 +76,7 @@ namespace Crm.Apps.Tests.Dsl.Builders
 
             return this;
         }
-        
+
         public UserBuilder AsLocked()
         {
             _user.IsLocked = true;
@@ -80,7 +91,6 @@ namespace Crm.Apps.Tests.Dsl.Builders
             return this;
         }
 
-        
         public UserBuilder WithSetting(string value)
         {
             if (_user.Settings == null)
@@ -142,10 +152,17 @@ namespace Crm.Apps.Tests.Dsl.Builders
 
             return this;
         }
-        
-        public User Build()
+
+        public async Task<Clients.Users.Models.User> BuildAsync()
         {
-            return _user;
+            if (_user.AccountId.IsEmpty())
+            {
+                throw new InvalidOperationException(nameof(_user.AccountId));
+            }
+
+            var createdId = await _usersClient.CreateAsync(_user).ConfigureAwait(false);
+
+            return await _usersClient.GetAsync(createdId).ConfigureAwait(false);
         }
     }
 }

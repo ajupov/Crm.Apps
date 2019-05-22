@@ -1,3 +1,8 @@
+using Crm.Apps.Tests.Dsl.Builders.Account;
+using Crm.Apps.Tests.Dsl.Builders.User;
+using Crm.Apps.Tests.Dsl.Builders.UserAttribute;
+using Crm.Apps.Tests.Dsl.Builders.UserGroup;
+using Crm.Apps.Tests.Dsl.Creator;
 using Crm.Clients.Accounts;
 using Crm.Clients.Users;
 using Crm.Infrastructure.Configuration;
@@ -17,7 +22,12 @@ namespace Crm.Apps.Tests
 
             services
                 .ConfigureAccountsClient(configuration)
-                .ConfigureUsersClient(configuration);
+                .ConfigureUsersClient(configuration)
+                .AddTransient<ICreate, Create>()
+                .AddTransient<IAccountBuilder, AccountBuilder>()
+                .AddTransient<IUserBuilder, UserBuilder>()
+                .AddTransient<IUserAttributeBuilder, UserAttributeBuilder>()
+                .AddTransient<IUserGroupBuilder, UserGroupBuilder>();
         }
     }
 }

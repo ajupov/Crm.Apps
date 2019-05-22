@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Crm.Common.UserContext;
 
 namespace Crm.Clients.Users.Models
 {

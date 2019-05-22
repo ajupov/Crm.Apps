@@ -1,15 +1,19 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Crm.Clients.Accounts.Clients.Accounts;
 using Crm.Clients.Accounts.Models;
 
-namespace Crm.Apps.Tests.Dsl.Builders
+namespace Crm.Apps.Tests.Dsl.Builders.Account
 {
-    public class AccountBuilder
+    public class AccountBuilder : IAccountBuilder
     {
-        private readonly Account _account;
+        private readonly Clients.Accounts.Models.Account _account;
+        private readonly IAccountsClient _accountsClient;
 
-        public AccountBuilder()
+        public AccountBuilder(IAccountsClient accountsClient)
         {
-            _account = new Account();
+            _accountsClient = accountsClient;
+            _account = new Clients.Accounts.Models.Account();
         }
 
         public AccountBuilder AsLocked()
@@ -42,9 +46,11 @@ namespace Crm.Apps.Tests.Dsl.Builders
             return this;
         }
 
-        public Account Build()
+        public async Task<Clients.Accounts.Models.Account> BuildAsync()
         {
-            return _account;
+            var createdId = await _accountsClient.CreateAsync(_account).ConfigureAwait(false);
+
+            return await _accountsClient.GetAsync(createdId).ConfigureAwait(false);
         }
     }
 }
