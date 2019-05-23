@@ -1,13 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Dsl.Creator;
 using Crm.Clients.Users.Clients.UserAttributes;
-using Crm.Clients.Users.Clients.Users;
 using Crm.Clients.Users.Models;
 using Crm.Common.Types;
-using Crm.Common.UserContext;
 using Crm.Utils.DateTime;
 using Xunit;
 
@@ -17,13 +14,11 @@ namespace Crm.Apps.Tests.Users
     {
         private readonly ICreate _create;
 
-        private readonly IUsersClient _usersClient;
         private readonly IUserAttributesClient _userAttributesClient;
 
-        public UserAttributesTests(ICreate create, IUsersClient usersClient, IUserAttributesClient userAttributesClient)
+        public UserAttributesTests(ICreate create, IUserAttributesClient userAttributesClient)
         {
             _create = create;
-            _usersClient = usersClient;
             _userAttributesClient = userAttributesClient;
         }
 
@@ -67,7 +62,7 @@ namespace Crm.Apps.Tests.Users
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            await Task.WhenAll(_create.UserAttribute.WithType(AttributeType.Text).WithAccountId(account.Id)
+            await Task.WhenAll(_create.UserAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
                 .WithKey("Test1").BuildAsync()).ConfigureAwait(false);
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 

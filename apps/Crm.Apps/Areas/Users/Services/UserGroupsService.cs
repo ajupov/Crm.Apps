@@ -23,7 +23,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<UserGroup> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.UserGroups.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.UserGroups.Include(x => x.Permissions).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<UserGroup>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
@@ -33,7 +33,7 @@ namespace Crm.Apps.Areas.Users.Services
 
         public Task<List<UserGroup>> GetPagedListAsync(UserGroupGetPagedListParameter parameter, CancellationToken ct)
         {
-            return _storage.UserGroups.Where(x =>
+            return _storage.UserGroups.Include(x => x.Permissions).Where(x =>
                     (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
