@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Areas.Users.Parameters
@@ -7,7 +8,7 @@ namespace Crm.Apps.Areas.Users.Parameters
     {
         public Guid? AccountId { get; set; }
 
-        public AttributeType? Type { get; set; }
+        public List<AttributeType> Types { get; set; }
 
         public string Key { get; set; }
 

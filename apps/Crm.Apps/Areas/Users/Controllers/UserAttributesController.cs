@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.Parameters;
 using Crm.Apps.Areas.Users.Services;
+using Crm.Common.Types;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +28,13 @@ namespace Crm.Apps.Areas.Users.Controllers
             _userAttributesService = userAttributesService;
         }
 
+        [HttpGet("GetTypes")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
+        public ActionResult<List<AttributeType>> GetTypes()
+        {
+            return EnumsExtensions.GetValues<AttributeType>().ToList();
+        }
+        
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]

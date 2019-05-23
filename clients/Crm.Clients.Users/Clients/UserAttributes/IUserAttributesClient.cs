@@ -15,10 +15,10 @@ namespace Crm.Clients.Users.Clients.UserAttributes
 
         Task<List<UserAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task<List<UserAttribute>> GetPagedListAsync(Guid? accountId = default, bool? allTypes = default,
-            List<Type> types = default, string key = default, bool? isDeleted = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
-            int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default);
+        Task<List<UserAttribute>> GetPagedListAsync(Guid? accountId = default, List<AttributeType> types = default,
+            string key = default, bool? isDeleted = default, DateTime? minCreateDate = default, 
+            DateTime? maxCreateDate = default, int offset = default, int limit = 10, string sortBy = default, 
+            string orderBy = default, CancellationToken ct = default);
 
         Task<Guid> CreateAsync(UserAttribute attribute, CancellationToken ct = default);
 

@@ -66,7 +66,7 @@ namespace Crm.Apps.Tests.Accounts
                     new AccountSetting
                     {
                         Type = AccountSettingType.None,
-                        Value = "test"
+                        Value = "Test"
                     }
                 }
             };
@@ -89,7 +89,7 @@ namespace Crm.Apps.Tests.Accounts
                     new AccountSetting
                     {
                         Type = AccountSettingType.None,
-                        Value = "test"
+                        Value = "Test"
                     }
                 }
             }.Settings.Single().Value, createdAccount.Settings.Single().Value);
@@ -101,7 +101,7 @@ namespace Crm.Apps.Tests.Accounts
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             account.IsLocked = true;
             account.IsDeleted = true;
-            account.Settings.Add(new AccountSetting {Type = AccountSettingType.None, Value = "test"});
+            account.Settings.Add(new AccountSetting {Type = AccountSettingType.None, Value = "Test"});
 
             await _accountsClient.UpdateAsync(account).ConfigureAwait(false);
 

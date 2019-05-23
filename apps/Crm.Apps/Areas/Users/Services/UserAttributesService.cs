@@ -36,7 +36,7 @@ namespace Crm.Apps.Areas.Users.Services
         {
             return _storage.UserAttributes.Where(x =>
                     (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
-                    (!parameter.Type.HasValue || x.Type == parameter.Type) &&
+                    (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&

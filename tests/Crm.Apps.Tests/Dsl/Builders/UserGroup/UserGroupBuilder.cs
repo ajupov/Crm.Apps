@@ -19,7 +19,7 @@ namespace Crm.Apps.Tests.Dsl.Builders.UserGroup
             _userGroup = new Clients.Users.Models.UserGroup
             {
                 AccountId = Guid.Empty,
-                Name = "test"
+                Name = "Test"
             };
         }
 

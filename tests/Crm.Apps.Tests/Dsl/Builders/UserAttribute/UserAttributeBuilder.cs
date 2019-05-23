@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Accounts.Models;
 using Crm.Clients.Users.Clients.UserAttributes;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
@@ -18,13 +19,20 @@ namespace Crm.Apps.Tests.Dsl.Builders.UserAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
-                Key = "test"
+                Key = "Test"
             };
         }
 
         public UserAttributeBuilder WithAccountId(Guid accountId)
         {
             _userAttribute.AccountId = accountId;
+
+            return this;
+        }
+
+        public UserAttributeBuilder WithType(AttributeType type)
+        {
+            _userAttribute.Type = type;
 
             return this;
         }

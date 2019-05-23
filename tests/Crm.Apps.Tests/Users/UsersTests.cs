@@ -60,14 +60,18 @@ namespace Crm.Apps.Tests.Users
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            await Task.WhenAll(
-                    _create.User.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "test").BuildAsync(),
-                    _create.User.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "test").BuildAsync())
+            var group = await _create.UserGroup.WithAccountId(account.Id).WithName("Test").BuildAsync()
                 .ConfigureAwait(false);
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "test"}};
+            await Task.WhenAll(
+                    _create.User.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "Test").BuildAsync(),
+                    _create.User.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "Test").BuildAsync())
+                .ConfigureAwait(false);
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterGroupIds = new List<Guid> {group.Id};
 
-            var users = await _usersClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime",
-                orderBy: "desc", allAttributes: false, attributes: filterAttributes).ConfigureAwait(false);
+            var users = await _usersClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime", orderBy: "desc",
+                    allAttributes: false, attributes: filterAttributes, allGroupIds: true, groupIds: filterGroupIds)
+                .ConfigureAwait(false);
 
             var results = users.Skip(1)
                 .Zip(users, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -166,7 +170,7 @@ namespace Crm.Apps.Tests.Users
             user.IsDeleted = true;
             user.Settings.Add(new UserSetting {Type = UserSettingType.None, Value = "Test"});
             user.Permissions.Add(new UserPermission {Permission = Permission.Administration});
-            user.AttributeLinks.Add(new UserAttributeLink {AttributeId = attribute.Id, Value = "test"});
+            user.AttributeLinks.Add(new UserAttributeLink {AttributeId = attribute.Id, Value = "Test"});
             user.GroupLinks.Add(new UserGroupLink {GroupId = group.Id});
             await _usersClient.UpdateAsync(user).ConfigureAwait(false);
 

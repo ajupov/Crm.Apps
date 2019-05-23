@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Accounts.Models;
+using Crm.Common.Types;
 
 namespace Crm.Apps.Tests.Dsl.Builders.UserAttribute
 {
@@ -7,6 +9,8 @@ namespace Crm.Apps.Tests.Dsl.Builders.UserAttribute
     {
         UserAttributeBuilder WithAccountId(Guid accountId);
 
+        UserAttributeBuilder WithType(AttributeType type);
+        
         UserAttributeBuilder WithKey(string key);
 
         Task<Clients.Users.Models.UserAttribute> BuildAsync();
