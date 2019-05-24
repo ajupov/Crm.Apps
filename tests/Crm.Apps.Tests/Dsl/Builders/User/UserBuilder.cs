@@ -116,7 +116,7 @@ namespace Crm.Apps.Tests.Dsl.Builders.User
 
             _user.AttributeLinks.Add(new UserAttributeLink
             {
-                AttributeId = attributeId,
+                UserAttributeId = attributeId,
                 Value = value
             });
 
@@ -132,7 +132,7 @@ namespace Crm.Apps.Tests.Dsl.Builders.User
 
             _user.GroupLinks.Add(new UserGroupLink
             {
-                GroupId = groupId
+                UserGroupId = groupId
             });
 
             return this;

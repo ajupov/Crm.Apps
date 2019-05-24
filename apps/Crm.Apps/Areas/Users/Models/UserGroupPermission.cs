@@ -7,7 +7,7 @@ namespace Crm.Apps.Areas.Users.Models
     {
         public Guid Id { get; set; }
 
-        public Guid GroupId { get; set; }
+        public Guid UserGroupId { get; set; }
 
         public Permission Permission { get; set; }
 

@@ -102,12 +102,12 @@ namespace Crm.Apps.Tests.Users
         public async Task WhenUpdate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var group = await _create.UserGroup.WithAccountId(account.Id).WithName("Test1")
-                .WithPermission(Permission.None).BuildAsync().ConfigureAwait(false);
+            var group = await _create.UserGroup.WithAccountId(account.Id).WithName("Test1").BuildAsync()
+                .ConfigureAwait(false);
 
             group.Name = "Test2";
             group.IsDeleted = true;
-            group.Permissions.Add(new UserGroupPermission {Permission = Permission.Administration});
+            group.Permissions.Add(new UserGroupPermission {Permission = Permission.None});
 
             await _userGroupsClient.UpdateAsync(group).ConfigureAwait(false);
 
@@ -115,8 +115,7 @@ namespace Crm.Apps.Tests.Users
 
             Assert.Equal(group.Name, updatedGroup.Name);
             Assert.Equal(group.IsDeleted, updatedGroup.IsDeleted);
-            Assert.Equal(group.Permissions.Select(x => x.Permission),
-                updatedGroup.Permissions.Select(x => x.Permission));
+            Assert.Equal(group.Permissions.Single().Permission, updatedGroup.Permissions.Single().Permission);
         }
 
         [Fact]

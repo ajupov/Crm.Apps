@@ -15,8 +15,6 @@ namespace Crm.Apps.Areas.Users.Storages
 
         public DbSet<UserAttributeChange> UserAttributeChanges { get; set; }
 
-        public DbSet<UserAttributeLink> UserAttributeLinks { get; set; }
-
         public DbSet<UserPermission> UserPermissions { get; set; }
 
         public DbSet<UserChange> UserChanges { get; set; }
@@ -39,6 +37,24 @@ namespace Crm.Apps.Areas.Users.Storages
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.UseNpgsql(_config.MainConnectionString);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserAttributeLink>()
+                .ToTable("UserAttributeLinks")
+                .Property(b => b.UserAttributeId)
+                .HasColumnName("AttributeId");
+            
+            modelBuilder.Entity<UserGroupLink>()
+                .ToTable("UserGroupLinks")
+                .Property(b => b.UserGroupId)
+                .HasColumnName("GroupId");
+            
+            modelBuilder.Entity<UserGroupPermission>()
+                .ToTable("UserGroupPermissions")
+                .Property(b => b.UserGroupId)
+                .HasColumnName("GroupId");
         }
     }
 }

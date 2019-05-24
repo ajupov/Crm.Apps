@@ -8,7 +8,7 @@ namespace Crm.Clients.Users.Models
 
         public Guid UserId { get; set; }
 
-        public Guid AttributeId { get; set; }
+        public Guid UserAttributeId { get; set; }
 
         public string Value { get; set; }
 

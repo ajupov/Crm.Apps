@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Areas.Users.Models

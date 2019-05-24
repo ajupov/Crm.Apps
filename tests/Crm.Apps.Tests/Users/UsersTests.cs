@@ -101,7 +101,7 @@ namespace Crm.Apps.Tests.Users
                 {
                     new UserAttributeLink
                     {
-                        AttributeId = attribute.Id,
+                        UserAttributeId = attribute.Id,
                         Value = "Test"
                     }
                 },
@@ -116,7 +116,7 @@ namespace Crm.Apps.Tests.Users
                 {
                     new UserGroupLink
                     {
-                        GroupId = group.Id
+                        UserGroupId = group.Id
                     }
                 },
                 Settings = new List<UserSetting>
@@ -170,8 +170,8 @@ namespace Crm.Apps.Tests.Users
             user.IsDeleted = true;
             user.Settings.Add(new UserSetting {Type = UserSettingType.None, Value = "Test"});
             user.Permissions.Add(new UserPermission {Permission = Permission.Administration});
-            user.AttributeLinks.Add(new UserAttributeLink {AttributeId = attribute.Id, Value = "Test"});
-            user.GroupLinks.Add(new UserGroupLink {GroupId = group.Id});
+            user.AttributeLinks.Add(new UserAttributeLink {UserAttributeId = attribute.Id, Value = "Test"});
+            user.GroupLinks.Add(new UserGroupLink {UserGroupId = group.Id});
             await _usersClient.UpdateAsync(user).ConfigureAwait(false);
 
             var updatedUser = await _usersClient.GetAsync(user.Id).ConfigureAwait(false);
@@ -187,9 +187,9 @@ namespace Crm.Apps.Tests.Users
             Assert.Equal(user.Settings.Single().Type, updatedUser.Settings.Single().Type);
             Assert.Equal(user.Settings.Single().Value, updatedUser.Settings.Single().Value);
             Assert.Equal(user.Permissions.Single().Permission, updatedUser.Permissions.Single().Permission);
-            Assert.Equal(user.AttributeLinks.Single().AttributeId, updatedUser.AttributeLinks.Single().AttributeId);
+            Assert.Equal(user.AttributeLinks.Single().UserAttributeId, updatedUser.AttributeLinks.Single().UserAttributeId);
             Assert.Equal(user.AttributeLinks.Single().Value, updatedUser.AttributeLinks.Single().Value);
-            Assert.Equal(user.GroupLinks.Single().GroupId, updatedUser.GroupLinks.Single().GroupId);
+            Assert.Equal(user.GroupLinks.Single().UserGroupId, updatedUser.GroupLinks.Single().UserGroupId);
         }
 
         [Fact]

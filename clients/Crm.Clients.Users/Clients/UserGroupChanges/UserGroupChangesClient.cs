@@ -22,7 +22,7 @@ namespace Crm.Clients.Users.Clients.UserGroupChanges
         }
 
         public Task<List<UserGroupChange>> GetPagedListAsync(Guid? changerUserId = default, Guid? groupId = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = 10, int limit = default,
+            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
             string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
             var parameter = new

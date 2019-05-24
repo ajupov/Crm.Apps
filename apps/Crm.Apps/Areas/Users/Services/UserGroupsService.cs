@@ -55,6 +55,7 @@ namespace Crm.Apps.Areas.Users.Services
                 x.Name = group.Name;
                 x.IsDeleted = group.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.Permissions = group.Permissions;
             });
 
             var entry = await _storage.AddAsync(newGroup, ct).ConfigureAwait(false);
@@ -70,6 +71,7 @@ namespace Crm.Apps.Areas.Users.Services
             {
                 x.Name = newGroup.Name;
                 x.IsDeleted = newGroup.IsDeleted;
+                x.Permissions = newGroup.Permissions;
             });
 
             _storage.Update(oldGroup);

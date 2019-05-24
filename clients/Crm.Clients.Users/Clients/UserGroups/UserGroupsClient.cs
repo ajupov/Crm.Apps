@@ -28,8 +28,7 @@ namespace Crm.Clients.Users.Clients.UserGroups
 
         public Task<List<UserGroup>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetList",
-                new {ids}, ct);
+            return _httpClientFactory.PostAsync<List<UserGroup>>($"{_settings.Host}/Api/Users/Groups/GetList", ids, ct);
         }
 
         public Task<List<UserGroup>> GetPagedListAsync(Guid? accountId = default, string name = default,
@@ -61,7 +60,7 @@ namespace Crm.Clients.Users.Clients.UserGroups
 
         public Task UpdateAsync(UserGroup group, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Users/Groups/Update", group, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Users/Groups/Update", group, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
