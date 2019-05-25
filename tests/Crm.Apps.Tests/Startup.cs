@@ -1,9 +1,13 @@
 using Crm.Apps.Tests.Dsl.Builders.Account;
+using Crm.Apps.Tests.Dsl.Builders.Identity;
+using Crm.Apps.Tests.Dsl.Builders.IdentityToken;
 using Crm.Apps.Tests.Dsl.Builders.User;
 using Crm.Apps.Tests.Dsl.Builders.UserAttribute;
 using Crm.Apps.Tests.Dsl.Builders.UserGroup;
 using Crm.Apps.Tests.Dsl.Creator;
 using Crm.Clients.Accounts;
+using Crm.Clients.Identities;
+using Crm.Clients.Identities.Clients.IdentityTokens;
 using Crm.Clients.Users;
 using Crm.Infrastructure.Configuration;
 using Crm.Infrastructure.DependencyInjection.Tests;
@@ -23,11 +27,14 @@ namespace Crm.Apps.Tests
             services
                 .ConfigureAccountsClient(configuration)
                 .ConfigureUsersClient(configuration)
+                .ConfigureIdentitiesClient(configuration)
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IAccountBuilder, AccountBuilder>()
                 .AddTransient<IUserBuilder, UserBuilder>()
                 .AddTransient<IUserAttributeBuilder, UserAttributeBuilder>()
-                .AddTransient<IUserGroupBuilder, UserGroupBuilder>();
+                .AddTransient<IUserGroupBuilder, UserGroupBuilder>()
+                .AddTransient<IIdentityBuilder, IdentityBuilder>()
+                .AddTransient<IIdentityTokenBuilder, IdentityTokenBuilder>();
         }
     }
 }

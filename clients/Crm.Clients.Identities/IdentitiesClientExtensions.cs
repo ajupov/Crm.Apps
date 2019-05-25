@@ -8,7 +8,7 @@ namespace Crm.Clients.Identities
 {
     public static class IdentitiesClientExtensions
     {
-        public static IServiceCollection ConfigureAccountsClient(this IServiceCollection services,
+        public static IServiceCollection ConfigureIdentitiesClient(this IServiceCollection services,
             IConfiguration configuration)
         {
             return services
