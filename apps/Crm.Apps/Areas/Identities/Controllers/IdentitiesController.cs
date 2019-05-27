@@ -8,6 +8,7 @@ using Crm.Apps.Areas.Identities.Parameters;
 using Crm.Apps.Areas.Identities.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,13 @@ namespace Crm.Apps.Areas.Identities.Controllers
             _identitiesService = identitiesService;
         }
 
+        [HttpGet("GetTypes")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
+        public ActionResult<List<IdentityType>> GetTypes()
+        {
+            return EnumsExtensions.GetValues<IdentityType>().ToList();
+        }
+        
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult<Identity>> Get(Guid id, CancellationToken ct = default)

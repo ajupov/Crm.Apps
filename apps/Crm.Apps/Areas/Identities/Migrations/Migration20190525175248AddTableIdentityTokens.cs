@@ -21,7 +21,7 @@ namespace Crm.Apps.Areas.Identities.Migrations
 
             Create.Index("IX_IdentityTokens_IdentityId_Value").OnTable("IdentityTokens")
                 .OnColumn("IdentityId").Descending()
-                .OnColumn("Type").Ascending()
+                .OnColumn("Value").Ascending()
                 .WithOptions().NonClustered();
         }
 

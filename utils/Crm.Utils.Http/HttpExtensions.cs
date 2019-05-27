@@ -41,7 +41,7 @@ namespace Crm.Utils.Http
 
         public static bool IsCollectionType(Type type)
         {
-            return (type.GetInterface(nameof(IEnumerable)) != null);
+            return type.GetInterface(nameof(IEnumerable)) != null;
         }
     }
 }

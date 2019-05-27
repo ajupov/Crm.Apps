@@ -52,7 +52,7 @@ namespace Crm.Apps.Areas.Identities.Controllers
 
         [HttpPost("SetIsUsed")]
         [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult> SetIsUsed(Guid id, CancellationToken ct = default)
+        public async Task<ActionResult> SetIsUsed([FromBody] Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
             {

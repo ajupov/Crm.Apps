@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Apps.Areas.Accounts.Storages;
+using Crm.Apps.Areas.Identities.Services;
+using Crm.Apps.Areas.Identities.Storages;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Apps.Areas.Users.Storages;
 using Crm.Common.UserContext;
@@ -38,6 +40,7 @@ namespace Crm.Apps
                             .ConfigureMigrator(configuration)
                             .ConfigureOrm<AccountsStorage>(configuration)
                             .ConfigureOrm<UsersStorage>(configuration)
+                            .ConfigureOrm<IdentitiesStorage>(configuration)
 //                            .ConfigureConsumer<AccountsConsumer>(configuration)
 //                            .ConfigureConsumer<UsersConsumer>(configuration)
 //                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
@@ -51,7 +54,9 @@ namespace Crm.Apps
                             .AddTransient<IUserAttributesService, UserAttributesService>()
                             .AddTransient<IUserAttributeChangesService, UserAttributeChangesService>()
                             .AddTransient<IUserGroupsService, UserGroupsService>()
-                            .AddTransient<IUserGroupChangesService, UserGroupChangesService>();
+                            .AddTransient<IUserGroupChangesService, UserGroupChangesService>()
+                            .AddTransient<IIdentitiesService, IdentitiesService>()
+                            .AddTransient<IIdentityTokensService, IdentityTokensService>();
                     })
                     .Configure(builder => builder
 //                        .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)

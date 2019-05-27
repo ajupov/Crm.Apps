@@ -118,7 +118,7 @@ namespace Crm.Apps.Tests.Identities
 
             await _identitiesClient.UpdateAsync(identity).ConfigureAwait(false);
 
-            var updatedIdentity = await _identitiesClient.GetAsync(account.Id).ConfigureAwait(false);
+            var updatedIdentity = await _identitiesClient.GetAsync(identity.Id).ConfigureAwait(false);
 
             Assert.Equal(identity.Type, updatedIdentity.Type);
             Assert.Equal(identity.Key, updatedIdentity.Key);

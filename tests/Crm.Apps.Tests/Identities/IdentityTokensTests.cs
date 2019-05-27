@@ -55,7 +55,7 @@ namespace Crm.Apps.Tests.Identities
             Assert.Equal(identityId, createdToken.Id);
             Assert.Equal(token.Value, createdToken.Value);
             Assert.True(createdToken.CreateDateTime.IsMoreThanMinValue());
-            Assert.Equal(token.ExpirationDateTime, createdToken.ExpirationDateTime);
+            Assert.True(Math.Abs((token.ExpirationDateTime - createdToken.ExpirationDateTime).Ticks) < 1000);
             Assert.Null(createdToken.UseDateTime);
         }
 

@@ -23,7 +23,8 @@ namespace Crm.Clients.Identities.Clients.IdentityTokens
 
         public Task<IdentityToken> GetAsync(Guid identityId, string value, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<IdentityToken>($"{_settings.Host}/Api/Identities/Tokens/Get", ct: ct);
+            return _httpClientFactory.GetAsync<IdentityToken>($"{_settings.Host}/Api/Identities/Tokens/Get",
+                new {identityId, value}, ct);
         }
 
         public Task<Guid> CreateAsync(IdentityToken token, CancellationToken ct = default)
@@ -33,7 +34,7 @@ namespace Crm.Clients.Identities.Clients.IdentityTokens
 
         public Task SetIsUsedAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Identities/Tokens/SetIsUsed", id, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Tokens/SetIsUsed", id, ct);
         }
     }
 }
