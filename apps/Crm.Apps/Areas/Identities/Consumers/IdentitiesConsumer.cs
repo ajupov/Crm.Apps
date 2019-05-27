@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Areas.Accounts.Models;
-using Crm.Apps.Areas.Accounts.Services;
+using Crm.Apps.Areas.Identities.Models;
+using Crm.Apps.Areas.Identities.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Areas.Accounts.Consumers
+namespace Crm.Apps.Areas.Identities.Consumers
 {
-    public class AccountsConsumer : IHostedService
+    public class IdentitiesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IAccountsService _accountsService;
+        private readonly IdentitiesService _identitiesService;
 
-        public AccountsConsumer(IConsumer consumer, IAccountsService accountsService)
+        public IdentitiesConsumer(IConsumer consumer, IdentitiesService identitiesService)
         {
             _consumer = consumer;
-            _accountsService = accountsService;
+            _identitiesService = identitiesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("Accounts", ActionAsync);
+            _consumer.Consume("Identities", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -46,14 +46,14 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                     return CreateAsync(message, ct);
                 case "Update":
                     return UpdateAsync(message, ct);
-                case "Lock":
-                    return LockAsync(message, ct);
-                case "Unlock":
-                    return UnlockAsync(message, ct);
-                case "Delete":
-                    return DeleteAsync(message, ct);
-                case "Restore":
-                    return RestoreAsync(message, ct);
+                case "Verify":
+                    return VerifyAsync(message, ct);
+                case "Unverify":
+                    return UnverifyAsync(message, ct);
+                case "SetAsPrimary":
+                    return SetAsPrimaryAsync(message, ct);
+                case "ResetAsPrimary":
+                    return ResetAsPrimaryAsync(message, ct);
                 default:
                     return Task.CompletedTask;
             }
@@ -61,33 +61,33 @@ namespace Crm.Apps.Areas.Accounts.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var account = message.Data.FromJsonString<Account>();
+            var account = message.Data.FromJsonString<Identity>();
             if (account.Id.IsEmpty())
             {
                 return Task.CompletedTask;
             }
-            
-            return _accountsService.CreateAsync(message.UserId, account, ct);
+
+            return _identitiesService.CreateAsync(message.UserId, account, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newAccount = message.Data.FromJsonString<Account>();
-            if (newAccount.Id.IsEmpty())
+            var newIdentity = message.Data.FromJsonString<Identity>();
+            if (newIdentity.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldAccount = await _accountsService.GetAsync(newAccount.Id, ct).ConfigureAwait(false);
-            if (oldAccount == null)
+            var oldIdentity = await _identitiesService.GetAsync(newIdentity.Id, ct).ConfigureAwait(false);
+            if (oldIdentity == null)
             {
                 return;
             }
 
-            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct).ConfigureAwait(false);
+            await _identitiesService.UpdateAsync(message.UserId, oldIdentity, newIdentity, ct).ConfigureAwait(false);
         }
 
-        private Task LockAsync(Message message, CancellationToken ct)
+        private Task VerifyAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -95,10 +95,10 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.LockAsync(message.UserId, ids, ct);
+            return _identitiesService.VerifyAsync(message.UserId, ids, ct);
         }
-        
-        private Task UnlockAsync(Message message, CancellationToken ct)
+
+        private Task UnverifyAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -106,10 +106,10 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.UnlockAsync(message.UserId, ids, ct);
+            return _identitiesService.UnverifyAsync(message.UserId, ids, ct);
         }
 
-        private Task RestoreAsync(Message message, CancellationToken ct)
+        private Task SetAsPrimaryAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -117,10 +117,10 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.RestoreAsync(message.UserId, ids, ct);
+            return _identitiesService.SetAsPrimaryAsync(message.UserId, ids, ct);
         }
 
-        private Task DeleteAsync(Message message, CancellationToken ct)
+        private Task ResetAsPrimaryAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -128,7 +128,7 @@ namespace Crm.Apps.Areas.Accounts.Consumers
                 return Task.CompletedTask;
             }
 
-            return _accountsService.DeleteAsync(message.UserId, ids, ct);
+            return _identitiesService.ResetAsPrimaryAsync(message.UserId, ids, ct);
         }
     }
 }
