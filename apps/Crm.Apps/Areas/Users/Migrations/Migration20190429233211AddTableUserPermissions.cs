@@ -20,15 +20,16 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.UniqueConstraint("UQ_UserPermissions_UserId_Permission").OnTable("UserPermissions")
                 .Columns("UserId", "Permission");
 
-            Create.Index("IX_UserPermissions_UserId_Permission").OnTable("UserPermissions")
+            Create.Index("IX_UserPermissions_UserId_Permission_CreateDateTime").OnTable("UserPermissions")
                 .OnColumn("UserId").Descending()
                 .OnColumn("Permission").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_UserPermissions_UserId_Permission").OnTable("UserPermissions");
+            Delete.Index("IX_UserPermissions_UserId_Permission_CreateDateTime").OnTable("UserPermissions");
             Delete.UniqueConstraint("UQ_UserPermissions_UserId_Permission").FromTable("UserPermissions");
             Delete.ForeignKey("FK_UserPermissions_GroupId").OnTable("UserPermissions");
             Delete.Table("UserPermissions");

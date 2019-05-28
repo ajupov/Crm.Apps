@@ -17,16 +17,17 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.UniqueConstraint("UQ_UserGroups_AccountId_Name").OnTable("UserGroups")
                 .Columns("AccountId", "Name");
 
-            Create.Index("IX_UserGroups_AccountId_Name").OnTable("UserGroups")
+            Create.Index("IX_UserGroups_AccountId_Name_IsDeleted_CreateDateTime").OnTable("UserGroups")
                 .OnColumn("AccountId").Descending()
                 .OnColumn("Name").Ascending()
                 .OnColumn("IsDeleted").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_UserGroups_AccountId_Name").OnTable("UserGroups");
+            Delete.Index("IX_UserGroups_AccountId_Name_IsDeleted_CreateDateTime").OnTable("UserGroups");
             Delete.UniqueConstraint("UQ_UserGroups_AccountId_Name").FromTable("UserGroups");
             Delete.Table("UserGroups");
         }

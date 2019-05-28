@@ -15,15 +15,16 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_UserGroupChanges_ChangerUserId_GroupId").OnTable("UserGroupChanges")
+            Create.Index("IX_UserGroupChanges_ChangerUserId_GroupId_CreateDateTime").OnTable("UserGroupChanges")
                 .OnColumn("ChangerUserId").Descending()
                 .OnColumn("GroupId").Descending()
+                .OnColumn("IX_UserGroups_AccountId_Name_IsDeleted_CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_UserGroupChanges_ChangerUserId_GroupId").OnTable("UserGroupChanges");
+            Delete.Index("IX_UserGroupChanges_ChangerUserId_GroupId_CreateDateTime").OnTable("UserGroupChanges");
             Delete.Table("UserGroupChanges");
         }
     }

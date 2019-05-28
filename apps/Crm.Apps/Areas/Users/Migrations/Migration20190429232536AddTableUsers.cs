@@ -20,7 +20,7 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
-            Create.Index("IX_Users_AccountId_Surname_Name_Patronymic_Gender_CreateDateTime_IsLocked_IsDeleted")
+            Create.Index("IX_Users_AccountId_Surname_Name_Patronymic_Gender_IsLocked_IsDeleted_CreateDateTime")
                 .OnTable("Users")
                 .OnColumn("AccountId").Descending()
                 .OnColumn("Surname").Ascending()
@@ -35,7 +35,7 @@ namespace Crm.Apps.Areas.Users.Migrations
 
         public override void Down()
         {
-            Delete.Index("IX_Users_AccountId_Surname_Name_Patronymic_Gender_CreateDateTime_IsLocked_IsDeleted")
+            Delete.Index("IX_Users_AccountId_Surname_Name_Patronymic_Gender_IsLocked_IsDeleted_CreateDateTime")
                 .OnTable("Users");
             Delete.Table("Users");
         }

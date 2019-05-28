@@ -18,17 +18,18 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.UniqueConstraint("UQ_UserAttributes_AccountId_Key").OnTable("UserAttributes")
                 .Columns("AccountId", "Key");
 
-            Create.Index("IX_UserAttributes_AccountId_Type_Key_IsDeleted").OnTable("UserAttributes")
+            Create.Index("IX_UserAttributes_AccountId_Type_Key_IsDeleted_CreateDateTime").OnTable("UserAttributes")
                 .OnColumn("AccountId").Descending()
                 .OnColumn("Type").Ascending()
                 .OnColumn("Key").Ascending()
                 .OnColumn("IsDeleted").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_UserAttributes_AccountId_Type_Key_IsDeleted").OnTable("UserAttributes");
+            Delete.Index("IX_UserAttributes_AccountId_Type_Key_IsDeleted_CreateDateTime").OnTable("UserAttributes");
             Delete.UniqueConstraint("UQ_UserAttributes_AccountId_Key").FromTable("UserAttributes");
             Delete.Table("UserAttributes");
         }

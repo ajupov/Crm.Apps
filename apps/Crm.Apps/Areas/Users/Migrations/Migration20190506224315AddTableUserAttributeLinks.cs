@@ -25,15 +25,16 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.UniqueConstraint("UQ_UserAttributeLinks_UserId_AttributeId").OnTable("UserAttributeLinks")
                 .Columns("UserId", "AttributeId");
 
-            Create.Index("IX_UserAttributeLinks_UserId_AttributeId").OnTable("UserAttributeLinks")
+            Create.Index("IX_UserAttributeLinks_UserId_AttributeId_CreateDateTime").OnTable("UserAttributeLinks")
                 .OnColumn("UserId").Descending()
                 .OnColumn("AttributeId").Descending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_UserAttributeLinks_UserId_AttributeId").OnTable("UserAttributeLinks");
+            Delete.Index("IX_UserAttributeLinks_UserId_AttributeId_CreateDateTime").OnTable("UserAttributeLinks");
             Delete.UniqueConstraint("UQ_UserAttributeLinks_UserId_AttributeId").FromTable("UserAttributeLinks");
             Delete.ForeignKey("FK_UserAttributeLinks_AttributeId").OnTable("UserAttributeLinks");
             Delete.ForeignKey("FK_UserAttributeLinks_UserId").OnTable("UserAttributeLinks");
