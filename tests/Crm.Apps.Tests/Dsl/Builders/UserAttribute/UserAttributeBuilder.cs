@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
 using Crm.Clients.Users.Clients;
 using Crm.Common.Types;
 using Crm.Utils.Guid;

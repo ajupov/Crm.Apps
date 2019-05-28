@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Tests.Dsl.Builders.UserAttribute
