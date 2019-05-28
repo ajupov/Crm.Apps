@@ -1,4 +1,5 @@
-﻿using Crm.Infrastructure.SmsSending.SmsSender;
+﻿using Crm.Infrastructure.SmsSending.Settings;
+using Crm.Infrastructure.SmsSending.SmsSender;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

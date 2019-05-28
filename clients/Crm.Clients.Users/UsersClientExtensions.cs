@@ -1,10 +1,4 @@
-﻿using Crm.Clients.Users.Clients.UserAttributeChanges;
-using Crm.Clients.Users.Clients.UserAttributes;
-using Crm.Clients.Users.Clients.UserChanges;
-using Crm.Clients.Users.Clients.UserGroupChanges;
-using Crm.Clients.Users.Clients.UserGroups;
-using Crm.Clients.Users.Clients.Users;
-using Crm.Clients.Users.Clients.UserSettings;
+﻿using Crm.Clients.Users.Clients;
 using Crm.Clients.Users.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

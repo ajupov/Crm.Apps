@@ -1,5 +1,6 @@
 ﻿using Crm.Apps.Areas.Users.Models;
 using Crm.Infrastructure.Orm;
+using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

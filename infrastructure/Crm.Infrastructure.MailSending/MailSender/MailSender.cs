@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Crm.Infrastructure.MailSending.Settings;
 using Crm.Utils.String;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;

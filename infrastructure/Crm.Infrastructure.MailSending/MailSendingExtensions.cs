@@ -1,4 +1,5 @@
 ﻿using Crm.Infrastructure.MailSending.MailSender;
+using Crm.Infrastructure.MailSending.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

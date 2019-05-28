@@ -1,6 +1,4 @@
-﻿using Crm.Clients.Accounts.Clients.AccountChanges;
-using Crm.Clients.Accounts.Clients.Accounts;
-using Crm.Clients.Accounts.Clients.AccountSettings;
+﻿using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

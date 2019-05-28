@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
+using Crm.Infrastructure.MessageBroking.Settings;
 using Microsoft.Extensions.Options;
 using Crm.Utils.Json;
 using Message = Crm.Infrastructure.MessageBroking.Models.Message;

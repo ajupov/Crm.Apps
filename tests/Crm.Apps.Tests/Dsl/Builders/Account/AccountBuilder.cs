@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Clients.Accounts;
+using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Models;
 
 namespace Crm.Apps.Tests.Dsl.Builders.Account

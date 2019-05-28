@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Identities.Clients.IdentityTokens;
+using Crm.Clients.Identities.Clients;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 

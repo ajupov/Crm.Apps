@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Clients.Users;
+using Crm.Clients.Users.Clients;
 using Crm.Clients.Users.Models;
 using Crm.Common.UserContext;
 using Crm.Utils.Guid;

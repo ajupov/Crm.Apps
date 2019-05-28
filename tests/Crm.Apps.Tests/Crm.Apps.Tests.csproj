@@ -22,4 +22,7 @@
         <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Tests" />
+    </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-﻿using Crm.Clients.Identities.Clients.Identities;
-using Crm.Clients.Identities.Clients.IdentityTokens;
+﻿using Crm.Clients.Identities.Clients;
 using Crm.Clients.Identities.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
