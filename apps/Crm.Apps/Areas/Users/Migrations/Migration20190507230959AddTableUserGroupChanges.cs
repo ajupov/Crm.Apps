@@ -18,7 +18,7 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.Index("IX_UserGroupChanges_ChangerUserId_GroupId_CreateDateTime").OnTable("UserGroupChanges")
                 .OnColumn("ChangerUserId").Descending()
                 .OnColumn("GroupId").Descending()
-                .OnColumn("IX_UserGroups_AccountId_Name_IsDeleted_CreateDateTime").Descending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 

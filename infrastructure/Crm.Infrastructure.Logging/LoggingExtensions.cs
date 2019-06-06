@@ -8,7 +8,8 @@ namespace Crm.Infrastructure.Logging
     {
         private const string Template = "[{Timestamp:o} - {Level:u3}]: {Message:lj}{NewLine}{Exception}";
 
-        public static IWebHostBuilder ConfigureLogging(this IWebHostBuilder webHostBuilder)
+        public static IWebHostBuilder ConfigureLogging(this IWebHostBuilder webHostBuilder, string applicationName,
+            string applicationVersion)
         {
             return webHostBuilder.ConfigureLogging(loggingBuilder =>
             {
@@ -18,6 +19,8 @@ namespace Crm.Infrastructure.Logging
                     .MinimumLevel.Information()
                     .Enrich.FromLogContext()
                     .WriteTo.Console(outputTemplate: Template)
+                    .WriteTo.File($"{applicationName}_{applicationVersion}_.txt", rollingInterval: RollingInterval.Day,
+                        outputTemplate: Template, shared: true)
                     .CreateLogger();
 
                 loggingBuilder.AddSerilog(Log.Logger);

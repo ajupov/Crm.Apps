@@ -1,17 +1,23 @@
 ﻿using System.Threading.Tasks;
+using Crm.Apps.Areas.Accounts.Consumers;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Apps.Areas.Accounts.Storages;
 using Crm.Apps.Areas.Identities.Services;
 using Crm.Apps.Areas.Identities.Storages;
+using Crm.Apps.Areas.Users.Consumers;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Apps.Areas.Users.Storages;
 using Crm.Common.UserContext;
+using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
 using Crm.Infrastructure.Hosting;
 using Crm.Infrastructure.Logging;
+using Crm.Infrastructure.MessageBroking;
+using Crm.Infrastructure.Metrics;
 using Crm.Infrastructure.Migrations;
 using Crm.Infrastructure.Mvc;
 using Crm.Infrastructure.Orm;
+using Crm.Infrastructure.Tracing;
 using Crm.Infrastructure.UserContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,23 +34,23 @@ namespace Crm.Apps
             return
                 ConfigurationExtensions.GetConfiguration()
                     .ConfigureHost()
-                    .ConfigureLogging()
+                    .ConfigureLogging(ApplicationName, ApplicationVersion)
                     .ConfigureServices((builder, services) =>
                     {
                         var configuration = builder.Configuration;
 
                         services
-//                            .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
-//                            .ConfigureMetrics()
-//                            .ConfigureTracing(ApplicationName)
+                            .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
+                            .ConfigureMetrics(configuration)
+                            .ConfigureTracing(ApplicationName)
                             .ConfigureMigrator(configuration)
                             .ConfigureOrm<AccountsStorage>(configuration)
                             .ConfigureOrm<UsersStorage>(configuration)
                             .ConfigureOrm<IdentitiesStorage>(configuration)
-//                            .ConfigureConsumer<AccountsConsumer>(configuration)
-//                            .ConfigureConsumer<UsersConsumer>(configuration)
-//                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
-//                            .ConfigureConsumer<UserGroupsConsumer>(configuration)
+                            .ConfigureConsumer<AccountsConsumer>(configuration)
+                            .ConfigureConsumer<UsersConsumer>(configuration)
+                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
+                            .ConfigureConsumer<UserGroupsConsumer>(configuration)
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .AddTransient<IAccountsService, AccountsService>()
@@ -59,9 +65,9 @@ namespace Crm.Apps
                             .AddTransient<IIdentityTokensService, IdentityTokensService>();
                     })
                     .Configure(builder => builder
-//                        .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
+                        .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
                         .UseMigrationsMiddleware()
-//                        .UseMetricsMiddleware()
+                        .UseMetricsMiddleware()
                         .UseMvcMiddleware())
                     .Build()
                     .RunAsync();

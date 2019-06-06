@@ -1,6 +1,6 @@
 ﻿namespace Crm.Infrastructure.MessageBroking.Settings
 {
-    public class MessageBrokingConsumerSettings
+    public class MessageBrokingProducerSettings
     {
         public string Host { get; set; }
     }

@@ -13,6 +13,7 @@ namespace Crm.Infrastructure.MessageBroking
         {
             return services
                 .Configure<MessageBrokingConsumerSettings>(configuration.GetSection("MessageBrokingConsumerSettings"))
+                .Configure<MessageBrokingProducerSettings>(configuration.GetSection("MessageBrokingProducerSettings"))
                 .AddSingleton<IConsumer, Consumer>()
                 .AddSingleton<IHostedService, TConsumer>();
         }

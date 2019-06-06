@@ -12,11 +12,11 @@ namespace Crm.Infrastructure.DependencyInjection.Tests
         {
         }
 
-        protected sealed override IServiceProvider ConfigureServices(IServiceCollection services)
+        protected sealed override void ConfigureServices(IServiceCollection services)
         {
             Configure(services);
 
-            return services.BuildServiceProvider();
+            services.BuildServiceProvider();
         }
 
         protected virtual void Configure(IServiceCollection services)

@@ -9,7 +9,8 @@ namespace Crm.Infrastructure.Hosting
         {
             return new WebHostBuilder()
                 .UseConfiguration(configuration)
-                .UseKestrel(options => options.ListenLocalhost(5000));
+                .UseUrls(configuration.GetValue<string>("ApplicationHost"))
+                .UseKestrel();
         }
     }
 }

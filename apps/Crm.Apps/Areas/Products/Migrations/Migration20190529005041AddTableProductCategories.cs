@@ -19,8 +19,7 @@ namespace Crm.Apps.Areas.Products.Migrations
 
             Create.Index("IX_ProductCategories_AccountId_Name_IsDeleted_CreateDateTime").OnTable("ProductCategories")
                 .OnColumn("AccountId").Descending()
-                .OnColumn("Type").Ascending()
-                .OnColumn("Key").Ascending()
+                .OnColumn("Name").Ascending()
                 .OnColumn("IsDeleted").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
