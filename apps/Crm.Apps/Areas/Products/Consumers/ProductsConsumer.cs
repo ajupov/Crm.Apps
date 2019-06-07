@@ -46,10 +46,10 @@ namespace Crm.Apps.Areas.Products.Consumers
                     return CreateAsync(message, ct);
                 case "Update":
                     return UpdateAsync(message, ct);
-                case "Lock":
-                    return LockAsync(message, ct);
-                case "Unlock":
-                    return UnlockAsync(message, ct);
+                case "Hide":
+                    return HideAsync(message, ct);
+                case "Show":
+                    return ShowAsync(message, ct);
                 case "Delete":
                     return DeleteAsync(message, ct);
                 case "Restore":
@@ -87,7 +87,7 @@ namespace Crm.Apps.Areas.Products.Consumers
             await _productsService.UpdateAsync(message.UserId, oldProduct, newProduct, ct).ConfigureAwait(false);
         }
 
-        private Task LockAsync(Message message, CancellationToken ct)
+        private Task HideAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -95,10 +95,10 @@ namespace Crm.Apps.Areas.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productsService.LockAsync(message.UserId, ids, ct);
+            return _productsService.HideAsync(message.UserId, ids, ct);
         }
 
-        private Task UnlockAsync(Message message, CancellationToken ct)
+        private Task ShowAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -106,7 +106,7 @@ namespace Crm.Apps.Areas.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productsService.UnlockAsync(message.UserId, ids, ct);
+            return _productsService.ShowAsync(message.UserId, ids, ct);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)

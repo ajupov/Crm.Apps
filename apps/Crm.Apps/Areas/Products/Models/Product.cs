@@ -19,7 +19,7 @@ namespace Crm.Apps.Areas.Products.Models
 
         public string VendorCode { get; set; }
 
-        public string Price { get; set; }
+        public decimal Price { get; set; }
 
         public byte[] Image { get; set; }
 

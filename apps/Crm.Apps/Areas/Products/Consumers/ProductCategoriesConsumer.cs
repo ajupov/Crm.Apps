@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Crm.Apps.Areas.Products.Models;
+using Crm.Apps.Areas.Products.Services;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
@@ -16,17 +18,17 @@ namespace Crm.Apps.Areas.Products.Consumers
     public class ProductCategoriesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IUserGroupsService _userGroupsService;
+        private readonly IProductCategoriesService _productCategoriesService;
 
-        public ProductCategoriesConsumer(IConsumer consumer, IUserGroupsService userGroupsService)
+        public ProductCategoriesConsumer(IConsumer consumer, IProductCategoriesService productCategoriesService)
         {
             _consumer = consumer;
-            _userGroupsService = userGroupsService;
+            _productCategoriesService = productCategoriesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("UserGroups", ActionAsync);
+            _consumer.Consume("ProductCategories", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -57,30 +59,32 @@ namespace Crm.Apps.Areas.Products.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var userGroup = message.Data.FromJsonString<UserGroup>();
-            if (userGroup.Id.IsEmpty())
+            var productCategory = message.Data.FromJsonString<ProductCategory>();
+            if (productCategory.Id.IsEmpty())
             {
                 return Task.CompletedTask;
             }
 
-            return _userGroupsService.CreateAsync(message.UserId, userGroup, ct);
+            return _productCategoriesService.CreateAsync(message.UserId, productCategory, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newUserGroup = message.Data.FromJsonString<UserGroup>();
-            if (newUserGroup.Id.IsEmpty())
+            var newProductCategory = message.Data.FromJsonString<ProductCategory>();
+            if (newProductCategory.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldUserGroup = await _userGroupsService.GetAsync(newUserGroup.Id, ct).ConfigureAwait(false);
-            if (oldUserGroup == null)
+            var oldProductCategory =
+                await _productCategoriesService.GetAsync(newProductCategory.Id, ct).ConfigureAwait(false);
+            if (oldProductCategory == null)
             {
                 return;
             }
 
-            await _userGroupsService.UpdateAsync(message.UserId, oldUserGroup, newUserGroup, ct).ConfigureAwait(false);
+            await _productCategoriesService.UpdateAsync(message.UserId, oldProductCategory, newProductCategory, ct)
+                .ConfigureAwait(false);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -91,7 +95,7 @@ namespace Crm.Apps.Areas.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _userGroupsService.RestoreAsync(message.UserId, ids, ct);
+            return _productCategoriesService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -102,7 +106,7 @@ namespace Crm.Apps.Areas.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _userGroupsService.DeleteAsync(message.UserId, ids, ct);
+            return _productCategoriesService.DeleteAsync(message.UserId, ids, ct);
         }
     }
 }

@@ -19,9 +19,9 @@ namespace Crm.Apps.Areas.Products.Services
 
         Task UpdateAsync(Guid userId, Product oldProduct, Product newProduct, CancellationToken ct);
 
-        Task LockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+        Task HideAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task UnlockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+        Task ShowAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
 
         Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
 

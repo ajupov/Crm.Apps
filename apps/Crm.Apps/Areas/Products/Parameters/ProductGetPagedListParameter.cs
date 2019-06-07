@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Crm.Apps.Areas.Products.Models;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Common.UserContext;
 
@@ -9,37 +10,35 @@ namespace Crm.Apps.Areas.Products.Parameters
     {
         public Guid? AccountId { get; set; }
         
-        public string Surname { get; set; }
+        public Guid? ParentProductId { get; set; }
+        
+        public List<ProductType> Types { get; set; }
+        
+        public List<Guid> StatusIds { get; set; }
         
         public string Name { get; set; }
         
-        public string Patronymic { get; set; }
-        
-        public DateTime? MinBirthDate { get; set; }
-        
-        public DateTime? MaxBirthDate { get; set; }
-        
-        public UserGender? Gender { get; set; }
-        
-        public bool? IsLocked { get; set; }
-        
+        public string VendorCode { get; set; }
+
+        public decimal? MinPrice { get; set; }
+
+        public decimal? MaxPrice { get; set; }
+       
+        public bool? IsHidden { get; set; }
+
         public bool? IsDeleted { get; set; }
-        
+
         public DateTime? MinCreateDate { get; set; }
-        
+
         public DateTime? MaxCreateDate { get; set; }
-        
+
         public bool? AllAttributes { get; set; }
-        
+
         public IDictionary<Guid, string> Attributes { get; set; }
+
+        public bool? AllCategoryIds { get; set; }
         
-        public bool? AllPermissions { get; set; }
-        
-        public List<Permission> Permissions { get; set; }
-        
-        public bool? AllGroupIds { get; set; }
-        
-        public List<Guid> GroupIds { get; set; }
+        public List<Guid> CategoryIds { get; set; }
         
         public int Offset { get; set; }
         
