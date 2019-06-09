@@ -103,6 +103,11 @@ namespace Crm.Apps.Identities.Services
 
         public Task<bool> IsPasswordCorrectAsync(Identity identity, string password, CancellationToken ct)
         {
+            if (ct.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
+            
             return Task.FromResult(Password.IsVerifiedPassword(password, identity.PasswordHash));
         }
 

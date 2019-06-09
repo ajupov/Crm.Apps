@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Products.Models;
-using Crm.Common.UserContext;
 
 namespace Crm.Clients.Products.Clients
 {
