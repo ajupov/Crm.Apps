@@ -12,8 +12,8 @@ namespace Crm.Apps.Tests.Dsl.Builders.Identity
 
         IdentityBuilder WithKey(string key);
 
-        IdentityBuilder WithPasswordHash(string passwordHash);
-
+        IdentityBuilder WithPassword(string value);
+        
         IdentityBuilder AsPrimary();
 
         IdentityBuilder AsVerified();

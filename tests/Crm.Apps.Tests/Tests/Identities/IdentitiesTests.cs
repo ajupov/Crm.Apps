@@ -87,7 +87,6 @@ namespace Crm.Apps.Tests.Tests.Identities
                 UserId = user.Id,
                 Type = IdentityType.None,
                 Key = "Test",
-                PasswordHash = string.Empty,
                 IsPrimary = true,
                 IsVerified = true
             };
@@ -112,7 +111,6 @@ namespace Crm.Apps.Tests.Tests.Identities
 
             identity.Type = IdentityType.Vkontakte;
             identity.Key = "Test2";
-            identity.PasswordHash = "Test2";
             identity.IsPrimary = true;
             identity.IsPrimary = true;
 
@@ -122,8 +120,30 @@ namespace Crm.Apps.Tests.Tests.Identities
 
             Assert.Equal(identity.Type, updatedIdentity.Type);
             Assert.Equal(identity.Key, updatedIdentity.Key);
-            Assert.Equal(identity.PasswordHash, updatedIdentity.PasswordHash);
             Assert.Equal(identity.IsPrimary, updatedIdentity.IsPrimary);
+        }
+
+        [Fact]
+        public async Task WhenSetPassword_ThenSuccess()
+        {
+            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync().ConfigureAwait(false);
+
+            await _identitiesClient.SetPasswordAsync(identity.Id, "Test").ConfigureAwait(false);
+        }
+
+        [Fact]
+        public async Task WhenIsPasswordCorrect_ThenSuccess()
+        {
+            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var identity = await _create.Identity.WithUserId(user.Id).WithPassword("Test").BuildAsync()
+                .ConfigureAwait(false);
+
+            var result = await _identitiesClient.IsPasswordCorrectAsync(identity.Id, "Test").ConfigureAwait(false);
+
+            Assert.True(result);
         }
 
         [Fact]

@@ -7,6 +7,7 @@ using Crm.Apps.Identities.Helpers;
 using Crm.Apps.Identities.Models;
 using Crm.Apps.Identities.Parameters;
 using Crm.Apps.Identities.Storages;
+using Crm.Utils.Password;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Identities.Services
@@ -20,19 +21,30 @@ namespace Crm.Apps.Identities.Services
             _storage = storage;
         }
 
-        public Task<Identity> GetAsync(Guid id, CancellationToken ct)
+        public async Task<Identity> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Identities.FirstOrDefaultAsync(x => x.Id == id, ct);
+            var result = await _storage.Identities.FirstOrDefaultAsync(x => x.Id == id, ct).ConfigureAwait(false);
+            if (result != null)
+            {
+                result.PasswordHash = string.Empty;
+            }
+
+            return result;
         }
 
-        public Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Identities.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            var result = await _storage.Identities.Where(x => ids.Contains(x.Id)).ToListAsync(ct).ConfigureAwait(false);
+
+            result.ForEach(x => x.PasswordHash = string.Empty);
+
+            return result;
         }
 
-        public Task<List<Identity>> GetPagedListAsync(IdentityGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Identity>> GetPagedListAsync(IdentityGetPagedListParameter parameter,
+            CancellationToken ct)
         {
-            return _storage.Identities.Where(x =>
+            var result = await _storage.Identities.Where(x =>
                     (!parameter.UserId.HasValue || x.UserId == parameter.UserId) &&
                     (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (!parameter.IsPrimary.HasValue || x.IsPrimary == parameter.IsPrimary) &&
@@ -42,10 +54,15 @@ namespace Crm.Apps.Identities.Services
                 .Sort(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
-                .ToListAsync(ct);
+                .ToListAsync(ct)
+                .ConfigureAwait(false);
+
+            result.ForEach(x => x.PasswordHash = string.Empty);
+
+            return result;
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, Identity identity, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Identity identity, CancellationToken ct)
         {
             var newIdentity = new Identity
             {
@@ -53,7 +70,7 @@ namespace Crm.Apps.Identities.Services
                 UserId = identity.UserId,
                 Type = identity.Type,
                 Key = identity.Key,
-                PasswordHash = identity.PasswordHash,
+                PasswordHash = string.Empty,
                 IsPrimary = identity.IsPrimary,
                 IsVerified = identity.IsVerified,
                 CreateDateTime = DateTime.UtcNow
@@ -65,19 +82,31 @@ namespace Crm.Apps.Identities.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, Identity oldIdentity, Identity newIdentity, CancellationToken ct)
+        public Task UpdateAsync(Identity oldIdentity, Identity newIdentity, CancellationToken ct)
         {
             oldIdentity.Type = newIdentity.Type;
             oldIdentity.Key = newIdentity.Key;
-            oldIdentity.PasswordHash = newIdentity.PasswordHash;
             oldIdentity.IsPrimary = newIdentity.IsPrimary;
             oldIdentity.IsVerified = newIdentity.IsVerified;
 
             _storage.Update(oldIdentity);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            return _storage.SaveChangesAsync(ct);
         }
 
-        public async Task VerifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
+        public Task SetPasswordAsync(Identity identity, string password, CancellationToken ct)
+        {
+            identity.PasswordHash = Password.ToPasswordHash(password);
+
+            _storage.Update(identity);
+            return _storage.SaveChangesAsync(ct);
+        }
+
+        public Task<bool> IsPasswordCorrectAsync(Identity identity, string password, CancellationToken ct)
+        {
+            return Task.FromResult(Password.IsVerifiedPassword(password, identity.PasswordHash));
+        }
+
+        public async Task VerifyAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsVerified = true, ct)
                 .ConfigureAwait(false);
@@ -85,7 +114,7 @@ namespace Crm.Apps.Identities.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task UnverifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task UnverifyAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsVerified = false, ct)
                 .ConfigureAwait(false);
@@ -93,7 +122,7 @@ namespace Crm.Apps.Identities.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task SetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task SetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsPrimary = true, ct)
                 .ConfigureAwait(false);
@@ -101,7 +130,7 @@ namespace Crm.Apps.Identities.Services
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task ResetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task ResetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsPrimary = false, ct)
                 .ConfigureAwait(false);

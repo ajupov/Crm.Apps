@@ -67,7 +67,7 @@ namespace Crm.Apps.Identities.Consumers
                 return Task.CompletedTask;
             }
 
-            return _identitiesService.CreateAsync(message.UserId, account, ct);
+            return _identitiesService.CreateAsync(account, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
@@ -84,7 +84,7 @@ namespace Crm.Apps.Identities.Consumers
                 return;
             }
 
-            await _identitiesService.UpdateAsync(message.UserId, oldIdentity, newIdentity, ct).ConfigureAwait(false);
+            await _identitiesService.UpdateAsync(oldIdentity, newIdentity, ct).ConfigureAwait(false);
         }
 
         private Task VerifyAsync(Message message, CancellationToken ct)
@@ -95,7 +95,7 @@ namespace Crm.Apps.Identities.Consumers
                 return Task.CompletedTask;
             }
 
-            return _identitiesService.VerifyAsync(message.UserId, ids, ct);
+            return _identitiesService.VerifyAsync(ids, ct);
         }
 
         private Task UnverifyAsync(Message message, CancellationToken ct)
@@ -106,7 +106,7 @@ namespace Crm.Apps.Identities.Consumers
                 return Task.CompletedTask;
             }
 
-            return _identitiesService.UnverifyAsync(message.UserId, ids, ct);
+            return _identitiesService.UnverifyAsync(ids, ct);
         }
 
         private Task SetAsPrimaryAsync(Message message, CancellationToken ct)
@@ -117,7 +117,7 @@ namespace Crm.Apps.Identities.Consumers
                 return Task.CompletedTask;
             }
 
-            return _identitiesService.SetAsPrimaryAsync(message.UserId, ids, ct);
+            return _identitiesService.SetAsPrimaryAsync(ids, ct);
         }
 
         private Task ResetAsPrimaryAsync(Message message, CancellationToken ct)
@@ -128,7 +128,7 @@ namespace Crm.Apps.Identities.Consumers
                 return Task.CompletedTask;
             }
 
-            return _identitiesService.ResetAsPrimaryAsync(message.UserId, ids, ct);
+            return _identitiesService.ResetAsPrimaryAsync(ids, ct);
         }
     }
 }

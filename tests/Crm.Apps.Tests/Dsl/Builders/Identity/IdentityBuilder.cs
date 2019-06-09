@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Crm.Clients.Identities.Clients;
 using Crm.Clients.Identities.Models;
 using Crm.Utils.Guid;
+using Crm.Utils.String;
 
 namespace Crm.Apps.Tests.Dsl.Builders.Identity
 {
@@ -10,6 +11,7 @@ namespace Crm.Apps.Tests.Dsl.Builders.Identity
     {
         private readonly Clients.Identities.Models.Identity _identity;
         private readonly IIdentitiesClient _identitiesClient;
+        private string _password;
 
         public IdentityBuilder(IIdentitiesClient identitiesClient)
         {
@@ -18,7 +20,6 @@ namespace Crm.Apps.Tests.Dsl.Builders.Identity
             {
                 Type = IdentityType.None,
                 Key = "Test",
-                PasswordHash = string.Empty,
                 IsPrimary = false,
                 IsVerified = false
             };
@@ -45,9 +46,9 @@ namespace Crm.Apps.Tests.Dsl.Builders.Identity
             return this;
         }
 
-        public IdentityBuilder WithPasswordHash(string passwordHash)
+        public IdentityBuilder WithPassword(string value)
         {
-            _identity.PasswordHash = passwordHash;
+            _password = value;
 
             return this;
         }
@@ -74,6 +75,11 @@ namespace Crm.Apps.Tests.Dsl.Builders.Identity
             }
 
             var createdId = await _identitiesClient.CreateAsync(_identity).ConfigureAwait(false);
+
+            if (!_password.IsEmpty())
+            {
+                await _identitiesClient.SetPasswordAsync(createdId, _password).ConfigureAwait(false);
+            }
 
             return await _identitiesClient.GetAsync(createdId).ConfigureAwait(false);
         }

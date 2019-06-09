@@ -15,16 +15,20 @@ namespace Crm.Apps.Identities.Services
 
         Task<List<Identity>> GetPagedListAsync(IdentityGetPagedListParameter parameter, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, Identity identity, CancellationToken ct);
+        Task<Guid> CreateAsync(Identity identity, CancellationToken ct);
 
-        Task UpdateAsync(Guid userId, Identity oldIdentity, Identity newIdentity, CancellationToken ct);
+        Task UpdateAsync(Identity oldIdentity, Identity newIdentity, CancellationToken ct);
 
-        Task VerifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+        Task SetPasswordAsync(Identity identity, string password, CancellationToken ct);
 
-        Task UnverifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+        Task<bool> IsPasswordCorrectAsync(Identity identity, string password, CancellationToken ct);
 
-        Task SetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+        Task VerifyAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task ResetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+        Task UnverifyAsync(IEnumerable<Guid> ids, CancellationToken ct);
+
+        Task SetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct);
+
+        Task ResetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct);
     }
 }

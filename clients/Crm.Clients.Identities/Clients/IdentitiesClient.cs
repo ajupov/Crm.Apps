@@ -71,6 +71,23 @@ namespace Crm.Clients.Identities.Clients
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Update", identity, ct);
         }
 
+        public Task SetPasswordAsync(Guid id, string password, CancellationToken ct = default)
+        {
+            var parameter = new
+            {
+                Id = id,
+                Password = password
+            };
+
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/SetPassword", parameter, ct);
+        }
+
+        public Task<bool> IsPasswordCorrectAsync(Guid id, string password, CancellationToken ct = default)
+        {
+            return _httpClientFactory.GetAsync<bool>($"{_settings.Host}/Api/Identities/IsPasswordCorrect",
+                new {id, password}, ct);
+        }
+
         public Task VerifyAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Verify", ids, ct);

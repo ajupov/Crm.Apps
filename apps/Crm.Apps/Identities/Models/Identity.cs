@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Identities.Models
 {
@@ -12,6 +13,7 @@ namespace Crm.Apps.Identities.Models
 
         public string Key { get; set; }
 
+        [JsonIgnore]
         public string PasswordHash { get; set; }
 
         public bool IsPrimary { get; set; }

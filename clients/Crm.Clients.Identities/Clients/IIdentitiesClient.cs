@@ -9,7 +9,7 @@ namespace Crm.Clients.Identities.Clients
     public interface IIdentitiesClient
     {
         Task<List<IdentityType>> GetTypesAsync(CancellationToken ct = default);
-        
+
         Task<Identity> GetAsync(Guid id, CancellationToken ct = default);
 
         Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
@@ -22,6 +22,10 @@ namespace Crm.Clients.Identities.Clients
         Task<Guid> CreateAsync(Identity identity, CancellationToken ct = default);
 
         Task UpdateAsync(Identity identity, CancellationToken ct = default);
+
+        Task SetPasswordAsync(Guid id, string password, CancellationToken ct = default);
+
+        Task<bool> IsPasswordCorrectAsync(Guid id, string password, CancellationToken ct = default);
 
         Task VerifyAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 

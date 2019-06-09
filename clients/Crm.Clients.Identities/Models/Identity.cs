@@ -12,8 +12,6 @@ namespace Crm.Clients.Identities.Models
 
         public string Key { get; set; }
 
-        public string PasswordHash { get; set; }
-
         public bool IsPrimary { get; set; }
 
         public bool IsVerified { get; set; }
