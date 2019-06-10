@@ -62,84 +62,107 @@ namespace Crm.Apps.Identities.Services
             return result;
         }
 
-        public async Task<Guid> CreateAsync(Identity identity, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Identity identity, CancellationToken ct)
         {
-            var newIdentity = new Identity
+            var newIdentity = new Identity();
+            var change = newIdentity.WithCreateLog(userId, x =>
             {
-                Id = Guid.NewGuid(),
-                UserId = identity.UserId,
-                Type = identity.Type,
-                Key = identity.Key,
-                PasswordHash = string.Empty,
-                IsPrimary = identity.IsPrimary,
-                IsVerified = identity.IsVerified,
-                CreateDateTime = DateTime.UtcNow
-            };
+                x.Id = Guid.NewGuid();
+                x.UserId = identity.UserId;
+                x.Type = identity.Type;
+                x.Key = identity.Key;
+                x.PasswordHash = string.Empty;
+                x.IsPrimary = identity.IsPrimary;
+                x.IsVerified = identity.IsVerified;
+                x.CreateDateTime = DateTime.UtcNow;
+            });
 
             var entry = await _storage.AddAsync(newIdentity, ct).ConfigureAwait(false);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public Task UpdateAsync(Identity oldIdentity, Identity newIdentity, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Identity oldIdentity, Identity newIdentity, CancellationToken ct)
         {
-            oldIdentity.Type = newIdentity.Type;
-            oldIdentity.Key = newIdentity.Key;
-            oldIdentity.IsPrimary = newIdentity.IsPrimary;
-            oldIdentity.IsVerified = newIdentity.IsVerified;
+            var change = oldIdentity.WithUpdateLog(userId, x =>
+            {
+                x.Type = newIdentity.Type;
+                x.Key = newIdentity.Key;
+                x.IsPrimary = newIdentity.IsPrimary;
+                x.IsVerified = newIdentity.IsVerified;
+            });
 
             _storage.Update(oldIdentity);
-            return _storage.SaveChangesAsync(ct);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public Task SetPasswordAsync(Identity identity, string password, CancellationToken ct)
+        public async Task SetPasswordAsync(Guid userId, Identity identity, string password, CancellationToken ct)
         {
-            identity.PasswordHash = Password.ToPasswordHash(password);
+            var change = identity.WithUpdateLog(userId, x => { x.PasswordHash = Password.ToPasswordHash(password); });
 
             _storage.Update(identity);
-            return _storage.SaveChangesAsync(ct);
+            await _storage.AddAsync(change, ct).ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public Task<bool> IsPasswordCorrectAsync(Identity identity, string password, CancellationToken ct)
+        public Task<bool> IsPasswordCorrectAsync(Guid userId, Identity identity, string password, CancellationToken ct)
         {
             if (ct.IsCancellationRequested)
             {
                 throw new TaskCanceledException();
             }
-            
+
             return Task.FromResult(Password.IsVerifiedPassword(password, identity.PasswordHash));
         }
 
-        public async Task VerifyAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task VerifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsVerified = true, ct)
+            var changes = new List<IdentityChange>();
+
+            await _storage.Identities.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsVerified = true)), ct)
                 .ConfigureAwait(false);
 
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task UnverifyAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task UnverifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsVerified = false, ct)
+            var changes = new List<IdentityChange>();
+
+            await _storage.Identities.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsVerified = false)), ct)
                 .ConfigureAwait(false);
 
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task SetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task SetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsPrimary = true, ct)
+            var changes = new List<IdentityChange>();
+
+            await _storage.Identities.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsPrimary = true)), ct)
                 .ConfigureAwait(false);
 
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task ResetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task ResetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            await _storage.Identities.Where(x => ids.Contains(x.Id)).ForEachAsync(x => x.IsPrimary = false, ct)
+            var changes = new List<IdentityChange>();
+
+            await _storage.Identities.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsPrimary = false)), ct)
                 .ConfigureAwait(false);
 
+            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
     }

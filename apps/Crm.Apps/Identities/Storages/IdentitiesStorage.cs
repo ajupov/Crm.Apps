@@ -12,6 +12,9 @@ namespace Crm.Apps.Identities.Storages
         public DbSet<Identity> Identities { get; set; }
 
         public DbSet<IdentityToken> IdentityTokens { get; set; }
+        
+        public DbSet<IdentityChange> IdentityChanges { get; set; }
+
 
         public IdentitiesStorage(IOptions<OrmSettings> options)
         {

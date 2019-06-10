@@ -14,7 +14,8 @@ namespace Crm.Clients.Identities
                 .AddHttpClient()
                 .Configure<IdentitiesClientSettings>(configuration.GetSection("IdentitiesClientSettings"))
                 .AddSingleton<IIdentitiesClient, IdentitiesClient>()
-                .AddSingleton<IIdentityTokensClient, IdentityTokensClient>();
+                .AddSingleton<IIdentityTokensClient, IdentityTokensClient>()
+                .AddSingleton<IIdentityChangesClient, IdentityChangesClient>();
         }
     }
 }

@@ -62,7 +62,9 @@ namespace Crm.Apps
                             .AddTransient<IUserGroupsService, UserGroupsService>()
                             .AddTransient<IUserGroupChangesService, UserGroupChangesService>()
                             .AddTransient<IIdentitiesService, IdentitiesService>()
-                            .AddTransient<IIdentityTokensService, IdentityTokensService>();
+                            .AddTransient<IIdentityTokensService, IdentityTokensService>()
+                            .AddTransient<IIdentityChangesService, IdentityChangesService>()
+                            ;
                     })
                     .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
