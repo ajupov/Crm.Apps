@@ -9,7 +9,7 @@ namespace Crm.Apps.Products.Models
 
         public Guid AccountId { get; set; }
         
-        public Guid? ParentProductId { get; set; }
+        public Guid ParentProductId { get; set; }
 
         public ProductType Type { get; set; }
         
