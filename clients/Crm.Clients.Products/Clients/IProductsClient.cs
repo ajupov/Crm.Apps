@@ -27,9 +27,9 @@ namespace Crm.Clients.Products.Clients
 
         Task UpdateAsync(Product product, CancellationToken ct = default);
 
-        Task LockAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task HideAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task UnlockAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task ShowAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 

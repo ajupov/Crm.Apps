@@ -83,14 +83,14 @@ namespace Crm.Clients.Products.Clients
             return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Update", user, ct);
         }
 
-        public Task LockAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task HideAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Lock", ids, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Hide", ids, ct);
         }
 
-        public Task UnlockAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task ShowAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Unlock", ids, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Show", ids, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)

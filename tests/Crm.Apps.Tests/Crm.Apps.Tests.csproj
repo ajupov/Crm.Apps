@@ -2,6 +2,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <IsPackable>false</IsPackable>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
@@ -16,13 +17,11 @@
     <ItemGroup>
         <ProjectReference Include="..\..\clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj" />
         <ProjectReference Include="..\..\clients\Crm.Clients.Identities\Crm.Clients.Identities.csproj" />
+        <ProjectReference Include="..\..\clients\Crm.Clients.Products\Crm.Clients.Products.csproj" />
         <ProjectReference Include="..\..\clients\Crm.Clients.Users\Crm.Clients.Users.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.DependencyInjection.Tests\Crm.Infrastructure.DependencyInjection.Tests.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.DateTime\Crm.Utils.DateTime.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Tests" />
     </ItemGroup>
 </Project>

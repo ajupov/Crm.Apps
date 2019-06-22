@@ -122,7 +122,7 @@ namespace Crm.Apps.Products.Controllers
                 new[] {product.AccountId, oldProduct.AccountId}).ConfigureAwait(false);
         }
 
-        [HttpPost("Lock")]
+        [HttpPost("Hide")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning, Permission.ProductsManagement)]
         public async Task<ActionResult> Hide(List<Guid> ids, CancellationToken ct = default)
@@ -139,7 +139,7 @@ namespace Crm.Apps.Products.Controllers
                 products.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
-        [HttpPost("Unlock")]
+        [HttpPost("Show")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning, Permission.ProductsManagement)]
         public async Task<ActionResult> Show(List<Guid> ids, CancellationToken ct = default)

@@ -1,6 +1,10 @@
 using Crm.Apps.Tests.Dsl.Builders.Account;
 using Crm.Apps.Tests.Dsl.Builders.Identity;
 using Crm.Apps.Tests.Dsl.Builders.IdentityToken;
+using Crm.Apps.Tests.Dsl.Builders.Product;
+using Crm.Apps.Tests.Dsl.Builders.ProductAttribute;
+using Crm.Apps.Tests.Dsl.Builders.ProductCategory;
+using Crm.Apps.Tests.Dsl.Builders.ProductStatus;
 using Crm.Apps.Tests.Dsl.Builders.User;
 using Crm.Apps.Tests.Dsl.Builders.UserAttribute;
 using Crm.Apps.Tests.Dsl.Builders.UserGroup;
@@ -18,7 +22,15 @@ namespace Crm.Apps.Tests.Dsl.Creator
         IUserGroupBuilder UserGroup { get; }
 
         IIdentityBuilder Identity { get; }
-        
+
         IIdentityTokenBuilder IdentityToken { get; }
+
+        IProductBuilder Product { get; }
+
+        IProductCategoryBuilder ProductCategory { get; }
+
+        IProductStatusBuilder ProductStatus { get; }
+
+        IProductAttributeBuilder ProductAttribute { get; }
     }
 }
