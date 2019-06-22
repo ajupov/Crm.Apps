@@ -4,6 +4,8 @@ using Crm.Apps.Accounts.Services;
 using Crm.Apps.Accounts.Storages;
 using Crm.Apps.Identities.Services;
 using Crm.Apps.Identities.Storages;
+using Crm.Apps.Leads.Services;
+using Crm.Apps.Products.Services;
 using Crm.Apps.Users.Consumers;
 using Crm.Apps.Users.Services;
 using Crm.Apps.Users.Storages;
@@ -64,7 +66,21 @@ namespace Crm.Apps
                             .AddTransient<IIdentitiesService, IdentitiesService>()
                             .AddTransient<IIdentityTokensService, IdentityTokensService>()
                             .AddTransient<IIdentityChangesService, IdentityChangesService>()
-                            ;
+                            .AddTransient<IProductsService, ProductsService>()
+                            .AddTransient<IProductChangesService, ProductChangesService>()
+                            .AddTransient<IProductCategoriesService, ProductCategoriesService>()
+                            .AddTransient<IProductCategoryChangesService, ProductCategoryChangesService>()
+                            .AddTransient<IProductStatusesService, ProductStatusesService>()
+                            .AddTransient<IProductStatusChangesService, ProductStatusChangesService>()
+                            .AddTransient<IProductAttributesService, ProductAttributesService>()
+                            .AddTransient<IProductAttributeChangesService, ProductAttributeChangesService>()
+                            .AddTransient<ILeadsService, LeadsService>()
+                            .AddTransient<ILeadChangesService, LeadChangesService>()
+                            .AddTransient<ILeadCommentsService, LeadCommentsService>()
+                            .AddTransient<ILeadSourcesService, LeadSourcesService>()
+                            .AddTransient<ILeadSourceChangesService, LeadSourceChangesService>()
+                            .AddTransient<ILeadAttributesService, LeadAttributesService>()
+                            .AddTransient<ILeadAttributeChangesService, LeadAttributeChangesService>();
                     })
                     .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
