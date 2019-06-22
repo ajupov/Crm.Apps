@@ -13,13 +13,13 @@ namespace Crm.Clients.Products.Clients
 {
     public class ProductAttributesClient : IProductAttributesClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ProductsClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public ProductAttributesClient(IOptions<ProductsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)

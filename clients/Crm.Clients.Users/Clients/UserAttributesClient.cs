@@ -13,13 +13,13 @@ namespace Crm.Clients.Users.Clients
 {
     public class UserAttributesClient : IUserAttributesClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly UsersClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public UserAttributesClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)

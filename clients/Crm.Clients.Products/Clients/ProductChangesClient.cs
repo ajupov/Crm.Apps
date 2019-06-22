@@ -15,10 +15,10 @@ namespace Crm.Clients.Products.Clients
         private readonly ProductsClientSettings _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductChangesClient(IHttpClientFactory httpClientFactory, IOptions<ProductsClientSettings> options)
+        public ProductChangesClient(IOptions<ProductsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<ProductChange>> GetPagedListAsync(Guid? changerUserId = default, Guid? productId = default,

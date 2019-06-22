@@ -13,13 +13,13 @@ namespace Crm.Clients.Users.Clients
 {
     public class UsersClient : IUsersClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly UsersClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public UsersClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<UserGender>> GetGendersAsync(CancellationToken ct = default)

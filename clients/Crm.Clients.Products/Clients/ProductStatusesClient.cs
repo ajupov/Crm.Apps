@@ -12,13 +12,13 @@ namespace Crm.Clients.Products.Clients
 {
     public class ProductStatusesClient : IProductStatusesClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ProductsClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public ProductStatusesClient(IOptions<ProductsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<ProductStatus> GetAsync(Guid id, CancellationToken ct = default)
@@ -52,18 +52,17 @@ namespace Crm.Clients.Products.Clients
             };
 
             return _httpClientFactory.PostAsync<List<ProductStatus>>(
-                $"{_settings.Host}/Api/Products/Statuses/GetPagedList",
-                parameter, ct);
+                $"{_settings.Host}/Api/Products/Statuses/GetPagedList", parameter, ct);
         }
 
-        public Task<Guid> CreateAsync(ProductStatus group, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(ProductStatus status, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Statuses/Create", group, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Statuses/Create", status, ct);
         }
 
-        public Task UpdateAsync(ProductStatus group, CancellationToken ct = default)
+        public Task UpdateAsync(ProductStatus status, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Statuses/Update", group, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Statuses/Update", status, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)

@@ -3,33 +3,33 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Models;
-using Crm.Clients.Users.Settings;
+using Crm.Clients.Leads.Models;
+using Crm.Clients.Leads.Settings;
 using Crm.Utils.Http;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Clients.Users.Clients
+namespace Crm.Clients.Leads.Clients
 {
-    public class UserAttributeChangesClient : IUserAttributeChangesClient
+    public class LeadSourceChangesClient : ILeadSourceChangesClient
     {
-        private readonly UsersClientSettings _settings;
+        private readonly LeadsClientSettings _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public UserAttributeChangesClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
+        public LeadSourceChangesClient(IOptions<LeadsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
             _settings = options.Value;
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<UserAttributeChange>> GetPagedListAsync(Guid? changerUserId = default,
-            Guid? attributeId = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
+        public Task<List<LeadSourceChange>> GetPagedListAsync(Guid? changerUserId = default,
+            Guid? sourceId = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
             CancellationToken ct = default)
         {
             var parameter = new
             {
-                ChangerUserId = changerUserId,
-                AttributeId = attributeId,
+                ChangerLeadId = changerUserId,
+                SourceId = sourceId,
                 MinCreateDate = minCreateDate,
                 MaxCreateDate = maxCreateDate,
                 Offset = offset,
@@ -38,8 +38,8 @@ namespace Crm.Clients.Users.Clients
                 OrderBy = orderBy
             };
 
-            return _httpClientFactory.PostAsync<List<UserAttributeChange>>(
-                $"{_settings.Host}/Api/Users/Attributes/Changes/GetPagedList", parameter, ct);
+            return _httpClientFactory.PostAsync<List<LeadSourceChange>>(
+                $"{_settings.Host}/Api/Leads/Sources/Changes/GetPagedList", parameter, ct);
         }
     }
 }

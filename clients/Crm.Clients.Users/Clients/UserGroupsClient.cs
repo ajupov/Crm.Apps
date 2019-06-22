@@ -12,13 +12,13 @@ namespace Crm.Clients.Users.Clients
 {
     public class UserGroupsClient : IUserGroupsClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly UsersClientSettings _settings;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public UserGroupsClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory;
             _settings = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
         public Task<UserGroup> GetAsync(Guid id, CancellationToken ct = default)
