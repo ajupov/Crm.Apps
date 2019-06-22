@@ -3,47 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Leads.Helpers;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Parameters;
+using Crm.Apps.Leads.Storages;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Leads.Services
 {
-    public class ProductsService : IProductsService
+    public class LeadsService : ILeadsService
     {
-        private readonly ProductsStorage _storage;
+        private readonly LeadsStorage _storage;
 
-        public ProductsService(ProductsStorage storage)
+        public LeadsService(LeadsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<Product> GetAsync(Guid id, CancellationToken ct)
+        public Task<Lead> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks).Include(x => x.CategoryLinks)
+            return _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<Product>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<Lead>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Products.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Leads.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public async Task<List<Product>> GetPagedListAsync(ProductGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Lead>> GetPagedListAsync(LeadGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks)
-                .Include(x => x.CategoryLinks).Where(x =>
+            var temp = await _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks).Where(x =>
                     (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
-                    (!parameter.ParentProductId.HasValue || x.ParentProductId == parameter.ParentProductId) &&
+                    (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.VendorCode.IsEmpty() || x.VendorCode == parameter.VendorCode) &&
-                    (!parameter.MinPrice.HasValue || parameter.MinPrice.Value == 0 ||
-                     x.Price >= parameter.MinPrice.Value) &&
-                    (!parameter.MaxPrice.HasValue || parameter.MaxPrice.Value == 0 || x.Price <= parameter.MaxPrice) &&
-                    (!parameter.IsHidden.HasValue || x.IsHidden == parameter.IsHidden) &&
+                    (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
+                    (parameter.Phone.IsEmpty() || x.Phone == parameter.Phone) &&
+                    (parameter.Email.IsEmpty() || x.Phone == parameter.Email) &&
+                    (parameter.CompanyName.IsEmpty() ||
+                     EF.Functions.Like(x.CompanyName, $"{parameter.CompanyName}%")) &&
+                    (parameter.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{parameter.Post}%")) &&
+                    (parameter.Postcode.IsEmpty() || x.Postcode == parameter.Postcode) &&
+                    (parameter.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{parameter.Country}%")) &&
+                    (parameter.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{parameter.Region}%")) &&
+                    (parameter.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{parameter.Province}%")) &&
+                    (parameter.City.IsEmpty() || EF.Functions.Like(x.City, $"{parameter.City}%")) &&
+                    (parameter.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{parameter.Street}%")) &&
+                    (parameter.House.IsEmpty() || EF.Functions.Like(x.House, $"{parameter.House}%")) &&
+                    (parameter.Apartment.IsEmpty() || x.Apartment == parameter.Apartment) &&
+                    (!parameter.MinOpportunitySum.HasValue || parameter.MinOpportunitySum.Value == 0 ||
+                     x.OpportunitySum >= parameter.MinOpportunitySum.Value) &&
+                    (!parameter.MaxOpportunitySum.HasValue || parameter.MaxOpportunitySum.Value == 0 ||
+                     x.OpportunitySum <= parameter.MaxOpportunitySum) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
@@ -54,99 +66,94 @@ namespace Crm.Apps.Products.Services
                 .ToList();
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, Product product, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Lead lead, CancellationToken ct)
         {
-            var newProduct = new Product();
-            var change = newProduct.CreateWithLog(userId, x =>
+            var newLead = new Lead();
+            var change = newLead.CreateWithLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = product.AccountId;
-                x.ParentProductId = product.ParentProductId;
-                x.Type = product.Type;
-                x.StatusId = product.StatusId;
-                x.Name = product.Name;
-                x.VendorCode = product.VendorCode;
-                x.Price = product.Price;
-                x.Image = product.Image;
-                x.IsHidden = product.IsHidden;
-                x.IsDeleted = product.IsDeleted;
+                x.AccountId = lead.AccountId;
+                x.SourceId = lead.SourceId;
+                x.CreateUserId = userId;
+                x.ResponsibleUserId = lead.ResponsibleUserId;
+                x.Surname = lead.Surname;
+                x.Name = lead.Name;
+                x.Patronymic = lead.Patronymic;
+                x.Phone = lead.Phone;
+                x.Email = lead.Email;
+                x.CompanyName = lead.CompanyName;
+                x.Post = lead.Post;
+                x.Postcode = lead.Postcode;
+                x.Country = lead.Country;
+                x.Region = lead.Region;
+                x.Province = lead.Province;
+                x.City = lead.City;
+                x.Street = lead.Street;
+                x.House = lead.House;
+                x.Apartment = lead.Apartment;
+                x.OpportunitySum = lead.OpportunitySum;
+                x.IsDeleted = lead.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = product.AttributeLinks;
-                x.CategoryLinks = product.CategoryLinks;
+                x.AttributeLinks = lead.AttributeLinks;
             });
 
-            var entry = await _storage.AddAsync(newProduct, ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newLead, ct).ConfigureAwait(false);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid productId, Product oldProduct, Product newProduct, CancellationToken ct)
+        public async Task UpdateAsync(Guid leadId, Lead oldLead, Lead newLead, CancellationToken ct)
         {
-            var change = oldProduct.UpdateWithLog(productId, x =>
+            var change = oldLead.UpdateWithLog(leadId, x =>
             {
-                x.AccountId = newProduct.AccountId;
-                x.ParentProductId = newProduct.ParentProductId;
-                x.Type = newProduct.Type;
-                x.StatusId = newProduct.StatusId;
-                x.Name = newProduct.Name;
-                x.VendorCode = newProduct.VendorCode;
-                x.Price = newProduct.Price;
-                x.Image = newProduct.Image;
-                x.IsHidden = newProduct.IsHidden;
-                x.IsDeleted = newProduct.IsDeleted;
-                x.AttributeLinks = newProduct.AttributeLinks;
-                x.CategoryLinks = newProduct.CategoryLinks;
+                x.AccountId = newLead.AccountId;
+                x.SourceId = newLead.SourceId;
+                x.ResponsibleUserId = newLead.ResponsibleUserId;
+                x.Surname = newLead.Surname;
+                x.Name = newLead.Name;
+                x.Patronymic = newLead.Patronymic;
+                x.Phone = newLead.Phone;
+                x.Email = newLead.Email;
+                x.CompanyName = newLead.CompanyName;
+                x.Post = newLead.Post;
+                x.Postcode = newLead.Postcode;
+                x.Country = newLead.Country;
+                x.Region = newLead.Region;
+                x.Province = newLead.Province;
+                x.City = newLead.City;
+                x.Street = newLead.Street;
+                x.House = newLead.House;
+                x.Apartment = newLead.Apartment;
+                x.OpportunitySum = newLead.OpportunitySum;
+                x.IsDeleted = newLead.IsDeleted;
+                x.AttributeLinks = newLead.AttributeLinks;
             });
 
-            _storage.Update(oldProduct);
+            _storage.Update(oldLead);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task HideAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductChange>();
+            var changes = new List<LeadChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = true)), ct)
+            await _storage.Leads.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
             await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task ShowAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductChange>();
+            var changes = new List<LeadChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = false)), ct)
-                .ConfigureAwait(false);
-
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
-        }
-
-        public async Task DeleteAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
-        {
-            var changes = new List<ProductChange>();
-
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = true)), ct)
-                .ConfigureAwait(false);
-
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
-        }
-
-        public async Task RestoreAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
-        {
-            var changes = new List<ProductChange>();
-
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = false)), ct)
+            await _storage.Leads.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 
             await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);

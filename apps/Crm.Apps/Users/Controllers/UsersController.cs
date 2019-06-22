@@ -116,7 +116,7 @@ namespace Crm.Apps.Users.Controllers
             }
 
             return await ActionIfAllowed(() => _usersService.UpdateAsync(_userContext.UserId, oldUser, user, ct),
-                new[] {oldUser.AccountId});
+                new[] {user.AccountId, oldUser.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Lock")]
@@ -133,7 +133,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _usersService.LockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+                users.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Unlock")]
@@ -150,7 +150,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _usersService.UnlockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+                users.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
@@ -167,7 +167,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _usersService.DeleteAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+                users.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
@@ -184,7 +184,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _usersService.RestoreAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId));
+                users.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]

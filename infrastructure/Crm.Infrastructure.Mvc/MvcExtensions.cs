@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,13 +11,8 @@ namespace Crm.Infrastructure.Mvc
         public static IServiceCollection ConfigureMvc(this IServiceCollection services, params Type[] filters)
         {
             services
-                .AddMvc(options =>
-                {
-                    foreach (var filter in filters)
-                    {
-                        options.Filters.Add(filter);
-                    }
-                }).SetCompatibilityVersion(CompatibilityVersion.Latest);
+                .AddMvc(x => filters.ToList().ForEach(f => x.Filters.Add(f)))
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             return services;
         }

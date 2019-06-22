@@ -11,9 +11,9 @@ namespace Crm.Infrastructure.Logging
         public static IWebHostBuilder ConfigureLogging(this IWebHostBuilder webHostBuilder, string applicationName,
             string applicationVersion)
         {
-            return webHostBuilder.ConfigureLogging(loggingBuilder =>
+            return webHostBuilder.ConfigureLogging(x =>
             {
-                loggingBuilder.ClearProviders();
+                x.ClearProviders();
 
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Information()
@@ -23,7 +23,7 @@ namespace Crm.Infrastructure.Logging
                         outputTemplate: Template, shared: true)
                     .CreateLogger();
 
-                loggingBuilder.AddSerilog(Log.Logger);
+                x.AddSerilog(Log.Logger);
             });
         }
     }

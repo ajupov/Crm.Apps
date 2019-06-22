@@ -3,38 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Leads.Helpers;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Parameters;
+using Crm.Apps.Leads.Storages;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Leads.Services
 {
-    public class ProductAttributesService : IProductAttributesService
+    public class LeadAttributesService : ILeadAttributesService
     {
-        private readonly ProductsStorage _storage;
+        private readonly LeadsStorage _storage;
 
-        public ProductAttributesService(ProductsStorage storage)
+        public LeadAttributesService(LeadsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<ProductAttribute> GetAsync(Guid id, CancellationToken ct)
+        public Task<LeadAttribute> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.ProductAttributes.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.LeadAttributes.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<ProductAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<LeadAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.ProductAttributes.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.LeadAttributes.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<ProductAttribute>> GetPagedListAsync(ProductAttributeGetPagedListParameter parameter,
+        public Task<List<LeadAttribute>> GetPagedListAsync(LeadAttributeGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.ProductAttributes.Where(x =>
+            return _storage.LeadAttributes.Where(x =>
                     (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
                     (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
@@ -47,9 +47,9 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ProductAttribute attribute, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, LeadAttribute attribute, CancellationToken ct)
         {
-            var newAttribute = new ProductAttribute();
+            var newAttribute = new LeadAttribute();
             var change = newAttribute.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
@@ -67,7 +67,7 @@ namespace Crm.Apps.Products.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, ProductAttribute oldAttribute, ProductAttribute newAttribute,
+        public async Task UpdateAsync(Guid userId, LeadAttribute oldAttribute, LeadAttribute newAttribute,
             CancellationToken ct)
         {
             var change = oldAttribute.WithUpdateLog(userId, x =>
@@ -84,9 +84,9 @@ namespace Crm.Apps.Products.Services
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductAttributeChange>();
+            var changes = new List<LeadAttributeChange>();
 
-            await _storage.ProductAttributes.Where(x => ids.Contains(x.Id))
+            await _storage.LeadAttributes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
@@ -96,9 +96,9 @@ namespace Crm.Apps.Products.Services
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductAttributeChange>();
+            var changes = new List<LeadAttributeChange>();
 
-            await _storage.ProductAttributes.Where(x => ids.Contains(x.Id))
+            await _storage.LeadAttributes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 

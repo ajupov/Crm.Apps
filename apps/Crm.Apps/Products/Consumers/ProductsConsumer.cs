@@ -62,10 +62,6 @@ namespace Crm.Apps.Products.Consumers
         private Task CreateAsync(Message message, CancellationToken ct)
         {
             var product = message.Data.FromJsonString<Product>();
-            if (product.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
 
             return _productsService.CreateAsync(message.UserId, product, ct);
         }
@@ -109,17 +105,6 @@ namespace Crm.Apps.Products.Consumers
             return _productsService.ShowAsync(message.UserId, ids, ct);
         }
 
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _productsService.RestoreAsync(message.UserId, ids, ct);
-        }
-
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
@@ -129,6 +114,17 @@ namespace Crm.Apps.Products.Consumers
             }
 
             return _productsService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _productsService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

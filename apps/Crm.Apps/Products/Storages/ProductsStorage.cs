@@ -39,12 +39,12 @@ namespace Crm.Apps.Products.Storages
         {
             modelBuilder.Entity<ProductAttributeLink>()
                 .ToTable("ProductAttributeLinks")
-                .Property(b => b.ProductAttributeId)
+                .Property(x => x.ProductAttributeId)
                 .HasColumnName("AttributeId");
 
             modelBuilder.Entity<ProductCategoryLink>()
                 .ToTable("ProductCategoryLinks")
-                .Property(b => b.ProductCategoryId)
+                .Property(x => x.ProductCategoryId)
                 .HasColumnName("CategoryId");
         }
     }

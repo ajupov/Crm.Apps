@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Products.Consumers
+namespace Crm.Apps.Leads.Consumers
 {
-    public class ProductsConsumer : IHostedService
+    public class LeadsConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IProductsService _productsService;
+        private readonly ILeadsService _leadsService;
 
-        public ProductsConsumer(IConsumer consumer, IProductsService productsService)
+        public LeadsConsumer(IConsumer consumer, ILeadsService leadsService)
         {
             _consumer = consumer;
-            _productsService = productsService;
+            _leadsService = leadsService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("Products", ActionAsync);
+            _consumer.Consume("Leads", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -46,10 +46,6 @@ namespace Crm.Apps.Products.Consumers
                     return CreateAsync(message, ct);
                 case "Update":
                     return UpdateAsync(message, ct);
-                case "Hide":
-                    return HideAsync(message, ct);
-                case "Show":
-                    return ShowAsync(message, ct);
                 case "Delete":
                     return DeleteAsync(message, ct);
                 case "Restore":
@@ -61,63 +57,26 @@ namespace Crm.Apps.Products.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var product = message.Data.FromJsonString<Product>();
-            if (product.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
+            var lead = message.Data.FromJsonString<Lead>();
 
-            return _productsService.CreateAsync(message.UserId, product, ct);
+            return _leadsService.CreateAsync(message.UserId, lead, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newProduct = message.Data.FromJsonString<Product>();
-            if (newProduct.Id.IsEmpty())
+            var newLead = message.Data.FromJsonString<Lead>();
+            if (newLead.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldProduct = await _productsService.GetAsync(newProduct.Id, ct).ConfigureAwait(false);
-            if (oldProduct == null)
+            var oldLead = await _leadsService.GetAsync(newLead.Id, ct).ConfigureAwait(false);
+            if (oldLead == null)
             {
                 return;
             }
 
-            await _productsService.UpdateAsync(message.UserId, oldProduct, newProduct, ct).ConfigureAwait(false);
-        }
-
-        private Task HideAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _productsService.HideAsync(message.UserId, ids, ct);
-        }
-
-        private Task ShowAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _productsService.ShowAsync(message.UserId, ids, ct);
-        }
-
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _productsService.RestoreAsync(message.UserId, ids, ct);
+            await _leadsService.UpdateAsync(message.UserId, oldLead, newLead, ct).ConfigureAwait(false);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -128,7 +87,18 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productsService.DeleteAsync(message.UserId, ids, ct);
+            return _leadsService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _leadsService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

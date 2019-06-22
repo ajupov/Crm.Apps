@@ -57,43 +57,27 @@ namespace Crm.Apps.Products.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var productAttribute = message.Data.FromJsonString<ProductAttribute>();
-            if (productAttribute.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
+            var attribute = message.Data.FromJsonString<ProductAttribute>();
 
-            return _productAttributesService.CreateAsync(message.UserId, productAttribute, ct);
+            return _productAttributesService.CreateAsync(message.UserId, attribute, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newProductAttribute = message.Data.FromJsonString<ProductAttribute>();
-            if (newProductAttribute.Id.IsEmpty())
+            var newAttribute = message.Data.FromJsonString<ProductAttribute>();
+            if (newAttribute.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldProductAttribute =
-                await _productAttributesService.GetAsync(newProductAttribute.Id, ct).ConfigureAwait(false);
-            if (oldProductAttribute == null)
+            var oldAttribute = await _productAttributesService.GetAsync(newAttribute.Id, ct).ConfigureAwait(false);
+            if (oldAttribute == null)
             {
                 return;
             }
 
-            await _productAttributesService.UpdateAsync(message.UserId, oldProductAttribute, newProductAttribute, ct)
+            await _productAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct)
                 .ConfigureAwait(false);
-        }
-
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _productAttributesService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -105,6 +89,17 @@ namespace Crm.Apps.Products.Consumers
             }
 
             return _productAttributesService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _productAttributesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

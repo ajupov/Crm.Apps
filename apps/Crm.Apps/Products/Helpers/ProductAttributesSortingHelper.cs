@@ -14,22 +14,22 @@ namespace Crm.Apps.Products.Helpers
             {
                 case nameof(ProductAttribute.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.Id)
-                        : queryable.OrderBy(attribute => attribute.Id);
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
                 case nameof(ProductAttribute.Type):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.Type)
-                        : queryable.OrderBy(attribute => attribute.Type);
+                        ? queryable.OrderByDescending(x => x.Type)
+                        : queryable.OrderBy(x => x.Type);
                 case nameof(ProductAttribute.Key):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.Key)
-                        : queryable.OrderBy(attribute => attribute.Key);
+                        ? queryable.OrderByDescending(x => x.Key)
+                        : queryable.OrderBy(x => x.Key);
                 case nameof(ProductAttribute.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.CreateDateTime)
-                        : queryable.OrderBy(attribute => attribute.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(attribute => attribute.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

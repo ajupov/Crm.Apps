@@ -1,17 +1,17 @@
 ﻿using System;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Leads.Models;
 using Crm.Utils.Json;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Leads.Helpers
 {
-    public static class ProductAttributesChangesHelper
+    public static class LeadAttributesChangesHelper
     {
-        public static ProductAttributeChange WithCreateLog(this ProductAttribute attribute, Guid userId,
-            Action<ProductAttribute> action)
+        public static LeadAttributeChange WithCreateLog(this LeadAttribute attribute, Guid userId,
+            Action<LeadAttribute> action)
         {
             action(attribute);
 
-            return new ProductAttributeChange
+            return new LeadAttributeChange
             {
                 AttributeId = attribute.Id,
                 ChangerUserId = userId,
@@ -21,14 +21,14 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductAttributeChange WithUpdateLog(this ProductAttribute attribute, Guid userId,
-            Action<ProductAttribute> action)
+        public static LeadAttributeChange WithUpdateLog(this LeadAttribute attribute, Guid userId,
+            Action<LeadAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();
 
             action(attribute);
 
-            return new ProductAttributeChange
+            return new LeadAttributeChange
             {
                 AttributeId = attribute.Id,
                 ChangerUserId = userId,

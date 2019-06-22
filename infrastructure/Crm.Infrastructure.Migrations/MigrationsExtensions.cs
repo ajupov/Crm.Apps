@@ -14,12 +14,12 @@ namespace Crm.Infrastructure.Migrations
             var assembly = Assembly.GetCallingAssembly();
 
             services.AddFluentMigratorCore()
-                .ConfigureRunner(builder =>
-                    builder.AddPostgres()
+                .ConfigureRunner(x =>
+                    x.AddPostgres()
                         .WithGlobalConnectionString(configuration.GetConnectionString("MigrationsConnectionString"))
                         .ScanIn(assembly)
                         .For.Migrations())
-                .AddLogging(builder => builder.AddFluentMigratorConsole());
+                .AddLogging(x => x.AddFluentMigratorConsole());
 
             return services;
         }

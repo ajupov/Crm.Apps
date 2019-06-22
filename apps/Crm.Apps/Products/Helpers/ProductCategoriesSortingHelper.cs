@@ -14,18 +14,18 @@ namespace Crm.Apps.Products.Helpers
             {
                 case nameof(ProductCategory.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(category => category.Id)
-                        : queryable.OrderBy(category => category.Id);
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
                 case nameof(ProductCategory.Name):
                     return isDesc
-                        ? queryable.OrderByDescending(category => category.Name)
-                        : queryable.OrderBy(category => category.Name);
+                        ? queryable.OrderByDescending(x => x.Name)
+                        : queryable.OrderBy(x => x.Name);
                 case nameof(ProductCategory.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(category => category.CreateDateTime)
-                        : queryable.OrderBy(category => category.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(category => category.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

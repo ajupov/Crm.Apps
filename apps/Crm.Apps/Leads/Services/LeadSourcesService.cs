@@ -3,38 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Leads.Helpers;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Parameters;
+using Crm.Apps.Leads.Storages;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Leads.Services
 {
-    public class ProductCategoriesService : IProductCategoriesService
+    public class LeadSourcesService : ILeadSourcesService
     {
-        private readonly ProductsStorage _storage;
+        private readonly LeadsStorage _storage;
 
-        public ProductCategoriesService(ProductsStorage storage)
+        public LeadSourcesService(LeadsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<ProductCategory> GetAsync(Guid id, CancellationToken ct)
+        public Task<LeadSource> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.ProductCategories.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.LeadSources.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<ProductCategory>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.ProductCategories.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.LeadSources.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<ProductCategory>> GetPagedListAsync(ProductCategoryGetPagedListParameter parameter,
+        public Task<List<LeadSource>> GetPagedListAsync(LeadSourceGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.ProductCategories.Where(x =>
+            return _storage.LeadSources.Where(x =>
                     (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
@@ -46,44 +46,44 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ProductCategory category, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, LeadSource source, CancellationToken ct)
         {
-            var newCategory = new ProductCategory();
-            var change = newCategory.WithCreateLog(userId, x =>
+            var newSource = new LeadSource();
+            var change = newSource.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = category.AccountId;
-                x.Name = category.Name;
-                x.IsDeleted = category.IsDeleted;
+                x.AccountId = source.AccountId;
+                x.Name = source.Name;
+                x.IsDeleted = source.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(newCategory, ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newSource, ct).ConfigureAwait(false);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, ProductCategory oldCategory, ProductCategory newCategory,
+        public async Task UpdateAsync(Guid userId, LeadSource oldSource, LeadSource newSource,
             CancellationToken ct)
         {
-            var change = oldCategory.WithUpdateLog(userId, x =>
+            var change = oldSource.WithUpdateLog(userId, x =>
             {
-                x.Name = newCategory.Name;
-                x.IsDeleted = newCategory.IsDeleted;
+                x.Name = newSource.Name;
+                x.IsDeleted = newSource.IsDeleted;
             });
 
-            _storage.Update(oldCategory);
+            _storage.Update(oldSource);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductCategoryChange>();
+            var changes = new List<LeadSourceChange>();
 
-            await _storage.ProductCategories.Where(x => ids.Contains(x.Id))
+            await _storage.LeadSources.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
@@ -93,9 +93,9 @@ namespace Crm.Apps.Products.Services
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductCategoryChange>();
+            var changes = new List<LeadSourceChange>();
 
-            await _storage.ProductCategories.Where(x => ids.Contains(x.Id))
+            await _storage.LeadSources.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 

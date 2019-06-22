@@ -57,41 +57,27 @@ namespace Crm.Apps.Users.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var userAttribute = message.Data.FromJsonString<UserAttribute>();
-            if (userAttribute.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
+            var attribute = message.Data.FromJsonString<UserAttribute>();
 
-            return _userAttributesService.CreateAsync(message.UserId, userAttribute, ct);
+            return _userAttributesService.CreateAsync(message.UserId, attribute, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newUserAttribute = message.Data.FromJsonString<UserAttribute>();
-            if (newUserAttribute.Id.IsEmpty())
+            var newAttribute = message.Data.FromJsonString<UserAttribute>();
+            if (newAttribute.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldUserAttribute = await _userAttributesService.GetAsync(newUserAttribute.Id, ct).ConfigureAwait(false);
-            if (oldUserAttribute == null)
+            var oldAttribute = await _userAttributesService.GetAsync(newAttribute.Id, ct).ConfigureAwait(false);
+            if (oldAttribute == null)
             {
                 return;
             }
 
-            await _userAttributesService.UpdateAsync(message.UserId, oldUserAttribute, newUserAttribute, ct).ConfigureAwait(false);
-        }
-
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _userAttributesService.RestoreAsync(message.UserId, ids, ct);
+            await _userAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct)
+                .ConfigureAwait(false);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -103,6 +89,17 @@ namespace Crm.Apps.Users.Consumers
             }
 
             return _userAttributesService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _userAttributesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Crm.Infrastructure.Tracing
             string applicationName)
         {
             services.AddOpenTracing();
-            services.AddSingleton<ITracer>(serviceProvider =>
+            services.AddSingleton<ITracer>(x =>
             {
                 var tracer = new Tracer.Builder(applicationName)
                     .WithSampler(new ConstSampler(true))

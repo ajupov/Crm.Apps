@@ -106,8 +106,9 @@ namespace Crm.Apps.Users.Controllers
                 return NotFound();
             }
 
-            return await ActionIfAllowed(() => _userGroupsService.UpdateAsync(_userContext.UserId, oldGroup, group, ct),
-                new[] {oldGroup.AccountId});
+            return await ActionIfAllowed(
+                () => _userGroupsService.UpdateAsync(_userContext.UserId, oldGroup, @group, ct),
+                new[] {group.AccountId, oldGroup.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
@@ -124,7 +125,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _userGroupsService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
@@ -141,7 +142,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _userGroupsService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]

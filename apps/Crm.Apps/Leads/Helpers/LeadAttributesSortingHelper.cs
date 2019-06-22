@@ -1,35 +1,35 @@
 ﻿using System.Linq;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Leads.Models;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Leads.Helpers
 {
-    public static class ProductAttributesSortingHelper
+    public static class LeadAttributesSortingHelper
     {
-        public static IOrderedQueryable<ProductAttribute> Sort(this IQueryable<ProductAttribute> queryable,
+        public static IOrderedQueryable<LeadAttribute> Sort(this IQueryable<LeadAttribute> queryable,
             string sortBy, string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(ProductAttribute.Id):
+                case nameof(LeadAttribute.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.Id)
-                        : queryable.OrderBy(attribute => attribute.Id);
-                case nameof(ProductAttribute.Type):
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
+                case nameof(LeadAttribute.Type):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.Type)
-                        : queryable.OrderBy(attribute => attribute.Type);
-                case nameof(ProductAttribute.Key):
+                        ? queryable.OrderByDescending(x => x.Type)
+                        : queryable.OrderBy(x => x.Type);
+                case nameof(LeadAttribute.Key):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.Key)
-                        : queryable.OrderBy(attribute => attribute.Key);
-                case nameof(ProductAttribute.CreateDateTime):
+                        ? queryable.OrderByDescending(x => x.Key)
+                        : queryable.OrderBy(x => x.Key);
+                case nameof(LeadAttribute.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(attribute => attribute.CreateDateTime)
-                        : queryable.OrderBy(attribute => attribute.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(attribute => attribute.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

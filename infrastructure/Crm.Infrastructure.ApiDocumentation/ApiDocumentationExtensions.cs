@@ -15,8 +15,7 @@ namespace Crm.Infrastructure.ApiDocumentation
                 Version = apiVersion
             };
 
-            return services
-                .AddSwaggerGen(options => options.SwaggerDoc(apiVersion, info));
+            return services.AddSwaggerGen(x => x.SwaggerDoc(apiVersion, info));
         }
 
         public static IApplicationBuilder UseApiDocumentationsMiddleware(this IApplicationBuilder applicationBuilder,
@@ -24,8 +23,7 @@ namespace Crm.Infrastructure.ApiDocumentation
         {
             var url = $"/swagger/{apiVersion}/swagger.json";
 
-            return applicationBuilder.UseSwagger()
-                .UseSwaggerUI(options => options.SwaggerEndpoint(url, applicationName));
+            return applicationBuilder.UseSwagger().UseSwaggerUI(x => x.SwaggerEndpoint(url, applicationName));
         }
     }
 }

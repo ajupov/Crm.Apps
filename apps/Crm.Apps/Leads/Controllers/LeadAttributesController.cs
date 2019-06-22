@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Parameters;
+using Crm.Apps.Leads.Services;
 using Crm.Common.Types;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
@@ -13,19 +13,19 @@ using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Products.Controllers
+namespace Crm.Apps.Leads.Controllers
 {
     [ApiController]
-    [Route("Api/Products/Attributes")]
-    public class ProductAttributesController : ControllerBase
+    [Route("Api/Leads/Attributes")]
+    public class LeadAttributesController : ControllerBase
     {
         private readonly IUserContext _userContext;
-        private readonly IProductAttributesService _productAttributesService;
+        private readonly ILeadAttributesService _leadAttributesService;
 
-        public ProductAttributesController(IUserContext userContext, IProductAttributesService productAttributesService)
+        public LeadAttributesController(IUserContext userContext, ILeadAttributesService leadAttributesService)
         {
             _userContext = userContext;
-            _productAttributesService = productAttributesService;
+            _leadAttributesService = leadAttributesService;
         }
 
         [HttpGet("GetTypes")]
@@ -37,15 +37,15 @@ namespace Crm.Apps.Products.Controllers
 
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<ProductAttribute>> Get(Guid id, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.LeadsManagement)]
+        public async Task<ActionResult<LeadAttribute>> Get(Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var attribute = await _productAttributesService.GetAsync(id, ct).ConfigureAwait(false);
+            var attribute = await _leadAttributesService.GetAsync(id, ct).ConfigureAwait(false);
             if (attribute == null)
             {
                 return NotFound();
@@ -56,35 +56,35 @@ namespace Crm.Apps.Products.Controllers
 
         [HttpPost("GetList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<List<ProductAttribute>>> GetList(List<Guid> ids, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.LeadsManagement)]
+        public async Task<ActionResult<List<LeadAttribute>>> GetList(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
 
-            var attributes = await _productAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _leadAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return ReturnIfAllowed(attributes, attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<List<ProductAttribute>>> GetPagedList(
-            ProductAttributeGetPagedListParameter parameter,
+            Permission.AccountOwning, Permission.LeadsManagement)]
+        public async Task<ActionResult<List<LeadAttribute>>> GetPagedList(
+            LeadAttributeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var attributes = await _productAttributesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var attributes = await _leadAttributesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
             return ReturnIfAllowed(attributes, attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.ProductsManagement)]
-        public async Task<ActionResult<Guid>> Create(ProductAttribute attribute, CancellationToken ct = default)
+            Permission.LeadsManagement)]
+        public async Task<ActionResult<Guid>> Create(LeadAttribute attribute, CancellationToken ct = default)
         {
             if (attribute == null)
             {
@@ -97,7 +97,7 @@ namespace Crm.Apps.Products.Controllers
                 attribute.AccountId = _userContext.AccountId;
             }
 
-            var id = await _productAttributesService.CreateAsync(_userContext.UserId, attribute, ct)
+            var id = await _leadAttributesService.CreateAsync(_userContext.UserId, attribute, ct)
                 .ConfigureAwait(false);
 
             return Created(nameof(Get), id);
@@ -105,28 +105,28 @@ namespace Crm.Apps.Products.Controllers
 
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.ProductsManagement)]
-        public async Task<ActionResult> Update(ProductAttribute attribute, CancellationToken ct = default)
+            Permission.LeadsManagement)]
+        public async Task<ActionResult> Update(LeadAttribute attribute, CancellationToken ct = default)
         {
             if (attribute.Id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var oldAttribute = await _productAttributesService.GetAsync(attribute.Id, ct).ConfigureAwait(false);
+            var oldAttribute = await _leadAttributesService.GetAsync(attribute.Id, ct).ConfigureAwait(false);
             if (oldAttribute == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(
-                () => _productAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                new[] {oldAttribute.AccountId});
+                () => _leadAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
+                new[] {attribute.AccountId, oldAttribute.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
+            Permission.AccountOwning, Permission.LeadsManagement)]
         public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -134,16 +134,16 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _productAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _leadAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _productAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                () => _leadAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
+            Permission.AccountOwning, Permission.LeadsManagement)]
         public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -151,11 +151,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _productAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _leadAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _productAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                () => _leadAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]
@@ -195,7 +195,7 @@ namespace Crm.Apps.Products.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 await action().ConfigureAwait(false);
@@ -203,7 +203,7 @@ namespace Crm.Apps.Products.Controllers
                 return NoContent();
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();

@@ -43,17 +43,17 @@ namespace Crm.Apps.Users.Storages
         {
             modelBuilder.Entity<UserAttributeLink>()
                 .ToTable("UserAttributeLinks")
-                .Property(b => b.UserAttributeId)
+                .Property(x => x.UserAttributeId)
                 .HasColumnName("AttributeId");
-            
+
             modelBuilder.Entity<UserGroupLink>()
                 .ToTable("UserGroupLinks")
-                .Property(b => b.UserGroupId)
+                .Property(x => x.UserGroupId)
                 .HasColumnName("GroupId");
-            
+
             modelBuilder.Entity<UserGroupPermission>()
                 .ToTable("UserGroupPermissions")
-                .Property(b => b.UserGroupId)
+                .Property(x => x.UserGroupId)
                 .HasColumnName("GroupId");
         }
     }

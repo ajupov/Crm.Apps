@@ -15,7 +15,7 @@ namespace Crm.Apps.Products.Services
 
         Task<List<Product>> GetPagedListAsync(ProductGetPagedListParameter parameter, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, Product user, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid userId, Product product, CancellationToken ct);
 
         Task UpdateAsync(Guid userId, Product oldProduct, Product newProduct, CancellationToken ct);
 

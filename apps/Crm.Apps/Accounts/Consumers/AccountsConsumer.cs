@@ -62,11 +62,7 @@ namespace Crm.Apps.Accounts.Consumers
         private Task CreateAsync(Message message, CancellationToken ct)
         {
             var account = message.Data.FromJsonString<Account>();
-            if (account.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
-            
+
             return _accountsService.CreateAsync(message.UserId, account, ct);
         }
 
@@ -109,17 +105,6 @@ namespace Crm.Apps.Accounts.Consumers
             return _accountsService.UnlockAsync(message.UserId, ids, ct);
         }
 
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _accountsService.RestoreAsync(message.UserId, ids, ct);
-        }
-
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
@@ -129,6 +114,17 @@ namespace Crm.Apps.Accounts.Consumers
             }
 
             return _accountsService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _accountsService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

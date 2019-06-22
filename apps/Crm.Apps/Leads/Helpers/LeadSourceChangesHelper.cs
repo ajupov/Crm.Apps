@@ -1,19 +1,18 @@
 ﻿using System;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Leads.Models;
 using Crm.Utils.Json;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Leads.Helpers
 {
-    public static class ProductStatusChangesHelper
+    public static class LeadSourceChangesHelper
     {
-        public static ProductStatusChange WithCreateLog(this ProductStatus status, Guid userId,
-            Action<ProductStatus> action)
+        public static LeadSourceChange WithCreateLog(this LeadSource status, Guid userId, Action<LeadSource> action)
         {
             action(status);
 
-            return new ProductStatusChange
+            return new LeadSourceChange
             {
-                StatusId = status.Id,
+                SourceId = status.Id,
                 ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
@@ -21,16 +20,15 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductStatusChange WithUpdateLog(this ProductStatus status, Guid userId,
-            Action<ProductStatus> action)
+        public static LeadSourceChange WithUpdateLog(this LeadSource status, Guid userId, Action<LeadSource> action)
         {
             var oldValueJson = status.ToJsonString();
 
             action(status);
 
-            return new ProductStatusChange
+            return new LeadSourceChange
             {
-                StatusId = status.Id,
+                SourceId = status.Id,
                 ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,

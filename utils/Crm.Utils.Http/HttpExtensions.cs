@@ -23,7 +23,7 @@ namespace Crm.Utils.Http
                 {
                     var items = enumerable.Cast<object>().Select(x => x.ToString());
 
-                    result.AddRange(items.Select(item => $"{property.Name}={item}"));
+                    result.AddRange(items.Select(x => $"{property.Name}={x}"));
                 }
                 else
                 {

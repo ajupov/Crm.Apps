@@ -58,42 +58,26 @@ namespace Crm.Apps.Products.Consumers
         private Task CreateAsync(Message message, CancellationToken ct)
         {
             var productCategory = message.Data.FromJsonString<ProductCategory>();
-            if (productCategory.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
 
             return _productCategoriesService.CreateAsync(message.UserId, productCategory, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newProductCategory = message.Data.FromJsonString<ProductCategory>();
-            if (newProductCategory.Id.IsEmpty())
+            var newCategory = message.Data.FromJsonString<ProductCategory>();
+            if (newCategory.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldProductCategory =
-                await _productCategoriesService.GetAsync(newProductCategory.Id, ct).ConfigureAwait(false);
-            if (oldProductCategory == null)
+            var oldCategory = await _productCategoriesService.GetAsync(newCategory.Id, ct).ConfigureAwait(false);
+            if (oldCategory == null)
             {
                 return;
             }
 
-            await _productCategoriesService.UpdateAsync(message.UserId, oldProductCategory, newProductCategory, ct)
+            await _productCategoriesService.UpdateAsync(message.UserId, oldCategory, newCategory, ct)
                 .ConfigureAwait(false);
-        }
-
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _productCategoriesService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -105,6 +89,17 @@ namespace Crm.Apps.Products.Consumers
             }
 
             return _productCategoriesService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _productCategoriesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

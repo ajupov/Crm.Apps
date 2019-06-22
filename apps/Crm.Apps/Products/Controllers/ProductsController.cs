@@ -119,7 +119,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.UpdateAsync(_userContext.UserId, oldProduct, product, ct),
-                new[] {oldProduct.AccountId});
+                new[] {product.AccountId, oldProduct.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Lock")]
@@ -136,7 +136,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.HideAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId));
+                products.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Unlock")]
@@ -153,7 +153,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.ShowAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId));
+                products.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
@@ -170,7 +170,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.DeleteAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId));
+                products.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
@@ -187,7 +187,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.RestoreAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId));
+                products.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]

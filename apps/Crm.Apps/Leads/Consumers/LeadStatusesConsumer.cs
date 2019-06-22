@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Products.Consumers
+namespace Crm.Apps.Leads.Consumers
 {
-    public class ProductStatusesConsumer : IHostedService
+    public class LeadSourcesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IProductStatusesService _productStatusesService;
+        private readonly ILeadSourcesService _leadSourcesService;
 
-        public ProductStatusesConsumer(IConsumer consumer, IProductStatusesService productStatusesService)
+        public LeadSourcesConsumer(IConsumer consumer, ILeadSourcesService leadSourcesService)
         {
             _consumer = consumer;
-            _productStatusesService = productStatusesService;
+            _leadSourcesService = leadSourcesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("ProductStatuses", ActionAsync);
+            _consumer.Consume("LeadSources", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -57,30 +57,26 @@ namespace Crm.Apps.Products.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var status = message.Data.FromJsonString<ProductStatus>();
-            if (status.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
+            var status = message.Data.FromJsonString<LeadSource>();
 
-            return _productStatusesService.CreateAsync(message.UserId, status, ct);
+            return _leadSourcesService.CreateAsync(message.UserId, status, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newStatus = message.Data.FromJsonString<ProductStatus>();
-            if (newStatus.Id.IsEmpty())
+            var newSource = message.Data.FromJsonString<LeadSource>();
+            if (newSource.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldStatus = await _productStatusesService.GetAsync(newStatus.Id, ct).ConfigureAwait(false);
-            if (oldStatus == null)
+            var oldSource = await _leadSourcesService.GetAsync(newSource.Id, ct).ConfigureAwait(false);
+            if (oldSource == null)
             {
                 return;
             }
 
-            await _productStatusesService.UpdateAsync(message.UserId, oldStatus, newStatus, ct).ConfigureAwait(false);
+            await _leadSourcesService.UpdateAsync(message.UserId, oldSource, newSource, ct).ConfigureAwait(false);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -91,7 +87,7 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productStatusesService.RestoreAsync(message.UserId, ids, ct);
+            return _leadSourcesService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -102,7 +98,7 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productStatusesService.DeleteAsync(message.UserId, ids, ct);
+            return _leadSourcesService.DeleteAsync(message.UserId, ids, ct);
         }
     }
 }

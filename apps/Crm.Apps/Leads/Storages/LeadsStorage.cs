@@ -37,7 +37,7 @@ namespace Crm.Apps.Leads.Storages
         {
             modelBuilder.Entity<LeadAttributeLink>()
                 .ToTable("LeadAttributeLinks")
-                .Property(b => b.LeadAttributeId)
+                .Property(x => x.LeadAttributeId)
                 .HasColumnName("AttributeId");
         }
     }

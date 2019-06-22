@@ -14,30 +14,30 @@ namespace Crm.Apps.Users.Helpers
             {
                 case nameof(User.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(user => user.Id)
-                        : queryable.OrderBy(user => user.Id);
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
                 case nameof(User.Surname):
                     return isDesc
-                        ? queryable.OrderByDescending(user => user.Surname)
-                        : queryable.OrderBy(user => user.Surname);
+                        ? queryable.OrderByDescending(x => x.Surname)
+                        : queryable.OrderBy(x => x.Surname);
                 case nameof(User.Name):
                     return isDesc
-                        ? queryable.OrderByDescending(user => user.Name)
-                        : queryable.OrderBy(user => user.Name);
+                        ? queryable.OrderByDescending(x => x.Name)
+                        : queryable.OrderBy(x => x.Name);
                 case nameof(User.Patronymic):
                     return isDesc
-                        ? queryable.OrderByDescending(user => user.Patronymic)
-                        : queryable.OrderBy(user => user.Patronymic);
+                        ? queryable.OrderByDescending(x => x.Patronymic)
+                        : queryable.OrderBy(x => x.Patronymic);
                 case nameof(User.BirthDate):
                     return isDesc
-                        ? queryable.OrderByDescending(user => user.BirthDate)
-                        : queryable.OrderBy(user => user.BirthDate);
+                        ? queryable.OrderByDescending(x => x.BirthDate)
+                        : queryable.OrderBy(x => x.BirthDate);
                 case nameof(User.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(user => user.CreateDateTime)
-                        : queryable.OrderBy(user => user.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(user => user.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

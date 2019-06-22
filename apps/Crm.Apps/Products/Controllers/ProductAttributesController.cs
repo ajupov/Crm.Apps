@@ -121,7 +121,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                new[] {oldAttribute.AccountId});
+                new[] {attribute.AccountId, oldAttribute.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
@@ -138,7 +138,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
@@ -155,7 +155,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]

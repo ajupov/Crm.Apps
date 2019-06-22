@@ -61,13 +61,9 @@ namespace Crm.Apps.Identities.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var account = message.Data.FromJsonString<Identity>();
-            if (account.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
+            var identity = message.Data.FromJsonString<Identity>();
 
-            return _identitiesService.CreateAsync(message.UserId, account, ct);
+            return _identitiesService.CreateAsync(message.UserId, identity, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)

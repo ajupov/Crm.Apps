@@ -10,7 +10,7 @@
         AccountOwning = 5,
         ProductsManagement = 6,
         SalesManagement = 7,
-        LeadsProviding = 8,
+        LeadsManagement = 8,
         DemoViewing = 9
     }
 }

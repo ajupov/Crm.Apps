@@ -57,41 +57,26 @@ namespace Crm.Apps.Users.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var userGroup = message.Data.FromJsonString<UserGroup>();
-            if (userGroup.Id.IsEmpty())
-            {
-                return Task.CompletedTask;
-            }
+            var group = message.Data.FromJsonString<UserGroup>();
 
-            return _userGroupsService.CreateAsync(message.UserId, userGroup, ct);
+            return _userGroupsService.CreateAsync(message.UserId, group, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newUserGroup = message.Data.FromJsonString<UserGroup>();
-            if (newUserGroup.Id.IsEmpty())
+            var newGroup = message.Data.FromJsonString<UserGroup>();
+            if (newGroup.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldUserGroup = await _userGroupsService.GetAsync(newUserGroup.Id, ct).ConfigureAwait(false);
-            if (oldUserGroup == null)
+            var oldGroup = await _userGroupsService.GetAsync(newGroup.Id, ct).ConfigureAwait(false);
+            if (oldGroup == null)
             {
                 return;
             }
 
-            await _userGroupsService.UpdateAsync(message.UserId, oldUserGroup, newUserGroup, ct).ConfigureAwait(false);
-        }
-
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _userGroupsService.RestoreAsync(message.UserId, ids, ct);
+            await _userGroupsService.UpdateAsync(message.UserId, oldGroup, newGroup, ct).ConfigureAwait(false);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -103,6 +88,17 @@ namespace Crm.Apps.Users.Consumers
             }
 
             return _userGroupsService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _userGroupsService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

@@ -1,27 +1,27 @@
 ﻿using System.Linq;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Leads.Models;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Leads.Helpers
 {
-    public static class ProductsChangesSortingHelper
+    public static class LeadsChangesSortingHelper
     {
-        public static IOrderedQueryable<ProductChange> Sort(this IQueryable<ProductChange> queryable, string sortBy,
+        public static IOrderedQueryable<LeadChange> Sort(this IQueryable<LeadChange> queryable, string sortBy,
             string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(ProductChange.Id):
+                case nameof(LeadChange.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(change => change.Id)
-                        : queryable.OrderBy(change => change.Id);
-                case nameof(ProductChange.CreateDateTime):
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
+                case nameof(LeadChange.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(change => change.CreateDateTime)
-                        : queryable.OrderBy(change => change.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(change => change.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

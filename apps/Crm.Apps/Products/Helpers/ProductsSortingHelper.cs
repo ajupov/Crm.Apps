@@ -14,30 +14,30 @@ namespace Crm.Apps.Products.Helpers
             {
                 case nameof(Product.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(product => product.Id)
-                        : queryable.OrderBy(product => product.Id);
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
                 case nameof(Product.Type):
                     return isDesc
-                        ? queryable.OrderByDescending(product => product.Type)
-                        : queryable.OrderBy(product => product.Type);
+                        ? queryable.OrderByDescending(x => x.Type)
+                        : queryable.OrderBy(x => x.Type);
                 case nameof(Product.Name):
                     return isDesc
-                        ? queryable.OrderByDescending(product => product.Name)
-                        : queryable.OrderBy(product => product.Name);
+                        ? queryable.OrderByDescending(x => x.Name)
+                        : queryable.OrderBy(x => x.Name);
                 case nameof(Product.VendorCode):
                     return isDesc
-                        ? queryable.OrderByDescending(product => product.VendorCode)
-                        : queryable.OrderBy(product => product.VendorCode);
+                        ? queryable.OrderByDescending(x => x.VendorCode)
+                        : queryable.OrderBy(x => x.VendorCode);
                 case nameof(Product.Price):
                     return isDesc
-                        ? queryable.OrderByDescending(product => product.Price)
-                        : queryable.OrderBy(product => product.Price);
+                        ? queryable.OrderByDescending(x => x.Price)
+                        : queryable.OrderBy(x => x.Price);
                 case nameof(Product.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(product => product.CreateDateTime)
-                        : queryable.OrderBy(product => product.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(product => product.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

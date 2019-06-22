@@ -1,52 +1,50 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.Parameters;
 using Crm.Utils.String;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Leads.Helpers
 {
-    public static class ProductsFiltersHelper
+    public static class LeadsFiltersHelper
     {
-        public static bool FilterByAdditional(this Product product, ProductGetPagedListParameter parameter)
+        public static bool FilterByAdditional(this Lead lead, LeadGetPagedListParameter parameter)
         {
             return
-                (parameter.Types == null || !parameter.Types.Any() ||
-                 parameter.Types.Any(x => TypePredicate(product, x))) &&
-                (parameter.StatusIds == null || !parameter.StatusIds.Any() ||
-                 parameter.StatusIds.Any(x => StatusIdsPredicate(product, x))) &&
+                (parameter.SourceIds == null || !parameter.SourceIds.Any() ||
+                 parameter.SourceIds.Any(x => SourceIdsPredicate(lead, x))) &&
+                (parameter.CreateUserIds == null || !parameter.CreateUserIds.Any() ||
+                 parameter.CreateUserIds.Any(x => CreateUserIdsPredicate(lead, x))) &&
+                (parameter.ResponsibleUserIds == null || !parameter.ResponsibleUserIds.Any() ||
+                 parameter.ResponsibleUserIds.Any(x => ResponsibleUserIdsPredicate(lead, x))) &&
                 (parameter.Attributes == null || !parameter.Attributes.Any() ||
                  (parameter.AllAttributes is false
-                     ? parameter.Attributes.Any(x => AttributePredicate(product, x))
-                     : parameter.Attributes.All(x => AttributePredicate(product, x)))) &&
-                (parameter.CategoryIds == null || !parameter.CategoryIds.Any() ||
-                 (parameter.AllCategoryIds is false
-                     ? parameter.CategoryIds.Any(x => CategoryPredicate(product, x))
-                     : parameter.CategoryIds.All(x => CategoryPredicate(product, x))));
+                     ? parameter.Attributes.Any(x => AttributePredicate(lead, x))
+                     : parameter.Attributes.All(x => AttributePredicate(lead, x))));
         }
 
-        private static bool TypePredicate(Product product, ProductType type)
+        private static bool SourceIdsPredicate(Lead lead, Guid id)
         {
-            return product.Type == type;
+            return lead.SourceId == id;
         }
 
-        private static bool StatusIdsPredicate(Product product, Guid id)
+        private static bool CreateUserIdsPredicate(Lead lead, Guid id)
         {
-            return product.StatusId == id;
+            return lead.CreateUserId == id;
         }
 
-        private static bool AttributePredicate(Product product, KeyValuePair<Guid, string> pair)
+        private static bool ResponsibleUserIdsPredicate(Lead lead, Guid id)
+        {
+            return lead.ResponsibleUserId == id;
+        }
+
+        private static bool AttributePredicate(Lead lead, KeyValuePair<Guid, string> pair)
         {
             var (key, value) = pair;
 
-            return product.AttributeLinks != null && product.AttributeLinks.Any(x =>
-                       x.ProductAttributeId == key && (value.IsEmpty() || x.Value == value));
-        }
-
-        private static bool CategoryPredicate(Product product, Guid id)
-        {
-            return product.CategoryLinks != null && product.CategoryLinks.Any(x => x.ProductCategoryId == id);
+            return lead.AttributeLinks != null && lead.AttributeLinks.Any(x =>
+                       x.LeadAttributeId == key && (value.IsEmpty() || x.Value == value));
         }
     }
 }

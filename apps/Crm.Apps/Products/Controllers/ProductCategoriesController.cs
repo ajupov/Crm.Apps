@@ -36,13 +36,13 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var group = await _userCategoriesService.GetAsync(id, ct).ConfigureAwait(false);
-            if (group == null)
+            var category = await _userCategoriesService.GetAsync(id, ct).ConfigureAwait(false);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return ReturnIfAllowed(group, new[] {group.AccountId});
+            return ReturnIfAllowed(category, new[] {category.AccountId});
         }
 
         [HttpPost("GetList")]
@@ -55,9 +55,9 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var groups = await _userCategoriesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var categorys = await _userCategoriesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
+            return ReturnIfAllowed(categorys, categorys.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
@@ -67,17 +67,17 @@ namespace Crm.Apps.Products.Controllers
             ProductCategoryGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var groups = await _userCategoriesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var categorys = await _userCategoriesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
+            return ReturnIfAllowed(categorys, categorys.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
             Permission.ProductsManagement)]
-        public async Task<ActionResult<Guid>> Create(ProductCategory group, CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(ProductCategory category, CancellationToken ct = default)
         {
-            if (group == null)
+            if (category == null)
             {
                 return BadRequest();
             }
@@ -85,10 +85,10 @@ namespace Crm.Apps.Products.Controllers
             if (!_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                group.AccountId = _userContext.AccountId;
+                category.AccountId = _userContext.AccountId;
             }
 
-            var id = await _userCategoriesService.CreateAsync(_userContext.UserId, group, ct).ConfigureAwait(false);
+            var id = await _userCategoriesService.CreateAsync(_userContext.UserId, category, ct).ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }
@@ -96,22 +96,21 @@ namespace Crm.Apps.Products.Controllers
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.ProductsManagement)]
-        public async Task<ActionResult> Update(ProductCategory group, CancellationToken ct = default)
+        public async Task<ActionResult> Update(ProductCategory category, CancellationToken ct = default)
         {
-            if (group.Id.IsEmpty())
+            if (category.Id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var oldCategory = await _userCategoriesService.GetAsync(group.Id, ct).ConfigureAwait(false);
+            var oldCategory = await _userCategoriesService.GetAsync(category.Id, ct).ConfigureAwait(false);
             if (oldCategory == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(() => _userCategoriesService.UpdateAsync(_userContext.UserId, oldCategory,
-                    group, ct),
-                new[] {oldCategory.AccountId});
+                category, ct), new[] {category.AccountId, oldCategory.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
@@ -128,7 +127,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _userCategoriesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
@@ -145,7 +144,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _userCategoriesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]

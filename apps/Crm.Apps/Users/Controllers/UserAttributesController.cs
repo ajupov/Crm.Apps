@@ -34,7 +34,7 @@ namespace Crm.Apps.Users.Controllers
         {
             return EnumsExtensions.GetValues<AttributeType>().ToList();
         }
-        
+
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
             Permission.AccountOwning)]
@@ -117,7 +117,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _userAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                new[] {oldAttribute.AccountId});
+                new[] {attribute.AccountId, oldAttribute.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
@@ -134,7 +134,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _userAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
@@ -151,7 +151,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _userAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]

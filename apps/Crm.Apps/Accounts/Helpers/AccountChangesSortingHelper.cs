@@ -14,14 +14,14 @@ namespace Crm.Apps.Accounts.Helpers
             {
                 case nameof(AccountChange.Id):
                     return isDesc
-                        ? queryable.OrderByDescending(change => change.Id)
-                        : queryable.OrderBy(change => change.Id);
+                        ? queryable.OrderByDescending(x => x.Id)
+                        : queryable.OrderBy(x => x.Id);
                 case nameof(AccountChange.CreateDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(change => change.CreateDateTime)
-                        : queryable.OrderBy(change => change.CreateDateTime);
+                        ? queryable.OrderByDescending(x => x.CreateDateTime)
+                        : queryable.OrderBy(x => x.CreateDateTime);
                 default:
-                    return queryable.OrderByDescending(change => change.CreateDateTime);
+                    return queryable.OrderByDescending(x => x.CreateDateTime);
             }
         }
     }

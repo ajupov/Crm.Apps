@@ -3,20 +3,20 @@ using Crm.Apps.Leads.Models;
 
 namespace Crm.Apps.Leads.Helpers
 {
-    public static class LeadAttributesChangesSortingHelper
+    public static class LeadCommentsSortingHelper
     {
-        public static IOrderedQueryable<LeadAttributeChange> Sort(this IQueryable<LeadAttributeChange> queryable,
-            string sortBy, string orderBy)
+        public static IOrderedQueryable<LeadComment> Sort(this IQueryable<LeadComment> queryable, string sortBy,
+            string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(LeadAttributeChange.Id):
+                case nameof(LeadComment.Id):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Id)
                         : queryable.OrderBy(x => x.Id);
-                case nameof(LeadAttributeChange.CreateDateTime):
+                case nameof(LeadComment.CreateDateTime):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.CreateDateTime)
                         : queryable.OrderBy(x => x.CreateDateTime);
