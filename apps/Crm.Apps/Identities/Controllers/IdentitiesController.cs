@@ -50,6 +50,8 @@ namespace Crm.Apps.Identities.Controllers
                 return NotFound();
             }
 
+            account.PasswordHash = string.Empty;
+            
             return account;
         }
 

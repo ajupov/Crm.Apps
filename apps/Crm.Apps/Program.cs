@@ -5,7 +5,9 @@ using Crm.Apps.Accounts.Storages;
 using Crm.Apps.Identities.Services;
 using Crm.Apps.Identities.Storages;
 using Crm.Apps.Leads.Services;
+using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
+using Crm.Apps.Products.Storages;
 using Crm.Apps.Users.Consumers;
 using Crm.Apps.Users.Services;
 using Crm.Apps.Users.Storages;
@@ -49,10 +51,8 @@ namespace Crm.Apps
                             .ConfigureOrm<AccountsStorage>(configuration)
                             .ConfigureOrm<UsersStorage>(configuration)
                             .ConfigureOrm<IdentitiesStorage>(configuration)
-                            .ConfigureConsumer<AccountsConsumer>(configuration)
-                            .ConfigureConsumer<UsersConsumer>(configuration)
-                            .ConfigureConsumer<UserAttributesConsumer>(configuration)
-                            .ConfigureConsumer<UserGroupsConsumer>(configuration)
+                            .ConfigureOrm<ProductsStorage>(configuration)
+                            .ConfigureOrm<LeadsStorage>(configuration)
                             .ConfigureMvc()
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .AddTransient<IAccountsService, AccountsService>()

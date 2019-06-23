@@ -28,7 +28,9 @@ namespace Crm.Apps.Tests.Tests.Identities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var identity = await _create.Identity.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync().ConfigureAwait(false);
             identity.IsPrimary = true;
             identity.IsVerified = true;
             await _identitiesClient.UpdateAsync(identity).ConfigureAwait(false);

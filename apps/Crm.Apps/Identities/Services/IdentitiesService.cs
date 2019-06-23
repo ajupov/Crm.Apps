@@ -21,15 +21,9 @@ namespace Crm.Apps.Identities.Services
             _storage = storage;
         }
 
-        public async Task<Identity> GetAsync(Guid id, CancellationToken ct)
+        public Task<Identity> GetAsync(Guid id, CancellationToken ct)
         {
-            var result = await _storage.Identities.FirstOrDefaultAsync(x => x.Id == id, ct).ConfigureAwait(false);
-            if (result != null)
-            {
-                result.PasswordHash = string.Empty;
-            }
-
-            return result;
+            return _storage.Identities.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public async Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
