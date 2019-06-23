@@ -1,6 +1,10 @@
 using Crm.Apps.Tests.Dsl.Builders.Account;
 using Crm.Apps.Tests.Dsl.Builders.Identity;
 using Crm.Apps.Tests.Dsl.Builders.IdentityToken;
+using Crm.Apps.Tests.Dsl.Builders.Lead;
+using Crm.Apps.Tests.Dsl.Builders.LeadAttribute;
+using Crm.Apps.Tests.Dsl.Builders.LeadComment;
+using Crm.Apps.Tests.Dsl.Builders.LeadSource;
 using Crm.Apps.Tests.Dsl.Builders.Product;
 using Crm.Apps.Tests.Dsl.Builders.ProductAttribute;
 using Crm.Apps.Tests.Dsl.Builders.ProductCategory;
@@ -32,5 +36,13 @@ namespace Crm.Apps.Tests.Dsl.Creator
         IProductStatusBuilder ProductStatus { get; }
 
         IProductAttributeBuilder ProductAttribute { get; }
+
+        ILeadAttributeBuilder LeadAttribute { get; }
+
+        ILeadBuilder Lead { get; }
+
+        ILeadSourceBuilder LeadSource { get; }
+        
+        ILeadCommentBuilder LeadComment { get; }
     }
 }

@@ -13,12 +13,12 @@ namespace Crm.Apps.Tests.Tests.Products
     {
         private readonly ICreate _create;
 
-        private readonly IProductStatusesClient _userStatusesClient;
+        private readonly IProductStatusesClient _productStatusesClient;
 
-        public ProductStatusesTests(ICreate create, IProductStatusesClient userStatusesClient)
+        public ProductStatusesTests(ICreate create, IProductStatusesClient productStatusesClient)
         {
             _create = create;
-            _userStatusesClient = userStatusesClient;
+            _productStatusesClient = productStatusesClient;
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Crm.Apps.Tests.Tests.Products
             var statusId = (await _create.ProductStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false))
                 .Id;
 
-            var status = await _userStatusesClient.GetAsync(statusId).ConfigureAwait(false);
+            var status = await _productStatusesClient.GetAsync(statusId).ConfigureAwait(false);
 
             Assert.NotNull(status);
             Assert.Equal(statusId, status.Id);
@@ -43,10 +43,10 @@ namespace Crm.Apps.Tests.Tests.Products
                     _create.ProductStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
-            var statuss = await _userStatusesClient.GetListAsync(statusIds).ConfigureAwait(false);
+            var status = await _productStatusesClient.GetListAsync(statusIds).ConfigureAwait(false);
 
-            Assert.NotEmpty(statuss);
-            Assert.Equal(statusIds.Count, statuss.Count);
+            Assert.NotEmpty(status);
+            Assert.Equal(statusIds.Count, status.Count);
         }
 
         [Fact]
@@ -56,14 +56,14 @@ namespace Crm.Apps.Tests.Tests.Products
             await Task.WhenAll(_create.ProductStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync())
                 .ConfigureAwait(false);
 
-            var statuss = await _userStatusesClient
+            var status = await _productStatusesClient
                 .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
                 .ConfigureAwait(false);
 
-            var results = statuss.Skip(1).Zip(statuss,
+            var results = status.Skip(1).Zip(status,
                 (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
-            Assert.NotEmpty(statuss);
+            Assert.NotEmpty(status);
             Assert.All(results, Assert.True);
         }
 
@@ -78,9 +78,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 IsDeleted = false
             };
 
-            var createdStatusId = await _userStatusesClient.CreateAsync(status).ConfigureAwait(false);
+            var createdStatusId = await _productStatusesClient.CreateAsync(status).ConfigureAwait(false);
 
-            var createdStatus = await _userStatusesClient.GetAsync(createdStatusId).ConfigureAwait(false);
+            var createdStatus = await _productStatusesClient.GetAsync(createdStatusId).ConfigureAwait(false);
 
             Assert.NotNull(createdStatus);
             Assert.Equal(createdStatusId, createdStatus.Id);
@@ -100,9 +100,9 @@ namespace Crm.Apps.Tests.Tests.Products
             status.Name = "Test2";
             status.IsDeleted = true;
 
-            await _userStatusesClient.UpdateAsync(status).ConfigureAwait(false);
+            await _productStatusesClient.UpdateAsync(status).ConfigureAwait(false);
 
-            var updatedStatus = await _userStatusesClient.GetAsync(status.Id).ConfigureAwait(false);
+            var updatedStatus = await _productStatusesClient.GetAsync(status.Id).ConfigureAwait(false);
 
             Assert.Equal(status.Name, updatedStatus.Name);
             Assert.Equal(status.IsDeleted, updatedStatus.IsDeleted);
@@ -117,9 +117,9 @@ namespace Crm.Apps.Tests.Tests.Products
                     _create.ProductStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
-            await _userStatusesClient.DeleteAsync(statusIds).ConfigureAwait(false);
+            await _productStatusesClient.DeleteAsync(statusIds).ConfigureAwait(false);
 
-            var statuses = await _userStatusesClient.GetListAsync(statusIds).ConfigureAwait(false);
+            var statuses = await _productStatusesClient.GetListAsync(statusIds).ConfigureAwait(false);
 
             Assert.All(statuses, x => Assert.True(x.IsDeleted));
         }
@@ -133,9 +133,9 @@ namespace Crm.Apps.Tests.Tests.Products
                     _create.ProductStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
-            await _userStatusesClient.RestoreAsync(statusIds).ConfigureAwait(false);
+            await _productStatusesClient.RestoreAsync(statusIds).ConfigureAwait(false);
 
-            var statuses = await _userStatusesClient.GetListAsync(statusIds).ConfigureAwait(false);
+            var statuses = await _productStatusesClient.GetListAsync(statusIds).ConfigureAwait(false);
 
             Assert.All(statuses, x => Assert.False(x.IsDeleted));
         }

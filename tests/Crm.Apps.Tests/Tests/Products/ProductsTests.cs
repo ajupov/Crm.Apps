@@ -220,7 +220,7 @@ namespace Crm.Apps.Tests.Tests.Products
                     _create.Product.WithAccountId(account.Id).BuildAsync()).ConfigureAwait(false)).Select(x => x.Id)
                 .ToList();
 
-            await _productsClient.HideAsync(productIds).ConfigureAwait(false);
+            await _productsClient.RestoreAsync(productIds).ConfigureAwait(false);
 
             var products = await _productsClient.GetListAsync(productIds).ConfigureAwait(false);
 

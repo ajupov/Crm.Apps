@@ -8,7 +8,7 @@ namespace Crm.Clients.Leads.Clients
 {
     public interface ILeadCommentsClient
     {
-        Task<List<LeadSource>> GetPagedListAsync(Guid? leadId = default, Guid? commentatorUserId = default,
+        Task<List<LeadComment>> GetPagedListAsync(Guid? leadId = default, Guid? commentatorUserId = default,
             string value = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
             CancellationToken ct = default);

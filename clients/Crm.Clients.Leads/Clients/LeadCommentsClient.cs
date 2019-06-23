@@ -21,7 +21,7 @@ namespace Crm.Clients.Leads.Clients
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<LeadSource>> GetPagedListAsync(Guid? leadId = default, Guid? commentatorUserId = default,
+        public Task<List<LeadComment>> GetPagedListAsync(Guid? leadId = default, Guid? commentatorUserId = default,
             string value = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
             CancellationToken ct = default)
@@ -39,7 +39,7 @@ namespace Crm.Clients.Leads.Clients
                 OrderBy = orderBy
             };
 
-            return _httpClientFactory.PostAsync<List<LeadSource>>($"{_settings.Host}/Api/Leads/Comments/GetPagedList",
+            return _httpClientFactory.PostAsync<List<LeadComment>>($"{_settings.Host}/Api/Leads/Comments/GetPagedList",
                 parameter, ct);
         }
 
