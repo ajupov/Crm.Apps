@@ -43,9 +43,9 @@ namespace Crm.Clients.Leads.Clients
                 parameter, ct);
         }
 
-        public Task<Guid> CreateAsync(LeadComment comment, CancellationToken ct = default)
+        public Task CreateAsync(LeadComment comment, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Leads/Comments/Create", comment, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Comments/Create", comment, ct);
         }
     }
 }

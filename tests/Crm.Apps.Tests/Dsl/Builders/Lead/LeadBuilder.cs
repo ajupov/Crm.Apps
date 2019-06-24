@@ -211,6 +211,11 @@ namespace Crm.Apps.Tests.Dsl.Builders.Lead
                 throw new InvalidOperationException(nameof(_lead.AccountId));
             }
 
+            if (_lead.SourceId.IsEmpty())
+            {
+                throw new InvalidOperationException(nameof(_lead.SourceId));
+            }
+
             var createdId = await _leadsClient.CreateAsync(_lead).ConfigureAwait(false);
 
             return await _leadsClient.GetAsync(createdId).ConfigureAwait(false);

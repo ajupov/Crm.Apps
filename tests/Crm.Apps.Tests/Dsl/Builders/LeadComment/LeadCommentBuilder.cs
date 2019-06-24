@@ -28,7 +28,7 @@ namespace Crm.Apps.Tests.Dsl.Builders.LeadComment
             return this;
         }
 
-        public Task<Guid> BuildAsync()
+        public Task BuildAsync()
         {
             if (_leadComment.LeadId.IsEmpty())
             {

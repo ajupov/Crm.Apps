@@ -39,8 +39,8 @@ namespace Crm.Clients.Leads.Clients
             decimal? maxOpportunitySum = default, bool isDeleted = default, DateTime? minCreateDate = default,
             DateTime? maxCreateDate = default, bool? allAttributes = default,
             IDictionary<Guid, string> attributes = default, List<Guid> sourceIds = default,
-            List<Guid> createUserIds = default, List<Guid> responsibleUserIds = default, int? offset = default,
-            int? limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default)
+            List<Guid> createUserIds = default, List<Guid> responsibleUserIds = default, int offset = default,
+            int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default)
         {
             var parameter = new
             {

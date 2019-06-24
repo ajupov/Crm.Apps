@@ -13,6 +13,6 @@ namespace Crm.Clients.Leads.Clients
             int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(LeadComment comment, CancellationToken ct = default);
+        Task CreateAsync(LeadComment comment, CancellationToken ct = default);
     }
 }

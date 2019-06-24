@@ -7,6 +7,6 @@ namespace Crm.Apps.Tests.Dsl.Builders.LeadComment
     {
         LeadCommentBuilder WithLeadId(Guid leadId);
         
-        Task<Guid> BuildAsync();
+        Task BuildAsync();
     }
 }

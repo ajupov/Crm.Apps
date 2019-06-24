@@ -29,7 +29,9 @@ namespace Crm.Apps.Tests.Tests.Leads
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync()
+                .ConfigureAwait(false);
             lead.IsDeleted = true;
             await _leadsClient.UpdateAsync(lead).ConfigureAwait(false);
 

@@ -36,7 +36,7 @@ namespace Crm.Apps.Leads.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, LeadComment comment, CancellationToken ct)
+        public async Task CreateAsync(Guid userId, LeadComment comment, CancellationToken ct)
         {
             var newComment = new LeadComment
             {
@@ -47,10 +47,8 @@ namespace Crm.Apps.Leads.Services
                 CreateDateTime = DateTime.UtcNow
             };
 
-            var entry = await _storage.AddAsync(newComment, ct).ConfigureAwait(false);
+            await _storage.AddAsync(newComment, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
-
-            return entry.Entity.Id;
         }
     }
 }

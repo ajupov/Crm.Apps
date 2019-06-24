@@ -43,7 +43,7 @@ namespace Crm.Apps.Leads.Controllers
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
             Permission.LeadsManagement)]
-        public async Task<ActionResult<Guid>> Create(LeadComment comment, CancellationToken ct = default)
+        public async Task<ActionResult> Create(LeadComment comment, CancellationToken ct = default)
         {
             if (comment == null)
             {

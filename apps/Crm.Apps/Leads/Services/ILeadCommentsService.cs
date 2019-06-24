@@ -11,6 +11,6 @@ namespace Crm.Apps.Leads.Services
     {
         Task<List<LeadComment>> GetPagedListAsync(LeadCommentGetPagedListParameter parameter, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, LeadComment comment, CancellationToken ct);
+        Task CreateAsync(Guid userId, LeadComment comment, CancellationToken ct);
     }
 }
