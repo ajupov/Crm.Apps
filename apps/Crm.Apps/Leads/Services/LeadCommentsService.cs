@@ -7,6 +7,7 @@ using Crm.Apps.Leads.Helpers;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Parameters;
 using Crm.Apps.Leads.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ namespace Crm.Apps.Leads.Services
         {
             return _storage.LeadComments.Where(x =>
                     x.LeadId == parameter.LeadId &&
-                    (!parameter.CommentatorUserId.HasValue || x.CommentatorUserId == parameter.CommentatorUserId) &&
+                    (parameter.CommentatorUserId.IsEmpty() || x.CommentatorUserId == parameter.CommentatorUserId) &&
                     (parameter.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{parameter.Value}%")) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))

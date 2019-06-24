@@ -6,6 +6,7 @@ using Crm.Apps.Users.Helpers;
 using Crm.Apps.Users.Models;
 using Crm.Apps.Users.Parameters;
 using Crm.Apps.Users.Storages;
+using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Users.Services
@@ -23,8 +24,8 @@ namespace Crm.Apps.Users.Services
             CancellationToken ct)
         {
             return _storage.UserAttributeChanges.Where(x =>
-                    (!parameter.ChangerUserId.HasValue || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (!parameter.AttributeId.HasValue || x.AttributeId == parameter.AttributeId) &&
+                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
+                    (parameter.AttributeId.IsEmpty() || x.AttributeId == parameter.AttributeId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

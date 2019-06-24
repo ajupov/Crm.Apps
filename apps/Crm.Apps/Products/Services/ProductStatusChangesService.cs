@@ -6,6 +6,7 @@ using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Parameters;
 using Crm.Apps.Products.Storages;
+using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -23,8 +24,8 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             return _storage.ProductStatusChanges.Where(x =>
-                    (!parameter.ChangerUserId.HasValue || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (!parameter.StatusId.HasValue || x.StatusId == parameter.StatusId) &&
+                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
+                    (parameter.StatusId.IsEmpty() || x.StatusId == parameter.StatusId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

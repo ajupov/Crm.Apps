@@ -6,6 +6,7 @@ using Crm.Apps.Leads.Helpers;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Parameters;
 using Crm.Apps.Leads.Storages;
+using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Leads.Services
@@ -22,8 +23,8 @@ namespace Crm.Apps.Leads.Services
         public Task<List<LeadChange>> GetPagedListAsync(LeadChangeGetPagedListParameter parameter, CancellationToken ct)
         {
             return _storage.LeadChanges.Where(x =>
-                    (!parameter.ChangerUserId.HasValue || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (!parameter.LeadId.HasValue || x.LeadId == parameter.LeadId) &&
+                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
+                    (parameter.LeadId.IsEmpty() || x.LeadId == parameter.LeadId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

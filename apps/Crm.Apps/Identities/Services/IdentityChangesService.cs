@@ -6,6 +6,7 @@ using Crm.Apps.Identities.Helpers;
 using Crm.Apps.Identities.Models;
 using Crm.Apps.Identities.Parameters;
 using Crm.Apps.Identities.Storages;
+using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Identities.Services
@@ -23,8 +24,8 @@ namespace Crm.Apps.Identities.Services
             CancellationToken ct)
         {
             return _storage.IdentityChanges.Where(x =>
-                    (!parameter.ChangerUserId.HasValue || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (!parameter.IdentityId.HasValue || x.IdentityId == parameter.IdentityId) &&
+                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
+                    (parameter.IdentityId.IsEmpty() || x.IdentityId == parameter.IdentityId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

@@ -7,6 +7,7 @@ using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Parameters;
 using Crm.Apps.Products.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +36,7 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             return _storage.ProductAttributes.Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&

@@ -7,6 +7,7 @@ using Crm.Apps.Users.Helpers;
 using Crm.Apps.Users.Models;
 using Crm.Apps.Users.Parameters;
 using Crm.Apps.Users.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +36,7 @@ namespace Crm.Apps.Users.Services
             CancellationToken ct)
         {
             return _storage.UserAttributes.Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&

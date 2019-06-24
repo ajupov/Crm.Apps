@@ -7,6 +7,7 @@ using Crm.Apps.Identities.Helpers;
 using Crm.Apps.Identities.Models;
 using Crm.Apps.Identities.Parameters;
 using Crm.Apps.Identities.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.Password;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,7 +40,7 @@ namespace Crm.Apps.Identities.Services
             CancellationToken ct)
         {
             var result = await _storage.Identities.Where(x =>
-                    (!parameter.UserId.HasValue || x.UserId == parameter.UserId) &&
+                    (parameter.UserId.IsEmpty() || x.UserId == parameter.UserId) &&
                     (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (!parameter.IsPrimary.HasValue || x.IsPrimary == parameter.IsPrimary) &&
                     (!parameter.IsVerified.HasValue || x.IsVerified == parameter.IsVerified) &&

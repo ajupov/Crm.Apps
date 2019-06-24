@@ -7,6 +7,7 @@ using Crm.Apps.Leads.Helpers;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Parameters;
 using Crm.Apps.Leads.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +36,7 @@ namespace Crm.Apps.Leads.Services
             CancellationToken ct)
         {
             return _storage.LeadAttributes.Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
                     (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&

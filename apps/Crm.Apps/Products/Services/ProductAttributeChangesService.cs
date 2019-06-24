@@ -6,6 +6,7 @@ using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Parameters;
 using Crm.Apps.Products.Storages;
+using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -23,8 +24,8 @@ namespace Crm.Apps.Products.Services
             ProductAttributeChangeGetPagedListParameter parameter, CancellationToken ct)
         {
             return _storage.ProductAttributeChanges.Where(x =>
-                    (!parameter.ChangerUserId.HasValue || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (!parameter.AttributeId.HasValue || x.AttributeId == parameter.AttributeId) &&
+                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
+                    (parameter.AttributeId.IsEmpty() || x.AttributeId == parameter.AttributeId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

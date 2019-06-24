@@ -7,6 +7,7 @@ using Crm.Apps.Users.Helpers;
 using Crm.Apps.Users.Models;
 using Crm.Apps.Users.Parameters;
 using Crm.Apps.Users.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +35,7 @@ namespace Crm.Apps.Users.Services
         public Task<List<UserGroup>> GetPagedListAsync(UserGroupGetPagedListParameter parameter, CancellationToken ct)
         {
             return _storage.UserGroups.Include(x => x.Permissions).Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&

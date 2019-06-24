@@ -7,6 +7,8 @@ using Crm.Apps.Leads.Helpers;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Parameters;
 using Crm.Apps.Leads.Storages;
+using Crm.Utils.Decimal;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +37,7 @@ namespace Crm.Apps.Leads.Services
         public async Task<List<Lead>> GetPagedListAsync(LeadGetPagedListParameter parameter, CancellationToken ct)
         {
             var temp = await _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks).Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
@@ -52,10 +54,8 @@ namespace Crm.Apps.Leads.Services
                     (parameter.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{parameter.Street}%")) &&
                     (parameter.House.IsEmpty() || EF.Functions.Like(x.House, $"{parameter.House}%")) &&
                     (parameter.Apartment.IsEmpty() || x.Apartment == parameter.Apartment) &&
-                    (!parameter.MinOpportunitySum.HasValue || parameter.MinOpportunitySum.Value == 0 ||
-                     x.OpportunitySum >= parameter.MinOpportunitySum.Value) &&
-                    (!parameter.MaxOpportunitySum.HasValue || parameter.MaxOpportunitySum.Value == 0 ||
-                     x.OpportunitySum <= parameter.MaxOpportunitySum) &&
+                    (parameter.MinOpportunitySum.IsEmpty() || x.OpportunitySum >= parameter.MinOpportunitySum.Value) &&
+                    (parameter.MaxOpportunitySum.IsEmpty() || x.OpportunitySum <= parameter.MaxOpportunitySum) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))

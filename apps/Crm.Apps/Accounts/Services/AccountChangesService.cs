@@ -6,6 +6,7 @@ using Crm.Apps.Accounts.Helpers;
 using Crm.Apps.Accounts.Models;
 using Crm.Apps.Accounts.Parameters;
 using Crm.Apps.Accounts.Storages;
+using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Accounts.Services
@@ -23,8 +24,8 @@ namespace Crm.Apps.Accounts.Services
             CancellationToken ct)
         {
             return _storage.AccountChanges.Where(x =>
-                    (!parameter.ChangerUserId.HasValue || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

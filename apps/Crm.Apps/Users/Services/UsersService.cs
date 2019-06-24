@@ -7,6 +7,7 @@ using Crm.Apps.Users.Helpers;
 using Crm.Apps.Users.Models;
 using Crm.Apps.Users.Parameters;
 using Crm.Apps.Users.Storages;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,7 @@ namespace Crm.Apps.Users.Services
         {
             var temp = await _storage.Users.Include(x => x.AttributeLinks).Include(x => x.Permissions)
                 .Include(x => x.GroupLinks).Include(x => x.Settings).Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
