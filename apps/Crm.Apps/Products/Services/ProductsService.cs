@@ -7,6 +7,8 @@ using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Parameters;
 using Crm.Apps.Products.Storages;
+using Crm.Utils.Decimal;
+using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,13 +38,12 @@ namespace Crm.Apps.Products.Services
         {
             var temp = await _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks).Where(x =>
-                    (!parameter.AccountId.HasValue || x.AccountId == parameter.AccountId) &&
-                    (!parameter.ParentProductId.HasValue || x.ParentProductId == parameter.ParentProductId) &&
+                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
+                    (parameter.ParentProductId.IsEmpty() || x.ParentProductId == parameter.ParentProductId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (parameter.VendorCode.IsEmpty() || x.VendorCode == parameter.VendorCode) &&
-                    (!parameter.MinPrice.HasValue || parameter.MinPrice.Value == 0 ||
-                     x.Price >= parameter.MinPrice.Value) &&
-                    (!parameter.MaxPrice.HasValue || parameter.MaxPrice.Value == 0 || x.Price <= parameter.MaxPrice) &&
+                    (parameter.MinPrice.IsEmpty() || x.Price >= parameter.MinPrice.Value) &&
+                    (parameter.MaxPrice.IsEmpty() || x.Price <= parameter.MaxPrice) &&
                     (!parameter.IsHidden.HasValue || x.IsHidden == parameter.IsHidden) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&

@@ -42,7 +42,7 @@ namespace Crm.Clients.Products.Clients
             bool? isHidden = default, bool? isDeleted = default, DateTime? minCreateDate = default,
             DateTime? maxCreateDate = default, bool? allAttributes = default,
             IDictionary<Guid, string> attributes = default, bool? allCategoryIds = default,
-            List<Guid> categoryIds = default, int? offset = default, int? limit = 10, string sortBy = default,
+            List<Guid> categoryIds = default, int offset = default, int limit = 10, string sortBy = default,
             string orderBy = default, CancellationToken ct = default)
         {
             var parameter = new
@@ -73,14 +73,14 @@ namespace Crm.Clients.Products.Clients
                 ct);
         }
 
-        public Task<Guid> CreateAsync(Product user, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(Product product, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Create", user, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Create", product, ct);
         }
 
-        public Task UpdateAsync(Product user, CancellationToken ct = default)
+        public Task UpdateAsync(Product product, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Update", user, ct);
+            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Update", product, ct);
         }
 
         public Task HideAsync(IEnumerable<Guid> ids, CancellationToken ct = default)

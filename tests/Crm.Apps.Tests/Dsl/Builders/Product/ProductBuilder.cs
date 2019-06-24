@@ -128,6 +128,11 @@ namespace Crm.Apps.Tests.Dsl.Builders.Product
             {
                 throw new InvalidOperationException(nameof(_product.AccountId));
             }
+            
+            if (_product.StatusId.IsEmpty())
+            {
+                throw new InvalidOperationException(nameof(_product.StatusId));
+            }
 
             var createdId = await _productsClient.CreateAsync(_product).ConfigureAwait(false);
 

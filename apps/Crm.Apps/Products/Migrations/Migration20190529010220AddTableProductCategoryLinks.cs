@@ -11,7 +11,6 @@ namespace Crm.Apps.Products.Migrations
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ProductCategoryLinks_Id")
                 .WithColumn("ProductId").AsGuid().NotNullable()
                 .WithColumn("CategoryId").AsGuid().NotNullable()
-                .WithColumn("Value").AsString().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
             Create.ForeignKey("FK_ProductCategoryLinks_ProductId")

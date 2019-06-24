@@ -15,14 +15,14 @@ namespace Crm.Apps.Tests.Tests.Products
     {
         private readonly ICreate _create;
         private readonly IProductStatusesClient _productStatusesClient;
-        private readonly IProductStatusChangesClient _groupChangesClient;
+        private readonly IProductStatusChangesClient _productStatusChangesClient;
 
         public ProductStatusChangesTests(ICreate create, IProductStatusesClient productStatusesClient,
-            IProductStatusChangesClient groupChangesClient)
+            IProductStatusChangesClient productStatusChangesClient)
         {
             _create = create;
             _productStatusesClient = productStatusesClient;
-            _groupChangesClient = groupChangesClient;
+            _productStatusChangesClient = productStatusChangesClient;
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Crm.Apps.Tests.Tests.Products
             status.IsDeleted = true;
             await _productStatusesClient.UpdateAsync(status).ConfigureAwait(false);
 
-            var changes = await _groupChangesClient
+            var changes = await _productStatusChangesClient
                 .GetPagedListAsync(statusId: status.Id, sortBy: "CreateDateTime", orderBy: "asc")
                 .ConfigureAwait(false);
 

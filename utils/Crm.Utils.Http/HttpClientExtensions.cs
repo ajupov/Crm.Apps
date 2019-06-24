@@ -17,7 +17,7 @@ namespace Crm.Utils.Http
                 var result = await client.GetAsync(fullUri, ct).ConfigureAwait(false);
                 if (!result.IsSuccessStatusCode)
                 {
-                    GenerateException(fullUri, result);
+                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
                 }
             }
         }
@@ -32,7 +32,7 @@ namespace Crm.Utils.Http
                 var result = await client.GetAsync(fullUri, ct).ConfigureAwait(false);
                 if (!result.IsSuccessStatusCode)
                 {
-                    GenerateException(fullUri, result);
+                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
                 }
 
                 var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -51,7 +51,7 @@ namespace Crm.Utils.Http
                 var result = await client.PostAsync(fullUri, body.ToJsonStringContent(), ct).ConfigureAwait(false);
                 if (!result.IsSuccessStatusCode)
                 {
-                    GenerateException(fullUri, result);
+                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace Crm.Utils.Http
                 var result = await client.PostAsync(fullUri, body.ToJsonStringContent(), ct).ConfigureAwait(false);
                 if (!result.IsSuccessStatusCode)
                 {
-                    GenerateException(fullUri, result);
+                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
                 }
 
                 var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -80,10 +80,12 @@ namespace Crm.Utils.Http
             return $"{uri}{parameters.ToQueryParams()}";
         }
 
-        private static void GenerateException(string uri, HttpResponseMessage message)
+        private static async Task GenerateExceptionAsync(string uri, HttpResponseMessage message)
         {
-            throw new HttpRequestException(
-                $"Request to {uri} failed. Status code: {message.StatusCode}, Reason: {message.ReasonPhrase}");
+            var content = await message.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            throw new HttpRequestException($"Request to {uri} failed. Status code: {message.StatusCode}, " +
+                                           $"Reason: {message.ReasonPhrase}. Details: {content}.");
         }
     }
 }

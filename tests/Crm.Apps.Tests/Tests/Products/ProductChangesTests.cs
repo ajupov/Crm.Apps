@@ -29,7 +29,9 @@ namespace Crm.Apps.Tests.Tests.Products
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var product = await _create.Product.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var status = await _create.ProductStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(status.Id).BuildAsync()
+                .ConfigureAwait(false);
             product.IsHidden = true;
             await _productsClient.UpdateAsync(product).ConfigureAwait(false);
 

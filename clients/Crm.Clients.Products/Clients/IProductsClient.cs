@@ -20,7 +20,7 @@ namespace Crm.Clients.Products.Clients
             bool? isHidden = default, bool? isDeleted = default, DateTime? minCreateDate = default,
             DateTime? maxCreateDate = default, bool? allAttributes = default,
             IDictionary<Guid, string> attributes = default, bool? allCategoryIds = default,
-            List<Guid> categoryIds = default, int? offset = default, int? limit = 10, string sortBy = default,
+            List<Guid> categoryIds = default, int offset = default, int limit = 10, string sortBy = default,
             string orderBy = default, CancellationToken ct = default);
 
         Task<Guid> CreateAsync(Product product, CancellationToken ct = default);

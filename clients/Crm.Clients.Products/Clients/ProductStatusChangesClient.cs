@@ -30,7 +30,7 @@ namespace Crm.Clients.Products.Clients
             var parameter = new
             {
                 ChangerProductId = changerUserId,
-                CategoryId = statusId,
+                StatusId = statusId,
                 MinCreateDate = minCreateDate,
                 MaxCreateDate = maxCreateDate,
                 Offset = offset,

@@ -20,6 +20,7 @@
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Orm\Crm.Infrastructure.Orm.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Tracing\Crm.Infrastructure.Tracing.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj" />
+        <ProjectReference Include="..\..\utils\Crm.Utils.Decimal\Crm.Utils.Decimal.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.Password\Crm.Utils.Password.csproj" />
