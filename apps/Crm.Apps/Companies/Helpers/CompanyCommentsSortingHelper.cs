@@ -1,22 +1,22 @@
 ﻿using System.Linq;
-using Crm.Apps.Leads.Models;
+using Crm.Apps.Companies.Models;
 
-namespace Crm.Apps.Leads.Helpers
+namespace Crm.Apps.Companies.Helpers
 {
-    public static class LeadAttributesChangesSortingHelper
+    public static class CompanyCommentsSortingHelper
     {
-        public static IOrderedQueryable<LeadAttributeChange> Sort(this IQueryable<LeadAttributeChange> queryable,
-            string sortBy, string orderBy)
+        public static IOrderedQueryable<CompanyComment> Sort(this IQueryable<CompanyComment> queryable, string sortBy,
+            string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(LeadAttributeChange.Id):
+                case nameof(CompanyComment.Id):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Id)
                         : queryable.OrderBy(x => x.Id);
-                case nameof(LeadAttributeChange.CreateDateTime):
+                case nameof(CompanyComment.CreateDateTime):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.CreateDateTime)
                         : queryable.OrderBy(x => x.CreateDateTime);

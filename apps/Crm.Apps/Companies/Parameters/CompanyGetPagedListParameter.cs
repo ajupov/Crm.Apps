@@ -40,6 +40,10 @@ namespace Crm.Apps.Companies.Parameters
         public decimal? MinOpportunitySum { get; set; }
 
         public decimal? MaxOpportunitySum { get; set; }
+        
+        
+        
+        
 
         public bool? IsDeleted { get; set; }
 
@@ -50,8 +54,12 @@ namespace Crm.Apps.Companies.Parameters
         public bool? AllAttributes { get; set; }
 
         public IDictionary<Guid, string> Attributes { get; set; }
+        
+        public bool? AllAttributes { get; set; }
 
-        public List<Guid> SourceIds { get; set; }
+        public IDictionary<Guid, string> Attributes { get; set; }
+
+        public List<Guid> LeadIds { get; set; }
 
         public List<Guid> CreateUserIds { get; set; }
 

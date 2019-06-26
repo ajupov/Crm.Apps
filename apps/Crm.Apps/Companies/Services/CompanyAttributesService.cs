@@ -3,41 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Helpers;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Parameters;
-using Crm.Apps.Leads.Storages;
+using Crm.Apps.Companies.Helpers;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Parameters;
+using Crm.Apps.Companies.Storages;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Leads.Services
+namespace Crm.Apps.Companies.Services
 {
-    public class LeadSourcesService : ILeadSourcesService
+    public class CompanyAttributesService : ICompanyAttributesService
     {
-        private readonly LeadsStorage _storage;
+        private readonly CompaniesStorage _storage;
 
-        public LeadSourcesService(LeadsStorage storage)
+        public CompanyAttributesService(CompaniesStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<LeadSource> GetAsync(Guid id, CancellationToken ct)
+        public Task<CompanyAttribute> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.LeadSources.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.CompanyAttributes.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<CompanyAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.LeadSources.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.CompanyAttributes.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<LeadSource>> GetPagedListAsync(LeadSourceGetPagedListParameter parameter,
+        public Task<List<CompanyAttribute>> GetPagedListAsync(CompanyAttributeGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.LeadSources.Where(x =>
+            return _storage.CompanyAttributes.Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
+                    (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
+                    (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
@@ -47,44 +48,46 @@ namespace Crm.Apps.Leads.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, LeadSource source, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, CompanyAttribute attribute, CancellationToken ct)
         {
-            var newSource = new LeadSource();
-            var change = newSource.WithCreateLog(userId, x =>
+            var newAttribute = new CompanyAttribute();
+            var change = newAttribute.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = source.AccountId;
-                x.Name = source.Name;
-                x.IsDeleted = source.IsDeleted;
+                x.AccountId = attribute.AccountId;
+                x.Type = attribute.Type;
+                x.Key = attribute.Key;
+                x.IsDeleted = attribute.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(newSource, ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newAttribute, ct).ConfigureAwait(false);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, LeadSource oldSource, LeadSource newSource,
+        public async Task UpdateAsync(Guid userId, CompanyAttribute oldAttribute, CompanyAttribute newAttribute,
             CancellationToken ct)
         {
-            var change = oldSource.WithUpdateLog(userId, x =>
+            var change = oldAttribute.WithUpdateLog(userId, x =>
             {
-                x.Name = newSource.Name;
-                x.IsDeleted = newSource.IsDeleted;
+                x.Type = newAttribute.Type;
+                x.Key = newAttribute.Key;
+                x.IsDeleted = newAttribute.IsDeleted;
             });
 
-            _storage.Update(oldSource);
+            _storage.Update(oldAttribute);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<LeadSourceChange>();
+            var changes = new List<CompanyAttributeChange>();
 
-            await _storage.LeadSources.Where(x => ids.Contains(x.Id))
+            await _storage.CompanyAttributes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
@@ -94,9 +97,9 @@ namespace Crm.Apps.Leads.Services
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<LeadSourceChange>();
+            var changes = new List<CompanyAttributeChange>();
 
-            await _storage.LeadSources.Where(x => ids.Contains(x.Id))
+            await _storage.CompanyAttributes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 

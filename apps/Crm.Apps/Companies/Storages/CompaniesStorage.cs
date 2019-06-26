@@ -1,29 +1,27 @@
-﻿using Crm.Apps.Leads.Models;
+﻿using Crm.Apps.Companies.Models;
 using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Apps.Leads.Storages
+namespace Crm.Apps.Companies.Storages
 {
-    public class LeadsStorage : DbContext
+    public class CompaniesStorage : DbContext
     {
         private readonly OrmSettings _config;
 
-        public DbSet<LeadSource> LeadSources { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
-        public DbSet<LeadSourceChange> LeadSourceChanges { get; set; }
+        public DbSet<CompanyBankAccount> CompanyBankAccounts { get; set; }
 
-        public DbSet<Lead> Leads { get; set; }
+        public DbSet<CompanyAttribute> CompanyAttributes { get; set; }
 
-        public DbSet<LeadAttribute> LeadAttributes { get; set; }
+        public DbSet<CompanyAttributeChange> CompanyAttributeChanges { get; set; }
 
-        public DbSet<LeadAttributeChange> LeadAttributeChanges { get; set; }
+        public DbSet<CompanyChange> CompanyChanges { get; set; }
 
-        public DbSet<LeadChange> LeadChanges { get; set; }
+        public DbSet<CompanyComment> CompanyComments { get; set; }
 
-        public DbSet<LeadComment> LeadComments { get; set; }
-
-        public LeadsStorage(IOptions<OrmSettings> options)
+        public CompaniesStorage(IOptions<OrmSettings> options)
         {
             _config = options.Value;
         }
@@ -35,9 +33,9 @@ namespace Crm.Apps.Leads.Storages
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<LeadAttributeLink>()
-                .ToTable("LeadAttributeLinks")
-                .Property(x => x.LeadAttributeId)
+            modelBuilder.Entity<CompanyAttributeLink>()
+                .ToTable("CompanyAttributeLinks")
+                .Property(x => x.CompanyAttributeId)
                 .HasColumnName("AttributeId");
         }
     }

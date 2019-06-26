@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Helpers;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Parameters;
-using Crm.Apps.Leads.Storages;
+using Crm.Apps.Companies.Helpers;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Parameters;
+using Crm.Apps.Companies.Storages;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Leads.Services
+namespace Crm.Apps.Companies.Services
 {
-    public class LeadCommentsService : ILeadCommentsService
+    public class CompanyCommentsService : ICompanyCommentsService
     {
-        private readonly LeadsStorage _storage;
+        private readonly CompaniesStorage _storage;
 
-        public LeadCommentsService(LeadsStorage storage)
+        public CompanyCommentsService(CompaniesStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<List<LeadComment>> GetPagedListAsync(LeadCommentGetPagedListParameter parameter,
+        public Task<List<CompanyComment>> GetPagedListAsync(CompanyCommentGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.LeadComments.Where(x =>
-                    x.LeadId == parameter.LeadId &&
+            return _storage.CompanyComments.Where(x =>
+                    x.CompanyId == parameter.CompanyId &&
                     (parameter.CommentatorUserId.IsEmpty() || x.CommentatorUserId == parameter.CommentatorUserId) &&
                     (parameter.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{parameter.Value}%")) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
@@ -37,12 +37,12 @@ namespace Crm.Apps.Leads.Services
                 .ToListAsync(ct);
         }
 
-        public async Task CreateAsync(Guid userId, LeadComment comment, CancellationToken ct)
+        public async Task CreateAsync(Guid userId, CompanyComment comment, CancellationToken ct)
         {
-            var newComment = new LeadComment
+            var newComment = new CompanyComment
             {
                 Id = Guid.NewGuid(),
-                LeadId = comment.LeadId,
+                CompanyId = comment.CompanyId,
                 CommentatorUserId = userId,
                 Value = comment.Value,
                 CreateDateTime = DateTime.UtcNow

@@ -3,41 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Helpers;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Parameters;
-using Crm.Apps.Leads.Storages;
+using Crm.Apps.Companies.Helpers;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Parameters;
+using Crm.Apps.Companies.Storages;
 using Crm.Utils.Decimal;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Leads.Services
+namespace Crm.Apps.Companies.Services
 {
-    public class LeadsService : ILeadsService
+    public class CompaniesService : ICompaniesService
     {
-        private readonly LeadsStorage _storage;
+        private readonly CompaniesStorage _storage;
 
-        public LeadsService(LeadsStorage storage)
+        public CompaniesService(CompaniesStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<Lead> GetAsync(Guid id, CancellationToken ct)
+        public Task<Company> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks)
+            return _storage.Companies.Include(x => x.BankAccounts).Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<Lead>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Leads.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Companies.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public async Task<List<Lead>> GetPagedListAsync(LeadGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Company>> GetPagedListAsync(CompanyGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks).Where(x =>
+            var temp = await _storage.Companies.Include(x => x.BankAccounts).Include(x => x.AttributeLinks)
+                .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
+                    
+                    
+                    
                     (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
@@ -66,94 +70,94 @@ namespace Crm.Apps.Leads.Services
                 .ToList();
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, Lead lead, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Company company, CancellationToken ct)
         {
-            var newLead = new Lead();
-            var change = newLead.CreateWithLog(userId, x =>
+            var newCompany = new Company();
+            var change = newCompany.CreateWithLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = lead.AccountId;
-                x.SourceId = lead.SourceId;
+                x.AccountId = company.AccountId;
+                x.SourceId = company.SourceId;
                 x.CreateUserId = userId;
-                x.ResponsibleUserId = lead.ResponsibleUserId;
-                x.Surname = lead.Surname;
-                x.Name = lead.Name;
-                x.Patronymic = lead.Patronymic;
-                x.Phone = lead.Phone;
-                x.Email = lead.Email;
-                x.CompanyName = lead.CompanyName;
-                x.Post = lead.Post;
-                x.Postcode = lead.Postcode;
-                x.Country = lead.Country;
-                x.Region = lead.Region;
-                x.Province = lead.Province;
-                x.City = lead.City;
-                x.Street = lead.Street;
-                x.House = lead.House;
-                x.Apartment = lead.Apartment;
-                x.OpportunitySum = lead.OpportunitySum;
-                x.IsDeleted = lead.IsDeleted;
+                x.ResponsibleUserId = company.ResponsibleUserId;
+                x.Surname = company.Surname;
+                x.Name = company.Name;
+                x.Patronymic = company.Patronymic;
+                x.Phone = company.Phone;
+                x.Email = company.Email;
+                x.CompanyName = company.CompanyName;
+                x.Post = company.Post;
+                x.Postcode = company.Postcode;
+                x.Country = company.Country;
+                x.Region = company.Region;
+                x.Province = company.Province;
+                x.City = company.City;
+                x.Street = company.Street;
+                x.House = company.House;
+                x.Apartment = company.Apartment;
+                x.OpportunitySum = company.OpportunitySum;
+                x.IsDeleted = company.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = lead.AttributeLinks;
+                x.AttributeLinks = company.AttributeLinks;
             });
 
-            var entry = await _storage.AddAsync(newLead, ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newCompany, ct).ConfigureAwait(false);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid leadId, Lead oldLead, Lead newLead, CancellationToken ct)
+        public async Task UpdateAsync(Guid companyId, Company oldCompany, Company newCompany, CancellationToken ct)
         {
-            var change = oldLead.UpdateWithLog(leadId, x =>
+            var change = oldCompany.UpdateWithLog(companyId, x =>
             {
-                x.AccountId = newLead.AccountId;
-                x.SourceId = newLead.SourceId;
-                x.ResponsibleUserId = newLead.ResponsibleUserId;
-                x.Surname = newLead.Surname;
-                x.Name = newLead.Name;
-                x.Patronymic = newLead.Patronymic;
-                x.Phone = newLead.Phone;
-                x.Email = newLead.Email;
-                x.CompanyName = newLead.CompanyName;
-                x.Post = newLead.Post;
-                x.Postcode = newLead.Postcode;
-                x.Country = newLead.Country;
-                x.Region = newLead.Region;
-                x.Province = newLead.Province;
-                x.City = newLead.City;
-                x.Street = newLead.Street;
-                x.House = newLead.House;
-                x.Apartment = newLead.Apartment;
-                x.OpportunitySum = newLead.OpportunitySum;
-                x.IsDeleted = newLead.IsDeleted;
-                x.AttributeLinks = newLead.AttributeLinks;
+                x.AccountId = newCompany.AccountId;
+                x.SourceId = newCompany.SourceId;
+                x.ResponsibleUserId = newCompany.ResponsibleUserId;
+                x.Surname = newCompany.Surname;
+                x.Name = newCompany.Name;
+                x.Patronymic = newCompany.Patronymic;
+                x.Phone = newCompany.Phone;
+                x.Email = newCompany.Email;
+                x.CompanyName = newCompany.CompanyName;
+                x.Post = newCompany.Post;
+                x.Postcode = newCompany.Postcode;
+                x.Country = newCompany.Country;
+                x.Region = newCompany.Region;
+                x.Province = newCompany.Province;
+                x.City = newCompany.City;
+                x.Street = newCompany.Street;
+                x.House = newCompany.House;
+                x.Apartment = newCompany.Apartment;
+                x.OpportunitySum = newCompany.OpportunitySum;
+                x.IsDeleted = newCompany.IsDeleted;
+                x.AttributeLinks = newCompany.AttributeLinks;
             });
 
-            _storage.Update(oldLead);
+            _storage.Update(oldCompany);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task DeleteAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid companyId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<LeadChange>();
+            var changes = new List<CompanyChange>();
 
-            await _storage.Leads.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = true)), ct)
+            await _storage.Companies.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
             await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task RestoreAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid companyId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<LeadChange>();
+            var changes = new List<CompanyChange>();
 
-            await _storage.Leads.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = false)), ct)
+            await _storage.Companies.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 
             await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);

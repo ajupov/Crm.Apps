@@ -2,30 +2,30 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Helpers;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Parameters;
-using Crm.Apps.Leads.Storages;
+using Crm.Apps.Companies.Helpers;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Parameters;
+using Crm.Apps.Companies.Storages;
 using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Leads.Services
+namespace Crm.Apps.Companies.Services
 {
-    public class LeadSourceChangesService : ILeadSourceChangesService
+    public class CompanyAttributeChangesService : ICompanyAttributeChangesService
     {
-        private readonly LeadsStorage _storage;
+        private readonly CompaniesStorage _storage;
 
-        public LeadSourceChangesService(LeadsStorage storage)
+        public CompanyAttributeChangesService(CompaniesStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<List<LeadSourceChange>> GetPagedListAsync(LeadSourceChangeGetPagedListParameter parameter,
-            CancellationToken ct)
+        public Task<List<CompanyAttributeChange>> GetPagedListAsync(
+            CompanyAttributeChangeGetPagedListParameter parameter, CancellationToken ct)
         {
-            return _storage.LeadSourceChanges.Where(x =>
+            return _storage.CompanyAttributeChanges.Where(x =>
                     (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.SourceId.IsEmpty() || x.SourceId == parameter.SourceId) &&
+                    (parameter.AttributeId.IsEmpty() || x.AttributeId == parameter.AttributeId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

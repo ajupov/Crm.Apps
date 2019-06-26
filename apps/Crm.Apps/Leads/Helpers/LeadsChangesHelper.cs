@@ -6,33 +6,33 @@ namespace Crm.Apps.Leads.Helpers
 {
     public static class LeadsChangesHelper
     {
-        public static LeadChange CreateWithLog(this Lead product, Guid productId, Action<Lead> action)
+        public static LeadChange CreateWithLog(this Lead lead, Guid productId, Action<Lead> action)
         {
-            action(product);
+            action(lead);
 
             return new LeadChange
             {
-                LeadId = product.Id,
+                LeadId = lead.Id,
                 ChangerUserId = productId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
-                NewValueJson = product.ToJsonString()
+                NewValueJson = lead.ToJsonString()
             };
         }
 
-        public static LeadChange UpdateWithLog(this Lead product, Guid productId, Action<Lead> action)
+        public static LeadChange UpdateWithLog(this Lead lead, Guid productId, Action<Lead> action)
         {
-            var oldValueJson = product.ToJsonString();
+            var oldValueJson = lead.ToJsonString();
 
-            action(product);
+            action(lead);
 
             return new LeadChange
             {
-                LeadId = product.Id,
+                LeadId = lead.Id,
                 ChangerUserId = productId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,
-                NewValueJson = product.ToJsonString()
+                NewValueJson = lead.ToJsonString()
             };
         }
     }

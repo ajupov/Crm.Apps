@@ -1,85 +1,129 @@
 ﻿using System.Linq;
-using Crm.Apps.Leads.Models;
+using Crm.Apps.Companies.Models;
 
-namespace Crm.Apps.Leads.Helpers
+namespace Crm.Apps.Companies.Helpers
 {
-    public static class LeadsSortingHelper
+    public static class CompaniesSortingHelper
     {
-        public static IOrderedQueryable<Lead> Sort(this IQueryable<Lead> queryable, string sortBy, string orderBy)
+        public static IOrderedQueryable<Company> Sort(this IQueryable<Company> queryable, string sortBy, string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(Lead.Id):
+                case nameof(Company.Id):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Id)
                         : queryable.OrderBy(x => x.Id);
-                case nameof(Lead.Surname):
+                case nameof(Company.Type):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Surname)
-                        : queryable.OrderBy(x => x.Surname);
-                case nameof(Lead.Name):
+                        ? queryable.OrderByDescending(x => x.Type)
+                        : queryable.OrderBy(x => x.Type);
+                case nameof(Company.IndustryType):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Name)
-                        : queryable.OrderBy(x => x.Name);
-                case nameof(Lead.Patronymic):
+                        ? queryable.OrderByDescending(x => x.IndustryType)
+                        : queryable.OrderBy(x => x.IndustryType);
+                case nameof(Company.FullName):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Patronymic)
-                        : queryable.OrderBy(x => x.Patronymic);
-                case nameof(Lead.Phone):
+                        ? queryable.OrderByDescending(x => x.FullName)
+                        : queryable.OrderBy(x => x.FullName);
+                case nameof(Company.ShortName):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.ShortName)
+                        : queryable.OrderBy(x => x.ShortName);
+                case nameof(Company.Phone):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Phone)
                         : queryable.OrderBy(x => x.Phone);
-                case nameof(Lead.Email):
+                case nameof(Company.Email):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Email)
                         : queryable.OrderBy(x => x.Email);
-                case nameof(Lead.CompanyName):
+                case nameof(Company.TaxNumber):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.CompanyName)
-                        : queryable.OrderBy(x => x.CompanyName);
-                case nameof(Lead.Post):
+                        ? queryable.OrderByDescending(x => x.TaxNumber)
+                        : queryable.OrderBy(x => x.TaxNumber);
+                case nameof(Company.RegistrationNumber):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Post)
-                        : queryable.OrderBy(x => x.Post);
-                case nameof(Lead.Postcode):
+                        ? queryable.OrderByDescending(x => x.RegistrationNumber)
+                        : queryable.OrderBy(x => x.RegistrationNumber);
+                case nameof(Company.RegistrationDate):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Postcode)
-                        : queryable.OrderBy(x => x.Postcode);
-                case nameof(Lead.Country):
+                        ? queryable.OrderByDescending(x => x.RegistrationDate)
+                        : queryable.OrderBy(x => x.RegistrationDate);
+                case nameof(Company.EmployeesCount):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Country)
-                        : queryable.OrderBy(x => x.Country);
-                case nameof(Lead.Region):
+                        ? queryable.OrderByDescending(x => x.EmployeesCount)
+                        : queryable.OrderBy(x => x.EmployeesCount);
+                case nameof(Company.YearlyTurnover):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Region)
-                        : queryable.OrderBy(x => x.Region);
-                case nameof(Lead.Province):
+                        ? queryable.OrderByDescending(x => x.YearlyTurnover)
+                        : queryable.OrderBy(x => x.YearlyTurnover);
+                case nameof(Company.JuridicalPostcode):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Province)
-                        : queryable.OrderBy(x => x.Province);
-                case nameof(Lead.City):
+                        ? queryable.OrderByDescending(x => x.JuridicalPostcode)
+                        : queryable.OrderBy(x => x.JuridicalPostcode);
+                case nameof(Company.JuridicalCountry):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.City)
-                        : queryable.OrderBy(x => x.City);
-                case nameof(Lead.Street):
+                        ? queryable.OrderByDescending(x => x.JuridicalCountry)
+                        : queryable.OrderBy(x => x.JuridicalCountry);
+                case nameof(Company.JuridicalRegion):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Street)
-                        : queryable.OrderBy(x => x.Street);
-                case nameof(Lead.House):
+                        ? queryable.OrderByDescending(x => x.JuridicalRegion)
+                        : queryable.OrderBy(x => x.JuridicalRegion);
+                case nameof(Company.JuridicalProvince):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.House)
-                        : queryable.OrderBy(x => x.House);
-                case nameof(Lead.Apartment):
+                        ? queryable.OrderByDescending(x => x.JuridicalProvince)
+                        : queryable.OrderBy(x => x.JuridicalProvince);
+                case nameof(Company.JuridicalCity):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Apartment)
-                        : queryable.OrderBy(x => x.Apartment);
-                case nameof(Lead.OpportunitySum):
+                        ? queryable.OrderByDescending(x => x.JuridicalCity)
+                        : queryable.OrderBy(x => x.JuridicalCity);
+                case nameof(Company.JuridicalStreet):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.OpportunitySum)
-                        : queryable.OrderBy(x => x.OpportunitySum);
-                case nameof(Lead.CreateDateTime):
+                        ? queryable.OrderByDescending(x => x.JuridicalStreet)
+                        : queryable.OrderBy(x => x.JuridicalStreet);
+                case nameof(Company.JuridicalHouse):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.JuridicalHouse)
+                        : queryable.OrderBy(x => x.JuridicalHouse);
+                case nameof(Company.JuridicalApartment):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.JuridicalApartment)
+                        : queryable.OrderBy(x => x.JuridicalApartment);
+                case nameof(Company.LegalPostcode):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalPostcode)
+                        : queryable.OrderBy(x => x.LegalPostcode);
+                case nameof(Company.LegalCountry):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalCountry)
+                        : queryable.OrderBy(x => x.LegalCountry);
+                case nameof(Company.LegalRegion):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalRegion)
+                        : queryable.OrderBy(x => x.LegalRegion);
+                case nameof(Company.LegalProvince):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalProvince)
+                        : queryable.OrderBy(x => x.LegalProvince);
+                case nameof(Company.LegalCity):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalCity)
+                        : queryable.OrderBy(x => x.LegalCity);
+                case nameof(Company.LegalStreet):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalStreet)
+                        : queryable.OrderBy(x => x.LegalStreet);
+                case nameof(Company.LegalHouse):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalHouse)
+                        : queryable.OrderBy(x => x.LegalHouse);
+                case nameof(Company.LegalApartment):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.LegalApartment)
+                        : queryable.OrderBy(x => x.LegalApartment);
+                case nameof(Company.CreateDateTime):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.CreateDateTime)
                         : queryable.OrderBy(x => x.CreateDateTime);

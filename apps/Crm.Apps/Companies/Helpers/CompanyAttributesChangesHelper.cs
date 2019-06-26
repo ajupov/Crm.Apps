@@ -1,17 +1,17 @@
 ﻿using System;
-using Crm.Apps.Leads.Models;
+using Crm.Apps.Companies.Models;
 using Crm.Utils.Json;
 
-namespace Crm.Apps.Leads.Helpers
+namespace Crm.Apps.Companies.Helpers
 {
-    public static class LeadAttributesChangesHelper
+    public static class CompanyAttributesChangesHelper
     {
-        public static LeadAttributeChange WithCreateLog(this LeadAttribute attribute, Guid userId,
-            Action<LeadAttribute> action)
+        public static CompanyAttributeChange WithCreateLog(this CompanyAttribute attribute, Guid userId,
+            Action<CompanyAttribute> action)
         {
             action(attribute);
 
-            return new LeadAttributeChange
+            return new CompanyAttributeChange
             {
                 AttributeId = attribute.Id,
                 ChangerUserId = userId,
@@ -21,14 +21,14 @@ namespace Crm.Apps.Leads.Helpers
             };
         }
 
-        public static LeadAttributeChange WithUpdateLog(this LeadAttribute attribute, Guid userId,
-            Action<LeadAttribute> action)
+        public static CompanyAttributeChange WithUpdateLog(this CompanyAttribute attribute, Guid userId,
+            Action<CompanyAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();
 
             action(attribute);
 
-            return new LeadAttributeChange
+            return new CompanyAttributeChange
             {
                 AttributeId = attribute.Id,
                 ChangerUserId = userId,
