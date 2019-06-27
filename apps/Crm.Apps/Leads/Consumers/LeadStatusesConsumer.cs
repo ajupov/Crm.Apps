@@ -79,17 +79,6 @@ namespace Crm.Apps.Leads.Consumers
             await _leadSourcesService.UpdateAsync(message.UserId, oldSource, newSource, ct).ConfigureAwait(false);
         }
 
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _leadSourcesService.RestoreAsync(message.UserId, ids, ct);
-        }
-
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
             var ids = message.Data.FromJsonString<List<Guid>>();
@@ -99,6 +88,17 @@ namespace Crm.Apps.Leads.Consumers
             }
 
             return _leadSourcesService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _leadSourcesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

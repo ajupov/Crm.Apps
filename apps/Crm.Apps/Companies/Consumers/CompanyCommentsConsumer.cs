@@ -1,28 +1,28 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Services;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Leads.Consumers
+namespace Crm.Apps.Companies.Consumers
 {
-    public class LeadCommentsConsumer : IHostedService
+    public class CompanyCommentsConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly ILeadCommentsService _leadCommentsService;
+        private readonly ICompanyCommentsService _companiesCommentsService;
 
-        public LeadCommentsConsumer(IConsumer consumer, ILeadCommentsService leadCommentsService)
+        public CompanyCommentsConsumer(IConsumer consumer, ICompanyCommentsService companiesCommentsService)
         {
             _consumer = consumer;
-            _leadCommentsService = leadCommentsService;
+            _companiesCommentsService = companiesCommentsService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("LeadComments", ActionAsync);
+            _consumer.Consume("CompanyComments", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -47,9 +47,9 @@ namespace Crm.Apps.Leads.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var comment = message.Data.FromJsonString<LeadComment>();
+            var comment = message.Data.FromJsonString<CompanyComment>();
 
-            return _leadCommentsService.CreateAsync(message.UserId, comment, ct);
+            return _companiesCommentsService.CreateAsync(message.UserId, comment, ct);
         }
     }
 }

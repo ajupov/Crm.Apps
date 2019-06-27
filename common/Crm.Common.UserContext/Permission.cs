@@ -9,8 +9,8 @@
         TechnicalSupport = 4,
         AccountOwning = 5,
         ProductsManagement = 6,
-        SalesManagement = 7,
-        LeadsManagement = 8,
+        LeadsManagement = 7,
+        SalesManagement = 8,
         DemoViewing = 9
     }
 }

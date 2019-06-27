@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Services;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Leads.Consumers
+namespace Crm.Apps.Companies.Consumers
 {
-    public class LeadsConsumer : IHostedService
+    public class CompaniesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly ILeadsService _leadsService;
+        private readonly ICompaniesService _companiesService;
 
-        public LeadsConsumer(IConsumer consumer, ILeadsService leadsService)
+        public CompaniesConsumer(IConsumer consumer, ICompaniesService companiesService)
         {
             _consumer = consumer;
-            _leadsService = leadsService;
+            _companiesService = companiesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("Leads", ActionAsync);
+            _consumer.Consume("Companies", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -57,26 +57,26 @@ namespace Crm.Apps.Leads.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var lead = message.Data.FromJsonString<Lead>();
+            var company = message.Data.FromJsonString<Company>();
 
-            return _leadsService.CreateAsync(message.UserId, lead, ct);
+            return _companiesService.CreateAsync(message.UserId, company, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newLead = message.Data.FromJsonString<Lead>();
-            if (newLead.Id.IsEmpty())
+            var newCompany = message.Data.FromJsonString<Company>();
+            if (newCompany.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldLead = await _leadsService.GetAsync(newLead.Id, ct).ConfigureAwait(false);
-            if (oldLead == null)
+            var oldCompany = await _companiesService.GetAsync(newCompany.Id, ct).ConfigureAwait(false);
+            if (oldCompany == null)
             {
                 return;
             }
 
-            await _leadsService.UpdateAsync(message.UserId, oldLead, newLead, ct).ConfigureAwait(false);
+            await _companiesService.UpdateAsync(message.UserId, oldCompany, newCompany, ct).ConfigureAwait(false);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -87,7 +87,7 @@ namespace Crm.Apps.Leads.Consumers
                 return Task.CompletedTask;
             }
 
-            return _leadsService.DeleteAsync(message.UserId, ids, ct);
+            return _companiesService.DeleteAsync(message.UserId, ids, ct);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -98,7 +98,7 @@ namespace Crm.Apps.Leads.Consumers
                 return Task.CompletedTask;
             }
 
-            return _leadsService.RestoreAsync(message.UserId, ids, ct);
+            return _companiesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

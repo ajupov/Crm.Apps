@@ -42,7 +42,7 @@ namespace Crm.Apps.Leads.Services
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
                     (parameter.Phone.IsEmpty() || x.Phone == parameter.Phone) &&
-                    (parameter.Email.IsEmpty() || x.Phone == parameter.Email) &&
+                    (parameter.Email.IsEmpty() || x.Email == parameter.Email) &&
                     (parameter.CompanyName.IsEmpty() ||
                      EF.Functions.Like(x.CompanyName, $"{parameter.CompanyName}%")) &&
                     (parameter.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{parameter.Post}%")) &&

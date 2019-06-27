@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Crm.Apps.Companies.Models;
 
 namespace Crm.Apps.Companies.Parameters
 {
@@ -7,43 +8,63 @@ namespace Crm.Apps.Companies.Parameters
     {
         public Guid? AccountId { get; set; }
 
-        public string Surname { get; set; }
+        public Guid? LeadId { get; set; }
 
-        public string Name { get; set; }
+        public string FullName { get; set; }
 
-        public string Patronymic { get; set; }
+        public string ShortName { get; set; }
 
         public string Phone { get; set; }
 
         public string Email { get; set; }
 
-        public string CompanyName { get; set; }
+        public string TaxNumber { get; set; }
 
-        public string Post { get; set; }
+        public string RegistrationNumber { get; set; }
 
-        public string Postcode { get; set; }
+        public DateTime? MinRegistrationDate { get; set; }
 
-        public string Country { get; set; }
+        public DateTime? MaxRegistrationDate { get; set; }
 
-        public string Region { get; set; }
+        public int? MinEmployeesCount { get; set; }
 
-        public string Province { get; set; }
+        public int? MaxEmployeesCount { get; set; }
 
-        public string City { get; set; }
+        public decimal? MinYearlyTurnover { get; set; }
 
-        public string Street { get; set; }
+        public decimal? MaxYearlyTurnover { get; set; }
 
-        public string House { get; set; }
+        public string JuridicalPostcode { get; set; }
 
-        public string Apartment { get; set; }
+        public string JuridicalCountry { get; set; }
 
-        public decimal? MinOpportunitySum { get; set; }
+        public string JuridicalRegion { get; set; }
 
-        public decimal? MaxOpportunitySum { get; set; }
-        
-        
-        
-        
+        public string JuridicalProvince { get; set; }
+
+        public string JuridicalCity { get; set; }
+
+        public string JuridicalStreet { get; set; }
+
+        public string JuridicalHouse { get; set; }
+
+        public string JuridicalApartment { get; set; }
+
+        public string LegalPostcode { get; set; }
+
+        public string LegalCountry { get; set; }
+
+        public string LegalRegion { get; set; }
+
+        public string LegalProvince { get; set; }
+
+        public string LegalCity { get; set; }
+
+        public string LegalStreet { get; set; }
+
+        public string LegalHouse { get; set; }
+
+        public string LegalApartment { get; set; }
 
         public bool? IsDeleted { get; set; }
 
@@ -51,15 +72,21 @@ namespace Crm.Apps.Companies.Parameters
 
         public DateTime? MaxCreateDate { get; set; }
 
+        public List<CompanyType> Types { get; set; }
+
+        public List<CompanyIndustryType> IndustryTypes { get; set; }
+
         public bool? AllAttributes { get; set; }
 
         public IDictionary<Guid, string> Attributes { get; set; }
+
+        public string BankAccountNumber { get; set; }
         
-        public bool? AllAttributes { get; set; }
+        public string BankAccountBankNumber { get; set; }
 
-        public IDictionary<Guid, string> Attributes { get; set; }
-
-        public List<Guid> LeadIds { get; set; }
+        public string BankAccountBankCorrespondentNumber { get; set; }
+        
+        public string BankAccountBankName { get; set; }
 
         public List<Guid> CreateUserIds { get; set; }
 

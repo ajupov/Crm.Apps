@@ -3,80 +3,97 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Parameters;
-using Crm.Apps.Leads.Services;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Parameters;
+using Crm.Apps.Companies.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Leads.Controllers
+namespace Crm.Apps.Companies.Controllers
 {
     [ApiController]
-    [Route("Api/Leads")]
-    public class LeadsController : ControllerBase
+    [Route("Api/Companies")]
+    public class CompaniesController : ControllerBase
     {
         private readonly IUserContext _userContext;
-        private readonly ILeadsService _leadsService;
+        private readonly ICompaniesService _companiesService;
 
-        public LeadsController(IUserContext userContext, ILeadsService leadsService)
+        public CompaniesController(IUserContext userContext, ICompaniesService companiesService)
         {
             _userContext = userContext;
-            _leadsService = leadsService;
+            _companiesService = companiesService;
+        }
+
+        [HttpGet("GetTypes")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public ActionResult<List<CompanyType>> GetTypes()
+        {
+            return EnumsExtensions.GetValues<CompanyType>().ToList();
+        }
+
+        [HttpGet("GetIndustryTypes")]
+        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public ActionResult<List<CompanyIndustryType>> GetIndustryTypes()
+        {
+            return EnumsExtensions.GetValues<CompanyIndustryType>().ToList();
         }
 
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.LeadsManagement)]
-        public async Task<ActionResult<Lead>> Get(Guid id, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<Company>> Get(Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var lead = await _leadsService.GetAsync(id, ct).ConfigureAwait(false);
-            if (lead == null)
+            var company = await _companiesService.GetAsync(id, ct).ConfigureAwait(false);
+            if (company == null)
             {
                 return NotFound();
             }
 
-            return ReturnIfAllowed(lead, new[] {lead.AccountId});
+            return ReturnIfAllowed(company, new[] {company.AccountId});
         }
 
         [HttpPost("GetList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.LeadsManagement)]
-        public async Task<ActionResult<List<Lead>>> GetList(List<Guid> ids, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<Company>>> GetList(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
 
-            var leads = await _leadsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(leads, leads.Select(x => x.AccountId));
+            return ReturnIfAllowed(companies, companies.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.LeadsManagement)]
-        public async Task<ActionResult<List<Lead>>> GetPagedList(LeadGetPagedListParameter parameter,
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<Company>>> GetPagedList(CompanyGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var leads = await _leadsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(leads, leads.Select(x => x.AccountId));
+            return ReturnIfAllowed(companies, companies.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.LeadsManagement)]
-        public async Task<ActionResult<Guid>> Create(Lead lead, CancellationToken ct = default)
+            Permission.SalesManagement)]
+        public async Task<ActionResult<Guid>> Create(Company company, CancellationToken ct = default)
         {
-            if (lead == null)
+            if (company == null)
             {
                 return BadRequest();
             }
@@ -84,38 +101,38 @@ namespace Crm.Apps.Leads.Controllers
             if (!_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                lead.AccountId = _userContext.AccountId;
+                company.AccountId = _userContext.AccountId;
             }
 
-            var id = await _leadsService.CreateAsync(_userContext.UserId, lead, ct).ConfigureAwait(false);
+            var id = await _companiesService.CreateAsync(_userContext.UserId, company, ct).ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.LeadsManagement)]
-        public async Task<ActionResult> Update(Lead lead, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult> Update(Company company, CancellationToken ct = default)
         {
-            if (lead.Id.IsEmpty())
+            if (company.Id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var oldLead = await _leadsService.GetAsync(lead.Id, ct).ConfigureAwait(false);
-            if (oldLead == null)
+            var oldCompany = await _companiesService.GetAsync(company.Id, ct).ConfigureAwait(false);
+            if (oldCompany == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(
-                () => _leadsService.UpdateAsync(_userContext.UserId, oldLead, lead, ct),
-                new[] {lead.AccountId, oldLead.AccountId}).ConfigureAwait(false);
+                () => _companiesService.UpdateAsync(_userContext.UserId, oldCompany, company, ct),
+                new[] {company.AccountId, oldCompany.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.LeadsManagement)]
+            Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -123,16 +140,16 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var leads = await _leadsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _leadsService.DeleteAsync(_userContext.UserId, leads.Select(x => x.Id), ct),
-                leads.Select(x => x.AccountId)).ConfigureAwait(false);
+                () => _companiesService.DeleteAsync(_userContext.UserId, companies.Select(x => x.Id), ct),
+                companies.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.LeadsManagement)]
+            Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -140,11 +157,11 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var leads = await _leadsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _leadsService.RestoreAsync(_userContext.UserId, leads.Select(x => x.Id), ct),
-                leads.Select(x => x.AccountId)).ConfigureAwait(false);
+                () => _companiesService.RestoreAsync(_userContext.UserId, companies.Select(x => x.Id), ct),
+                companies.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]
@@ -158,13 +175,13 @@ namespace Crm.Apps.Leads.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 return result;
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();
@@ -186,7 +203,7 @@ namespace Crm.Apps.Leads.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 await action().ConfigureAwait(false);
@@ -194,7 +211,7 @@ namespace Crm.Apps.Leads.Controllers
                 return NoContent();
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();

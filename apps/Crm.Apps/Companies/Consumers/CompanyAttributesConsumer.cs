@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Services;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Leads.Consumers
+namespace Crm.Apps.Companies.Consumers
 {
-    public class LeadAttributesConsumer : IHostedService
+    public class CompanyAttributesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly ILeadAttributesService _leadAttributesService;
+        private readonly ICompanyAttributesService _companyAttributesService;
 
-        public LeadAttributesConsumer(IConsumer consumer, ILeadAttributesService leadAttributesService)
+        public CompanyAttributesConsumer(IConsumer consumer, ICompanyAttributesService companyAttributesService)
         {
             _consumer = consumer;
-            _leadAttributesService = leadAttributesService;
+            _companyAttributesService = companyAttributesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("LeadAttributes", ActionAsync);
+            _consumer.Consume("CompanyAttributes", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -57,38 +57,27 @@ namespace Crm.Apps.Leads.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var attribute = message.Data.FromJsonString<LeadAttribute>();
+            var attribute = message.Data.FromJsonString<CompanyAttribute>();
 
-            return _leadAttributesService.CreateAsync(message.UserId, attribute, ct);
+            return _companyAttributesService.CreateAsync(message.UserId, attribute, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newAttribute = message.Data.FromJsonString<LeadAttribute>();
+            var newAttribute = message.Data.FromJsonString<CompanyAttribute>();
             if (newAttribute.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldAttribute = await _leadAttributesService.GetAsync(newAttribute.Id, ct).ConfigureAwait(false);
+            var oldAttribute = await _companyAttributesService.GetAsync(newAttribute.Id, ct).ConfigureAwait(false);
             if (oldAttribute == null)
             {
                 return;
             }
 
-            await _leadAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct)
+            await _companyAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct)
                 .ConfigureAwait(false);
-        }
-
-        private Task RestoreAsync(Message message, CancellationToken ct)
-        {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return Task.CompletedTask;
-            }
-
-            return _leadAttributesService.RestoreAsync(message.UserId, ids, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -99,7 +88,18 @@ namespace Crm.Apps.Leads.Consumers
                 return Task.CompletedTask;
             }
 
-            return _leadAttributesService.DeleteAsync(message.UserId, ids, ct);
+            return _companyAttributesService.DeleteAsync(message.UserId, ids, ct);
+        }
+
+        private Task RestoreAsync(Message message, CancellationToken ct)
+        {
+            var ids = message.Data.FromJsonString<List<Guid>>();
+            if (ids == null || ids.All(x => x.IsEmpty()))
+            {
+                return Task.CompletedTask;
+            }
+
+            return _companyAttributesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

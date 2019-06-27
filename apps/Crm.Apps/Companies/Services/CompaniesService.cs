@@ -7,7 +7,6 @@ using Crm.Apps.Companies.Helpers;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Parameters;
 using Crm.Apps.Companies.Storages;
-using Crm.Utils.Decimal;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
@@ -39,27 +38,45 @@ namespace Crm.Apps.Companies.Services
             var temp = await _storage.Companies.Include(x => x.BankAccounts).Include(x => x.AttributeLinks)
                 .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    
-                    
-                    
-                    (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
+                    (parameter.LeadId.IsEmpty() || x.LeadId == parameter.LeadId) &&
+                    (parameter.FullName.IsEmpty() || EF.Functions.Like(x.FullName, $"{parameter.FullName}%")) &&
+                    (parameter.ShortName.IsEmpty() || EF.Functions.Like(x.ShortName, $"{parameter.ShortName}%")) &&
                     (parameter.Phone.IsEmpty() || x.Phone == parameter.Phone) &&
-                    (parameter.Email.IsEmpty() || x.Phone == parameter.Email) &&
-                    (parameter.CompanyName.IsEmpty() ||
-                     EF.Functions.Like(x.CompanyName, $"{parameter.CompanyName}%")) &&
-                    (parameter.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{parameter.Post}%")) &&
-                    (parameter.Postcode.IsEmpty() || x.Postcode == parameter.Postcode) &&
-                    (parameter.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{parameter.Country}%")) &&
-                    (parameter.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{parameter.Region}%")) &&
-                    (parameter.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{parameter.Province}%")) &&
-                    (parameter.City.IsEmpty() || EF.Functions.Like(x.City, $"{parameter.City}%")) &&
-                    (parameter.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{parameter.Street}%")) &&
-                    (parameter.House.IsEmpty() || EF.Functions.Like(x.House, $"{parameter.House}%")) &&
-                    (parameter.Apartment.IsEmpty() || x.Apartment == parameter.Apartment) &&
-                    (parameter.MinOpportunitySum.IsEmpty() || x.OpportunitySum >= parameter.MinOpportunitySum.Value) &&
-                    (parameter.MaxOpportunitySum.IsEmpty() || x.OpportunitySum <= parameter.MaxOpportunitySum) &&
+                    (parameter.Email.IsEmpty() || x.Email == parameter.Email) &&
+                    (parameter.TaxNumber.IsEmpty() || x.TaxNumber == parameter.TaxNumber) &&
+                    (parameter.RegistrationNumber.IsEmpty() || x.RegistrationNumber == parameter.RegistrationNumber) &&
+                    (!parameter.MinRegistrationDate.HasValue || x.RegistrationDate >= parameter.MinRegistrationDate) &&
+                    (!parameter.MaxRegistrationDate.HasValue || x.RegistrationDate <= parameter.MaxRegistrationDate) &&
+                    (!parameter.MinEmployeesCount.HasValue || x.EmployeesCount >= parameter.MinEmployeesCount) &&
+                    (!parameter.MaxEmployeesCount.HasValue || x.EmployeesCount <= parameter.MaxEmployeesCount) &&
+                    (!parameter.MinYearlyTurnover.HasValue || x.YearlyTurnover >= parameter.MinYearlyTurnover) &&
+                    (!parameter.MaxYearlyTurnover.HasValue || x.YearlyTurnover <= parameter.MaxYearlyTurnover) &&
+                    (parameter.JuridicalPostcode.IsEmpty() || x.JuridicalPostcode == parameter.JuridicalPostcode) &&
+                    (parameter.JuridicalCountry.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalCountry, $"{parameter.JuridicalCountry}%")) &&
+                    (parameter.JuridicalRegion.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalRegion, $"{parameter.JuridicalRegion}%")) &&
+                    (parameter.JuridicalProvince.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalProvince, $"{parameter.JuridicalProvince}%")) &&
+                    (parameter.JuridicalCity.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalCity, $"{parameter.JuridicalCity}%")) &&
+                    (parameter.JuridicalStreet.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalStreet, $"{parameter.JuridicalStreet}%")) &&
+                    (parameter.JuridicalHouse.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalHouse, $"{parameter.JuridicalHouse}%")) &&
+                    (parameter.JuridicalApartment.IsEmpty() || x.JuridicalApartment == parameter.JuridicalApartment) &&
+                    (parameter.LegalPostcode.IsEmpty() || x.LegalPostcode == parameter.LegalPostcode) &&
+                    (parameter.LegalCountry.IsEmpty() ||
+                     EF.Functions.Like(x.LegalCountry, $"{parameter.LegalCountry}%")) &&
+                    (parameter.LegalRegion.IsEmpty() ||
+                     EF.Functions.Like(x.LegalRegion, $"{parameter.LegalRegion}%")) &&
+                    (parameter.LegalProvince.IsEmpty() ||
+                     EF.Functions.Like(x.LegalProvince, $"{parameter.LegalProvince}%")) &&
+                    (parameter.LegalCity.IsEmpty() || EF.Functions.Like(x.LegalCity, $"{parameter.LegalCity}%")) &&
+                    (parameter.LegalStreet.IsEmpty() ||
+                     EF.Functions.Like(x.LegalStreet, $"{parameter.LegalStreet}%")) &&
+                    (parameter.LegalHouse.IsEmpty() || EF.Functions.Like(x.LegalHouse, $"{parameter.LegalHouse}%")) &&
+                    (parameter.LegalApartment.IsEmpty() || x.LegalApartment == parameter.LegalApartment) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
@@ -77,27 +94,39 @@ namespace Crm.Apps.Companies.Services
             {
                 x.Id = Guid.NewGuid();
                 x.AccountId = company.AccountId;
-                x.SourceId = company.SourceId;
+                x.Type = company.Type;
+                x.IndustryType = company.IndustryType;
+                x.LeadId = company.LeadId;
                 x.CreateUserId = userId;
                 x.ResponsibleUserId = company.ResponsibleUserId;
-                x.Surname = company.Surname;
-                x.Name = company.Name;
-                x.Patronymic = company.Patronymic;
+                x.FullName = company.FullName;
+                x.ShortName = company.ShortName;
                 x.Phone = company.Phone;
                 x.Email = company.Email;
-                x.CompanyName = company.CompanyName;
-                x.Post = company.Post;
-                x.Postcode = company.Postcode;
-                x.Country = company.Country;
-                x.Region = company.Region;
-                x.Province = company.Province;
-                x.City = company.City;
-                x.Street = company.Street;
-                x.House = company.House;
-                x.Apartment = company.Apartment;
-                x.OpportunitySum = company.OpportunitySum;
+                x.TaxNumber = company.TaxNumber;
+                x.RegistrationNumber = company.RegistrationNumber;
+                x.RegistrationDate = company.RegistrationDate;
+                x.EmployeesCount = company.EmployeesCount;
+                x.YearlyTurnover = company.YearlyTurnover;
+                x.JuridicalPostcode = company.JuridicalPostcode;
+                x.JuridicalCountry = company.JuridicalCountry;
+                x.JuridicalRegion = company.JuridicalRegion;
+                x.JuridicalProvince = company.JuridicalProvince;
+                x.JuridicalCity = company.JuridicalCity;
+                x.JuridicalStreet = company.JuridicalStreet;
+                x.JuridicalHouse = company.JuridicalHouse;
+                x.JuridicalApartment = company.JuridicalApartment;
+                x.LegalPostcode = company.LegalPostcode;
+                x.LegalCountry = company.LegalCountry;
+                x.LegalRegion = company.LegalRegion;
+                x.LegalProvince = company.LegalProvince;
+                x.LegalCity = company.LegalCity;
+                x.LegalStreet = company.LegalStreet;
+                x.LegalHouse = company.LegalHouse;
+                x.LegalApartment = company.LegalApartment;
                 x.IsDeleted = company.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.BankAccounts = company.BankAccounts;
                 x.AttributeLinks = company.AttributeLinks;
             });
 
@@ -112,26 +141,37 @@ namespace Crm.Apps.Companies.Services
         {
             var change = oldCompany.UpdateWithLog(companyId, x =>
             {
-                x.AccountId = newCompany.AccountId;
-                x.SourceId = newCompany.SourceId;
+                x.Type = newCompany.Type;
+                x.IndustryType = newCompany.IndustryType;
+                x.LeadId = newCompany.LeadId;
                 x.ResponsibleUserId = newCompany.ResponsibleUserId;
-                x.Surname = newCompany.Surname;
-                x.Name = newCompany.Name;
-                x.Patronymic = newCompany.Patronymic;
+                x.FullName = newCompany.FullName;
+                x.ShortName = newCompany.ShortName;
                 x.Phone = newCompany.Phone;
                 x.Email = newCompany.Email;
-                x.CompanyName = newCompany.CompanyName;
-                x.Post = newCompany.Post;
-                x.Postcode = newCompany.Postcode;
-                x.Country = newCompany.Country;
-                x.Region = newCompany.Region;
-                x.Province = newCompany.Province;
-                x.City = newCompany.City;
-                x.Street = newCompany.Street;
-                x.House = newCompany.House;
-                x.Apartment = newCompany.Apartment;
-                x.OpportunitySum = newCompany.OpportunitySum;
+                x.TaxNumber = newCompany.TaxNumber;
+                x.RegistrationNumber = newCompany.RegistrationNumber;
+                x.RegistrationDate = newCompany.RegistrationDate;
+                x.EmployeesCount = newCompany.EmployeesCount;
+                x.YearlyTurnover = newCompany.YearlyTurnover;
+                x.JuridicalPostcode = newCompany.JuridicalPostcode;
+                x.JuridicalCountry = newCompany.JuridicalCountry;
+                x.JuridicalRegion = newCompany.JuridicalRegion;
+                x.JuridicalProvince = newCompany.JuridicalProvince;
+                x.JuridicalCity = newCompany.JuridicalCity;
+                x.JuridicalStreet = newCompany.JuridicalStreet;
+                x.JuridicalHouse = newCompany.JuridicalHouse;
+                x.JuridicalApartment = newCompany.JuridicalApartment;
+                x.LegalPostcode = newCompany.LegalPostcode;
+                x.LegalCountry = newCompany.LegalCountry;
+                x.LegalRegion = newCompany.LegalRegion;
+                x.LegalProvince = newCompany.LegalProvince;
+                x.LegalCity = newCompany.LegalCity;
+                x.LegalStreet = newCompany.LegalStreet;
+                x.LegalHouse = newCompany.LegalHouse;
+                x.LegalApartment = newCompany.LegalApartment;
                 x.IsDeleted = newCompany.IsDeleted;
+                x.BankAccounts = newCompany.BankAccounts;
                 x.AttributeLinks = newCompany.AttributeLinks;
             });
 

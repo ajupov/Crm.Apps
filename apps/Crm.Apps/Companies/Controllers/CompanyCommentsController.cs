@@ -3,58 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.Parameters;
-using Crm.Apps.Leads.Services;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.Parameters;
+using Crm.Apps.Companies.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Leads.Controllers
+namespace Crm.Apps.Companies.Controllers
 {
     [ApiController]
-    [Route("Api/Leads/Comments")]
-    public class LeadCommentsController : ControllerBase
+    [Route("Api/Companies/Comments")]
+    public class CompanyCommentsController : ControllerBase
     {
         private readonly IUserContext _userContext;
-        private readonly ILeadsService _leadsService;
-        private readonly ILeadCommentsService _leadCommentsService;
+        private readonly ICompaniesService _companiesService;
+        private readonly ICompanyCommentsService _companyCommentsService;
 
-        public LeadCommentsController(IUserContext userContext, ILeadsService leadsService,
-            ILeadCommentsService leadCommentsService)
+        public CompanyCommentsController(IUserContext userContext, ICompaniesService companiesService,
+            ICompanyCommentsService companyCommentsService)
         {
             _userContext = userContext;
-            _leadsService = leadsService;
-            _leadCommentsService = leadCommentsService;
+            _companiesService = companiesService;
+            _companyCommentsService = companyCommentsService;
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.LeadsManagement)]
-        public async Task<ActionResult<List<LeadComment>>> GetPagedList(LeadCommentGetPagedListParameter parameter,
+            Permission.SalesManagement)]
+        public async Task<ActionResult<List<CompanyComment>>> GetPagedList(
+            CompanyCommentGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var lead = await _leadsService.GetAsync(parameter.LeadId, ct).ConfigureAwait(false);
-            var comments = await _leadCommentsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var company = await _companiesService.GetAsync(parameter.CompanyId, ct).ConfigureAwait(false);
+            var comments = await _companyCommentsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(comments, new[] {lead.AccountId});
+            return ReturnIfAllowed(comments, new[] {company.AccountId});
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.LeadsManagement)]
-        public async Task<ActionResult> Create(LeadComment comment, CancellationToken ct = default)
+            Permission.SalesManagement)]
+        public async Task<ActionResult> Create(CompanyComment comment, CancellationToken ct = default)
         {
             if (comment == null)
             {
                 return BadRequest();
             }
 
-            var lead = await _leadsService.GetAsync(comment.LeadId, ct).ConfigureAwait(false);
+            var company = await _companiesService.GetAsync(comment.CompanyId, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _leadCommentsService.CreateAsync(_userContext.UserId, comment, ct)
-                , new[] {lead.AccountId}).ConfigureAwait(false);
+                () => _companyCommentsService.CreateAsync(_userContext.UserId, comment, ct)
+                , new[] {company.AccountId}).ConfigureAwait(false);
         }
 
         [NonAction]
@@ -68,13 +69,13 @@ namespace Crm.Apps.Leads.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 return result;
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();
