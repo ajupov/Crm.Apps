@@ -1,5 +1,8 @@
 using System;
 using Crm.Apps.Tests.Dsl.Builders.Account;
+using Crm.Apps.Tests.Dsl.Builders.Company;
+using Crm.Apps.Tests.Dsl.Builders.CompanyAttribute;
+using Crm.Apps.Tests.Dsl.Builders.CompanyComment;
 using Crm.Apps.Tests.Dsl.Builders.Identity;
 using Crm.Apps.Tests.Dsl.Builders.IdentityToken;
 using Crm.Apps.Tests.Dsl.Builders.Lead;
@@ -53,5 +56,11 @@ namespace Crm.Apps.Tests.Dsl.Creator
         public ILeadAttributeBuilder LeadAttribute => _serviceCollection.GetService<ILeadAttributeBuilder>();
 
         public ILeadCommentBuilder LeadComment => _serviceCollection.GetService<ILeadCommentBuilder>();
+
+        public ICompanyBuilder Company => _serviceCollection.GetService<ICompanyBuilder>();
+
+        public ICompanyAttributeBuilder CompanyAttribute => _serviceCollection.GetService<ICompanyAttributeBuilder>();
+
+        public ICompanyCommentBuilder CompanyComment => _serviceCollection.GetService<ICompanyCommentBuilder>();
     }
 }

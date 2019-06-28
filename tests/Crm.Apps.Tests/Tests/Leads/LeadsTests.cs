@@ -19,7 +19,6 @@ namespace Crm.Apps.Tests.Tests.Leads
         public LeadTests(ICreate create, ILeadsClient leadsClient)
         {
             _create = create;
-
             _leadsClient = leadsClient;
         }
 

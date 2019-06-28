@@ -8,6 +8,10 @@ namespace Crm.Clients.Companies.Clients
 {
     public interface ICompaniesClient
     {
+        Task<List<CompanyType>> GetTypesAsync(CancellationToken ct = default);
+        
+        Task<List<CompanyIndustryType>> GetIndustryTypesAsync(CancellationToken ct = default);
+
         Task<Company> GetAsync(Guid id, CancellationToken ct = default);
 
         Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);

@@ -21,6 +21,17 @@ namespace Crm.Clients.Companies.Clients
             _httpClientFactory = httpClientFactory;
         }
 
+        public Task<List<CompanyType>> GetTypesAsync(CancellationToken ct = default)
+        {
+            return _httpClientFactory.GetAsync<List<CompanyType>>($"{_settings.Host}/Api/Companies/GetTypes", ct: ct);
+        }
+
+        public Task<List<CompanyIndustryType>> GetIndustryTypesAsync(CancellationToken ct = default)
+        {
+            return _httpClientFactory.GetAsync<List<CompanyIndustryType>>(
+                $"{_settings.Host}/Api/Companies/GetIndustryTypes", ct: ct);
+        }
+
         public Task<Company> GetAsync(Guid id, CancellationToken ct = default)
         {
             return _httpClientFactory.GetAsync<Company>($"{_settings.Host}/Api/Companies/Get", new {id}, ct);
