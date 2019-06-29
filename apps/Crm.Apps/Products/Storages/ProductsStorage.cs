@@ -1,13 +1,16 @@
 ﻿using Crm.Apps.Products.Models;
+using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Products.Storages
 {
-    public class ProductsStorage : DbContext
+    public class ProductsStorage : Storage
     {
-        private readonly OrmSettings _config;
+        public ProductsStorage(IOptions<OrmSettings> options) : base(options)
+        {
+        }
 
         public DbSet<Product> Products { get; set; }
 
@@ -24,16 +27,6 @@ namespace Crm.Apps.Products.Storages
         public DbSet<ProductStatus> ProductStatuses { get; set; }
 
         public DbSet<ProductStatusChange> ProductStatusChanges { get; set; }
-
-        public ProductsStorage(IOptions<OrmSettings> options)
-        {
-            _config = options.Value;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {
-            builder.UseNpgsql(_config.MainConnectionString);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

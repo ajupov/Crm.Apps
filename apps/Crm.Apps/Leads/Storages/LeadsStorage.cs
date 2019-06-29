@@ -1,13 +1,16 @@
 ﻿using Crm.Apps.Leads.Models;
+using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Leads.Storages
 {
-    public class LeadsStorage : DbContext
+    public class LeadsStorage : Storage
     {
-        private readonly OrmSettings _config;
+        public LeadsStorage(IOptions<OrmSettings> options) : base(options)
+        {
+        }
 
         public DbSet<LeadSource> LeadSources { get; set; }
 
@@ -22,16 +25,6 @@ namespace Crm.Apps.Leads.Storages
         public DbSet<LeadChange> LeadChanges { get; set; }
 
         public DbSet<LeadComment> LeadComments { get; set; }
-
-        public LeadsStorage(IOptions<OrmSettings> options)
-        {
-            _config = options.Value;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {
-            builder.UseNpgsql(_config.MainConnectionString);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

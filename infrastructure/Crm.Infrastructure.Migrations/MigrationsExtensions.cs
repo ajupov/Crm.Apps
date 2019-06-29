@@ -11,6 +11,12 @@ namespace Crm.Infrastructure.Migrations
         public static IServiceCollection ConfigureMigrator(this IServiceCollection services,
             IConfiguration configuration)
         {
+            var isSkipMigrations = bool.Parse(configuration["IsSkipMigrations"]);
+            if (isSkipMigrations)
+            {
+                return services;
+            }
+
             var assembly = Assembly.GetCallingAssembly();
 
             services.AddFluentMigratorCore()
@@ -29,7 +35,7 @@ namespace Crm.Infrastructure.Migrations
             using (var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
-                scope.ServiceProvider.GetService<IMigrationRunner>().MigrateUp();
+                scope.ServiceProvider.GetService<IMigrationRunner>()?.MigrateUp();
             }
 
             return applicationBuilder;

@@ -1,13 +1,16 @@
 ﻿using Crm.Apps.Users.Models;
+using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Users.Storages
 {
-    public class UsersStorage : DbContext
+    public class UsersStorage : Storage
     {
-        private readonly OrmSettings _config;
+        public UsersStorage(IOptions<OrmSettings> options) : base(options)
+        {
+        }
 
         public DbSet<User> Users { get; set; }
 
@@ -28,16 +31,6 @@ namespace Crm.Apps.Users.Storages
         public DbSet<UserGroupPermission> UserGroupPermissions { get; set; }
 
         public DbSet<UserSetting> UserSettings { get; set; }
-
-        public UsersStorage(IOptions<OrmSettings> options)
-        {
-            _config = options.Value;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {
-            builder.UseNpgsql(_config.MainConnectionString);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

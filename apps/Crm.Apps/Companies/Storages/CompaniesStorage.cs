@@ -1,13 +1,16 @@
 ﻿using Crm.Apps.Companies.Models;
+using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Companies.Storages
 {
-    public class CompaniesStorage : DbContext
+    public class CompaniesStorage : Storage
     {
-        private readonly OrmSettings _config;
+        public CompaniesStorage(IOptions<OrmSettings> options) : base(options)
+        {
+        }
 
         public DbSet<Company> Companies { get; set; }
 
@@ -20,16 +23,6 @@ namespace Crm.Apps.Companies.Storages
         public DbSet<CompanyChange> CompanyChanges { get; set; }
 
         public DbSet<CompanyComment> CompanyComments { get; set; }
-
-        public CompaniesStorage(IOptions<OrmSettings> options)
-        {
-            _config = options.Value;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {
-            builder.UseNpgsql(_config.MainConnectionString);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
