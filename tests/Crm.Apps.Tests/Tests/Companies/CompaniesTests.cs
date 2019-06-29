@@ -55,8 +55,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var companyIds = (await Task.WhenAll(
-                    _create.Company.WithAccountId(account.Id).BuildAsync(),
-                    _create.Company.WithAccountId(account.Id).BuildAsync())
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999990").BuildAsync(),
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999991").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
             var companies = await _companiesClient.GetListAsync(companyIds).ConfigureAwait(false);
@@ -72,8 +72,10 @@ namespace Crm.Apps.Tests.Tests.Companies
             var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
 
             await Task.WhenAll(
-                    _create.Company.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "Test").BuildAsync(),
-                    _create.Company.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "Test").BuildAsync())
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999990")
+                        .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999991")
+                        .WithAttributeLink(attribute.Id, "Test").BuildAsync())
                 .ConfigureAwait(false);
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
 
@@ -202,7 +204,6 @@ namespace Crm.Apps.Tests.Tests.Companies
             company.Type = CompanyType.None;
             company.IndustryType = CompanyIndustryType.None;
             company.LeadId = Guid.Empty;
-            company.CreateUserId = Guid.Empty;
             company.ResponsibleUserId = Guid.Empty;
             company.FullName = "Test";
             company.ShortName = "Test";
@@ -231,7 +232,13 @@ namespace Crm.Apps.Tests.Tests.Companies
             company.LegalApartment = "1";
             company.IsDeleted = true;
             company.AttributeLinks.Add(new CompanyAttributeLink {CompanyAttributeId = attribute.Id, Value = "Test"});
-            company.BankAccounts.Add(new CompanyBankAccount {Number = "9999999999999999999999999"});
+            company.BankAccounts.Add(new CompanyBankAccount
+            {
+                Number = "9999999999999999999999999", 
+                BankNumber = "9999999999",
+                BankCorrespondentNumber = "9999999999999999999999999",
+                BankName = "Test"
+            });
             await _companiesClient.UpdateAsync(company).ConfigureAwait(false);
 
             var updatedCompany = await _companiesClient.GetAsync(company.Id).ConfigureAwait(false);
@@ -275,6 +282,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                 updatedCompany.AttributeLinks.Single().CompanyAttributeId);
             Assert.Equal(company.AttributeLinks.Single().Value, updatedCompany.AttributeLinks.Single().Value);
             Assert.Equal(company.BankAccounts.Single().Number, updatedCompany.BankAccounts.Single().Number);
+            Assert.Equal(company.BankAccounts.Single().BankNumber, updatedCompany.BankAccounts.Single().BankNumber);
         }
 
         [Fact]
@@ -282,8 +290,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var companyIds = (await Task.WhenAll(
-                    _create.Company.WithAccountId(account.Id).BuildAsync(),
-                    _create.Company.WithAccountId(account.Id).BuildAsync())
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999990").BuildAsync(),
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999991").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
             await _companiesClient.DeleteAsync(companyIds).ConfigureAwait(false);
@@ -298,8 +306,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var companyIds = (await Task.WhenAll(
-                    _create.Company.WithAccountId(account.Id).BuildAsync(),
-                    _create.Company.WithAccountId(account.Id).BuildAsync())
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999990").BuildAsync(),
+                    _create.Company.WithAccountId(account.Id).WithTaxNumber("999999999991").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
             await _companiesClient.RestoreAsync(companyIds).ConfigureAwait(false);

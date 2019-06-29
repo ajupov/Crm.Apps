@@ -1,4 +1,7 @@
 using Crm.Apps.Tests.Dsl.Builders.Account;
+using Crm.Apps.Tests.Dsl.Builders.Company;
+using Crm.Apps.Tests.Dsl.Builders.CompanyAttribute;
+using Crm.Apps.Tests.Dsl.Builders.CompanyComment;
 using Crm.Apps.Tests.Dsl.Builders.Identity;
 using Crm.Apps.Tests.Dsl.Builders.IdentityToken;
 using Crm.Apps.Tests.Dsl.Builders.Lead;
@@ -14,6 +17,7 @@ using Crm.Apps.Tests.Dsl.Builders.UserAttribute;
 using Crm.Apps.Tests.Dsl.Builders.UserGroup;
 using Crm.Apps.Tests.Dsl.Creator;
 using Crm.Clients.Accounts;
+using Crm.Clients.Companies;
 using Crm.Clients.Identities;
 using Crm.Clients.Leads;
 using Crm.Clients.Products;
@@ -39,6 +43,7 @@ namespace Crm.Apps.Tests
                 .ConfigureIdentitiesClient(configuration)
                 .ConfigureProductsClient(configuration)
                 .ConfigureLeadsClient(configuration)
+                .ConfigureCompaniesClient(configuration)
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IAccountBuilder, AccountBuilder>()
                 .AddTransient<IUserBuilder, UserBuilder>()
@@ -53,7 +58,10 @@ namespace Crm.Apps.Tests
                 .AddTransient<ILeadBuilder, LeadBuilder>()
                 .AddTransient<ILeadAttributeBuilder, LeadAttributeBuilder>()
                 .AddTransient<ILeadCommentBuilder, LeadCommentBuilder>()
-                .AddTransient<ILeadSourceBuilder, LeadSourceBuilder>();
+                .AddTransient<ILeadSourceBuilder, LeadSourceBuilder>()
+                .AddTransient<ICompanyBuilder, CompanyBuilder>()
+                .AddTransient<ICompanyAttributeBuilder, CompanyAttributeBuilder>()
+                .AddTransient<ICompanyCommentBuilder, CompanyCommentBuilder>();
         }
     }
 }

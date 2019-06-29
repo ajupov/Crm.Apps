@@ -49,9 +49,7 @@ namespace Crm.Apps.Companies.Migrations
             Create.Index(
                     "IX_Companies_AccountId_Type_IndustryType_CreateUserId_ResponsibleUserId_FullName_ShortName_" +
                     "Phone_Email_TaxNumber_RegistrationNumber_RegistrationDate_EmployeesCount_YearlyTurnover_" +
-                    "JuridicalPostcode_JuridicalCountry_JuridicalCountry_JuridicalRegion_JuridicalProvince_" +
-                    "JuridicalCity_JuridicalStreet_JuridicalHouse_JuridicalApartment_LegalPostcode_LegalCountry_" +
-                    "LegalRegion_LegalProvince_LegalCity_LegalStreet_LegalHouse_LegalApartment_IsDeleted_CreateDateTime")
+                    "_IsDeleted_CreateDateTime")
                 .OnTable("Companies")
                 .OnColumn("AccountId").Descending()
                 .OnColumn("Type").Ascending()
@@ -68,8 +66,15 @@ namespace Crm.Apps.Companies.Migrations
                 .OnColumn("RegistrationDate").Descending()
                 .OnColumn("EmployeesCount").Ascending()
                 .OnColumn("YearlyTurnover").Ascending()
-                .OnColumn("JuridicalCompanyName").Ascending()
-                .OnColumn("JuridicalPost").Ascending()
+                .OnColumn("IsDeleted").Ascending()
+                .OnColumn("CreateDateTime").Descending()
+                .WithOptions().NonClustered();
+
+            Create.Index(
+                    "IX_Companies_AccountId_JuridicalPostcode_JuridicalCountry_JuridicalCountry_JuridicalRegion_" +
+                    "JuridicalProvince_JuridicalCity_JuridicalStreet_JuridicalHouse_JuridicalApartment_IsDeleted_CreateDateTime")
+                .OnTable("Companies")
+                .OnColumn("AccountId").Descending()
                 .OnColumn("JuridicalPostcode").Ascending()
                 .OnColumn("JuridicalCountry").Ascending()
                 .OnColumn("JuridicalRegion").Ascending()
@@ -78,9 +83,15 @@ namespace Crm.Apps.Companies.Migrations
                 .OnColumn("JuridicalStreet").Ascending()
                 .OnColumn("JuridicalHouse").Ascending()
                 .OnColumn("JuridicalApartment").Ascending()
-                .OnColumn("LegalCompanyName").Ascending()
-                .OnColumn("LegalPost").Ascending()
-                .OnColumn("LegalPostcode").Ascending()
+                .OnColumn("IsDeleted").Ascending()
+                .OnColumn("CreateDateTime").Descending()
+                .WithOptions().NonClustered();
+
+            Create.Index(
+                    "IX_Companies_AccountId_LegalCountry_LegalRegion_LegalProvince_LegalCity_LegalStreet_LegalHouse_" +
+                    "LegalApartment_IsDeleted_CreateDateTime")
+                .OnTable("Companies")
+                .OnColumn("AccountId").Descending()
                 .OnColumn("LegalCountry").Ascending()
                 .OnColumn("LegalRegion").Ascending()
                 .OnColumn("LegalProvince").Ascending()
@@ -88,7 +99,6 @@ namespace Crm.Apps.Companies.Migrations
                 .OnColumn("LegalStreet").Ascending()
                 .OnColumn("LegalHouse").Ascending()
                 .OnColumn("LegalApartment").Ascending()
-                .OnColumn("OpportunitySum").Ascending()
                 .OnColumn("IsDeleted").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
@@ -99,9 +109,17 @@ namespace Crm.Apps.Companies.Migrations
             Delete.Index(
                     "IX_Companies_AccountId_Type_IndustryType_CreateUserId_ResponsibleUserId_FullName_ShortName_" +
                     "Phone_Email_TaxNumber_RegistrationNumber_RegistrationDate_EmployeesCount_YearlyTurnover_" +
-                    "JuridicalPostcode_JuridicalCountry_JuridicalCountry_JuridicalRegion_JuridicalProvince_" +
-                    "JuridicalCity_JuridicalStreet_JuridicalHouse_JuridicalApartment_LegalPostcode_LegalCountry_" +
-                    "LegalRegion_LegalProvince_LegalCity_LegalStreet_LegalHouse_LegalApartment_IsDeleted_CreateDateTime")
+                    "_IsDeleted_CreateDateTime")
+                .OnTable("Companies");
+
+            Delete.Index(
+                    "IX_Companies_AccountId_JuridicalPostcode_JuridicalCountry_JuridicalCountry_JuridicalRegion_" +
+                    "JuridicalProvince_JuridicalCity_JuridicalStreet_JuridicalHouse_JuridicalApartment_IsDeleted_CreateDateTime")
+                .OnTable("Companies");
+
+            Delete.Index(
+                    "IX_Companies_AccountId_LegalCountry_LegalRegion_LegalProvince_LegalCity_LegalStreet_LegalHouse_" +
+                    "LegalApartment_IsDeleted_CreateDateTime")
                 .OnTable("Companies");
 
             Delete.UniqueConstraint("UQ_Companies_TaxNumber").FromTable("Companies");
