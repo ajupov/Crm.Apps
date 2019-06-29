@@ -21,7 +21,7 @@ namespace Crm.Infrastructure.Orm
                 services.AddEntityFrameworkNpgsql();
             }
 
-            return services.AddDbContext<TStorage>(ServiceLifetime.Transient);;
+            return services.AddDbContext<TStorage>(ServiceLifetime.Transient);
         }
     }
 }
