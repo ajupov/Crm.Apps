@@ -9,15 +9,15 @@ namespace Crm.Apps.Companies.Models
 
         public Guid AccountId { get; set; }
 
-        public CompanyType Type { get; set; }
-
-        public CompanyIndustryType IndustryType { get; set; }
-
         public Guid LeadId { get; set; }
 
         public Guid CreateUserId { get; set; }
 
         public Guid ResponsibleUserId { get; set; }
+        
+        public CompanyType Type { get; set; }
+
+        public CompanyIndustryType IndustryType { get; set; }
 
         public string FullName { get; set; }
 

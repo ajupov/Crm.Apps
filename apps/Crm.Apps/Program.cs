@@ -4,6 +4,8 @@ using Crm.Apps.Accounts.Services;
 using Crm.Apps.Accounts.Storages;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
+using Crm.Apps.Contacts.Services;
+using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Identities.Services;
 using Crm.Apps.Identities.Storages;
 using Crm.Apps.Leads.Services;
@@ -56,6 +58,7 @@ namespace Crm.Apps
                             .ConfigureOrm<ProductsStorage>(configuration)
                             .ConfigureOrm<LeadsStorage>(configuration)
                             .ConfigureOrm<CompaniesStorage>(configuration)
+                            .ConfigureOrm<ContactsStorage>(configuration)
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .ConfigureMvc()
                             .AddTransient<IAccountsService, AccountsService>()
@@ -88,7 +91,12 @@ namespace Crm.Apps
                             .AddTransient<ICompanyChangesService, CompanyChangesService>()
                             .AddTransient<ICompanyAttributesService, CompanyAttributesService>()
                             .AddTransient<ICompanyAttributeChangesService, CompanyAttributeChangesService>()
-                            .AddTransient<ICompanyCommentsService, CompanyCommentsService>();
+                            .AddTransient<ICompanyCommentsService, CompanyCommentsService>()
+                            .AddTransient<IContactsService, ContactsService>()
+                            .AddTransient<IContactChangesService, ContactChangesService>()
+                            .AddTransient<IContactAttributesService, ContactAttributesService>()
+                            .AddTransient<IContactAttributeChangesService, ContactAttributeChangesService>()
+                            .AddTransient<IContactCommentsService, ContactCommentsService>();
                     })
                     .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)

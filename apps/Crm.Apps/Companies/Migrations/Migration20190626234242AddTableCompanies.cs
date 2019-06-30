@@ -10,11 +10,11 @@ namespace Crm.Apps.Companies.Migrations
             Create.Table("Companies")
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Companies_Id")
                 .WithColumn("AccountId").AsGuid().NotNullable()
-                .WithColumn("Type").AsByte().NotNullable()
-                .WithColumn("IndustryType").AsByte().NotNullable()
                 .WithColumn("LeadId").AsGuid().NotNullable()
                 .WithColumn("CreateUserId").AsGuid().NotNullable()
                 .WithColumn("ResponsibleUserId").AsGuid().NotNullable()
+                .WithColumn("Type").AsByte().NotNullable()
+                .WithColumn("IndustryType").AsByte().NotNullable()
                 .WithColumn("FullName").AsString(256).NotNullable()
                 .WithColumn("ShortName").AsString(64).NotNullable()
                 .WithColumn("Phone").AsString(10).NotNullable()
@@ -47,16 +47,16 @@ namespace Crm.Apps.Companies.Migrations
                 .Columns("AccountId", "TaxNumber");
 
             Create.Index(
-                    "IX_Companies_AccountId_Type_IndustryType_CreateUserId_ResponsibleUserId_FullName_ShortName_" +
-                    "Phone_Email_TaxNumber_RegistrationNumber_RegistrationDate_EmployeesCount_YearlyTurnover_" +
-                    "_IsDeleted_CreateDateTime")
+                    "IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId_Type_IndustryType_FullName_" +
+                    "ShortName_Phone_Email_TaxNumber_RegistrationNumber_RegistrationDate_EmployeesCount_" +
+                    "YearlyTurnover_IsDeleted_CreateDateTime")
                 .OnTable("Companies")
                 .OnColumn("AccountId").Descending()
-                .OnColumn("Type").Ascending()
-                .OnColumn("IndustryType").Ascending()
                 .OnColumn("LeadId").Descending()
                 .OnColumn("CreateUserId").Descending()
                 .OnColumn("ResponsibleUserId").Descending()
+                .OnColumn("Type").Ascending()
+                .OnColumn("IndustryType").Ascending()
                 .OnColumn("FullName").Ascending()
                 .OnColumn("ShortName").Ascending()
                 .OnColumn("Phone").Ascending()
@@ -107,9 +107,9 @@ namespace Crm.Apps.Companies.Migrations
         public override void Down()
         {
             Delete.Index(
-                    "IX_Companies_AccountId_Type_IndustryType_CreateUserId_ResponsibleUserId_FullName_ShortName_" +
-                    "Phone_Email_TaxNumber_RegistrationNumber_RegistrationDate_EmployeesCount_YearlyTurnover_" +
-                    "_IsDeleted_CreateDateTime")
+                    "IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId_Type_IndustryType_FullName_" +
+                    "ShortName_Phone_Email_TaxNumber_RegistrationNumber_RegistrationDate_EmployeesCount_" +
+                    "YearlyTurnover_IsDeleted_CreateDateTime")
                 .OnTable("Companies");
 
             Delete.Index(
