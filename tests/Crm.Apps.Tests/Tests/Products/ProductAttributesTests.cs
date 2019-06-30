@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Crm.Apps.Tests.Dsl.Creator;
+using Crm.Apps.Tests.Creator;
 using Crm.Clients.Products.Clients;
 using Crm.Clients.Products.Models;
 using Crm.Common.Types;
