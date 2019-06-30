@@ -1,6 +1,7 @@
 using System;
 using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Companies;
+using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Identities;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
@@ -51,5 +52,11 @@ namespace Crm.Apps.Tests.Creator
         public ICompanyAttributeBuilder CompanyAttribute => _serviceCollection.GetService<ICompanyAttributeBuilder>();
 
         public ICompanyCommentBuilder CompanyComment => _serviceCollection.GetService<ICompanyCommentBuilder>();
+
+        public IContactBuilder Contact => _serviceCollection.GetService<IContactBuilder>();
+
+        public IContactAttributeBuilder ContactAttribute => _serviceCollection.GetService<IContactAttributeBuilder>();
+
+        public IContactCommentBuilder ContactComment => _serviceCollection.GetService<IContactCommentBuilder>();
     }
 }

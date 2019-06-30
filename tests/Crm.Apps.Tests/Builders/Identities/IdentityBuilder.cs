@@ -9,14 +9,14 @@ namespace Crm.Apps.Tests.Builders.Identities
 {
     public class IdentityBuilder : IIdentityBuilder
     {
-        private readonly Clients.Identities.Models.Identity _identity;
+        private readonly Identity _identity;
         private readonly IIdentitiesClient _identitiesClient;
         private string _password;
 
         public IdentityBuilder(IIdentitiesClient identitiesClient)
         {
             _identitiesClient = identitiesClient;
-            _identity = new Clients.Identities.Models.Identity
+            _identity = new Identity
             {
                 Type = IdentityType.None,
                 Key = "Test",
@@ -67,7 +67,7 @@ namespace Crm.Apps.Tests.Builders.Identities
             return this;
         }
 
-        public async Task<Clients.Identities.Models.Identity> BuildAsync()
+        public async Task<Identity> BuildAsync()
         {
             if (_identity.UserId.IsEmpty())
             {

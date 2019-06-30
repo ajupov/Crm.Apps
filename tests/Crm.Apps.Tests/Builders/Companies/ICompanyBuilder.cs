@@ -68,11 +68,11 @@ namespace Crm.Apps.Tests.Builders.Companies
 
         CompanyBuilder AsDeleted();
 
-        CompanyBuilder WithBankAccount(string number, string bankNumber = default, string bankName = default,
-            string bankCorrespondentNumber = default);
+        CompanyBuilder WithBankAccount(string number, string bankNumber, string bankName,
+            string bankCorrespondentNumber);
 
         CompanyBuilder WithAttributeLink(Guid attributeId, string value);
 
-        Task<Clients.Companies.Models.Company> BuildAsync();
+        Task<Company> BuildAsync();
     }
 }

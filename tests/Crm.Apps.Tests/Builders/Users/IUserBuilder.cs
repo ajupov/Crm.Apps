@@ -33,6 +33,6 @@ namespace Crm.Apps.Tests.Builders.Users
 
         UserBuilder WithPermission(Permission permission);
 
-        Task<Clients.Users.Models.User> BuildAsync();
+        Task<User> BuildAsync();
     }
 }

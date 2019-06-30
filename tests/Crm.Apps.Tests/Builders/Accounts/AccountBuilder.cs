@@ -7,13 +7,13 @@ namespace Crm.Apps.Tests.Builders.Accounts
 {
     public class AccountBuilder : IAccountBuilder
     {
-        private readonly Clients.Accounts.Models.Account _account;
+        private readonly Account _account;
         private readonly IAccountsClient _accountsClient;
 
         public AccountBuilder(IAccountsClient accountsClient)
         {
             _accountsClient = accountsClient;
-            _account = new Clients.Accounts.Models.Account();
+            _account = new Account();
         }
 
         public AccountBuilder AsLocked()
@@ -46,7 +46,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
             return this;
         }
 
-        public async Task<Clients.Accounts.Models.Account> BuildAsync()
+        public async Task<Account> BuildAsync()
         {
             var createdId = await _accountsClient.CreateAsync(_account).ConfigureAwait(false);
 

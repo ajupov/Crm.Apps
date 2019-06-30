@@ -1,5 +1,6 @@
 using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Companies;
+using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Identities;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
@@ -52,7 +53,10 @@ namespace Crm.Apps.Tests
                 .AddTransient<ILeadSourceBuilder, LeadSourceBuilder>()
                 .AddTransient<ICompanyBuilder, CompanyBuilder>()
                 .AddTransient<ICompanyAttributeBuilder, CompanyAttributeBuilder>()
-                .AddTransient<ICompanyCommentBuilder, CompanyCommentBuilder>();
+                .AddTransient<ICompanyCommentBuilder, CompanyCommentBuilder>()
+                .AddTransient<IContactBuilder, ContactBuilder>()
+                .AddTransient<IContactAttributeBuilder, ContactAttributeBuilder>()
+                .AddTransient<IContactCommentBuilder, ContactCommentBuilder>();
         }
     }
 }

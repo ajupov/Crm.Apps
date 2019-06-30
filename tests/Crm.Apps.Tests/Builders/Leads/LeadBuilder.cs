@@ -9,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadBuilder : ILeadBuilder
     {
-        private readonly Clients.Leads.Models.Lead _lead;
+        private readonly Lead _lead;
         private readonly ILeadsClient _leadsClient;
 
         public LeadBuilder(ILeadsClient leadsClient)
         {
             _leadsClient = leadsClient;
-            _lead = new Clients.Leads.Models.Lead
+            _lead = new Lead
             {
                 AccountId = Guid.Empty,
                 SourceId = Guid.Empty,
@@ -204,7 +204,7 @@ namespace Crm.Apps.Tests.Builders.Leads
             return this;
         }
 
-        public async Task<Clients.Leads.Models.Lead> BuildAsync()
+        public async Task<Lead> BuildAsync()
         {
             if (_lead.AccountId.IsEmpty())
             {

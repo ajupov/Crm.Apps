@@ -10,13 +10,13 @@ namespace Crm.Apps.Tests.Builders.Users
 {
     public class UserGroupBuilder : IUserGroupBuilder
     {
-        private readonly Clients.Users.Models.UserGroup _userGroup;
+        private readonly UserGroup _userGroup;
         private readonly IUserGroupsClient _userGroupsClient;
 
         public UserGroupBuilder(IUserGroupsClient userGroupsClient)
         {
             _userGroupsClient = userGroupsClient;
-            _userGroup = new Clients.Users.Models.UserGroup
+            _userGroup = new UserGroup
             {
                 AccountId = Guid.Empty,
                 Name = "Test"
@@ -52,7 +52,7 @@ namespace Crm.Apps.Tests.Builders.Users
             return this;
         }
 
-        public async Task<Clients.Users.Models.UserGroup> BuildAsync()
+        public async Task<UserGroup> BuildAsync()
         {
             if (_userGroup.AccountId.IsEmpty())
             {

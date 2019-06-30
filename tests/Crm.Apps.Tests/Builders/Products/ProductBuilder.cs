@@ -9,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductBuilder : IProductBuilder
     {
-        private readonly Clients.Products.Models.Product _product;
+        private readonly Product _product;
         private readonly IProductsClient _productsClient;
 
         public ProductBuilder(IProductsClient productsClient)
         {
             _productsClient = productsClient;
-            _product = new Clients.Products.Models.Product
+            _product = new Product
             {
                 AccountId = Guid.Empty,
                 ParentProductId = Guid.Empty,
@@ -122,7 +122,7 @@ namespace Crm.Apps.Tests.Builders.Products
             return this;
         }
 
-        public async Task<Clients.Products.Models.Product> BuildAsync()
+        public async Task<Product> BuildAsync()
         {
             if (_product.AccountId.IsEmpty())
             {

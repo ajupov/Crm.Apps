@@ -9,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyBuilder : ICompanyBuilder
     {
-        private readonly Clients.Companies.Models.Company _company;
+        private readonly Company _company;
         private readonly ICompaniesClient _companiesClient;
 
         public CompanyBuilder(ICompaniesClient companiesClient)
         {
             _companiesClient = companiesClient;
-            _company = new Clients.Companies.Models.Company
+            _company = new Company
             {
                 AccountId = Guid.Empty,
                 Type = CompanyType.None,
@@ -269,9 +269,8 @@ namespace Crm.Apps.Tests.Builders.Companies
             return this;
         }
 
-
-        public CompanyBuilder WithBankAccount(string number, string bankNumber = default, string bankName = default,
-            string bankCorrespondentNumber = default)
+        public CompanyBuilder WithBankAccount(string number, string bankNumber, string bankName,
+            string bankCorrespondentNumber)
         {
             if (_company.BankAccounts == null)
             {
@@ -305,11 +304,16 @@ namespace Crm.Apps.Tests.Builders.Companies
             return this;
         }
 
-        public async Task<Clients.Companies.Models.Company> BuildAsync()
+        public async Task<Company> BuildAsync()
         {
             if (_company.AccountId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_company.AccountId));
+            }
+
+            if (_company.LeadId.IsEmpty())
+            {
+                throw new InvalidOperationException(nameof(_company.LeadId));
             }
 
             var createdId = await _companiesClient.CreateAsync(_company).ConfigureAwait(false);

@@ -28,6 +28,6 @@ namespace Crm.Apps.Tests.Builders.Products
 
         ProductBuilder WithCategoryLink(Guid categoryId);
 
-        Task<Clients.Products.Models.Product> BuildAsync();
+        Task<Product> BuildAsync();
     }
 }

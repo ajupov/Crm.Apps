@@ -10,13 +10,13 @@ namespace Crm.Apps.Tests.Builders.Users
 {
     public class UserBuilder : IUserBuilder
     {
-        private readonly Clients.Users.Models.User _user;
+        private readonly User _user;
         private readonly IUsersClient _usersClient;
 
         public UserBuilder(IUsersClient usersClient)
         {
             _usersClient = usersClient;
-            _user = new Clients.Users.Models.User
+            _user = new User
             {
                 AccountId = Guid.Empty,
                 Surname = "Test",
@@ -153,7 +153,7 @@ namespace Crm.Apps.Tests.Builders.Users
             return this;
         }
 
-        public async Task<Clients.Users.Models.User> BuildAsync()
+        public async Task<User> BuildAsync()
         {
             if (_user.AccountId.IsEmpty())
             {

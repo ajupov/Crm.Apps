@@ -18,6 +18,6 @@ namespace Crm.Apps.Tests.Builders.Identities
 
         IdentityBuilder AsVerified();
 
-        Task<Clients.Identities.Models.Identity> BuildAsync();
+        Task<Identity> BuildAsync();
     }
 }
