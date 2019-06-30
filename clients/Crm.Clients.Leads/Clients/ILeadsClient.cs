@@ -14,7 +14,7 @@ namespace Crm.Clients.Leads.Clients
 
         Task<List<Lead>> GetPagedListAsync(Guid? accountId = default, string surname = default, string name = default,
             string patronymic = default, string phone = default, string email = default, string companyName = default,
-            string post = default, string postode = default, string country = default, string region = default,
+            string post = default, string postcode = default, string country = default, string region = default,
             string province = default, string city = default, string street = default, string house = default,
             string apartment = default, decimal? minOpportunitySum = default, decimal? maxOpportunitySum = default,
             bool isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,

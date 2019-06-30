@@ -18,6 +18,7 @@ using Crm.Apps.Tests.Dsl.Builders.UserGroup;
 using Crm.Apps.Tests.Dsl.Creator;
 using Crm.Clients.Accounts;
 using Crm.Clients.Companies;
+using Crm.Clients.Contacts;
 using Crm.Clients.Identities;
 using Crm.Clients.Leads;
 using Crm.Clients.Products;
@@ -44,6 +45,7 @@ namespace Crm.Apps.Tests
                 .ConfigureProductsClient(configuration)
                 .ConfigureLeadsClient(configuration)
                 .ConfigureCompaniesClient(configuration)
+                .ConfigureContactsClient(configuration)
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IAccountBuilder, AccountBuilder>()
                 .AddTransient<IUserBuilder, UserBuilder>()
