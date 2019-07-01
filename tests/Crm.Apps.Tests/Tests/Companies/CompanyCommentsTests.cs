@@ -24,7 +24,12 @@ namespace Crm.Apps.Tests.Tests.Companies
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var company = await _create.Company.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var company = await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
+                .ConfigureAwait(false);
+
             await Task.WhenAll(
                     _create.CompanyComment.WithCompanyId(company.Id).BuildAsync(),
                     _create.CompanyComment.WithCompanyId(company.Id).BuildAsync())
@@ -44,7 +49,11 @@ namespace Crm.Apps.Tests.Tests.Companies
         public async Task WhenCreate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var company = await _create.Company.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var company = await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
+                .ConfigureAwait(false);
 
             var comment = new CompanyComment
             {

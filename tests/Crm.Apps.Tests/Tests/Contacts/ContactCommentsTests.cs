@@ -24,7 +24,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var contact = await _create.Contact.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
+                .ConfigureAwait(false);
             await Task.WhenAll(
                     _create.ContactComment.WithContactId(contact.Id).BuildAsync(),
                     _create.ContactComment.WithContactId(contact.Id).BuildAsync())
@@ -44,7 +48,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenCreate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var contact = await _create.Contact.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
+                .ConfigureAwait(false);
 
             var comment = new ContactComment
             {

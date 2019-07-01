@@ -26,7 +26,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenGet_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var contactId = (await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
                 .ConfigureAwait(false)).Id;
 
@@ -40,9 +42,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenGetList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead1 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var lead2 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var contactIds = (await Task.WhenAll(
                     _create.Contact.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .BuildAsync(),
@@ -60,10 +64,12 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead1 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var lead2 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var attribute = await _create.ContactAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-
             await Task.WhenAll(
                     _create.Contact.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
@@ -86,7 +92,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenCreate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var attribute = await _create.ContactAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
 
             var contact = new Contact
@@ -169,7 +177,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenUpdate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var attribute = await _create.ContactAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
             var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
                 .ConfigureAwait(false);
@@ -236,8 +246,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenDelete_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead1 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var lead2 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var contactIds = (await Task.WhenAll(
                     _create.Contact.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .BuildAsync(),
@@ -256,8 +269,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         public async Task WhenRestore_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var lead1 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var lead2 = await _create.Lead.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
+            var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+                .ConfigureAwait(false);
             var contactIds = (await Task.WhenAll(
                     _create.Contact.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .BuildAsync(),
