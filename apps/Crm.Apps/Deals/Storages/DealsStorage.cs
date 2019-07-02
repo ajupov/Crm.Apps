@@ -1,44 +1,39 @@
-﻿using Crm.Apps.Products.Models;
+﻿using Crm.Apps.Deals.Models;
 using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Orm.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Apps.Products.Storages
+namespace Crm.Apps.Deals.Storages
 {
-    public class ProductsStorage : Storage
+    public class DealsStorage : Storage
     {
-        public ProductsStorage(IOptions<OrmSettings> options) : base(options)
+        public DealsStorage(IOptions<OrmSettings> options) : base(options)
         {
         }
 
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Deal> Deals { get; set; }
 
-        public DbSet<ProductAttribute> ProductAttributes { get; set; }
+        public DbSet<DealAttribute> DealAttributes { get; set; }
 
-        public DbSet<ProductAttributeChange> ProductAttributeChanges { get; set; }
+        public DbSet<DealAttributeChange> DealAttributeChanges { get; set; }
 
-        public DbSet<ProductCategory> ProductCategories { get; set; }
+        public DbSet<DealChange> DealChanges { get; set; }
 
-        public DbSet<ProductCategoryChange> ProductCategoryChanges { get; set; }
+        public DbSet<DealType> DealTypes { get; set; }
 
-        public DbSet<ProductChange> ProductChanges { get; set; }
+        public DbSet<DealStatus> DealStatuses { get; set; }
 
-        public DbSet<ProductStatus> ProductStatuses { get; set; }
+        public DbSet<DealStatusChange> DealStatusChanges { get; set; }
 
-        public DbSet<ProductStatusChange> ProductStatusChanges { get; set; }
+        public DbSet<DealComment> DealComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProductAttributeLink>()
-                .ToTable("ProductAttributeLinks")
-                .Property(x => x.ProductAttributeId)
+            modelBuilder.Entity<DealAttributeLink>()
+                .ToTable("DealAttributeLinks")
+                .Property(x => x.DealAttributeId)
                 .HasColumnName("AttributeId");
-
-            modelBuilder.Entity<ProductCategoryLink>()
-                .ToTable("ProductCategoryLinks")
-                .Property(x => x.ProductCategoryId)
-                .HasColumnName("CategoryId");
         }
     }
 }
