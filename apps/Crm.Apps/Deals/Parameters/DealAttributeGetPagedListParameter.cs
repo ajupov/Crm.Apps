@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Crm.Common.Types;
 
-namespace Crm.Apps.Products.Parameters
+namespace Crm.Apps.Deals.Parameters
 {
-    public class ProductAttributeGetPagedListParameter
+    public class DealAttributeGetPagedListParameter
     {
         public Guid? AccountId { get; set; }
 

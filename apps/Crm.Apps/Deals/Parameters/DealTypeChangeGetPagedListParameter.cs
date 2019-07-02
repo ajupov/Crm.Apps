@@ -1,14 +1,12 @@
 using System;
 
-namespace Crm.Apps.Products.Parameters
+namespace Crm.Apps.Deals.Parameters
 {
-    public class ProductCategoryGetPagedListParameter
+    public class DealTypeChangeGetPagedListParameter
     {
-        public Guid? AccountId { get; set; }
+        public Guid? ChangerUserId { get; set; }
 
-        public string Name { get; set; }
-
-        public bool? IsDeleted { get; set; }
+        public Guid? TypeId { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 

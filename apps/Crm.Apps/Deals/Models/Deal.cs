@@ -27,9 +27,9 @@ namespace Crm.Apps.Deals.Models
         
         public DateTime? EndDateTime { get; set; }
 
-        public decimal SumWithDiscount { get; set; }
-
         public decimal Sum { get; set; }
+        
+        public decimal SumWithDiscount { get; set; }
 
         public byte FinishProbability { get; set; }
         

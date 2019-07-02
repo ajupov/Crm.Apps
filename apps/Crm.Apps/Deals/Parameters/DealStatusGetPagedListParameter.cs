@@ -1,12 +1,14 @@
 using System;
 
-namespace Crm.Apps.Products.Parameters
+namespace Crm.Apps.Deals.Parameters
 {
-    public class ProductStatusGetPagedListParameter
+    public class DealStatusGetPagedListParameter
     {
         public Guid? AccountId { get; set; }
 
         public string Name { get; set; }
+
+        public bool? IsFinish { get; set; }
 
         public bool? IsDeleted { get; set; }
 
