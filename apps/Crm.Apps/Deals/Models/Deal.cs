@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Crm.Apps.Products.Models;
 
 namespace Crm.Apps.Deals.Models
 {
@@ -30,7 +29,7 @@ namespace Crm.Apps.Deals.Models
 
         public decimal SumWithDiscount { get; set; }
 
-        public decimal SumWithoutDiscount { get; set; }
+        public decimal Sum { get; set; }
 
         public byte FinishProbability { get; set; }
         
