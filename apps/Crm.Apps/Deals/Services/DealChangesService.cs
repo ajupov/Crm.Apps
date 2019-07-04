@@ -2,30 +2,29 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Deals.Helpers;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Storages;
 using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Deals.Services
 {
-    public class ProductChangesService : IProductChangesService
+    public class DealChangesService : IDealChangesService
     {
-        private readonly ProductsStorage _storage;
+        private readonly DealsStorage _storage;
 
-        public ProductChangesService(ProductsStorage storage)
+        public DealChangesService(DealsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<List<ProductChange>> GetPagedListAsync(ProductChangeGetPagedListParameter parameter,
-            CancellationToken ct)
+        public Task<List<DealChange>> GetPagedListAsync(DealChangeGetPagedListParameter parameter, CancellationToken ct)
         {
-            return _storage.ProductChanges.Where(x =>
+            return _storage.DealChanges.Where(x =>
                     (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.ProductId.IsEmpty() || x.ProductId == parameter.ProductId) &&
+                    (parameter.DealId.IsEmpty() || x.DealId == parameter.DealId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)

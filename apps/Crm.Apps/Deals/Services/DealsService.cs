@@ -3,48 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Deals.Helpers;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Storages;
 using Crm.Utils.Decimal;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Deals.Services
 {
-    public class ProductsService : IProductsService
+    public class DealsService : IDealsService
     {
-        private readonly ProductsStorage _storage;
+        private readonly DealsStorage _storage;
 
-        public ProductsService(ProductsStorage storage)
+        public DealsService(DealsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<Product> GetAsync(Guid id, CancellationToken ct)
+        public Task<Deal> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks).Include(x => x.CategoryLinks)
-                .FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.Deals.Include(x => x.Type).Include(x => x.Status).Include(x => x.Positions)
+                .Include(x => x.AttributeLinks).FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<Product>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<Deal>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Products.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Deals.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public async Task<List<Product>> GetPagedListAsync(ProductGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Deal>> GetPagedListAsync(DealGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks)
-                .Include(x => x.CategoryLinks).Where(x =>
+            var temp = await _storage.Deals.Include(x => x.Type).Include(x => x.Status).Include(x => x.Positions)
+                .Include(x => x.AttributeLinks).Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.ParentProductId.IsEmpty() || x.ParentProductId == parameter.ParentProductId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.VendorCode.IsEmpty() || x.VendorCode == parameter.VendorCode) &&
-                    (parameter.MinPrice.IsEmpty() || x.Price >= parameter.MinPrice.Value) &&
-                    (parameter.MaxPrice.IsEmpty() || x.Price <= parameter.MaxPrice) &&
-                    (!parameter.IsHidden.HasValue || x.IsHidden == parameter.IsHidden) &&
+                    (!parameter.MinStartDateTime.HasValue || x.StartDateTime >= parameter.MinStartDateTime) &&
+                    (!parameter.MaxStartDateTime.HasValue || x.StartDateTime <= parameter.MaxStartDateTime) &&
+                    (!parameter.MinEndDateTime.HasValue || x.EndDateTime >= parameter.MinEndDateTime) &&
+                    (!parameter.MaxEndDateTime.HasValue || x.EndDateTime <= parameter.MaxEndDateTime) &&
+                    (parameter.MinSum.IsEmpty() || x.Sum >= parameter.MinSum) &&
+                    (parameter.MaxSum.IsEmpty() || x.Sum <= parameter.MaxSum) &&
+                    (parameter.MinSumWithDiscount.IsEmpty() || x.SumWithDiscount >= parameter.MinSumWithDiscount) &&
+                    (parameter.MaxSumWithDiscount.IsEmpty() || x.SumWithDiscount <= parameter.MaxSumWithDiscount) &&
+                    (parameter.MinFinishProbability == null || parameter.MinFinishProbability.Value == 0 ||
+                     x.FinishProbability >= parameter.MinFinishProbability.Value) &&
+                    (parameter.MaxFinishProbability == null || parameter.MaxFinishProbability.Value == 0 ||
+                     x.FinishProbability <= parameter.MaxFinishProbability) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
@@ -55,99 +62,82 @@ namespace Crm.Apps.Products.Services
                 .ToList();
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, Product product, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Deal deal, CancellationToken ct)
         {
-            var newProduct = new Product();
-            var change = newProduct.CreateWithLog(userId, x =>
+            var newDeal = new Deal();
+            var change = newDeal.CreateWithLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = product.AccountId;
-                x.ParentProductId = product.ParentProductId;
-                x.Type = product.Type;
-                x.StatusId = product.StatusId;
-                x.Name = product.Name;
-                x.VendorCode = product.VendorCode;
-                x.Price = product.Price;
-                x.Image = product.Image;
-                x.IsHidden = product.IsHidden;
-                x.IsDeleted = product.IsDeleted;
+                x.AccountId = deal.AccountId;
+                x.TypeId = deal.TypeId;
+                x.StatusId = deal.StatusId;
+                x.CompanyId = deal.CompanyId;
+                x.ContactId = deal.ContactId;
+                x.CreateUserId = userId;
+                x.ResponsibleUserId = deal.ResponsibleUserId;
+                x.Name = deal.Name;
+                x.StartDateTime = deal.StartDateTime;
+                x.EndDateTime = deal.EndDateTime;
+                x.Sum = deal.Sum;
+                x.SumWithDiscount = deal.SumWithDiscount;
+                x.FinishProbability = deal.FinishProbability;
+                x.IsDeleted = deal.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = product.AttributeLinks;
-                x.CategoryLinks = product.CategoryLinks;
+                x.AttributeLinks = deal.AttributeLinks;
+                x.Positions = deal.Positions;
             });
 
-            var entry = await _storage.AddAsync(newProduct, ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newDeal, ct).ConfigureAwait(false);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid productId, Product oldProduct, Product newProduct, CancellationToken ct)
+        public async Task UpdateAsync(Guid dealId, Deal oldDeal, Deal newDeal, CancellationToken ct)
         {
-            var change = oldProduct.UpdateWithLog(productId, x =>
+            var change = oldDeal.UpdateWithLog(dealId, x =>
             {
-                x.AccountId = newProduct.AccountId;
-                x.ParentProductId = newProduct.ParentProductId;
-                x.Type = newProduct.Type;
-                x.StatusId = newProduct.StatusId;
-                x.Name = newProduct.Name;
-                x.VendorCode = newProduct.VendorCode;
-                x.Price = newProduct.Price;
-                x.Image = newProduct.Image;
-                x.IsHidden = newProduct.IsHidden;
-                x.IsDeleted = newProduct.IsDeleted;
-                x.AttributeLinks = newProduct.AttributeLinks;
-                x.CategoryLinks = newProduct.CategoryLinks;
+                x.AccountId = newDeal.AccountId;
+                x.TypeId = newDeal.TypeId;
+                x.StatusId = newDeal.StatusId;
+                x.CompanyId = newDeal.CompanyId;
+                x.ContactId = newDeal.ContactId;
+                x.ResponsibleUserId = newDeal.ResponsibleUserId;
+                x.Name = newDeal.Name;
+                x.StartDateTime = newDeal.StartDateTime;
+                x.EndDateTime = newDeal.EndDateTime;
+                x.Sum = newDeal.Sum;
+                x.SumWithDiscount = newDeal.SumWithDiscount;
+                x.FinishProbability = newDeal.FinishProbability;
+                x.IsDeleted = newDeal.IsDeleted;
+                x.AttributeLinks = newDeal.AttributeLinks;
+                x.Positions = newDeal.Positions;
             });
 
-            _storage.Update(oldProduct);
+            _storage.Update(oldDeal);
             await _storage.AddAsync(change, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task HideAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid dealId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductChange>();
+            var changes = new List<DealChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = true)), ct)
+            await _storage.Deals.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
             await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
             await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
         }
 
-        public async Task ShowAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid dealId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductChange>();
+            var changes = new List<DealChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = false)), ct)
-                .ConfigureAwait(false);
-
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
-        }
-
-        public async Task DeleteAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
-        {
-            var changes = new List<ProductChange>();
-
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = true)), ct)
-                .ConfigureAwait(false);
-
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
-        }
-
-        public async Task RestoreAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
-        {
-            var changes = new List<ProductChange>();
-
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = false)), ct)
+            await _storage.Deals.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 
             await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);

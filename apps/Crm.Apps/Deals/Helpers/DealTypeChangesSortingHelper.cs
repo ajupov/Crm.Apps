@@ -3,28 +3,20 @@ using Crm.Apps.Deals.Models;
 
 namespace Crm.Apps.Deals.Helpers
 {
-    public static class DealAttributesSortingHelper
+    public static class DealStatusChangesSortingHelper
     {
-        public static IOrderedQueryable<DealAttribute> Sort(this IQueryable<DealAttribute> queryable,
+        public static IOrderedQueryable<DealStatusChange> Sort(this IQueryable<DealStatusChange> queryable,
             string sortBy, string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(DealAttribute.Id):
+                case nameof(DealStatusChange.Id):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Id)
                         : queryable.OrderBy(x => x.Id);
-                case nameof(DealAttribute.Type):
-                    return isDesc
-                        ? queryable.OrderByDescending(x => x.Type)
-                        : queryable.OrderBy(x => x.Type);
-                case nameof(DealAttribute.Key):
-                    return isDesc
-                        ? queryable.OrderByDescending(x => x.Key)
-                        : queryable.OrderBy(x => x.Key);
-                case nameof(DealAttribute.CreateDateTime):
+                case nameof(DealStatusChange.CreateDateTime):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.CreateDateTime)
                         : queryable.OrderBy(x => x.CreateDateTime);

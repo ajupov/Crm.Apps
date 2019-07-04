@@ -14,11 +14,11 @@ namespace Crm.Apps.Leads.Controllers
     [Route("Api/Leads/Sources/Changes")]
     public class LeadSourcesChangesController : ControllerBase
     {
-        private readonly ILeadSourceChangesService _userSourceChangesService;
+        private readonly ILeadSourceChangesService _leadSourceChangesService;
 
-        public LeadSourcesChangesController(ILeadSourceChangesService userSourceChangesService)
+        public LeadSourcesChangesController(ILeadSourceChangesService leadSourceChangesService)
         {
-            _userSourceChangesService = userSourceChangesService;
+            _leadSourceChangesService = leadSourceChangesService;
         }
 
         [HttpPost("GetPagedList")]
@@ -26,7 +26,7 @@ namespace Crm.Apps.Leads.Controllers
         public async Task<ActionResult<List<LeadSourceChange>>> GetPagedList(
             LeadSourceChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _userSourceChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _leadSourceChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
         }
     }
 }

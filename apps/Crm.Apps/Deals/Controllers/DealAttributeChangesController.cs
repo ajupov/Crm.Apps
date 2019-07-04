@@ -1,32 +1,32 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Products.Controllers
+namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [Route("Api/Products/Attributes/Changes")]
-    public class ProductAttributeChangesController : ControllerBase
+    [Route("Api/Deals/Attributes/Changes")]
+    public class DealAttributeChangesController : ControllerBase
     {
-        private readonly IProductAttributeChangesService _productAttributeChangesService;
+        private readonly IDealAttributeChangesService _dealAttributeChangesService;
 
-        public ProductAttributeChangesController(IProductAttributeChangesService productAttributeChangesService)
+        public DealAttributeChangesController(IDealAttributeChangesService dealAttributeChangesService)
         {
-            _productAttributeChangesService = productAttributeChangesService;
+            _dealAttributeChangesService = dealAttributeChangesService;
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult<List<ProductAttributeChange>>> GetPagedList(
-            ProductAttributeChangeGetPagedListParameter parameter, CancellationToken ct = default)
+        public async Task<ActionResult<List<DealAttributeChange>>> GetPagedList(
+            DealAttributeChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _productAttributeChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _dealAttributeChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
         }
     }
 }

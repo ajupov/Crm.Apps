@@ -1,30 +1,30 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Products.Controllers
+namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [Route("Api/Products/Statuses/Changes")]
-    public class ProductStatusesChangesController : ControllerBase
+    [Route("Api/Deals/Statuses/Changes")]
+    public class DealStatusesChangesController : ControllerBase
     {
-        private readonly IProductStatusChangesService _userStatusChangesService;
+        private readonly IDealStatusChangesService _userStatusChangesService;
 
-        public ProductStatusesChangesController(IProductStatusChangesService userStatusChangesService)
+        public DealStatusesChangesController(IDealStatusChangesService userStatusChangesService)
         {
             _userStatusChangesService = userStatusChangesService;
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult<List<ProductStatusChange>>> GetPagedList(
-            ProductStatusChangeGetPagedListParameter parameter, CancellationToken ct = default)
+        public async Task<ActionResult<List<DealStatusChange>>> GetPagedList(
+            DealStatusChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
             return await _userStatusChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
         }

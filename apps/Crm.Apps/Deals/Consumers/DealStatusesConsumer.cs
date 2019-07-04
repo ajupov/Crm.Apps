@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Products.Consumers
+namespace Crm.Apps.Deals.Consumers
 {
-    public class ProductStatusesConsumer : IHostedService
+    public class DealStatusesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IProductStatusesService _productStatusesService;
+        private readonly IDealStatusesService _dealStatusesService;
 
-        public ProductStatusesConsumer(IConsumer consumer, IProductStatusesService productStatusesService)
+        public DealStatusesConsumer(IConsumer consumer, IDealStatusesService dealStatusesService)
         {
             _consumer = consumer;
-            _productStatusesService = productStatusesService;
+            _dealStatusesService = dealStatusesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("ProductStatuses", ActionAsync);
+            _consumer.Consume("DealStatuses", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -57,26 +57,26 @@ namespace Crm.Apps.Products.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var status = message.Data.FromJsonString<ProductStatus>();
+            var status = message.Data.FromJsonString<DealStatus>();
 
-            return _productStatusesService.CreateAsync(message.UserId, status, ct);
+            return _dealStatusesService.CreateAsync(message.UserId, status, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newStatus = message.Data.FromJsonString<ProductStatus>();
+            var newStatus = message.Data.FromJsonString<DealStatus>();
             if (newStatus.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldStatus = await _productStatusesService.GetAsync(newStatus.Id, ct).ConfigureAwait(false);
+            var oldStatus = await _dealStatusesService.GetAsync(newStatus.Id, ct).ConfigureAwait(false);
             if (oldStatus == null)
             {
                 return;
             }
 
-            await _productStatusesService.UpdateAsync(message.UserId, oldStatus, newStatus, ct).ConfigureAwait(false);
+            await _dealStatusesService.UpdateAsync(message.UserId, oldStatus, newStatus, ct).ConfigureAwait(false);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -87,7 +87,7 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productStatusesService.DeleteAsync(message.UserId, ids, ct);
+            return _dealStatusesService.DeleteAsync(message.UserId, ids, ct);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -98,7 +98,7 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productStatusesService.RestoreAsync(message.UserId, ids, ct);
+            return _dealStatusesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

@@ -1,38 +1,45 @@
 ﻿using System.Linq;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Deals.Models;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Deals.Helpers
 {
-    public static class ProductsSortingHelper
+    public static class DealsSortingHelper
     {
-        public static IOrderedQueryable<Product> Sort(this IQueryable<Product> queryable, string sortBy,
-            string orderBy)
+        public static IOrderedQueryable<Deal> Sort(this IQueryable<Deal> queryable, string sortBy, string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(Product.Id):
+                case nameof(Deal.Id):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Id)
                         : queryable.OrderBy(x => x.Id);
-                case nameof(Product.Type):
-                    return isDesc
-                        ? queryable.OrderByDescending(x => x.Type)
-                        : queryable.OrderBy(x => x.Type);
-                case nameof(Product.Name):
+                case nameof(Deal.Name):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Name)
                         : queryable.OrderBy(x => x.Name);
-                case nameof(Product.VendorCode):
+                case nameof(Deal.StartDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.VendorCode)
-                        : queryable.OrderBy(x => x.VendorCode);
-                case nameof(Product.Price):
+                        ? queryable.OrderByDescending(x => x.StartDateTime)
+                        : queryable.OrderBy(x => x.StartDateTime);
+                case nameof(Deal.EndDateTime):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.Price)
-                        : queryable.OrderBy(x => x.Price);
-                case nameof(Product.CreateDateTime):
+                        ? queryable.OrderByDescending(x => x.EndDateTime)
+                        : queryable.OrderBy(x => x.EndDateTime);
+                case nameof(Deal.Sum):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.Sum)
+                        : queryable.OrderBy(x => x.Sum);
+                case nameof(Deal.SumWithDiscount):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.SumWithDiscount)
+                        : queryable.OrderBy(x => x.SumWithDiscount);
+                case nameof(Deal.FinishProbability):
+                    return isDesc
+                        ? queryable.OrderByDescending(x => x.FinishProbability)
+                        : queryable.OrderBy(x => x.FinishProbability);
+                case nameof(Deal.CreateDateTime):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.CreateDateTime)
                         : queryable.OrderBy(x => x.CreateDateTime);

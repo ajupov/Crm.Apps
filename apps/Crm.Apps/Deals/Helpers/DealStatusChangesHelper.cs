@@ -1,17 +1,16 @@
 ﻿using System;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Deals.Models;
 using Crm.Utils.Json;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Deals.Helpers
 {
-    public static class ProductStatusChangesHelper
+    public static class DealStatusChangesHelper
     {
-        public static ProductStatusChange WithCreateLog(this ProductStatus status, Guid userId,
-            Action<ProductStatus> action)
+        public static DealStatusChange WithCreateLog(this DealStatus status, Guid userId, Action<DealStatus> action)
         {
             action(status);
 
-            return new ProductStatusChange
+            return new DealStatusChange
             {
                 StatusId = status.Id,
                 ChangerUserId = userId,
@@ -21,14 +20,13 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductStatusChange WithUpdateLog(this ProductStatus status, Guid userId,
-            Action<ProductStatus> action)
+        public static DealStatusChange WithUpdateLog(this DealStatus status, Guid userId, Action<DealStatus> action)
         {
             var oldValueJson = status.ToJsonString();
 
             action(status);
 
-            return new ProductStatusChange
+            return new DealStatusChange
             {
                 StatusId = status.Id,
                 ChangerUserId = userId,

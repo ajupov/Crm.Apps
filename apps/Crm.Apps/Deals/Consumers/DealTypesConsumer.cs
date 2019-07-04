@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
 using Microsoft.Extensions.Hosting;
 
-namespace Crm.Apps.Products.Consumers
+namespace Crm.Apps.Deals.Consumers
 {
-    public class ProductCategoriesConsumer : IHostedService
+    public class DealTypesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IProductCategoriesService _productCategoriesService;
+        private readonly IDealTypesService _dealTypesService;
 
-        public ProductCategoriesConsumer(IConsumer consumer, IProductCategoriesService productCategoriesService)
+        public DealTypesConsumer(IConsumer consumer, IDealTypesService dealTypesService)
         {
             _consumer = consumer;
-            _productCategoriesService = productCategoriesService;
+            _dealTypesService = dealTypesService;
         }
 
         public Task StartAsync(CancellationToken ct)
         {
-            _consumer.Consume("ProductCategories", ActionAsync);
+            _consumer.Consume("DealTypes", ActionAsync);
 
             return Task.CompletedTask;
         }
@@ -57,27 +57,26 @@ namespace Crm.Apps.Products.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var productCategory = message.Data.FromJsonString<ProductCategory>();
+            var type = message.Data.FromJsonString<DealType>();
 
-            return _productCategoriesService.CreateAsync(message.UserId, productCategory, ct);
+            return _dealTypesService.CreateAsync(message.UserId, type, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newCategory = message.Data.FromJsonString<ProductCategory>();
-            if (newCategory.Id.IsEmpty())
+            var newType = message.Data.FromJsonString<DealType>();
+            if (newType.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldCategory = await _productCategoriesService.GetAsync(newCategory.Id, ct).ConfigureAwait(false);
-            if (oldCategory == null)
+            var oldType = await _dealTypesService.GetAsync(newType.Id, ct).ConfigureAwait(false);
+            if (oldType == null)
             {
                 return;
             }
 
-            await _productCategoriesService.UpdateAsync(message.UserId, oldCategory, newCategory, ct)
-                .ConfigureAwait(false);
+            await _dealTypesService.UpdateAsync(message.UserId, oldType, newType, ct).ConfigureAwait(false);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
@@ -88,7 +87,7 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productCategoriesService.DeleteAsync(message.UserId, ids, ct);
+            return _dealTypesService.DeleteAsync(message.UserId, ids, ct);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
@@ -99,7 +98,7 @@ namespace Crm.Apps.Products.Consumers
                 return Task.CompletedTask;
             }
 
-            return _productCategoriesService.RestoreAsync(message.UserId, ids, ct);
+            return _dealTypesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

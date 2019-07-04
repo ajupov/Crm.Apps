@@ -25,9 +25,9 @@ namespace Crm.Apps.Deals.Parameters
 
         public decimal? MaxSumWithDiscount { get; set; }
 
-        public decimal? MinFinishProbability { get; set; }
+        public byte? MinFinishProbability { get; set; }
 
-        public decimal? MaxFinishProbability { get; set; }
+        public byte? MaxFinishProbability { get; set; }
 
         public bool? IsDeleted { get; set; }
 

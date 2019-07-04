@@ -1,38 +1,38 @@
 ﻿using System;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Deals.Models;
 using Crm.Utils.Json;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Deals.Helpers
 {
-    public static class ProductsChangesHelper
+    public static class DealsChangesHelper
     {
-        public static ProductChange CreateWithLog(this Product product, Guid productId, Action<Product> action)
+        public static DealChange CreateWithLog(this Deal deal, Guid dealId, Action<Deal> action)
         {
-            action(product);
+            action(deal);
 
-            return new ProductChange
+            return new DealChange
             {
-                ProductId = product.Id,
-                ChangerUserId = productId,
+                DealId = deal.Id,
+                ChangerUserId = dealId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
-                NewValueJson = product.ToJsonString()
+                NewValueJson = deal.ToJsonString()
             };
         }
 
-        public static ProductChange UpdateWithLog(this Product product, Guid productId, Action<Product> action)
+        public static DealChange UpdateWithLog(this Deal deal, Guid dealId, Action<Deal> action)
         {
-            var oldValueJson = product.ToJsonString();
+            var oldValueJson = deal.ToJsonString();
 
-            action(product);
+            action(deal);
 
-            return new ProductChange
+            return new DealChange
             {
-                ProductId = product.Id,
-                ChangerUserId = productId,
+                DealId = deal.Id,
+                ChangerUserId = dealId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,
-                NewValueJson = product.ToJsonString()
+                NewValueJson = deal.ToJsonString()
             };
         }
     }

@@ -1,26 +1,22 @@
 ﻿using System.Linq;
-using Crm.Apps.Products.Models;
+using Crm.Apps.Deals.Models;
 
-namespace Crm.Apps.Products.Helpers
+namespace Crm.Apps.Deals.Helpers
 {
-    public static class ProductCategoriesSortingHelper
+    public static class DealCommentsSortingHelper
     {
-        public static IOrderedQueryable<ProductCategory> Sort(this IQueryable<ProductCategory> queryable, string sortBy,
+        public static IOrderedQueryable<DealComment> Sort(this IQueryable<DealComment> queryable, string sortBy,
             string orderBy)
         {
             var isDesc = orderBy == "desc";
 
             switch (sortBy)
             {
-                case nameof(ProductCategory.Id):
+                case nameof(DealComment.Id):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Id)
                         : queryable.OrderBy(x => x.Id);
-                case nameof(ProductCategory.Name):
-                    return isDesc
-                        ? queryable.OrderByDescending(x => x.Name)
-                        : queryable.OrderBy(x => x.Name);
-                case nameof(ProductCategory.CreateDateTime):
+                case nameof(DealComment.CreateDateTime):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.CreateDateTime)
                         : queryable.OrderBy(x => x.CreateDateTime);

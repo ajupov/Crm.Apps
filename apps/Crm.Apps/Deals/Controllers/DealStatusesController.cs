@@ -3,40 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Products.Controllers
+namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [Route("Api/Products/Statuses")]
-    public class ProductStatusesController : ControllerBase
+    [Route("Api/Deals/Statuses")]
+    public class DealStatusesController : ControllerBase
     {
         private readonly IUserContext _userContext;
-        private readonly IProductStatusesService _productStatusesService;
+        private readonly IDealStatusesService _dealStatusesService;
 
-        public ProductStatusesController(IUserContext userContext, IProductStatusesService productStatusesService)
+        public DealStatusesController(IUserContext userContext, IDealStatusesService dealStatusesService)
         {
             _userContext = userContext;
-            _productStatusesService = productStatusesService;
+            _dealStatusesService = dealStatusesService;
         }
 
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<ProductStatus>> Get(Guid id, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<DealStatus>> Get(Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var status = await _productStatusesService.GetAsync(id, ct).ConfigureAwait(false);
+            var status = await _dealStatusesService.GetAsync(id, ct).ConfigureAwait(false);
             if (status == null)
             {
                 return NotFound();
@@ -47,35 +47,35 @@ namespace Crm.Apps.Products.Controllers
 
         [HttpPost("GetList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<List<ProductStatus>>> GetList(List<Guid> ids, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<DealStatus>>> GetList(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
 
-            var statuss = await _productStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var statuss = await _dealStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return ReturnIfAllowed(statuss, statuss.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<List<ProductStatus>>> GetPagedList(
-            ProductStatusGetPagedListParameter parameter,
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<DealStatus>>> GetPagedList(
+            DealStatusGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var statuss = await _productStatusesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var statuss = await _dealStatusesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
             return ReturnIfAllowed(statuss, statuss.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.ProductsManagement)]
-        public async Task<ActionResult<Guid>> Create(ProductStatus status, CancellationToken ct = default)
+            Permission.SalesManagement)]
+        public async Task<ActionResult<Guid>> Create(DealStatus status, CancellationToken ct = default)
         {
             if (status == null)
             {
@@ -88,34 +88,34 @@ namespace Crm.Apps.Products.Controllers
                 status.AccountId = _userContext.AccountId;
             }
 
-            var id = await _productStatusesService.CreateAsync(_userContext.UserId, status, ct).ConfigureAwait(false);
+            var id = await _dealStatusesService.CreateAsync(_userContext.UserId, status, ct).ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.ProductsManagement)]
-        public async Task<ActionResult> Update(ProductStatus status, CancellationToken ct = default)
+            Permission.SalesManagement)]
+        public async Task<ActionResult> Update(DealStatus status, CancellationToken ct = default)
         {
             if (status.Id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var oldStatus = await _productStatusesService.GetAsync(status.Id, ct).ConfigureAwait(false);
+            var oldStatus = await _dealStatusesService.GetAsync(status.Id, ct).ConfigureAwait(false);
             if (oldStatus == null)
             {
                 return NotFound();
             }
 
-            return await ActionIfAllowed(() => _productStatusesService.UpdateAsync(_userContext.UserId, oldStatus,
+            return await ActionIfAllowed(() => _dealStatusesService.UpdateAsync(_userContext.UserId, oldStatus,
                 status, ct), new[] {status.AccountId, oldStatus.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
+            Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -123,16 +123,16 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _productStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _dealStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _productStatusesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                () => _dealStatusesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
                 attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
+            Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -140,10 +140,10 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _productStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _dealStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _productStatusesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                () => _dealStatusesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
                 attributes.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
@@ -158,13 +158,13 @@ namespace Crm.Apps.Products.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 return result;
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();
@@ -186,7 +186,7 @@ namespace Crm.Apps.Products.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 await action().ConfigureAwait(false);
@@ -194,7 +194,7 @@ namespace Crm.Apps.Products.Controllers
                 return NoContent();
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();

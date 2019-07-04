@@ -22,6 +22,8 @@ namespace Crm.Apps.Deals.Storages
 
         public DbSet<DealType> DealTypes { get; set; }
 
+        public DbSet<DealTypeChange> DealTypeChanges { get; set; }
+
         public DbSet<DealStatus> DealStatuses { get; set; }
 
         public DbSet<DealStatusChange> DealStatusChanges { get; set; }

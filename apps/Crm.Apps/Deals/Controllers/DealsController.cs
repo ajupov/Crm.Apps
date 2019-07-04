@@ -3,89 +3,89 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Services;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Products.Controllers
+namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [Route("Api/Products")]
-    public class ProductsController : ControllerBase
+    [Route("Api/Deals")]
+    public class DealsController : ControllerBase
     {
         private readonly IUserContext _userContext;
-        private readonly IProductsService _productsService;
+        private readonly IDealsService _dealsService;
 
-        public ProductsController(IUserContext userContext, IProductsService productsService)
+        public DealsController(IUserContext userContext, IDealsService dealsService)
         {
             _userContext = userContext;
-            _productsService = productsService;
+            _dealsService = dealsService;
         }
 
         [HttpGet("GetTypes")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public ActionResult<List<ProductType>> GetTypes()
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public ActionResult<List<DealType>> GetTypes()
         {
-            return EnumsExtensions.GetValues<ProductType>().ToList();
+            return EnumsExtensions.GetValues<DealType>().ToList();
         }
 
         [HttpGet("Get")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<Product>> Get(Guid id, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<Deal>> Get(Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var product = await _productsService.GetAsync(id, ct).ConfigureAwait(false);
-            if (product == null)
+            var deal = await _dealsService.GetAsync(id, ct).ConfigureAwait(false);
+            if (deal == null)
             {
                 return NotFound();
             }
 
-            return ReturnIfAllowed(product, new[] {product.AccountId});
+            return ReturnIfAllowed(deal, new[] {deal.AccountId});
         }
 
         [HttpPost("GetList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<List<Product>>> GetList(List<Guid> ids, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<Deal>>> GetList(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
             {
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetListAsync(ids, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(products, products.Select(x => x.AccountId));
+            return ReturnIfAllowed(deals, deals.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult<List<Product>>> GetPagedList(ProductGetPagedListParameter parameter,
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<Deal>>> GetPagedList(DealGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var products = await _productsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
 
-            return ReturnIfAllowed(products, products.Select(x => x.AccountId));
+            return ReturnIfAllowed(deals, deals.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.ProductsManagement)]
-        public async Task<ActionResult<Guid>> Create(Product product, CancellationToken ct = default)
+            Permission.SalesManagement)]
+        public async Task<ActionResult<Guid>> Create(Deal deal, CancellationToken ct = default)
         {
-            if (product == null)
+            if (deal == null)
             {
                 return BadRequest();
             }
@@ -93,72 +93,38 @@ namespace Crm.Apps.Products.Controllers
             if (!_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                product.AccountId = _userContext.AccountId;
+                deal.AccountId = _userContext.AccountId;
             }
 
-            var id = await _productsService.CreateAsync(_userContext.UserId, product, ct).ConfigureAwait(false);
+            var id = await _dealsService.CreateAsync(_userContext.UserId, deal, ct).ConfigureAwait(false);
 
             return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult> Update(Product product, CancellationToken ct = default)
+            Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult> Update(Deal deal, CancellationToken ct = default)
         {
-            if (product.Id.IsEmpty())
+            if (deal.Id.IsEmpty())
             {
                 return BadRequest();
             }
 
-            var oldProduct = await _productsService.GetAsync(product.Id, ct).ConfigureAwait(false);
-            if (oldProduct == null)
+            var oldDeal = await _dealsService.GetAsync(deal.Id, ct).ConfigureAwait(false);
+            if (oldDeal == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(
-                () => _productsService.UpdateAsync(_userContext.UserId, oldProduct, product, ct),
-                new[] {product.AccountId, oldProduct.AccountId}).ConfigureAwait(false);
-        }
-
-        [HttpPost("Hide")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult> Hide(List<Guid> ids, CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
-
-            return await ActionIfAllowed(
-                () => _productsService.HideAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
-        }
-
-        [HttpPost("Show")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
-        public async Task<ActionResult> Show(List<Guid> ids, CancellationToken ct = default)
-        {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
-
-            return await ActionIfAllowed(
-                () => _productsService.ShowAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                () => _dealsService.UpdateAsync(_userContext.UserId, oldDeal, deal, ct),
+                new[] {deal.AccountId, oldDeal.AccountId}).ConfigureAwait(false);
         }
 
         [HttpPost("Delete")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
+            Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -166,16 +132,16 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _productsService.DeleteAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                () => _dealsService.DeleteAsync(_userContext.UserId, deals.Select(x => x.Id), ct),
+                deals.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [HttpPost("Restore")]
         [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.ProductsManagement)]
+            Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -183,11 +149,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetListAsync(ids, ct).ConfigureAwait(false);
 
             return await ActionIfAllowed(
-                () => _productsService.RestoreAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                () => _dealsService.RestoreAsync(_userContext.UserId, deals.Select(x => x.Id), ct),
+                deals.Select(x => x.AccountId)).ConfigureAwait(false);
         }
 
         [NonAction]
@@ -201,13 +167,13 @@ namespace Crm.Apps.Products.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 return result;
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();
@@ -229,7 +195,7 @@ namespace Crm.Apps.Products.Controllers
 
             var accountIdsAsArray = accountIds.ToArray();
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
                 await action().ConfigureAwait(false);
@@ -237,7 +203,7 @@ namespace Crm.Apps.Products.Controllers
                 return NoContent();
             }
 
-            if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
+            if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 !_userContext.Belongs(accountIdsAsArray))
             {
                 return Forbid();

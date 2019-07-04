@@ -2,28 +2,28 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Deals.Helpers;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Storages;
 using Crm.Utils.Guid;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Deals.Services
 {
-    public class ProductAttributeChangesService : IProductAttributeChangesService
+    public class DealAttributeChangesService : IDealAttributeChangesService
     {
-        private readonly ProductsStorage _storage;
+        private readonly DealsStorage _storage;
 
-        public ProductAttributeChangesService(ProductsStorage storage)
+        public DealAttributeChangesService(DealsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<List<ProductAttributeChange>> GetPagedListAsync(
-            ProductAttributeChangeGetPagedListParameter parameter, CancellationToken ct)
+        public Task<List<DealAttributeChange>> GetPagedListAsync(
+            DealAttributeChangeGetPagedListParameter parameter, CancellationToken ct)
         {
-            return _storage.ProductAttributeChanges.Where(x =>
+            return _storage.DealAttributeChanges.Where(x =>
                     (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
                     (parameter.AttributeId.IsEmpty() || x.AttributeId == parameter.AttributeId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&

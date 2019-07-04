@@ -8,7 +8,7 @@ namespace Crm.Apps.Deals.Models
 
         public Guid ChangerUserId { get; set; }
 
-        public Guid StatusId { get; set; }
+        public Guid TypeId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

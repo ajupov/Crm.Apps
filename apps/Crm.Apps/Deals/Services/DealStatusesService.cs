@@ -3,39 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Products.Helpers;
-using Crm.Apps.Products.Models;
-using Crm.Apps.Products.Parameters;
-using Crm.Apps.Products.Storages;
+using Crm.Apps.Deals.Helpers;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.Parameters;
+using Crm.Apps.Deals.Storages;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Apps.Products.Services
+namespace Crm.Apps.Deals.Services
 {
-    public class ProductStatusesService : IProductStatusesService
+    public class DealStatusesService : IDealStatusesService
     {
-        private readonly ProductsStorage _storage;
+        private readonly DealsStorage _storage;
 
-        public ProductStatusesService(ProductsStorage storage)
+        public DealStatusesService(DealsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<ProductStatus> GetAsync(Guid id, CancellationToken ct)
+        public Task<DealStatus> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.ProductStatuses.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.DealStatuses.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<ProductStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<DealStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.ProductStatuses.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.DealStatuses.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<ProductStatus>> GetPagedListAsync(ProductStatusGetPagedListParameter parameter,
-            CancellationToken ct)
+        public Task<List<DealStatus>> GetPagedListAsync(DealStatusGetPagedListParameter parameter, CancellationToken ct)
         {
-            return _storage.ProductStatuses.Where(x =>
+            return _storage.DealStatuses.Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
@@ -47,9 +46,9 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ProductStatus status, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, DealStatus status, CancellationToken ct)
         {
-            var newStatus = new ProductStatus();
+            var newStatus = new DealStatus();
             var change = newStatus.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
@@ -66,7 +65,7 @@ namespace Crm.Apps.Products.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, ProductStatus oldStatus, ProductStatus newStatus,
+        public async Task UpdateAsync(Guid userId, DealStatus oldStatus, DealStatus newStatus,
             CancellationToken ct)
         {
             var change = oldStatus.WithUpdateLog(userId, x =>
@@ -82,9 +81,9 @@ namespace Crm.Apps.Products.Services
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductStatusChange>();
+            var changes = new List<DealStatusChange>();
 
-            await _storage.ProductStatuses.Where(x => ids.Contains(x.Id))
+            await _storage.DealStatuses.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
                 .ConfigureAwait(false);
 
@@ -94,9 +93,9 @@ namespace Crm.Apps.Products.Services
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var changes = new List<ProductStatusChange>();
+            var changes = new List<DealStatusChange>();
 
-            await _storage.ProductStatuses.Where(x => ids.Contains(x.Id))
+            await _storage.DealStatuses.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
                 .ConfigureAwait(false);
 
