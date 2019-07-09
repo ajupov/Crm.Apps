@@ -9,8 +9,8 @@ namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductBuilder : IProductBuilder
     {
-        private readonly Product _product;
         private readonly IProductsClient _productsClient;
+        private readonly Product _product;
 
         public ProductBuilder(IProductsClient productsClient)
         {

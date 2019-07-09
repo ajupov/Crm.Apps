@@ -9,8 +9,8 @@ namespace Crm.Apps.Tests.Builders.Identities
 {
     public class IdentityBuilder : IIdentityBuilder
     {
-        private readonly Identity _identity;
         private readonly IIdentitiesClient _identitiesClient;
+        private readonly Identity _identity;
         private string _password;
 
         public IdentityBuilder(IIdentitiesClient identitiesClient)

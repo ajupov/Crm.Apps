@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Products.Clients;
+using Crm.Clients.Products.Models;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductCategoryBuilder : IProductCategoryBuilder
     {
-        private readonly Clients.Products.Models.ProductCategory _productCategory;
         private readonly IProductCategoriesClient _productCategoriesClient;
+        private readonly ProductCategory _productCategory;
 
         public ProductCategoryBuilder(IProductCategoriesClient productCategoriesClient)
         {
             _productCategoriesClient = productCategoriesClient;
-            _productCategory = new Clients.Products.Models.ProductCategory
+            _productCategory = new ProductCategory
             {
                 AccountId = Guid.Empty,
                 Name = "Test"
@@ -34,7 +35,7 @@ namespace Crm.Apps.Tests.Builders.Products
             return this;
         }
 
-        public async Task<Clients.Products.Models.ProductCategory> BuildAsync()
+        public async Task<ProductCategory> BuildAsync()
         {
             if (_productCategory.AccountId.IsEmpty())
             {

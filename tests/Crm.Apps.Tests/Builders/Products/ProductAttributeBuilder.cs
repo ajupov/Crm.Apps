@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Products.Clients;
+using Crm.Clients.Products.Models;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
 
@@ -8,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductAttributeBuilder : IProductAttributeBuilder
     {
-        private readonly Clients.Products.Models.ProductAttribute _productAttribute;
         private readonly IProductAttributesClient _productAttributesClient;
+        private readonly ProductAttribute _productAttribute;
 
         public ProductAttributeBuilder(IProductAttributesClient productAttributesClient)
         {
             _productAttributesClient = productAttributesClient;
-            _productAttribute = new Clients.Products.Models.ProductAttribute
+            _productAttribute = new ProductAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
@@ -43,7 +44,7 @@ namespace Crm.Apps.Tests.Builders.Products
             return this;
         }
 
-        public async Task<Clients.Products.Models.ProductAttribute> BuildAsync()
+        public async Task<ProductAttribute> BuildAsync()
         {
             if (_productAttribute.AccountId.IsEmpty())
             {

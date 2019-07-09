@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Leads.Clients;
+using Crm.Clients.Leads.Models;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
 
@@ -8,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadAttributeBuilder : ILeadAttributeBuilder
     {
-        private readonly Clients.Leads.Models.LeadAttribute _leadAttribute;
         private readonly ILeadAttributesClient _leadAttributesClient;
+        private readonly LeadAttribute _leadAttribute;
 
         public LeadAttributeBuilder(ILeadAttributesClient leadAttributesClient)
         {
             _leadAttributesClient = leadAttributesClient;
-            _leadAttribute = new Clients.Leads.Models.LeadAttribute
+            _leadAttribute = new LeadAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
@@ -43,7 +44,7 @@ namespace Crm.Apps.Tests.Builders.Leads
             return this;
         }
 
-        public async Task<Clients.Leads.Models.LeadAttribute> BuildAsync()
+        public async Task<LeadAttribute> BuildAsync()
         {
             if (_leadAttribute.AccountId.IsEmpty())
             {

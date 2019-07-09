@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Contacts.Clients;
+using Crm.Clients.Contacts.Models;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
 
@@ -8,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Contacts
 {
     public class ContactAttributeBuilder : IContactAttributeBuilder
     {
-        private readonly Clients.Contacts.Models.ContactAttribute _contactAttribute;
         private readonly IContactAttributesClient _contactAttributesClient;
+        private readonly ContactAttribute _contactAttribute;
 
         public ContactAttributeBuilder(IContactAttributesClient contactAttributesClient)
         {
             _contactAttributesClient = contactAttributesClient;
-            _contactAttribute = new Clients.Contacts.Models.ContactAttribute
+            _contactAttribute = new ContactAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
@@ -43,7 +44,7 @@ namespace Crm.Apps.Tests.Builders.Contacts
             return this;
         }
 
-        public async Task<Clients.Contacts.Models.ContactAttribute> BuildAsync()
+        public async Task<ContactAttribute> BuildAsync()
         {
             if (_contactAttribute.AccountId.IsEmpty())
             {

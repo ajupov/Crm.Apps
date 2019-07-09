@@ -9,8 +9,8 @@ namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyBuilder : ICompanyBuilder
     {
-        private readonly Company _company;
         private readonly ICompaniesClient _companiesClient;
+        private readonly Company _company;
 
         public CompanyBuilder(ICompaniesClient companiesClient)
         {

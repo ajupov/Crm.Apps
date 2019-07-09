@@ -9,8 +9,8 @@ namespace Crm.Apps.Tests.Builders.Contacts
 {
     public class ContactBuilder : IContactBuilder
     {
-        private readonly Contact _contact;
         private readonly IContactsClient _contactsClient;
+        private readonly Contact _contact;
 
         public ContactBuilder(IContactsClient contactsClient)
         {

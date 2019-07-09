@@ -1,6 +1,7 @@
 using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
+using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Identities;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
@@ -49,5 +50,15 @@ namespace Crm.Apps.Tests.Creator
         IContactAttributeBuilder ContactAttribute { get; }
 
         IContactCommentBuilder ContactComment { get; }
+
+        IDealBuilder Deal { get; }
+
+        IDealStatusBuilder DealStatus { get; }
+
+        IDealTypeBuilder DealType { get; }
+        
+        IDealAttributeBuilder DealAttribute { get; }
+
+        IDealCommentBuilder DealComment { get; }
     }
 }

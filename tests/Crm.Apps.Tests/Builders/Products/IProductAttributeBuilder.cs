@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Products.Models;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Tests.Builders.Products
@@ -12,6 +13,6 @@ namespace Crm.Apps.Tests.Builders.Products
         
         ProductAttributeBuilder WithKey(string key);
 
-        Task<Clients.Products.Models.ProductAttribute> BuildAsync();
+        Task<ProductAttribute> BuildAsync();
     }
 }

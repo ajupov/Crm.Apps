@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Identities.Models;
 
 namespace Crm.Apps.Tests.Builders.Identities
 {
@@ -11,6 +12,6 @@ namespace Crm.Apps.Tests.Builders.Identities
 
         IdentityTokenBuilder WithExpirationDateTime(DateTime expirationDateTime);
 
-        Task<Clients.Identities.Models.IdentityToken> BuildAsync();
+        Task<IdentityToken> BuildAsync();
     }
 }

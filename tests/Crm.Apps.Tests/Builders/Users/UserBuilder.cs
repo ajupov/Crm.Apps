@@ -10,8 +10,8 @@ namespace Crm.Apps.Tests.Builders.Users
 {
     public class UserBuilder : IUserBuilder
     {
-        private readonly User _user;
         private readonly IUsersClient _usersClient;
+        private readonly User _user;
 
         public UserBuilder(IUsersClient usersClient)
         {

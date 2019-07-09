@@ -1,6 +1,7 @@
 using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
+using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Identities;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
@@ -9,6 +10,7 @@ using Crm.Apps.Tests.Creator;
 using Crm.Clients.Accounts;
 using Crm.Clients.Companies;
 using Crm.Clients.Contacts;
+using Crm.Clients.Deals;
 using Crm.Clients.Identities;
 using Crm.Clients.Leads;
 using Crm.Clients.Products;
@@ -36,6 +38,7 @@ namespace Crm.Apps.Tests
                 .ConfigureLeadsClient(configuration)
                 .ConfigureCompaniesClient(configuration)
                 .ConfigureContactsClient(configuration)
+                .ConfigureDealsClient(configuration)
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IAccountBuilder, AccountBuilder>()
                 .AddTransient<IUserBuilder, UserBuilder>()
@@ -56,7 +59,12 @@ namespace Crm.Apps.Tests
                 .AddTransient<ICompanyCommentBuilder, CompanyCommentBuilder>()
                 .AddTransient<IContactBuilder, ContactBuilder>()
                 .AddTransient<IContactAttributeBuilder, ContactAttributeBuilder>()
-                .AddTransient<IContactCommentBuilder, ContactCommentBuilder>();
+                .AddTransient<IContactCommentBuilder, ContactCommentBuilder>()
+                .AddTransient<IDealBuilder, DealBuilder>()
+                .AddTransient<IDealAttributeBuilder, DealAttributeBuilder>()
+                .AddTransient<IDealCommentBuilder, DealCommentBuilder>()
+                .AddTransient<IDealStatusBuilder, DealStatusBuilder>()
+                .AddTransient<IDealTypeBuilder, DealTypeBuilder>();
         }
     }
 }

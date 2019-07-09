@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Contacts.Clients;
+using Crm.Clients.Contacts.Models;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Contacts
 {
     public class ContactCommentBuilder : IContactCommentBuilder
     {
-        private readonly Clients.Contacts.Models.ContactComment _contactComment;
         private readonly IContactCommentsClient _contactCommentsClient;
+        private readonly ContactComment _contactComment;
 
         public ContactCommentBuilder(IContactCommentsClient contactCommentsClient)
         {
             _contactCommentsClient = contactCommentsClient;
-            _contactComment = new Clients.Contacts.Models.ContactComment
+            _contactComment = new ContactComment
             {
                 ContactId = Guid.Empty,
                 CommentatorUserId = Guid.Empty,

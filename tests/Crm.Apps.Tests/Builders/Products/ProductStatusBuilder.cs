@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Products.Clients;
+using Crm.Clients.Products.Models;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductStatusBuilder : IProductStatusBuilder
     {
-        private readonly Clients.Products.Models.ProductStatus _productStatus;
         private readonly IProductStatusesClient _productStatusesClient;
+        private readonly ProductStatus _productStatus;
 
         public ProductStatusBuilder(IProductStatusesClient productStatusesClient)
         {
             _productStatusesClient = productStatusesClient;
-            _productStatus = new Clients.Products.Models.ProductStatus
+            _productStatus = new ProductStatus
             {
                 AccountId = Guid.Empty,
                 Name = "Test"
@@ -34,7 +35,7 @@ namespace Crm.Apps.Tests.Builders.Products
             return this;
         }
 
-        public async Task<Clients.Products.Models.ProductStatus> BuildAsync()
+        public async Task<ProductStatus> BuildAsync()
         {
             if (_productStatus.AccountId.IsEmpty())
             {

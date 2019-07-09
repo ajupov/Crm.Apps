@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Leads.Models;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Tests.Builders.Leads
@@ -12,6 +13,6 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         LeadAttributeBuilder WithKey(string key);
 
-        Task<Clients.Leads.Models.LeadAttribute> BuildAsync();
+        Task<LeadAttribute> BuildAsync();
     }
 }

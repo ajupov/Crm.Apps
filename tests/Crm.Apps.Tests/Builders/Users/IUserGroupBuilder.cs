@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Users.Models;
 using Crm.Common.UserContext;
 
 namespace Crm.Apps.Tests.Builders.Users
@@ -12,6 +13,6 @@ namespace Crm.Apps.Tests.Builders.Users
 
         UserGroupBuilder WithPermission(Permission permission);
 
-        Task<Clients.Users.Models.UserGroup> BuildAsync();
+        Task<UserGroup> BuildAsync();
     }
 }

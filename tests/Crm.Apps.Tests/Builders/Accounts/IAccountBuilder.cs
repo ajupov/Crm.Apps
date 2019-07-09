@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Crm.Clients.Accounts.Models;
 
 namespace Crm.Apps.Tests.Builders.Accounts
 {
@@ -10,6 +11,6 @@ namespace Crm.Apps.Tests.Builders.Accounts
         
         AccountBuilder WithSetting(string value);
 
-        Task<Clients.Accounts.Models.Account> BuildAsync();
+        Task<Account> BuildAsync();
     }
 }

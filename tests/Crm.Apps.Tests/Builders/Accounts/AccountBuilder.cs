@@ -7,8 +7,8 @@ namespace Crm.Apps.Tests.Builders.Accounts
 {
     public class AccountBuilder : IAccountBuilder
     {
-        private readonly Account _account;
         private readonly IAccountsClient _accountsClient;
+        private readonly Account _account;
 
         public AccountBuilder(IAccountsClient accountsClient)
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Identities.Clients;
+using Crm.Clients.Identities.Models;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
 
@@ -8,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Identities
 {
     public class IdentityTokenBuilder : IIdentityTokenBuilder
     {
-        private readonly Clients.Identities.Models.IdentityToken _token;
         private readonly IIdentityTokensClient _identityTokensClient;
+        private readonly IdentityToken _token;
 
         public IdentityTokenBuilder(IIdentityTokensClient identityTokensClient)
         {
             _identityTokensClient = identityTokensClient;
-            _token = new Clients.Identities.Models.IdentityToken
+            _token = new IdentityToken
             {
                 Value = "Test",
                 ExpirationDateTime = DateTime.Now.AddDays(1)
@@ -42,7 +43,7 @@ namespace Crm.Apps.Tests.Builders.Identities
             return this;
         }
 
-        public async Task<Clients.Identities.Models.IdentityToken> BuildAsync()
+        public async Task<IdentityToken> BuildAsync()
         {
             if (_token.IdentityId.IsEmpty())
             {

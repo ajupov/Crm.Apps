@@ -9,8 +9,8 @@ namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadBuilder : ILeadBuilder
     {
-        private readonly Lead _lead;
         private readonly ILeadsClient _leadsClient;
+        private readonly Lead _lead;
 
         public LeadBuilder(ILeadsClient leadsClient)
         {

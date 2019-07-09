@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Contacts.Models;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Tests.Builders.Contacts
@@ -12,6 +13,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
 
         ContactAttributeBuilder WithKey(string key);
 
-        Task<Clients.Contacts.Models.ContactAttribute> BuildAsync();
+        Task<ContactAttribute> BuildAsync();
     }
 }

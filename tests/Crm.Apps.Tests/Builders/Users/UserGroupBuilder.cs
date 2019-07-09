@@ -10,8 +10,8 @@ namespace Crm.Apps.Tests.Builders.Users
 {
     public class UserGroupBuilder : IUserGroupBuilder
     {
-        private readonly UserGroup _userGroup;
         private readonly IUserGroupsClient _userGroupsClient;
+        private readonly UserGroup _userGroup;
 
         public UserGroupBuilder(IUserGroupsClient userGroupsClient)
         {

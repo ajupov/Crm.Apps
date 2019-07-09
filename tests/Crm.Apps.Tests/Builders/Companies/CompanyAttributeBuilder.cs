@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Companies.Clients;
+using Crm.Clients.Companies.Models;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
 
@@ -8,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyAttributeBuilder : ICompanyAttributeBuilder
     {
-        private readonly Clients.Companies.Models.CompanyAttribute _companyAttribute;
         private readonly ICompanyAttributesClient _companyAttributesClient;
+        private readonly CompanyAttribute _companyAttribute;
 
         public CompanyAttributeBuilder(ICompanyAttributesClient companyAttributesClient)
         {
             _companyAttributesClient = companyAttributesClient;
-            _companyAttribute = new Clients.Companies.Models.CompanyAttribute
+            _companyAttribute = new CompanyAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
@@ -43,7 +44,7 @@ namespace Crm.Apps.Tests.Builders.Companies
             return this;
         }
 
-        public async Task<Clients.Companies.Models.CompanyAttribute> BuildAsync()
+        public async Task<CompanyAttribute> BuildAsync()
         {
             if (_companyAttribute.AccountId.IsEmpty())
             {

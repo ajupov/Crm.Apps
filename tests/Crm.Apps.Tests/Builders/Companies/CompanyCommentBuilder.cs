@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Companies.Clients;
+using Crm.Clients.Companies.Models;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyCommentBuilder : ICompanyCommentBuilder
     {
-        private readonly Clients.Companies.Models.CompanyComment _companyComment;
         private readonly ICompanyCommentsClient _companyCommentsClient;
+        private readonly CompanyComment _companyComment;
 
         public CompanyCommentBuilder(ICompanyCommentsClient companyCommentsClient)
         {
             _companyCommentsClient = companyCommentsClient;
-            _companyComment = new Clients.Companies.Models.CompanyComment
+            _companyComment = new CompanyComment
             {
                 CompanyId = Guid.Empty,
                 CommentatorUserId = Guid.Empty,

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Users.Clients;
+using Crm.Clients.Users.Models;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
 
@@ -8,13 +9,13 @@ namespace Crm.Apps.Tests.Builders.Users
 {
     public class UserAttributeBuilder : IUserAttributeBuilder
     {
-        private readonly Clients.Users.Models.UserAttribute _userAttribute;
         private readonly IUserAttributesClient _userAttributesClient;
+        private readonly UserAttribute _userAttribute;
 
         public UserAttributeBuilder(IUserAttributesClient userAttributesClient)
         {
             _userAttributesClient = userAttributesClient;
-            _userAttribute = new Clients.Users.Models.UserAttribute
+            _userAttribute = new UserAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
@@ -43,7 +44,7 @@ namespace Crm.Apps.Tests.Builders.Users
             return this;
         }
 
-        public async Task<Clients.Users.Models.UserAttribute> BuildAsync()
+        public async Task<UserAttribute> BuildAsync()
         {
             if (_userAttribute.AccountId.IsEmpty())
             {

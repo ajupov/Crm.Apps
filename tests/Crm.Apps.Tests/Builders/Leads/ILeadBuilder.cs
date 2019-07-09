@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
@@ -49,6 +50,6 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         LeadBuilder WithAttributeLink(Guid attributeId, string value);
 
-        Task<Clients.Leads.Models.Lead> BuildAsync();
+        Task<Lead> BuildAsync();
     }
 }

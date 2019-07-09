@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Leads.Clients;
+using Crm.Clients.Leads.Models;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadSourceBuilder : ILeadSourceBuilder
     {
-        private readonly Clients.Leads.Models.LeadSource _leadSource;
         private readonly ILeadSourcesClient _leadSourcesClient;
+        private readonly LeadSource _leadSource;
 
         public LeadSourceBuilder(ILeadSourcesClient leadSourcesClient)
         {
             _leadSourcesClient = leadSourcesClient;
-            _leadSource = new Clients.Leads.Models.LeadSource
+            _leadSource = new LeadSource
             {
                 AccountId = Guid.Empty,
                 Name = "Test"
@@ -34,7 +35,7 @@ namespace Crm.Apps.Tests.Builders.Leads
             return this;
         }
 
-        public async Task<Clients.Leads.Models.LeadSource> BuildAsync()
+        public async Task<LeadSource> BuildAsync()
         {
             if (_leadSource.AccountId.IsEmpty())
             {

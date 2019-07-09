@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Clients.Products.Models;
 
 namespace Crm.Apps.Tests.Builders.Products
 {
@@ -9,6 +10,6 @@ namespace Crm.Apps.Tests.Builders.Products
 
         ProductCategoryBuilder WithName(string name);
 
-        Task<Clients.Products.Models.ProductCategory> BuildAsync();
+        Task<ProductCategory> BuildAsync();
     }
 }

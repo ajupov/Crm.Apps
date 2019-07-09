@@ -1,19 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Crm.Clients.Leads.Clients;
+using Crm.Clients.Leads.Models;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadCommentBuilder : ILeadCommentBuilder
     {
-        private readonly Clients.Leads.Models.LeadComment _leadComment;
         private readonly ILeadCommentsClient _leadCommentsClient;
+        private readonly LeadComment _leadComment;
 
         public LeadCommentBuilder(ILeadCommentsClient leadCommentsClient)
         {
             _leadCommentsClient = leadCommentsClient;
-            _leadComment = new Clients.Leads.Models.LeadComment
+            _leadComment = new LeadComment
             {
                 LeadId = Guid.Empty,
                 CommentatorUserId = Guid.Empty,
