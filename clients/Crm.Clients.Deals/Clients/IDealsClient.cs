@@ -15,7 +15,7 @@ namespace Crm.Clients.Deals.Clients
         Task<List<Deal>> GetPagedListAsync(Guid? accountId = default, string name = default,
             DateTime? minStartDateTime = default, DateTime? maxStartDateTime = default,
             DateTime? minEndDateTime = default, DateTime? maxEndDateTime = default, decimal? minSum = default,
-            decimal? maxSum = default, decimal? minSumWithDiscount = default, decimal? maxSumWithDiscount = default,
+            decimal? maxSum = default, decimal? minSumWithoutDiscount = default, decimal? maxSumWithoutDiscount = default,
             byte? minFinishProbability = default, byte? maxFinishProbability = default, bool isDeleted = default,
             DateTime? minCreateDate = default, DateTime? maxCreateDate = default, List<Guid> typeIds = default,
             List<Guid> statusIds = default, List<Guid> companyIds = default, List<Guid> contactIds = default,

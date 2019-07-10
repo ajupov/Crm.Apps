@@ -31,10 +31,10 @@ namespace Crm.Apps.Deals.Helpers
                     return isDesc
                         ? queryable.OrderByDescending(x => x.Sum)
                         : queryable.OrderBy(x => x.Sum);
-                case nameof(Deal.SumWithDiscount):
+                case nameof(Deal.SumWithoutDiscount):
                     return isDesc
-                        ? queryable.OrderByDescending(x => x.SumWithDiscount)
-                        : queryable.OrderBy(x => x.SumWithDiscount);
+                        ? queryable.OrderByDescending(x => x.SumWithoutDiscount)
+                        : queryable.OrderBy(x => x.SumWithoutDiscount);
                 case nameof(Deal.FinishProbability):
                     return isDesc
                         ? queryable.OrderByDescending(x => x.FinishProbability)

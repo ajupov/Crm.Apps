@@ -46,8 +46,8 @@ namespace Crm.Apps.Deals.Services
                     (!parameter.MaxEndDateTime.HasValue || x.EndDateTime <= parameter.MaxEndDateTime) &&
                     (parameter.MinSum.IsEmpty() || x.Sum >= parameter.MinSum) &&
                     (parameter.MaxSum.IsEmpty() || x.Sum <= parameter.MaxSum) &&
-                    (parameter.MinSumWithDiscount.IsEmpty() || x.SumWithDiscount >= parameter.MinSumWithDiscount) &&
-                    (parameter.MaxSumWithDiscount.IsEmpty() || x.SumWithDiscount <= parameter.MaxSumWithDiscount) &&
+                    (parameter.MinSumWithoutDiscount.IsEmpty() || x.SumWithoutDiscount >= parameter.MinSumWithoutDiscount) &&
+                    (parameter.MaxSumWithoutDiscount.IsEmpty() || x.SumWithoutDiscount <= parameter.MaxSumWithoutDiscount) &&
                     (parameter.MinFinishProbability == null || parameter.MinFinishProbability.Value == 0 ||
                      x.FinishProbability >= parameter.MinFinishProbability.Value) &&
                     (parameter.MaxFinishProbability == null || parameter.MaxFinishProbability.Value == 0 ||
@@ -79,7 +79,7 @@ namespace Crm.Apps.Deals.Services
                 x.StartDateTime = deal.StartDateTime;
                 x.EndDateTime = deal.EndDateTime;
                 x.Sum = deal.Sum;
-                x.SumWithDiscount = deal.SumWithDiscount;
+                x.SumWithoutDiscount = deal.SumWithoutDiscount;
                 x.FinishProbability = deal.FinishProbability;
                 x.IsDeleted = deal.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
@@ -108,7 +108,7 @@ namespace Crm.Apps.Deals.Services
                 x.StartDateTime = newDeal.StartDateTime;
                 x.EndDateTime = newDeal.EndDateTime;
                 x.Sum = newDeal.Sum;
-                x.SumWithDiscount = newDeal.SumWithDiscount;
+                x.SumWithoutDiscount = newDeal.SumWithoutDiscount;
                 x.FinishProbability = newDeal.FinishProbability;
                 x.IsDeleted = newDeal.IsDeleted;
                 x.AttributeLinks = newDeal.AttributeLinks;

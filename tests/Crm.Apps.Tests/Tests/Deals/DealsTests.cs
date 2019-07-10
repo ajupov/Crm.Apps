@@ -86,14 +86,16 @@ namespace Crm.Apps.Tests.Tests.Deals
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
             var type = await _create.DealType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var product = await _create.Product.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var dealStatus = await _create.DealStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var productStatus = await _create.ProductStatus.WithAccountId(account.Id).BuildAsync();
+            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(productStatus.Id).BuildAsync()
+                .ConfigureAwait(false);
 
             var deal = new Deal
             {
                 AccountId = account.Id,
                 TypeId = type.Id,
-                StatusId = status.Id,
+                StatusId = dealStatus.Id,
                 CompanyId = Guid.Empty,
                 ContactId = Guid.Empty,
                 CreateUserId = Guid.Empty,
@@ -102,7 +104,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 StartDateTime = DateTime.Now,
                 EndDateTime = DateTime.Now.AddDays(1),
                 Sum = 1,
-                SumWithDiscount = 1,
+                SumWithoutDiscount = 1,
                 FinishProbability = 50,
                 IsDeleted = true,
                 Positions = new List<DealPosition>
@@ -138,10 +140,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             Assert.True(!createdDeal.CreateUserId.IsEmpty());
             Assert.Equal(deal.ResponsibleUserId, createdDeal.ResponsibleUserId);
             Assert.Equal(deal.Name, createdDeal.Name);
-            Assert.Equal(deal.StartDateTime, createdDeal.StartDateTime);
-            Assert.Equal(deal.EndDateTime, createdDeal.EndDateTime);
+            Assert.Equal(deal.StartDateTime.Date, createdDeal.StartDateTime.Date);
+            Assert.Equal(deal.EndDateTime?.Date, createdDeal.EndDateTime?.Date);
             Assert.Equal(deal.Sum, createdDeal.Sum);
-            Assert.Equal(deal.SumWithDiscount, createdDeal.SumWithDiscount);
+            Assert.Equal(deal.SumWithoutDiscount, createdDeal.SumWithoutDiscount);
             Assert.Equal(deal.FinishProbability, createdDeal.FinishProbability);
             Assert.Equal(deal.IsDeleted, createdDeal.IsDeleted);
             Assert.True(createdDeal.CreateDateTime.IsMoreThanMinValue());
@@ -154,14 +156,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var type = await _create.DealType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var product = await _create.Product.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var dealStatus = await _create.DealStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var productStatus =
+                await _create.ProductStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(productStatus.Id).BuildAsync()
+                .ConfigureAwait(false);
             var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var deal = await _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            var deal = await _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(dealStatus.Id)
                 .BuildAsync().ConfigureAwait(false);
 
             deal.TypeId = type.Id;
-            deal.StatusId = status.Id;
+            deal.StatusId = dealStatus.Id;
             deal.CompanyId = Guid.Empty;
             deal.ContactId = Guid.Empty;
             deal.ResponsibleUserId = Guid.Empty;
@@ -169,7 +174,7 @@ namespace Crm.Apps.Tests.Tests.Deals
             deal.StartDateTime = DateTime.Now;
             deal.EndDateTime = DateTime.Now.AddDays(1);
             deal.Sum = 1;
-            deal.SumWithDiscount = 1;
+            deal.SumWithoutDiscount = 1;
             deal.FinishProbability = 50;
             deal.IsDeleted = true;
             deal.Positions.Add(new DealPosition {ProductId = product.Id, Count = 1, Price = product.Price});
@@ -186,10 +191,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             Assert.Equal(deal.CreateUserId, updatedDeal.CreateUserId);
             Assert.Equal(deal.ResponsibleUserId, updatedDeal.ResponsibleUserId);
             Assert.Equal(deal.Name, updatedDeal.Name);
-            Assert.Equal(deal.StartDateTime, updatedDeal.StartDateTime);
-            Assert.Equal(deal.EndDateTime, updatedDeal.EndDateTime);
+            Assert.Equal(deal.StartDateTime.Date, updatedDeal.StartDateTime.Date);
+            Assert.Equal(deal.EndDateTime?.Date, updatedDeal.EndDateTime?.Date);
             Assert.Equal(deal.Sum, updatedDeal.Sum);
-            Assert.Equal(deal.SumWithDiscount, updatedDeal.SumWithDiscount);
+            Assert.Equal(deal.SumWithoutDiscount, updatedDeal.SumWithoutDiscount);
             Assert.Equal(deal.FinishProbability, updatedDeal.FinishProbability);
             Assert.Equal(deal.IsDeleted, updatedDeal.IsDeleted);
             Assert.Equal(deal.Positions.Single().ProductId, updatedDeal.Positions.Single().ProductId);

@@ -28,7 +28,7 @@ namespace Crm.Apps.Tests.Builders.Deals
 
         DealBuilder WithSum(decimal sum);
 
-        DealBuilder WithSumWithDiscount(decimal sumWithDiscount);
+        DealBuilder WithSumWithoutDiscount(decimal sumWithoutDiscount);
 
         DealBuilder WithFinishProbability(byte finishProbability);
 

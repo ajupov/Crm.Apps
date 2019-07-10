@@ -29,7 +29,7 @@ namespace Crm.Clients.Deals.Models
 
         public decimal Sum { get; set; }
         
-        public decimal SumWithDiscount { get; set; }
+        public decimal SumWithoutDiscount { get; set; }
 
         public byte FinishProbability { get; set; }
         

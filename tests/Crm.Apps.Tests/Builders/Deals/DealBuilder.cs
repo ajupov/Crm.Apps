@@ -28,7 +28,7 @@ namespace Crm.Apps.Tests.Builders.Deals
                 StartDateTime = DateTime.Now,
                 EndDateTime = DateTime.Now.AddDays(1),
                 Sum = 1,
-                SumWithDiscount = 1,
+                SumWithoutDiscount = 1,
                 FinishProbability = 50,
                 IsDeleted = false
             };
@@ -111,9 +111,9 @@ namespace Crm.Apps.Tests.Builders.Deals
             return this;
         }
 
-        public DealBuilder WithSumWithDiscount(decimal sumWithDiscount)
+        public DealBuilder WithSumWithoutDiscount(decimal sumWithoutDiscount)
         {
-            _deal.SumWithDiscount = sumWithDiscount;
+            _deal.SumWithoutDiscount = sumWithoutDiscount;
 
             return this;
         }

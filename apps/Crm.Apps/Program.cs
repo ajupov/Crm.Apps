@@ -6,6 +6,8 @@ using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
 using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
+using Crm.Apps.Deals.Services;
+using Crm.Apps.Deals.Storages;
 using Crm.Apps.Identities.Services;
 using Crm.Apps.Identities.Storages;
 using Crm.Apps.Leads.Services;
@@ -59,6 +61,7 @@ namespace Crm.Apps
                             .ConfigureOrm<LeadsStorage>(configuration)
                             .ConfigureOrm<CompaniesStorage>(configuration)
                             .ConfigureOrm<ContactsStorage>(configuration)
+                            .ConfigureOrm<DealsStorage>(configuration)
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .ConfigureMvc()
                             .AddTransient<IAccountsService, AccountsService>()
@@ -96,7 +99,16 @@ namespace Crm.Apps
                             .AddTransient<IContactChangesService, ContactChangesService>()
                             .AddTransient<IContactAttributesService, ContactAttributesService>()
                             .AddTransient<IContactAttributeChangesService, ContactAttributeChangesService>()
-                            .AddTransient<IContactCommentsService, ContactCommentsService>();
+                            .AddTransient<IContactCommentsService, ContactCommentsService>()
+                            .AddTransient<IDealsService, DealsService>()
+                            .AddTransient<IDealChangesService, DealChangesService>()
+                            .AddTransient<IDealCommentsService, DealCommentsService>()
+                            .AddTransient<IDealStatusesService, DealStatusesService>()
+                            .AddTransient<IDealStatusChangesService, DealStatusChangesService>()
+                            .AddTransient<IDealTypesService, DealTypesService>()
+                            .AddTransient<IDealTypeChangesService, DealTypeChangesService>()
+                            .AddTransient<IDealAttributesService, DealAttributesService>()
+                            .AddTransient<IDealAttributeChangesService, DealAttributeChangesService>();
                     })
                     .Configure(builder => builder
                         .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
