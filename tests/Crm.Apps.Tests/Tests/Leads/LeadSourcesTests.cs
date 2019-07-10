@@ -11,7 +11,6 @@ namespace Crm.Apps.Tests.Tests.Leads
     public class LeadSourcesTests
     {
         private readonly ICreate _create;
-
         private readonly ILeadSourcesClient _leadSourcesClient;
 
         public LeadSourcesTests(ICreate create, ILeadSourcesClient leadSourcesClient)

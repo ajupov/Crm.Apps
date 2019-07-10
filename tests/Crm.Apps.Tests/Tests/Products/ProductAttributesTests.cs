@@ -13,7 +13,6 @@ namespace Crm.Apps.Tests.Tests.Products
     public class ProductAttributesTests
     {
         private readonly ICreate _create;
-
         private readonly IProductAttributesClient _productAttributesClient;
 
         public ProductAttributesTests(ICreate create, IProductAttributesClient productAttributesClient)

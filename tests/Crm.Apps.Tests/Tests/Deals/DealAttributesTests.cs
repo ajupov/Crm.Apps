@@ -2,29 +2,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Models;
+using Crm.Clients.Deals.Clients;
+using Crm.Clients.Deals.Models;
 using Crm.Common.Types;
 using Crm.Utils.DateTime;
 using Xunit;
 
-namespace Crm.Apps.Tests.Tests.Leads
+namespace Crm.Apps.Tests.Tests.Deals
 {
-    public class LeadAttributesTests
+    public class DealAttributesTests
     {
         private readonly ICreate _create;
-        private readonly ILeadAttributesClient _leadAttributesClient;
+        private readonly IDealAttributesClient _dealAttributesClient;
 
-        public LeadAttributesTests(ICreate create, ILeadAttributesClient leadAttributesClient)
+        public DealAttributesTests(ICreate create, IDealAttributesClient dealAttributesClient)
         {
             _create = create;
-            _leadAttributesClient = leadAttributesClient;
+            _dealAttributesClient = dealAttributesClient;
         }
 
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _leadAttributesClient.GetTypesAsync().ConfigureAwait(false);
+            var types = await _dealAttributesClient.GetTypesAsync().ConfigureAwait(false);
 
             Assert.NotEmpty(types);
         }
@@ -33,10 +33,10 @@ namespace Crm.Apps.Tests.Tests.Leads
         public async Task WhenGet_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attributeId = (await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false))
+            var attributeId = (await _create.DealAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false))
                 .Id;
 
-            var attribute = await _leadAttributesClient.GetAsync(attributeId).ConfigureAwait(false);
+            var attribute = await _dealAttributesClient.GetAsync(attributeId).ConfigureAwait(false);
 
             Assert.NotNull(attribute);
             Assert.Equal(attributeId, attribute.Id);
@@ -47,11 +47,11 @@ namespace Crm.Apps.Tests.Tests.Leads
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var attributeIds = (await Task.WhenAll(
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
+                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
-            var attributes = await _leadAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
+            var attributes = await _dealAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
 
             Assert.NotEmpty(attributes);
             Assert.Equal(attributeIds.Count, attributes.Count);
@@ -61,11 +61,11 @@ namespace Crm.Apps.Tests.Tests.Leads
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            await Task.WhenAll(_create.LeadAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            await Task.WhenAll(_create.DealAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
                 .WithKey("Test1").BuildAsync()).ConfigureAwait(false);
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
-            var attributes = await _leadAttributesClient.GetPagedListAsync(account.Id, key: "Test1",
+            var attributes = await _dealAttributesClient.GetPagedListAsync(account.Id, key: "Test1",
                 types: filterTypes,
                 sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
 
@@ -80,7 +80,7 @@ namespace Crm.Apps.Tests.Tests.Leads
         public async Task WhenCreate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = new LeadAttribute
+            var attribute = new DealAttribute
             {
                 AccountId = account.Id,
                 Type = AttributeType.Text,
@@ -88,9 +88,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 IsDeleted = false
             };
 
-            var createdAttributeId = await _leadAttributesClient.CreateAsync(attribute).ConfigureAwait(false);
+            var createdAttributeId = await _dealAttributesClient.CreateAsync(attribute).ConfigureAwait(false);
 
-            var createdAttribute = await _leadAttributesClient.GetAsync(createdAttributeId).ConfigureAwait(false);
+            var createdAttribute = await _dealAttributesClient.GetAsync(createdAttributeId).ConfigureAwait(false);
 
             Assert.NotNull(createdAttribute);
             Assert.Equal(createdAttributeId, createdAttribute.Id);
@@ -105,16 +105,16 @@ namespace Crm.Apps.Tests.Tests.Leads
         public async Task WhenUpdate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            var attribute = await _create.DealAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
                 .WithKey("Test").BuildAsync().ConfigureAwait(false);
 
             attribute.Type = AttributeType.Link;
             attribute.Key = "test.com";
             attribute.IsDeleted = true;
 
-            await _leadAttributesClient.UpdateAsync(attribute).ConfigureAwait(false);
+            await _dealAttributesClient.UpdateAsync(attribute).ConfigureAwait(false);
 
-            var updatedAttribute = await _leadAttributesClient.GetAsync(attribute.Id).ConfigureAwait(false);
+            var updatedAttribute = await _dealAttributesClient.GetAsync(attribute.Id).ConfigureAwait(false);
 
             Assert.Equal(attribute.Type, updatedAttribute.Type);
             Assert.Equal(attribute.Key, updatedAttribute.Key);
@@ -126,13 +126,13 @@ namespace Crm.Apps.Tests.Tests.Leads
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var attributeIds = (await Task.WhenAll(
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
+                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
-            await _leadAttributesClient.DeleteAsync(attributeIds).ConfigureAwait(false);
+            await _dealAttributesClient.DeleteAsync(attributeIds).ConfigureAwait(false);
 
-            var attributes = await _leadAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
+            var attributes = await _dealAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
 
             Assert.All(attributes, x => Assert.True(x.IsDeleted));
         }
@@ -142,13 +142,13 @@ namespace Crm.Apps.Tests.Tests.Leads
         {
             var account = await _create.Account.BuildAsync().ConfigureAwait(false);
             var attributeIds = (await Task.WhenAll(
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
+                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
                 .ConfigureAwait(false)).Select(x => x.Id).ToList();
 
-            await _leadAttributesClient.RestoreAsync(attributeIds).ConfigureAwait(false);
+            await _dealAttributesClient.RestoreAsync(attributeIds).ConfigureAwait(false);
 
-            var attributes = await _leadAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
+            var attributes = await _dealAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
 
             Assert.All(attributes, x => Assert.False(x.IsDeleted));
         }

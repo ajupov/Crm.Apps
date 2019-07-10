@@ -13,7 +13,6 @@ namespace Crm.Apps.Tests.Tests.Users
     public class UserGroupsTests
     {
         private readonly ICreate _create;
-
         private readonly IUserGroupsClient _userGroupsClient;
 
         public UserGroupsTests(ICreate create, IUserGroupsClient userGroupsClient)
