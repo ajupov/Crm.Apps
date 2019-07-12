@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Contacts", "cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Deals", "clients\Crm.Clients.Deals\Crm.Clients.Deals.csproj", "{671C76DD-C581-4FF0-80DA-F33F95EC5A27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Clients.Activities", "clients\Crm.Clients.Activities\Crm.Clients.Activities.csproj", "{6B0CD63C-342A-48AD-A1BB-7822F987B291}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +130,7 @@ Global
 		{DB9971A2-1B9F-4EE4-B2AC-8BD9A2869507} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
 		{9A4CDCA7-FCC4-405A-BC90-0904B059EA2C} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
 		{671C76DD-C581-4FF0-80DA-F33F95EC5A27} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
+		{6B0CD63C-342A-48AD-A1BB-7822F987B291} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
 	EndGlobalSection
 GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6ADEA938-63C2-4199-BD99-B15BE22C35A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -278,5 +281,9 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 	{671C76DD-C581-4FF0-80DA-F33F95EC5A27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	{671C76DD-C581-4FF0-80DA-F33F95EC5A27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	{671C76DD-C581-4FF0-80DA-F33F95EC5A27}.Release|Any CPU.Build.0 = Release|Any CPU
+	{6B0CD63C-342A-48AD-A1BB-7822F987B291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{6B0CD63C-342A-48AD-A1BB-7822F987B291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{6B0CD63C-342A-48AD-A1BB-7822F987B291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{6B0CD63C-342A-48AD-A1BB-7822F987B291}.Release|Any CPU.Build.0 = Release|Any CPU
 EndGlobalSection
 EndGlobal
