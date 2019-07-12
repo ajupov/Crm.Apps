@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
@@ -8,9 +9,11 @@ namespace Crm.Infrastructure.Logging
     {
         private const string Template = "[{Timestamp:o} - {Level:u3}]: {Message:lj}{NewLine}{Exception}";
 
-        public static IWebHostBuilder ConfigureLogging(this IWebHostBuilder webHostBuilder, string applicationName,
-            string applicationVersion)
+        public static IWebHostBuilder ConfigureLogging(this IWebHostBuilder webHostBuilder)
         {
+            var applicationName = Assembly.GetCallingAssembly().GetName().Name;
+            var applicationVersion = Assembly.GetCallingAssembly().GetName().Name;
+
             return webHostBuilder.ConfigureLogging(x =>
             {
                 x.ClearProviders();

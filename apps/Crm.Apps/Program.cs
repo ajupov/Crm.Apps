@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Crm.Apps.Accounts.Consumers;
 using Crm.Apps.Accounts.Services;
 using Crm.Apps.Accounts.Storages;
+using Crm.Apps.Activities.Services;
+using Crm.Apps.Activities.Storages;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
 using Crm.Apps.Contacts.Services;
@@ -14,7 +15,6 @@ using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
-using Crm.Apps.Users.Consumers;
 using Crm.Apps.Users.Services;
 using Crm.Apps.Users.Storages;
 using Crm.Common.UserContext;
@@ -22,7 +22,6 @@ using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
 using Crm.Infrastructure.Hosting;
 using Crm.Infrastructure.Logging;
-using Crm.Infrastructure.MessageBroking;
 using Crm.Infrastructure.Metrics;
 using Crm.Infrastructure.Migrations;
 using Crm.Infrastructure.Mvc;
@@ -36,23 +35,20 @@ namespace Crm.Apps
 {
     public static class Program
     {
-        private const string ApplicationName = "Crm";
-        private const string ApplicationVersion = "v1";
-
         public static Task Main()
         {
             return
                 ConfigurationExtensions.GetConfiguration()
                     .ConfigureHost()
-                    .ConfigureLogging(ApplicationName, ApplicationVersion)
+                    .ConfigureLogging()
                     .ConfigureServices((builder, services) =>
                     {
                         var configuration = builder.Configuration;
 
                         services
-                            .ConfigureApiDocumentation(ApplicationName, ApplicationVersion)
+                            .ConfigureApiDocumentation()
                             .ConfigureMetrics(configuration)
-                            .ConfigureTracing(ApplicationName)
+                            .ConfigureTracing()
                             .ConfigureMigrator(configuration)
                             .ConfigureOrm<AccountsStorage>(configuration)
                             .ConfigureOrm<UsersStorage>(configuration)
@@ -62,6 +58,7 @@ namespace Crm.Apps
                             .ConfigureOrm<CompaniesStorage>(configuration)
                             .ConfigureOrm<ContactsStorage>(configuration)
                             .ConfigureOrm<DealsStorage>(configuration)
+                            .ConfigureOrm<ActivitiesStorage>(configuration)
                             .ConfigureUserContext<IUserContext, UserContext>()
                             .ConfigureMvc()
                             .AddTransient<IAccountsService, AccountsService>()
@@ -108,10 +105,19 @@ namespace Crm.Apps
                             .AddTransient<IDealTypesService, DealTypesService>()
                             .AddTransient<IDealTypeChangesService, DealTypeChangesService>()
                             .AddTransient<IDealAttributesService, DealAttributesService>()
-                            .AddTransient<IDealAttributeChangesService, DealAttributeChangesService>();
+                            .AddTransient<IDealAttributeChangesService, DealAttributeChangesService>()
+                            .AddTransient<IActivitiesService, ActivitiesService>()
+                            .AddTransient<IActivityChangesService, ActivityChangesService>()
+                            .AddTransient<IActivityCommentsService, ActivityCommentsService>()
+                            .AddTransient<IActivityStatusesService, ActivityStatusesService>()
+                            .AddTransient<IActivityStatusChangesService, ActivityStatusChangesService>()
+                            .AddTransient<IActivityTypesService, ActivityTypesService>()
+                            .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
+                            .AddTransient<IActivityAttributesService, ActivityAttributesService>()
+                            .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>();
                     })
                     .Configure(builder => builder
-                        .UseApiDocumentationsMiddleware(ApplicationName, ApplicationVersion)
+                        .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
                         .UseMvcMiddleware())

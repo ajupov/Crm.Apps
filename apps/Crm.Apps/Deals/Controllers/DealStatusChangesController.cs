@@ -14,11 +14,11 @@ namespace Crm.Apps.Deals.Controllers
     [Route("Api/Deals/Statuses/Changes")]
     public class DealStatusesChangesController : ControllerBase
     {
-        private readonly IDealStatusChangesService _userStatusChangesService;
+        private readonly IDealStatusChangesService _dealStatusChangesService;
 
-        public DealStatusesChangesController(IDealStatusChangesService userStatusChangesService)
+        public DealStatusesChangesController(IDealStatusChangesService dealStatusChangesService)
         {
-            _userStatusChangesService = userStatusChangesService;
+            _dealStatusChangesService = dealStatusChangesService;
         }
 
         [HttpPost("GetPagedList")]
@@ -26,7 +26,7 @@ namespace Crm.Apps.Deals.Controllers
         public async Task<ActionResult<List<DealStatusChange>>> GetPagedList(
             DealStatusChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _userStatusChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _dealStatusChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
         }
     }
 }

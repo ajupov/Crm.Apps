@@ -1,4 +1,5 @@
-﻿using Jaeger;
+﻿using System.Reflection;
+using Jaeger;
 using Jaeger.Samplers;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTracing;
@@ -8,9 +9,10 @@ namespace Crm.Infrastructure.Tracing
 {
     public static class TracingExtensions
     {
-        public static IServiceCollection ConfigureTracing(this IServiceCollection services,
-            string applicationName)
+        public static IServiceCollection ConfigureTracing(this IServiceCollection services)
         {
+            var applicationName = Assembly.GetCallingAssembly().GetName().Name;
+
             services.AddOpenTracing();
             services.AddSingleton<ITracer>(x =>
             {
