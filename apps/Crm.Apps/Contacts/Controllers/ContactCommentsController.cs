@@ -34,8 +34,8 @@ namespace Crm.Apps.Contacts.Controllers
         public async Task<ActionResult<List<ContactComment>>> GetPagedList(
             ContactCommentGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            var contact = await _contactsService.GetAsync(parameter.ContactId, ct).ConfigureAwait(false);
-            var comments = await _contactCommentsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var contact = await _contactsService.GetAsync(parameter.ContactId, ct);
+            var comments = await _contactCommentsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(comments, new[] {contact.AccountId});
         }
@@ -50,11 +50,11 @@ namespace Crm.Apps.Contacts.Controllers
                 return BadRequest();
             }
 
-            var contact = await _contactsService.GetAsync(comment.ContactId, ct).ConfigureAwait(false);
+            var contact = await _contactsService.GetAsync(comment.ContactId, ct);
 
             return await ActionIfAllowed(
                 () => _contactCommentsService.CreateAsync(_userContext.UserId, comment, ct)
-                , new[] {contact.AccountId}).ConfigureAwait(false);
+                , new[] {contact.AccountId});
         }
 
         [NonAction]
@@ -89,7 +89,7 @@ namespace Crm.Apps.Contacts.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -99,7 +99,7 @@ namespace Crm.Apps.Contacts.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

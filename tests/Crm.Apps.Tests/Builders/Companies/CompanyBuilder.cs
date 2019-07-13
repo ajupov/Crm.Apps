@@ -316,9 +316,9 @@ namespace Crm.Apps.Tests.Builders.Companies
                 throw new InvalidOperationException(nameof(_company.LeadId));
             }
 
-            var createdId = await _companiesClient.CreateAsync(_company).ConfigureAwait(false);
+            var createdId = await _companiesClient.CreateAsync(_company);
 
-            return await _companiesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _companiesClient.GetAsync(createdId);
         }
     }
 }

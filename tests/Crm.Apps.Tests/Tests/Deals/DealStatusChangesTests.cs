@@ -28,15 +28,15 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
             status.Name = "Test2";
             status.IsDeleted = true;
-            await _dealStatusesClient.UpdateAsync(status).ConfigureAwait(false);
+            await _dealStatusesClient.UpdateAsync(status);
 
             var changes = await _statusChangesClient
                 .GetPagedListAsync(statusId: status.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

@@ -70,13 +70,13 @@ namespace Crm.Apps.Contacts.Consumers
                 return;
             }
 
-            var oldContact = await _contactsService.GetAsync(newContact.Id, ct).ConfigureAwait(false);
+            var oldContact = await _contactsService.GetAsync(newContact.Id, ct);
             if (oldContact == null)
             {
                 return;
             }
 
-            await _contactsService.UpdateAsync(message.UserId, oldContact, newContact, ct).ConfigureAwait(false);
+            await _contactsService.UpdateAsync(message.UserId, oldContact, newContact, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

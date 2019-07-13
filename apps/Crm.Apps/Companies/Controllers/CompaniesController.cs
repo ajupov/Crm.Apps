@@ -53,7 +53,7 @@ namespace Crm.Apps.Companies.Controllers
                 return BadRequest();
             }
 
-            var company = await _companiesService.GetAsync(id, ct).ConfigureAwait(false);
+            var company = await _companiesService.GetAsync(id, ct);
             if (company == null)
             {
                 return NotFound();
@@ -72,7 +72,7 @@ namespace Crm.Apps.Companies.Controllers
                 return BadRequest();
             }
 
-            var companies = await _companiesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(companies, companies.Select(x => x.AccountId));
         }
@@ -83,7 +83,7 @@ namespace Crm.Apps.Companies.Controllers
         public async Task<ActionResult<List<Company>>> GetPagedList(CompanyGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var companies = await _companiesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(companies, companies.Select(x => x.AccountId));
         }
@@ -104,7 +104,7 @@ namespace Crm.Apps.Companies.Controllers
                 company.AccountId = _userContext.AccountId;
             }
 
-            var id = await _companiesService.CreateAsync(_userContext.UserId, company, ct).ConfigureAwait(false);
+            var id = await _companiesService.CreateAsync(_userContext.UserId, company, ct);
 
             return Created(nameof(Get), id);
         }
@@ -119,7 +119,7 @@ namespace Crm.Apps.Companies.Controllers
                 return BadRequest();
             }
 
-            var oldCompany = await _companiesService.GetAsync(company.Id, ct).ConfigureAwait(false);
+            var oldCompany = await _companiesService.GetAsync(company.Id, ct);
             if (oldCompany == null)
             {
                 return NotFound();
@@ -127,7 +127,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return await ActionIfAllowed(
                 () => _companiesService.UpdateAsync(_userContext.UserId, oldCompany, company, ct),
-                new[] {company.AccountId, oldCompany.AccountId}).ConfigureAwait(false);
+                new[] {company.AccountId, oldCompany.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -140,11 +140,11 @@ namespace Crm.Apps.Companies.Controllers
                 return BadRequest();
             }
 
-            var companies = await _companiesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _companiesService.DeleteAsync(_userContext.UserId, companies.Select(x => x.Id), ct),
-                companies.Select(x => x.AccountId)).ConfigureAwait(false);
+                companies.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -157,11 +157,11 @@ namespace Crm.Apps.Companies.Controllers
                 return BadRequest();
             }
 
-            var companies = await _companiesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var companies = await _companiesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _companiesService.RestoreAsync(_userContext.UserId, companies.Select(x => x.Id), ct),
-                companies.Select(x => x.AccountId)).ConfigureAwait(false);
+                companies.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -196,7 +196,7 @@ namespace Crm.Apps.Companies.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -206,7 +206,7 @@ namespace Crm.Apps.Companies.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

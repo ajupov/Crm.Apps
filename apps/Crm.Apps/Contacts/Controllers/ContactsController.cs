@@ -36,7 +36,7 @@ namespace Crm.Apps.Contacts.Controllers
                 return BadRequest();
             }
 
-            var contact = await _contactsService.GetAsync(id, ct).ConfigureAwait(false);
+            var contact = await _contactsService.GetAsync(id, ct);
             if (contact == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Contacts.Controllers
                 return BadRequest();
             }
 
-            var contacts = await _contactsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var contacts = await _contactsService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(contacts, contacts.Select(x => x.AccountId));
         }
@@ -66,7 +66,7 @@ namespace Crm.Apps.Contacts.Controllers
         public async Task<ActionResult<List<Contact>>> GetPagedList(ContactGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var contacts = await _contactsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var contacts = await _contactsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(contacts, contacts.Select(x => x.AccountId));
         }
@@ -87,7 +87,7 @@ namespace Crm.Apps.Contacts.Controllers
                 contact.AccountId = _userContext.AccountId;
             }
 
-            var id = await _contactsService.CreateAsync(_userContext.UserId, contact, ct).ConfigureAwait(false);
+            var id = await _contactsService.CreateAsync(_userContext.UserId, contact, ct);
 
             return Created(nameof(Get), id);
         }
@@ -102,7 +102,7 @@ namespace Crm.Apps.Contacts.Controllers
                 return BadRequest();
             }
 
-            var oldContact = await _contactsService.GetAsync(contact.Id, ct).ConfigureAwait(false);
+            var oldContact = await _contactsService.GetAsync(contact.Id, ct);
             if (oldContact == null)
             {
                 return NotFound();
@@ -110,7 +110,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return await ActionIfAllowed(
                 () => _contactsService.UpdateAsync(_userContext.UserId, oldContact, contact, ct),
-                new[] {contact.AccountId, oldContact.AccountId}).ConfigureAwait(false);
+                new[] {contact.AccountId, oldContact.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -123,11 +123,11 @@ namespace Crm.Apps.Contacts.Controllers
                 return BadRequest();
             }
 
-            var contacts = await _contactsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var contacts = await _contactsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _contactsService.DeleteAsync(_userContext.UserId, contacts.Select(x => x.Id), ct),
-                contacts.Select(x => x.AccountId)).ConfigureAwait(false);
+                contacts.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -140,11 +140,11 @@ namespace Crm.Apps.Contacts.Controllers
                 return BadRequest();
             }
 
-            var contacts = await _contactsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var contacts = await _contactsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _contactsService.RestoreAsync(_userContext.UserId, contacts.Select(x => x.Id), ct),
-                contacts.Select(x => x.AccountId)).ConfigureAwait(false);
+                contacts.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -179,7 +179,7 @@ namespace Crm.Apps.Contacts.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -189,7 +189,7 @@ namespace Crm.Apps.Contacts.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

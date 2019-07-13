@@ -59,9 +59,9 @@ namespace Crm.Apps.Tests.Builders.Users
                 throw new InvalidOperationException(nameof(_userGroup.AccountId));
             }
 
-            var createdId = await _userGroupsClient.CreateAsync(_userGroup).ConfigureAwait(false);
+            var createdId = await _userGroupsClient.CreateAsync(_userGroup);
 
-            return await _userGroupsClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _userGroupsClient.GetAsync(createdId);
         }
     }
 }

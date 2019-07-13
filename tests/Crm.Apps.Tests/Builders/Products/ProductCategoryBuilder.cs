@@ -42,9 +42,9 @@ namespace Crm.Apps.Tests.Builders.Products
                 throw new InvalidOperationException(nameof(_productCategory.AccountId));
             }
 
-            var createdId = await _productCategoriesClient.CreateAsync(_productCategory).ConfigureAwait(false);
+            var createdId = await _productCategoriesClient.CreateAsync(_productCategory);
 
-            return await _productCategoriesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _productCategoriesClient.GetAsync(createdId);
         }
     }
 }

@@ -42,9 +42,9 @@ namespace Crm.Apps.Tests.Builders.Leads
                 throw new InvalidOperationException(nameof(_leadSource.AccountId));
             }
 
-            var createdId = await _leadSourcesClient.CreateAsync(_leadSource).ConfigureAwait(false);
+            var createdId = await _leadSourcesClient.CreateAsync(_leadSource);
 
-            return await _leadSourcesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _leadSourcesClient.GetAsync(createdId);
         }
     }
 }

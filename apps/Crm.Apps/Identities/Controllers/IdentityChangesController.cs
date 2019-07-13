@@ -26,7 +26,7 @@ namespace Crm.Apps.Identities.Controllers
         public async Task<ActionResult<List<IdentityChange>>> GetPagedList(
             IdentityChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _identityChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _identityChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

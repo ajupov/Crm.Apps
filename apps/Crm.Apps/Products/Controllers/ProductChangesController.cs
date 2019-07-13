@@ -26,7 +26,7 @@ namespace Crm.Apps.Products.Controllers
         public async Task<ActionResult<List<ProductChange>>> GetPagedList(ProductChangeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _productChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _productChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

@@ -70,13 +70,13 @@ namespace Crm.Apps.Deals.Consumers
                 return;
             }
 
-            var oldType = await _dealTypesService.GetAsync(newType.Id, ct).ConfigureAwait(false);
+            var oldType = await _dealTypesService.GetAsync(newType.Id, ct);
             if (oldType == null)
             {
                 return;
             }
 
-            await _dealTypesService.UpdateAsync(message.UserId, oldType, newType, ct).ConfigureAwait(false);
+            await _dealTypesService.UpdateAsync(message.UserId, oldType, newType, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

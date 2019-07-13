@@ -45,7 +45,7 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var user = await _usersService.GetAsync(id, ct).ConfigureAwait(false);
+            var user = await _usersService.GetAsync(id, ct);
             if (user == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var users = await _usersService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(users, users.Select(x => x.AccountId));
         }
@@ -75,7 +75,7 @@ namespace Crm.Apps.Users.Controllers
         public async Task<ActionResult<List<User>>> GetPagedList(UserGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var users = await _usersService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var users = await _usersService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(users, users.Select(x => x.AccountId));
         }
@@ -95,7 +95,7 @@ namespace Crm.Apps.Users.Controllers
                 user.AccountId = _userContext.AccountId;
             }
 
-            var id = await _usersService.CreateAsync(_userContext.UserId, user, ct).ConfigureAwait(false);
+            var id = await _usersService.CreateAsync(_userContext.UserId, user, ct);
 
             return Created(nameof(Get), id);
         }
@@ -109,14 +109,14 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var oldUser = await _usersService.GetAsync(user.Id, ct).ConfigureAwait(false);
+            var oldUser = await _usersService.GetAsync(user.Id, ct);
             if (oldUser == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(() => _usersService.UpdateAsync(_userContext.UserId, oldUser, user, ct),
-                new[] {user.AccountId, oldUser.AccountId}).ConfigureAwait(false);
+                new[] {user.AccountId, oldUser.AccountId});
         }
 
         [HttpPost("Lock")]
@@ -129,11 +129,11 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var users = await _usersService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _usersService.LockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId)).ConfigureAwait(false);
+                users.Select(x => x.AccountId));
         }
 
         [HttpPost("Unlock")]
@@ -146,11 +146,11 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var users = await _usersService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _usersService.UnlockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId)).ConfigureAwait(false);
+                users.Select(x => x.AccountId));
         }
 
         [HttpPost("Delete")]
@@ -163,11 +163,11 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var users = await _usersService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _usersService.DeleteAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId)).ConfigureAwait(false);
+                users.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -180,11 +180,11 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var users = await _usersService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var users = await _usersService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _usersService.RestoreAsync(_userContext.UserId, users.Select(x => x.Id), ct),
-                users.Select(x => x.AccountId)).ConfigureAwait(false);
+                users.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -217,7 +217,7 @@ namespace Crm.Apps.Users.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -226,7 +226,7 @@ namespace Crm.Apps.Users.Controllers
 
             if (_userContext.HasAny(Permission.AccountOwning) && _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

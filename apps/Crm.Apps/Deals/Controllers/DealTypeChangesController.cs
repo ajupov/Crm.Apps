@@ -26,7 +26,7 @@ namespace Crm.Apps.Deals.Controllers
         public async Task<ActionResult<List<DealTypeChange>>> GetPagedList(
             DealTypeChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _dealTypeChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _dealTypeChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

@@ -70,13 +70,13 @@ namespace Crm.Apps.Users.Consumers
                 return;
             }
 
-            var oldGroup = await _userGroupsService.GetAsync(newGroup.Id, ct).ConfigureAwait(false);
+            var oldGroup = await _userGroupsService.GetAsync(newGroup.Id, ct);
             if (oldGroup == null)
             {
                 return;
             }
 
-            await _userGroupsService.UpdateAsync(message.UserId, oldGroup, newGroup, ct).ConfigureAwait(false);
+            await _userGroupsService.UpdateAsync(message.UserId, oldGroup, newGroup, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

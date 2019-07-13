@@ -70,14 +70,14 @@ namespace Crm.Apps.Products.Consumers
                 return;
             }
 
-            var oldCategory = await _productCategoriesService.GetAsync(newCategory.Id, ct).ConfigureAwait(false);
+            var oldCategory = await _productCategoriesService.GetAsync(newCategory.Id, ct);
             if (oldCategory == null)
             {
                 return;
             }
 
             await _productCategoriesService.UpdateAsync(message.UserId, oldCategory, newCategory, ct)
-                .ConfigureAwait(false);
+                ;
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

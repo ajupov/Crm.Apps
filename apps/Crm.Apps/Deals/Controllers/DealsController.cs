@@ -45,7 +45,7 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var deal = await _dealsService.GetAsync(id, ct).ConfigureAwait(false);
+            var deal = await _dealsService.GetAsync(id, ct);
             if (deal == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var deals = await _dealsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(deals, deals.Select(x => x.AccountId));
         }
@@ -75,7 +75,7 @@ namespace Crm.Apps.Deals.Controllers
         public async Task<ActionResult<List<Deal>>> GetPagedList(DealGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var deals = await _dealsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(deals, deals.Select(x => x.AccountId));
         }
@@ -96,7 +96,7 @@ namespace Crm.Apps.Deals.Controllers
                 deal.AccountId = _userContext.AccountId;
             }
 
-            var id = await _dealsService.CreateAsync(_userContext.UserId, deal, ct).ConfigureAwait(false);
+            var id = await _dealsService.CreateAsync(_userContext.UserId, deal, ct);
 
             return Created(nameof(Get), id);
         }
@@ -111,7 +111,7 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var oldDeal = await _dealsService.GetAsync(deal.Id, ct).ConfigureAwait(false);
+            var oldDeal = await _dealsService.GetAsync(deal.Id, ct);
             if (oldDeal == null)
             {
                 return NotFound();
@@ -119,7 +119,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealsService.UpdateAsync(_userContext.UserId, oldDeal, deal, ct),
-                new[] {deal.AccountId, oldDeal.AccountId}).ConfigureAwait(false);
+                new[] {deal.AccountId, oldDeal.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -132,11 +132,11 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var deals = await _dealsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _dealsService.DeleteAsync(_userContext.UserId, deals.Select(x => x.Id), ct),
-                deals.Select(x => x.AccountId)).ConfigureAwait(false);
+                deals.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -149,11 +149,11 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var deals = await _dealsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var deals = await _dealsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _dealsService.RestoreAsync(_userContext.UserId, deals.Select(x => x.Id), ct),
-                deals.Select(x => x.AccountId)).ConfigureAwait(false);
+                deals.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -188,7 +188,7 @@ namespace Crm.Apps.Deals.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -198,7 +198,7 @@ namespace Crm.Apps.Deals.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

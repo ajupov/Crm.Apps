@@ -51,9 +51,9 @@ namespace Crm.Apps.Tests.Builders.Deals
                 throw new InvalidOperationException(nameof(_dealAttribute.AccountId));
             }
 
-            var createdId = await _dealAttributesClient.CreateAsync(_dealAttribute).ConfigureAwait(false);
+            var createdId = await _dealAttributesClient.CreateAsync(_dealAttribute);
 
-            return await _dealAttributesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _dealAttributesClient.GetAsync(createdId);
         }
     }
 }

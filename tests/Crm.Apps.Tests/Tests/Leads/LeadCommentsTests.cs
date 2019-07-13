@@ -23,17 +23,17 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             await Task.WhenAll(
                     _create.LeadComment.WithLeadId(lead.Id).BuildAsync(),
                     _create.LeadComment.WithLeadId(lead.Id).BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var comments = await _leadCommentsClient
-                .GetPagedListAsync(lead.Id, sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
+                .GetPagedListAsync(lead.Id, sortBy: "CreateDateTime", orderBy: "desc");
 
             var results = comments.Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -45,10 +45,10 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             var comment = new LeadComment
             {
@@ -56,10 +56,10 @@ namespace Crm.Apps.Tests.Tests.Leads
                 Value = "Test"
             };
 
-            await _leadCommentsClient.CreateAsync(comment).ConfigureAwait(false);
+            await _leadCommentsClient.CreateAsync(comment);
 
             var createdComment = (await _leadCommentsClient.GetPagedListAsync(lead.Id, sortBy: "CreateDateTime",
-                orderBy: "asc").ConfigureAwait(false)).First();
+                orderBy: "asc")).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.LeadId, createdComment.LeadId);

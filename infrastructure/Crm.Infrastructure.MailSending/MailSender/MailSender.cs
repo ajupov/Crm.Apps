@@ -35,10 +35,10 @@ namespace Crm.Infrastructure.MailSending.MailSender
         {
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync(_settings.SmtpHost, _settings.SmtpPort, true).ConfigureAwait(false);
-                await client.AuthenticateAsync(_settings.AccountName, _settings.Password).ConfigureAwait(false);
-                await Task.WhenAll(messages.Select(x => client.SendAsync(x))).ConfigureAwait(false);
-                await client.DisconnectAsync(true).ConfigureAwait(false);
+                await client.ConnectAsync(_settings.SmtpHost, _settings.SmtpPort, true);
+                await client.AuthenticateAsync(_settings.AccountName, _settings.Password);
+                await Task.WhenAll(messages.Select(x => client.SendAsync(x)));
+                await client.DisconnectAsync(true);
             }
         }
     }

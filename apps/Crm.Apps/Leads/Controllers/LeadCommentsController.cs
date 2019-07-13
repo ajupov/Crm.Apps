@@ -34,8 +34,8 @@ namespace Crm.Apps.Leads.Controllers
         public async Task<ActionResult<List<LeadComment>>> GetPagedList(LeadCommentGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var lead = await _leadsService.GetAsync(parameter.LeadId, ct).ConfigureAwait(false);
-            var comments = await _leadCommentsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var lead = await _leadsService.GetAsync(parameter.LeadId, ct);
+            var comments = await _leadCommentsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(comments, new[] {lead.AccountId});
         }
@@ -50,11 +50,11 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var lead = await _leadsService.GetAsync(comment.LeadId, ct).ConfigureAwait(false);
+            var lead = await _leadsService.GetAsync(comment.LeadId, ct);
 
             return await ActionIfAllowed(
                 () => _leadCommentsService.CreateAsync(_userContext.UserId, comment, ct)
-                , new[] {lead.AccountId}).ConfigureAwait(false);
+                , new[] {lead.AccountId});
         }
 
         [NonAction]
@@ -89,7 +89,7 @@ namespace Crm.Apps.Leads.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -99,7 +99,7 @@ namespace Crm.Apps.Leads.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

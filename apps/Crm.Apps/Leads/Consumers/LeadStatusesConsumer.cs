@@ -70,13 +70,13 @@ namespace Crm.Apps.Leads.Consumers
                 return;
             }
 
-            var oldSource = await _leadSourcesService.GetAsync(newSource.Id, ct).ConfigureAwait(false);
+            var oldSource = await _leadSourcesService.GetAsync(newSource.Id, ct);
             if (oldSource == null)
             {
                 return;
             }
 
-            await _leadSourcesService.UpdateAsync(message.UserId, oldSource, newSource, ct).ConfigureAwait(false);
+            await _leadSourcesService.UpdateAsync(message.UserId, oldSource, newSource, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

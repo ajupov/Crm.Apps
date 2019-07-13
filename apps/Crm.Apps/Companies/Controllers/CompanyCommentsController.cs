@@ -35,8 +35,8 @@ namespace Crm.Apps.Companies.Controllers
             CompanyCommentGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var company = await _companiesService.GetAsync(parameter.CompanyId, ct).ConfigureAwait(false);
-            var comments = await _companyCommentsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var company = await _companiesService.GetAsync(parameter.CompanyId, ct);
+            var comments = await _companyCommentsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(comments, new[] {company.AccountId});
         }
@@ -51,11 +51,11 @@ namespace Crm.Apps.Companies.Controllers
                 return BadRequest();
             }
 
-            var company = await _companiesService.GetAsync(comment.CompanyId, ct).ConfigureAwait(false);
+            var company = await _companiesService.GetAsync(comment.CompanyId, ct);
 
             return await ActionIfAllowed(
                 () => _companyCommentsService.CreateAsync(_userContext.UserId, comment, ct)
-                , new[] {company.AccountId}).ConfigureAwait(false);
+                , new[] {company.AccountId});
         }
 
         [NonAction]
@@ -90,7 +90,7 @@ namespace Crm.Apps.Companies.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -100,7 +100,7 @@ namespace Crm.Apps.Companies.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

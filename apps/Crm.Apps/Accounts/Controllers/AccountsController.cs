@@ -35,7 +35,7 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            var account = await _accountsService.GetAsync(id, ct).ConfigureAwait(false);
+            var account = await _accountsService.GetAsync(id, ct);
             if (account == null)
             {
                 return NotFound();
@@ -53,7 +53,7 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            return await _accountsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            return await _accountsService.GetListAsync(ids, ct);
         }
 
         [HttpPost("GetPagedList")]
@@ -61,14 +61,14 @@ namespace Crm.Apps.Accounts.Controllers
         public async Task<ActionResult<List<Account>>> GetPagedList(AccountGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _accountsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _accountsService.GetPagedListAsync(parameter, ct);
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult<Guid>> Create(Account account, CancellationToken ct = default)
         {
-            var id = await _accountsService.CreateAsync(_userContext.UserId, account, ct).ConfigureAwait(false);
+            var id = await _accountsService.CreateAsync(_userContext.UserId, account, ct);
 
             return Created(nameof(Get), id);
         }
@@ -82,13 +82,13 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            var oldAccount = await _accountsService.GetAsync(account.Id, ct).ConfigureAwait(false);
+            var oldAccount = await _accountsService.GetAsync(account.Id, ct);
             if (oldAccount == null)
             {
                 return NotFound();
             }
 
-            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct).ConfigureAwait(false);
+            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct);
 
             return NoContent();
         }
@@ -102,7 +102,7 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _accountsService.LockAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _accountsService.LockAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }
@@ -116,7 +116,7 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _accountsService.UnlockAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _accountsService.UnlockAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }
@@ -130,7 +130,7 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _accountsService.DeleteAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _accountsService.DeleteAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }
@@ -144,7 +144,7 @@ namespace Crm.Apps.Accounts.Controllers
                 return BadRequest();
             }
 
-            await _accountsService.RestoreAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _accountsService.RestoreAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }

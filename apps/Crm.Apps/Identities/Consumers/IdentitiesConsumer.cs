@@ -74,13 +74,13 @@ namespace Crm.Apps.Identities.Consumers
                 return;
             }
 
-            var oldIdentity = await _identitiesService.GetAsync(newIdentity.Id, ct).ConfigureAwait(false);
+            var oldIdentity = await _identitiesService.GetAsync(newIdentity.Id, ct);
             if (oldIdentity == null)
             {
                 return;
             }
 
-            await _identitiesService.UpdateAsync(message.UserId, oldIdentity, newIdentity, ct).ConfigureAwait(false);
+            await _identitiesService.UpdateAsync(message.UserId, oldIdentity, newIdentity, ct);
         }
 
         private Task VerifyAsync(Message message, CancellationToken ct)

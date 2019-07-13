@@ -28,18 +28,18 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var company = await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             company.IsDeleted = true;
-            await _companiesClient.UpdateAsync(company).ConfigureAwait(false);
+            await _companiesClient.UpdateAsync(company);
 
             var changes = await _companyChangesClient
                 .GetPagedListAsync(companyId: company.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

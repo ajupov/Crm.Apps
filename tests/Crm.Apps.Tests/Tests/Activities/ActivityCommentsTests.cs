@@ -23,18 +23,18 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
-                .BuildAsync().ConfigureAwait(false);
+                .BuildAsync();
             await Task.WhenAll(
                     _create.ActivityComment.WithActivityId(activity.Id).BuildAsync(),
                     _create.ActivityComment.WithActivityId(activity.Id).BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var comments = await _activityCommentsClient
-                .GetPagedListAsync(activity.Id, sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
+                .GetPagedListAsync(activity.Id, sortBy: "CreateDateTime", orderBy: "desc");
 
             var results = comments.Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -46,11 +46,11 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
-                .BuildAsync().ConfigureAwait(false);
+                .BuildAsync();
 
             var comment = new ActivityComment
             {
@@ -58,10 +58,10 @@ namespace Crm.Apps.Tests.Tests.Activities
                 Value = "Test"
             };
 
-            await _activityCommentsClient.CreateAsync(comment).ConfigureAwait(false);
+            await _activityCommentsClient.CreateAsync(comment);
 
             var createdComment = (await _activityCommentsClient.GetPagedListAsync(activity.Id, sortBy: "CreateDateTime",
-                orderBy: "asc").ConfigureAwait(false)).First();
+                orderBy: "asc")).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.ActivityId, createdComment.ActivityId);

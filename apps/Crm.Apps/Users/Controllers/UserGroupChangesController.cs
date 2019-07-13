@@ -26,7 +26,7 @@ namespace Crm.Apps.Users.Controllers
         public async Task<ActionResult<List<UserGroupChange>>> GetPagedList(
             UserGroupChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _userGroupChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _userGroupChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

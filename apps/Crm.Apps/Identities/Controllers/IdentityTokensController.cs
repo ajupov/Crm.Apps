@@ -32,7 +32,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            var token = await _identityTokensService.GetAsync(identityId, value, ct).ConfigureAwait(false);
+            var token = await _identityTokensService.GetAsync(identityId, value, ct);
             if (token == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace Crm.Apps.Identities.Controllers
         [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult<Guid>> Create(IdentityToken token, CancellationToken ct = default)
         {
-            var id = await _identityTokensService.CreateAsync(token, ct).ConfigureAwait(false);
+            var id = await _identityTokensService.CreateAsync(token, ct);
 
             return Created(nameof(Get), id);
         }
@@ -59,7 +59,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            await _identityTokensService.SetIsUsedAsync(id, ct).ConfigureAwait(false);
+            await _identityTokensService.SetIsUsedAsync(id, ct);
 
             return NoContent();
         }

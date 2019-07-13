@@ -46,7 +46,7 @@ namespace Crm.Apps.Activities.Controllers
                 return BadRequest();
             }
 
-            var attribute = await _activityAttributesService.GetAsync(id, ct).ConfigureAwait(false);
+            var attribute = await _activityAttributesService.GetAsync(id, ct);
             if (attribute == null)
             {
                 return NotFound();
@@ -65,7 +65,7 @@ namespace Crm.Apps.Activities.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _activityAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _activityAttributesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(attributes, attributes.Select(x => x.AccountId));
         }
@@ -77,7 +77,7 @@ namespace Crm.Apps.Activities.Controllers
             ActivityAttributeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var attributes = await _activityAttributesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var attributes = await _activityAttributesService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(attributes, attributes.Select(x => x.AccountId));
         }
@@ -99,7 +99,7 @@ namespace Crm.Apps.Activities.Controllers
             }
 
             var id = await _activityAttributesService.CreateAsync(_userContext.UserId, attribute, ct)
-                .ConfigureAwait(false);
+                ;
 
             return Created(nameof(Get), id);
         }
@@ -114,7 +114,7 @@ namespace Crm.Apps.Activities.Controllers
                 return BadRequest();
             }
 
-            var oldAttribute = await _activityAttributesService.GetAsync(attribute.Id, ct).ConfigureAwait(false);
+            var oldAttribute = await _activityAttributesService.GetAsync(attribute.Id, ct);
             if (oldAttribute == null)
             {
                 return NotFound();
@@ -122,7 +122,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activityAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                new[] {attribute.AccountId, oldAttribute.AccountId}).ConfigureAwait(false);
+                new[] {attribute.AccountId, oldAttribute.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -135,11 +135,11 @@ namespace Crm.Apps.Activities.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _activityAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _activityAttributesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _activityAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -152,11 +152,11 @@ namespace Crm.Apps.Activities.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _activityAttributesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _activityAttributesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _activityAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -189,7 +189,7 @@ namespace Crm.Apps.Activities.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -199,7 +199,7 @@ namespace Crm.Apps.Activities.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

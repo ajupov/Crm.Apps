@@ -28,16 +28,16 @@ namespace Crm.Apps.Tests.Tests.Identities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
+            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync();
             identity.IsPrimary = true;
             identity.IsVerified = true;
-            await _identitiesClient.UpdateAsync(identity).ConfigureAwait(false);
+            await _identitiesClient.UpdateAsync(identity);
 
             var changes = await _identityChangesClient
                 .GetPagedListAsync(identityId: identity.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

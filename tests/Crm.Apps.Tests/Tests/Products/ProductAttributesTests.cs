@@ -24,7 +24,7 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _productAttributesClient.GetTypesAsync().ConfigureAwait(false);
+            var types = await _productAttributesClient.GetTypesAsync();
 
             Assert.NotEmpty(types);
         }
@@ -32,12 +32,12 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attributeId =
-                (await _create.ProductAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false))
+                (await _create.ProductAttribute.WithAccountId(account.Id).BuildAsync())
                 .Id;
 
-            var attribute = await _productAttributesClient.GetAsync(attributeId).ConfigureAwait(false);
+            var attribute = await _productAttributesClient.GetAsync(attributeId);
 
             Assert.NotNull(attribute);
             Assert.Equal(attributeId, attribute.Id);
@@ -46,13 +46,13 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attributeIds = (await Task.WhenAll(
                     _create.ProductAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
                     _create.ProductAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var attributes = await _productAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
+            var attributes = await _productAttributesClient.GetListAsync(attributeIds);
 
             Assert.NotEmpty(attributes);
             Assert.Equal(attributeIds.Count, attributes.Count);
@@ -61,14 +61,14 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             await Task.WhenAll(_create.ProductAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
-                .WithKey("Test1").BuildAsync()).ConfigureAwait(false);
+                .WithKey("Test1").BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
             var attributes = await _productAttributesClient.GetPagedListAsync(account.Id, key: "Test1",
                 types: filterTypes,
-                sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
+                sortBy: "CreateDateTime", orderBy: "desc");
 
             var results = attributes.Skip(1).Zip(attributes,
                 (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -80,7 +80,7 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attribute = new ProductAttribute
             {
                 AccountId = account.Id,
@@ -89,9 +89,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 IsDeleted = false
             };
 
-            var createdAttributeId = await _productAttributesClient.CreateAsync(attribute).ConfigureAwait(false);
+            var createdAttributeId = await _productAttributesClient.CreateAsync(attribute);
 
-            var createdAttribute = await _productAttributesClient.GetAsync(createdAttributeId).ConfigureAwait(false);
+            var createdAttribute = await _productAttributesClient.GetAsync(createdAttributeId);
 
             Assert.NotNull(createdAttribute);
             Assert.Equal(createdAttributeId, createdAttribute.Id);
@@ -105,17 +105,17 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attribute = await _create.ProductAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
-                .WithKey("Test").BuildAsync().ConfigureAwait(false);
+                .WithKey("Test").BuildAsync();
 
             attribute.Type = AttributeType.Link;
             attribute.Key = "test.com";
             attribute.IsDeleted = true;
 
-            await _productAttributesClient.UpdateAsync(attribute).ConfigureAwait(false);
+            await _productAttributesClient.UpdateAsync(attribute);
 
-            var updatedAttribute = await _productAttributesClient.GetAsync(attribute.Id).ConfigureAwait(false);
+            var updatedAttribute = await _productAttributesClient.GetAsync(attribute.Id);
 
             Assert.Equal(attribute.Type, updatedAttribute.Type);
             Assert.Equal(attribute.Key, updatedAttribute.Key);
@@ -125,15 +125,15 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attributeIds = (await Task.WhenAll(
                     _create.ProductAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
                     _create.ProductAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _productAttributesClient.DeleteAsync(attributeIds).ConfigureAwait(false);
+            await _productAttributesClient.DeleteAsync(attributeIds);
 
-            var attributes = await _productAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
+            var attributes = await _productAttributesClient.GetListAsync(attributeIds);
 
             Assert.All(attributes, x => Assert.True(x.IsDeleted));
         }
@@ -141,15 +141,15 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attributeIds = (await Task.WhenAll(
                     _create.ProductAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
                     _create.ProductAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _productAttributesClient.RestoreAsync(attributeIds).ConfigureAwait(false);
+            await _productAttributesClient.RestoreAsync(attributeIds);
 
-            var attributes = await _productAttributesClient.GetListAsync(attributeIds).ConfigureAwait(false);
+            var attributes = await _productAttributesClient.GetListAsync(attributeIds);
 
             Assert.All(attributes, x => Assert.False(x.IsDeleted));
         }

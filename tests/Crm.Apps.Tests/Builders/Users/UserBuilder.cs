@@ -160,9 +160,9 @@ namespace Crm.Apps.Tests.Builders.Users
                 throw new InvalidOperationException(nameof(_user.AccountId));
             }
 
-            var createdId = await _usersClient.CreateAsync(_user).ConfigureAwait(false);
+            var createdId = await _usersClient.CreateAsync(_user);
 
-            return await _usersClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _usersClient.GetAsync(createdId);
         }
     }
 }

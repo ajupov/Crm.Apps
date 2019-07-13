@@ -34,8 +34,8 @@ namespace Crm.Apps.Identities.Services
                 UseDateTime = default
             };
 
-            var entry = await _storage.AddAsync(newToken, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newToken, ct);
+            await _storage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
@@ -44,7 +44,7 @@ namespace Crm.Apps.Identities.Services
         {
             await _storage.IdentityTokens.Where(x => x.Id == id).ForEachAsync(x => x.UseDateTime = DateTime.UtcNow, ct);
 
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

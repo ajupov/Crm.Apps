@@ -26,7 +26,7 @@ namespace Crm.Apps.Activities.Controllers
         public async Task<ActionResult<List<ActivityAttributeChange>>> GetPagedList(
             ActivityAttributeChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _activityAttributeChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _activityAttributeChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

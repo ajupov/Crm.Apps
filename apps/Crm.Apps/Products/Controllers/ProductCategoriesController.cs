@@ -36,7 +36,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var category = await _userCategoriesService.GetAsync(id, ct).ConfigureAwait(false);
+            var category = await _userCategoriesService.GetAsync(id, ct);
             if (category == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var categorys = await _userCategoriesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var categorys = await _userCategoriesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(categorys, categorys.Select(x => x.AccountId));
         }
@@ -67,7 +67,7 @@ namespace Crm.Apps.Products.Controllers
             ProductCategoryGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var categorys = await _userCategoriesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var categorys = await _userCategoriesService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(categorys, categorys.Select(x => x.AccountId));
         }
@@ -88,7 +88,7 @@ namespace Crm.Apps.Products.Controllers
                 category.AccountId = _userContext.AccountId;
             }
 
-            var id = await _userCategoriesService.CreateAsync(_userContext.UserId, category, ct).ConfigureAwait(false);
+            var id = await _userCategoriesService.CreateAsync(_userContext.UserId, category, ct);
 
             return Created(nameof(Get), id);
         }
@@ -103,14 +103,14 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var oldCategory = await _userCategoriesService.GetAsync(category.Id, ct).ConfigureAwait(false);
+            var oldCategory = await _userCategoriesService.GetAsync(category.Id, ct);
             if (oldCategory == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(() => _userCategoriesService.UpdateAsync(_userContext.UserId, oldCategory,
-                category, ct), new[] {category.AccountId, oldCategory.AccountId}).ConfigureAwait(false);
+                category, ct), new[] {category.AccountId, oldCategory.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -123,11 +123,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _userCategoriesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _userCategoriesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _userCategoriesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -140,11 +140,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _userCategoriesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _userCategoriesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _userCategoriesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -179,7 +179,7 @@ namespace Crm.Apps.Products.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -189,7 +189,7 @@ namespace Crm.Apps.Products.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

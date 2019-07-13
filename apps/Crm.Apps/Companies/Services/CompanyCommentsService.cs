@@ -48,8 +48,8 @@ namespace Crm.Apps.Companies.Services
                 CreateDateTime = DateTime.UtcNow
             };
 
-            await _storage.AddAsync(newComment, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddAsync(newComment, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

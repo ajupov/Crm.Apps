@@ -25,14 +25,14 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var activityId = (await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id)
                 .WithStatusId(status.Id)
-                .BuildAsync().ConfigureAwait(false)).Id;
+                .BuildAsync()).Id;
 
-            var activity = await _activitiesClient.GetAsync(activityId).ConfigureAwait(false);
+            var activity = await _activitiesClient.GetAsync(activityId);
 
             Assert.NotNull(activity);
             Assert.Equal(activityId, activity.Id);
@@ -41,15 +41,15 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var activityIds = (await Task.WhenAll(
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var activities = await _activitiesClient.GetListAsync(activityIds).ConfigureAwait(false);
+            var activities = await _activitiesClient.GetListAsync(activityIds);
 
             Assert.NotEmpty(activities);
             Assert.Equal(activityIds.Count, activities.Count);
@@ -58,23 +58,23 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync()
-                .ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                ;
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             await Task.WhenAll(
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync())
-                .ConfigureAwait(false);
+                ;
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
             var filterSourceIds = new List<Guid> {status.Id};
 
             var activities = await _activitiesClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime",
                 orderBy: "desc",
-                allAttributes: false, attributes: filterAttributes, statusIds: filterSourceIds).ConfigureAwait(false);
+                allAttributes: false, attributes: filterAttributes, statusIds: filterSourceIds);
 
             var results = activities.Skip(1)
                 .Zip(activities, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -86,15 +86,15 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync()
-                .ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                ;
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
             var activityStatus =
-                await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var productStatus = await _create.ProductStatus.WithAccountId(account.Id).BuildAsync();
             var product = await _create.Product.WithAccountId(account.Id).WithStatusId(productStatus.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             var activity = new Activity
             {
@@ -125,9 +125,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 }
             };
 
-            var createdActivityId = await _activitiesClient.CreateAsync(activity).ConfigureAwait(false);
+            var createdActivityId = await _activitiesClient.CreateAsync(activity);
 
-            var createdActivity = await _activitiesClient.GetAsync(createdActivityId).ConfigureAwait(false);
+            var createdActivity = await _activitiesClient.GetAsync(createdActivityId);
 
             Assert.NotNull(createdActivity);
             Assert.Equal(createdActivityId, createdActivity.Id);
@@ -155,15 +155,15 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
             var activityStatus =
-                await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id)
                 .WithStatusId(activityStatus.Id)
-                .BuildAsync().ConfigureAwait(false);
+                .BuildAsync();
 
             activity.TypeId = type.Id;
             activity.StatusId = activityStatus.Id;
@@ -181,9 +181,9 @@ namespace Crm.Apps.Tests.Tests.Activities
             activity.DeadLineDateTime = DateTime.Now.AddDays(1);
             activity.IsDeleted = true;
             activity.AttributeLinks.Add(new ActivityAttributeLink {ActivityAttributeId = attribute.Id, Value = "Test"});
-            await _activitiesClient.UpdateAsync(activity).ConfigureAwait(false);
+            await _activitiesClient.UpdateAsync(activity);
 
-            var updatedActivity = await _activitiesClient.GetAsync(activity.Id).ConfigureAwait(false);
+            var updatedActivity = await _activitiesClient.GetAsync(activity.Id);
 
             Assert.Equal(activity.AccountId, updatedActivity.AccountId);
             Assert.Equal(activity.TypeId, updatedActivity.TypeId);
@@ -210,17 +210,17 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var activityIds = (await Task.WhenAll(
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _activitiesClient.DeleteAsync(activityIds).ConfigureAwait(false);
+            await _activitiesClient.DeleteAsync(activityIds);
 
-            var activities = await _activitiesClient.GetListAsync(activityIds).ConfigureAwait(false);
+            var activities = await _activitiesClient.GetListAsync(activityIds);
 
             Assert.All(activities, x => Assert.True(x.IsDeleted));
         }
@@ -228,17 +228,17 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
             var activityIds = (await Task.WhenAll(
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
                     _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _activitiesClient.RestoreAsync(activityIds).ConfigureAwait(false);
+            await _activitiesClient.RestoreAsync(activityIds);
 
-            var activities = await _activitiesClient.GetListAsync(activityIds).ConfigureAwait(false);
+            var activities = await _activitiesClient.GetListAsync(activityIds);
 
             Assert.All(activities, x => Assert.False(x.IsDeleted));
         }

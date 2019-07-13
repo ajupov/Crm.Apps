@@ -36,7 +36,7 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var group = await _leadSourcesService.GetAsync(id, ct).ConfigureAwait(false);
+            var group = await _leadSourcesService.GetAsync(id, ct);
             if (group == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var groups = await _leadSourcesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var groups = await _leadSourcesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
         }
@@ -67,7 +67,7 @@ namespace Crm.Apps.Leads.Controllers
             LeadSourceGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var groups = await _leadSourcesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var groups = await _leadSourcesService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
         }
@@ -88,7 +88,7 @@ namespace Crm.Apps.Leads.Controllers
                 group.AccountId = _userContext.AccountId;
             }
 
-            var id = await _leadSourcesService.CreateAsync(_userContext.UserId, group, ct).ConfigureAwait(false);
+            var id = await _leadSourcesService.CreateAsync(_userContext.UserId, group, ct);
 
             return Created(nameof(Get), id);
         }
@@ -103,7 +103,7 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var oldSource = await _leadSourcesService.GetAsync(source.Id, ct).ConfigureAwait(false);
+            var oldSource = await _leadSourcesService.GetAsync(source.Id, ct);
             if (oldSource == null)
             {
                 return NotFound();
@@ -111,7 +111,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(() => _leadSourcesService.UpdateAsync(_userContext.UserId, oldSource,
                     source, ct),
-                new[] {source.AccountId, oldSource.AccountId}).ConfigureAwait(false);
+                new[] {source.AccountId, oldSource.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -124,11 +124,11 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _leadSourcesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _leadSourcesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _leadSourcesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -141,11 +141,11 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _leadSourcesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _leadSourcesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _leadSourcesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -180,7 +180,7 @@ namespace Crm.Apps.Leads.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -190,7 +190,7 @@ namespace Crm.Apps.Leads.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

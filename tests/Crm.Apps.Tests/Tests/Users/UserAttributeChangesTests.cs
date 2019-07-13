@@ -29,16 +29,16 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync();
             attribute.Type = AttributeType.Link;
             attribute.Key = "TestLink";
             attribute.IsDeleted = true;
-            await _userAttributesClient.UpdateAsync(attribute).ConfigureAwait(false);
+            await _userAttributesClient.UpdateAsync(attribute);
 
             var changes = await _attributeChangesClient
                 .GetPagedListAsync(attributeId: attribute.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

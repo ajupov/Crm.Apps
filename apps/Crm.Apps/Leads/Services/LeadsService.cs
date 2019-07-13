@@ -60,7 +60,7 @@ namespace Crm.Apps.Leads.Services
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
                 .Sort(parameter.SortBy, parameter.OrderBy)
-                .ToListAsync(ct).ConfigureAwait(false);
+                .ToListAsync(ct);
 
             return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
                 .ToList();
@@ -97,9 +97,9 @@ namespace Crm.Apps.Leads.Services
                 x.AttributeLinks = lead.AttributeLinks;
             });
 
-            var entry = await _storage.AddAsync(newLead, ct).ConfigureAwait(false);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newLead, ct);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
@@ -132,8 +132,8 @@ namespace Crm.Apps.Leads.Services
             });
 
             _storage.Update(oldLead);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task DeleteAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -142,10 +142,10 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.Leads.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = true)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task RestoreAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -154,10 +154,10 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.Leads.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = false)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

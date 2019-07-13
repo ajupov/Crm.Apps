@@ -17,7 +17,7 @@ namespace Crm.Infrastructure.Tracing.Filters
         {
             using (var scope = _tracer.BuildSpan(context.HttpContext.Request.Path).StartActive(true))
             {
-                await next().ConfigureAwait(false);
+                await next();
             }
         }
     }

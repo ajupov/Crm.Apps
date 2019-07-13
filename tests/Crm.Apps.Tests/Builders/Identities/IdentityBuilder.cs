@@ -74,14 +74,14 @@ namespace Crm.Apps.Tests.Builders.Identities
                 throw new InvalidOperationException(nameof(_identity.UserId));
             }
 
-            var createdId = await _identitiesClient.CreateAsync(_identity).ConfigureAwait(false);
+            var createdId = await _identitiesClient.CreateAsync(_identity);
 
             if (!_password.IsEmpty())
             {
-                await _identitiesClient.SetPasswordAsync(createdId, _password).ConfigureAwait(false);
+                await _identitiesClient.SetPasswordAsync(createdId, _password);
             }
 
-            return await _identitiesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _identitiesClient.GetAsync(createdId);
         }
     }
 }

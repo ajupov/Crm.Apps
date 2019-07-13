@@ -25,7 +25,7 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetGenders_ThenSuccess()
         {
-            var genders = await _usersClient.GetGendersAsync().ConfigureAwait(false);
+            var genders = await _usersClient.GetGendersAsync();
 
             Assert.NotEmpty(genders);
         }
@@ -33,10 +33,10 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var userId = (await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false)).Id;
+            var account = await _create.Account.BuildAsync();
+            var userId = (await _create.User.WithAccountId(account.Id).BuildAsync()).Id;
 
-            var user = await _usersClient.GetAsync(userId).ConfigureAwait(false);
+            var user = await _usersClient.GetAsync(userId);
 
             Assert.NotNull(user);
             Assert.Equal(userId, user.Id);
@@ -45,11 +45,11 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var userIds = (await Task.WhenAll(_create.User.WithAccountId(account.Id).BuildAsync(),
-                _create.User.WithAccountId(account.Id).BuildAsync()).ConfigureAwait(false)).Select(x => x.Id).ToList();
+                _create.User.WithAccountId(account.Id).BuildAsync())).Select(x => x.Id).ToList();
 
-            var users = await _usersClient.GetListAsync(userIds).ConfigureAwait(false);
+            var users = await _usersClient.GetListAsync(userIds);
 
             Assert.NotEmpty(users);
             Assert.Equal(userIds.Count, users.Count);
@@ -58,20 +58,20 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync();
             var group = await _create.UserGroup.WithAccountId(account.Id).WithName("Test").BuildAsync()
-                .ConfigureAwait(false);
+                ;
             await Task.WhenAll(
                     _create.User.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "Test").BuildAsync(),
                     _create.User.WithAccountId(account.Id).WithAttributeLink(attribute.Id, "Test").BuildAsync())
-                .ConfigureAwait(false);
+                ;
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
             var filterGroupIds = new List<Guid> {group.Id};
 
             var users = await _usersClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime", orderBy: "desc",
                     allAttributes: false, attributes: filterAttributes, allGroupIds: true, groupIds: filterGroupIds)
-                .ConfigureAwait(false);
+                ;
 
             var results = users.Skip(1)
                 .Zip(users, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -83,9 +83,9 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var group = await _create.UserGroup.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync();
+            var group = await _create.UserGroup.WithAccountId(account.Id).BuildAsync();
             var user = new User
             {
                 AccountId = account.Id,
@@ -129,9 +129,9 @@ namespace Crm.Apps.Tests.Tests.Users
                 }
             };
 
-            var createdUserId = await _usersClient.CreateAsync(user).ConfigureAwait(false);
+            var createdUserId = await _usersClient.CreateAsync(user);
 
-            var createdUser = await _usersClient.GetAsync(createdUserId).ConfigureAwait(false);
+            var createdUser = await _usersClient.GetAsync(createdUserId);
 
             Assert.NotNull(createdUser);
             Assert.Equal(createdUserId, createdUser.Id);
@@ -154,11 +154,11 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
+            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync();
             var group = await _create.UserGroup.WithAccountId(account.Id).WithPermission(Permission.TechnicalSupport)
-                .BuildAsync().ConfigureAwait(false);
+                .BuildAsync();
 
             user.Surname = "Test2";
             user.Name = "Test2";
@@ -172,9 +172,9 @@ namespace Crm.Apps.Tests.Tests.Users
             user.Permissions.Add(new UserPermission {Permission = Permission.Administration});
             user.AttributeLinks.Add(new UserAttributeLink {UserAttributeId = attribute.Id, Value = "Test"});
             user.GroupLinks.Add(new UserGroupLink {UserGroupId = group.Id});
-            await _usersClient.UpdateAsync(user).ConfigureAwait(false);
+            await _usersClient.UpdateAsync(user);
 
-            var updatedUser = await _usersClient.GetAsync(user.Id).ConfigureAwait(false);
+            var updatedUser = await _usersClient.GetAsync(user.Id);
 
             Assert.Equal(user.Surname, updatedUser.Surname);
             Assert.Equal(user.Name, updatedUser.Name);
@@ -195,13 +195,13 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenLock_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var userIds = (await Task.WhenAll(_create.User.WithAccountId(account.Id).BuildAsync(),
-                _create.User.WithAccountId(account.Id).BuildAsync()).ConfigureAwait(false)).Select(x => x.Id).ToList();
+                _create.User.WithAccountId(account.Id).BuildAsync())).Select(x => x.Id).ToList();
 
-            await _usersClient.LockAsync(userIds).ConfigureAwait(false);
+            await _usersClient.LockAsync(userIds);
 
-            var users = await _usersClient.GetListAsync(userIds).ConfigureAwait(false);
+            var users = await _usersClient.GetListAsync(userIds);
 
             Assert.All(users, x => Assert.True(x.IsLocked));
         }
@@ -209,13 +209,13 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenUnlock_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var userIds = (await Task.WhenAll(_create.User.WithAccountId(account.Id).BuildAsync(),
-                _create.User.WithAccountId(account.Id).BuildAsync()).ConfigureAwait(false)).Select(x => x.Id).ToList();
+                _create.User.WithAccountId(account.Id).BuildAsync())).Select(x => x.Id).ToList();
 
-            await _usersClient.UnlockAsync(userIds).ConfigureAwait(false);
+            await _usersClient.UnlockAsync(userIds);
 
-            var users = await _usersClient.GetListAsync(userIds).ConfigureAwait(false);
+            var users = await _usersClient.GetListAsync(userIds);
 
             Assert.All(users, x => Assert.False(x.IsLocked));
         }
@@ -223,13 +223,13 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var userIds = (await Task.WhenAll(_create.User.WithAccountId(account.Id).BuildAsync(),
-                _create.User.WithAccountId(account.Id).BuildAsync()).ConfigureAwait(false)).Select(x => x.Id).ToList();
+                _create.User.WithAccountId(account.Id).BuildAsync())).Select(x => x.Id).ToList();
 
-            await _usersClient.DeleteAsync(userIds).ConfigureAwait(false);
+            await _usersClient.DeleteAsync(userIds);
 
-            var users = await _usersClient.GetListAsync(userIds).ConfigureAwait(false);
+            var users = await _usersClient.GetListAsync(userIds);
 
             Assert.All(users, x => Assert.True(x.IsDeleted));
         }
@@ -237,13 +237,13 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var userIds = (await Task.WhenAll(_create.User.WithAccountId(account.Id).BuildAsync(),
-                _create.User.WithAccountId(account.Id).BuildAsync()).ConfigureAwait(false)).Select(x => x.Id).ToList();
+                _create.User.WithAccountId(account.Id).BuildAsync())).Select(x => x.Id).ToList();
 
-            await _usersClient.LockAsync(userIds).ConfigureAwait(false);
+            await _usersClient.LockAsync(userIds);
 
-            var users = await _usersClient.GetListAsync(userIds).ConfigureAwait(false);
+            var users = await _usersClient.GetListAsync(userIds);
 
             Assert.All(users, x => Assert.False(x.IsDeleted));
         }

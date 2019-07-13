@@ -29,16 +29,16 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync();
             attribute.Type = AttributeType.Link;
             attribute.Key = "TestLink";
             attribute.IsDeleted = true;
-            await _dealAttributesClient.UpdateAsync(attribute).ConfigureAwait(false);
+            await _dealAttributesClient.UpdateAsync(attribute);
 
             var changes = await _attributeChangesClient
                 .GetPagedListAsync(attributeId: attribute.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

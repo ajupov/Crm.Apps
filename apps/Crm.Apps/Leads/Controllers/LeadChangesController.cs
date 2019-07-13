@@ -26,7 +26,7 @@ namespace Crm.Apps.Leads.Controllers
         public async Task<ActionResult<List<LeadChange>>> GetPagedList(LeadChangeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _leadChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _leadChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

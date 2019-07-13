@@ -70,14 +70,14 @@ namespace Crm.Apps.Products.Consumers
                 return;
             }
 
-            var oldAttribute = await _productAttributesService.GetAsync(newAttribute.Id, ct).ConfigureAwait(false);
+            var oldAttribute = await _productAttributesService.GetAsync(newAttribute.Id, ct);
             if (oldAttribute == null)
             {
                 return;
             }
 
             await _productAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct)
-                .ConfigureAwait(false);
+                ;
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

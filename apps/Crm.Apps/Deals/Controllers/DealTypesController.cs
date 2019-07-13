@@ -36,7 +36,7 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var type = await _dealTypesService.GetAsync(id, ct).ConfigureAwait(false);
+            var type = await _dealTypesService.GetAsync(id, ct);
             if (type == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var types = await _dealTypesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var types = await _dealTypesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(types, types.Select(x => x.AccountId));
         }
@@ -67,7 +67,7 @@ namespace Crm.Apps.Deals.Controllers
             DealTypeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var types = await _dealTypesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var types = await _dealTypesService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(types, types.Select(x => x.AccountId));
         }
@@ -88,7 +88,7 @@ namespace Crm.Apps.Deals.Controllers
                 type.AccountId = _userContext.AccountId;
             }
 
-            var id = await _dealTypesService.CreateAsync(_userContext.UserId, type, ct).ConfigureAwait(false);
+            var id = await _dealTypesService.CreateAsync(_userContext.UserId, type, ct);
 
             return Created(nameof(Get), id);
         }
@@ -103,14 +103,14 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var oldType = await _dealTypesService.GetAsync(type.Id, ct).ConfigureAwait(false);
+            var oldType = await _dealTypesService.GetAsync(type.Id, ct);
             if (oldType == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(() => _dealTypesService.UpdateAsync(_userContext.UserId, oldType,
-                type, ct), new[] {type.AccountId, oldType.AccountId}).ConfigureAwait(false);
+                type, ct), new[] {type.AccountId, oldType.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -123,11 +123,11 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _dealTypesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _dealTypesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _dealTypesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -140,11 +140,11 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _dealTypesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _dealTypesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _dealTypesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -179,7 +179,7 @@ namespace Crm.Apps.Deals.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -189,7 +189,7 @@ namespace Crm.Apps.Deals.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.SalesManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

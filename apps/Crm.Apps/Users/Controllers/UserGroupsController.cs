@@ -36,7 +36,7 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var group = await _userGroupsService.GetAsync(id, ct).ConfigureAwait(false);
+            var group = await _userGroupsService.GetAsync(id, ct);
             if (group == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var groups = await _userGroupsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var groups = await _userGroupsService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
         }
@@ -66,7 +66,7 @@ namespace Crm.Apps.Users.Controllers
         public async Task<ActionResult<List<UserGroup>>> GetPagedList(UserGroupGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var groups = await _userGroupsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var groups = await _userGroupsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
         }
@@ -86,7 +86,7 @@ namespace Crm.Apps.Users.Controllers
                 group.AccountId = _userContext.AccountId;
             }
 
-            var id = await _userGroupsService.CreateAsync(_userContext.UserId, group, ct).ConfigureAwait(false);
+            var id = await _userGroupsService.CreateAsync(_userContext.UserId, group, ct);
 
             return Created(nameof(Get), id);
         }
@@ -100,7 +100,7 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var oldGroup = await _userGroupsService.GetAsync(group.Id, ct).ConfigureAwait(false);
+            var oldGroup = await _userGroupsService.GetAsync(group.Id, ct);
             if (oldGroup == null)
             {
                 return NotFound();
@@ -108,7 +108,7 @@ namespace Crm.Apps.Users.Controllers
 
             return await ActionIfAllowed(
                 () => _userGroupsService.UpdateAsync(_userContext.UserId, oldGroup, @group, ct),
-                new[] {group.AccountId, oldGroup.AccountId}).ConfigureAwait(false);
+                new[] {group.AccountId, oldGroup.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -121,11 +121,11 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _userGroupsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _userGroupsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _userGroupsService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -138,11 +138,11 @@ namespace Crm.Apps.Users.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _userGroupsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _userGroupsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _userGroupsService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -175,7 +175,7 @@ namespace Crm.Apps.Users.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -184,7 +184,7 @@ namespace Crm.Apps.Users.Controllers
 
             if (_userContext.HasAny(Permission.AccountOwning) && _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

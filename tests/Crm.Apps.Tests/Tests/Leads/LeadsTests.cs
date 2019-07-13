@@ -25,12 +25,12 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var leadId = (await _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync()
-                .ConfigureAwait(false)).Id;
+                ).Id;
 
-            var lead = await _leadsClient.GetAsync(leadId).ConfigureAwait(false);
+            var lead = await _leadsClient.GetAsync(leadId);
 
             Assert.NotNull(lead);
             Assert.Equal(leadId, lead.Id);
@@ -39,14 +39,14 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var leadIds = (await Task.WhenAll(
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync(),
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var leads = await _leadsClient.GetListAsync(leadIds).ConfigureAwait(false);
+            var leads = await _leadsClient.GetListAsync(leadIds);
 
             Assert.NotEmpty(leads);
             Assert.Equal(leadIds.Count, leads.Count);
@@ -55,21 +55,21 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync();
             var source = await _create.LeadSource.WithAccountId(account.Id).WithName("Test").BuildAsync()
-                .ConfigureAwait(false);
+                ;
             await Task.WhenAll(
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id)
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id)
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync())
-                .ConfigureAwait(false);
+                ;
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
             var filterSourceIds = new List<Guid> {source.Id};
 
             var leads = await _leadsClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime", orderBy: "desc",
-                allAttributes: false, attributes: filterAttributes, sourceIds: filterSourceIds).ConfigureAwait(false);
+                allAttributes: false, attributes: filterAttributes, sourceIds: filterSourceIds);
 
             var results = leads.Skip(1)
                 .Zip(leads, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -81,9 +81,9 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
 
             var lead = new Lead
             {
@@ -118,9 +118,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 }
             };
 
-            var createdLeadId = await _leadsClient.CreateAsync(lead).ConfigureAwait(false);
+            var createdLeadId = await _leadsClient.CreateAsync(lead);
 
-            var createdLead = await _leadsClient.GetAsync(createdLeadId).ConfigureAwait(false);
+            var createdLead = await _leadsClient.GetAsync(createdLeadId);
 
             Assert.NotNull(createdLead);
             Assert.Equal(createdLeadId, createdLead.Id);
@@ -152,11 +152,11 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
+            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             lead.SourceId = source.Id;
             lead.ResponsibleUserId = Guid.Empty;
@@ -178,9 +178,9 @@ namespace Crm.Apps.Tests.Tests.Leads
             lead.OpportunitySum = 1;
             lead.IsDeleted = true;
             lead.AttributeLinks.Add(new LeadAttributeLink {LeadAttributeId = attribute.Id, Value = "Test"});
-            await _leadsClient.UpdateAsync(lead).ConfigureAwait(false);
+            await _leadsClient.UpdateAsync(lead);
 
-            var updatedLead = await _leadsClient.GetAsync(lead.Id).ConfigureAwait(false);
+            var updatedLead = await _leadsClient.GetAsync(lead.Id);
 
             Assert.Equal(lead.AccountId, updatedLead.AccountId);
             Assert.Equal(lead.SourceId, updatedLead.SourceId);
@@ -211,16 +211,16 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var leadIds = (await Task.WhenAll(
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync(),
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _leadsClient.DeleteAsync(leadIds).ConfigureAwait(false);
+            await _leadsClient.DeleteAsync(leadIds);
 
-            var leads = await _leadsClient.GetListAsync(leadIds).ConfigureAwait(false);
+            var leads = await _leadsClient.GetListAsync(leadIds);
 
             Assert.All(leads, x => Assert.True(x.IsDeleted));
         }
@@ -228,16 +228,16 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var leadIds = (await Task.WhenAll(
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync(),
                     _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _leadsClient.RestoreAsync(leadIds).ConfigureAwait(false);
+            await _leadsClient.RestoreAsync(leadIds);
 
-            var leads = await _leadsClient.GetListAsync(leadIds).ConfigureAwait(false);
+            var leads = await _leadsClient.GetListAsync(leadIds);
 
             Assert.All(leads, x => Assert.False(x.IsDeleted));
         }

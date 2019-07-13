@@ -30,16 +30,16 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var group = await _create.UserGroup.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var group = await _create.UserGroup.WithAccountId(account.Id).BuildAsync();
             group.Name = "Test2";
             group.Permissions = new List<UserGroupPermission> {new UserGroupPermission {Permission = Permission.None}};
             group.IsDeleted = true;
-            await _userGroupsClient.UpdateAsync(group).ConfigureAwait(false);
+            await _userGroupsClient.UpdateAsync(group);
 
             var changes = await _groupChangesClient
                 .GetPagedListAsync(groupId: group.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

@@ -26,7 +26,7 @@ namespace Crm.Apps.Accounts.Controllers
         public async Task<ActionResult<List<AccountChange>>> GetPagedList(AccountChangeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _accountChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _accountChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

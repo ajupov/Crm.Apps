@@ -34,8 +34,8 @@ namespace Crm.Apps.Deals.Controllers
         public async Task<ActionResult<List<DealComment>>> GetPagedList(DealCommentGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var deal = await _dealsService.GetAsync(parameter.DealId, ct).ConfigureAwait(false);
-            var comments = await _dealCommentsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var deal = await _dealsService.GetAsync(parameter.DealId, ct);
+            var comments = await _dealCommentsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(comments, new[] {deal.AccountId});
         }
@@ -50,11 +50,11 @@ namespace Crm.Apps.Deals.Controllers
                 return BadRequest();
             }
 
-            var deal = await _dealsService.GetAsync(comment.DealId, ct).ConfigureAwait(false);
+            var deal = await _dealsService.GetAsync(comment.DealId, ct);
 
             return await ActionIfAllowed(
                 () => _dealCommentsService.CreateAsync(_userContext.UserId, comment, ct)
-                , new[] {deal.AccountId}).ConfigureAwait(false);
+                , new[] {deal.AccountId});
         }
 
         [NonAction]
@@ -89,7 +89,7 @@ namespace Crm.Apps.Deals.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -99,7 +99,7 @@ namespace Crm.Apps.Deals.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

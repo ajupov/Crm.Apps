@@ -22,10 +22,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var typeId = (await _create.DealType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false)).Id;
+            var account = await _create.Account.BuildAsync();
+            var typeId = (await _create.DealType.WithAccountId(account.Id).BuildAsync()).Id;
 
-            var type = await _dealTypesClient.GetAsync(typeId).ConfigureAwait(false);
+            var type = await _dealTypesClient.GetAsync(typeId);
 
             Assert.NotNull(type);
             Assert.Equal(typeId, type.Id);
@@ -34,13 +34,13 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var typeIds = (await Task.WhenAll(
                     _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.DealType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var types = await _dealTypesClient.GetListAsync(typeIds).ConfigureAwait(false);
+            var types = await _dealTypesClient.GetListAsync(typeIds);
 
             Assert.NotEmpty(types);
             Assert.Equal(typeIds.Count, types.Count);
@@ -49,13 +49,13 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             await Task.WhenAll(_create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var types = await _dealTypesClient
                 .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
-                .ConfigureAwait(false);
+                ;
 
             var results = types.Skip(1).Zip(types,
                 (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -67,7 +67,7 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var type = new DealType
             {
                 AccountId = account.Id,
@@ -75,9 +75,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 IsDeleted = false
             };
 
-            var createdTypeId = await _dealTypesClient.CreateAsync(type).ConfigureAwait(false);
+            var createdTypeId = await _dealTypesClient.CreateAsync(type);
 
-            var createdType = await _dealTypesClient.GetAsync(createdTypeId).ConfigureAwait(false);
+            var createdType = await _dealTypesClient.GetAsync(createdTypeId);
 
             Assert.NotNull(createdType);
             Assert.Equal(createdTypeId, createdType.Id);
@@ -90,16 +90,16 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var type = await _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             type.Name = "Test2";
             type.IsDeleted = true;
 
-            await _dealTypesClient.UpdateAsync(type).ConfigureAwait(false);
+            await _dealTypesClient.UpdateAsync(type);
 
-            var updatedType = await _dealTypesClient.GetAsync(type.Id).ConfigureAwait(false);
+            var updatedType = await _dealTypesClient.GetAsync(type.Id);
 
             Assert.Equal(type.Name, updatedType.Name);
             Assert.Equal(type.IsDeleted, updatedType.IsDeleted);
@@ -108,15 +108,15 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var typeIds = (await Task.WhenAll(
                     _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.DealType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _dealTypesClient.DeleteAsync(typeIds).ConfigureAwait(false);
+            await _dealTypesClient.DeleteAsync(typeIds);
 
-            var types = await _dealTypesClient.GetListAsync(typeIds).ConfigureAwait(false);
+            var types = await _dealTypesClient.GetListAsync(typeIds);
 
             Assert.All(types, x => Assert.True(x.IsDeleted));
         }
@@ -124,15 +124,15 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var typeIds = (await Task.WhenAll(
                     _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.DealType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _dealTypesClient.RestoreAsync(typeIds).ConfigureAwait(false);
+            await _dealTypesClient.RestoreAsync(typeIds);
 
-            var types = await _dealTypesClient.GetListAsync(typeIds).ConfigureAwait(false);
+            var types = await _dealTypesClient.GetListAsync(typeIds);
 
             Assert.All(types, x => Assert.False(x.IsDeleted));
         }

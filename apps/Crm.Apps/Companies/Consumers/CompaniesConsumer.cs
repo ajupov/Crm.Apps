@@ -70,13 +70,13 @@ namespace Crm.Apps.Companies.Consumers
                 return;
             }
 
-            var oldCompany = await _companiesService.GetAsync(newCompany.Id, ct).ConfigureAwait(false);
+            var oldCompany = await _companiesService.GetAsync(newCompany.Id, ct);
             if (oldCompany == null)
             {
                 return;
             }
 
-            await _companiesService.UpdateAsync(message.UserId, oldCompany, newCompany, ct).ConfigureAwait(false);
+            await _companiesService.UpdateAsync(message.UserId, oldCompany, newCompany, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

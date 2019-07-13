@@ -51,9 +51,9 @@ namespace Crm.Apps.Tests.Builders.Contacts
                 throw new InvalidOperationException(nameof(_contactAttribute.AccountId));
             }
 
-            var createdId = await _contactAttributesClient.CreateAsync(_contactAttribute).ConfigureAwait(false);
+            var createdId = await _contactAttributesClient.CreateAsync(_contactAttribute);
 
-            return await _contactAttributesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _contactAttributesClient.GetAsync(createdId);
         }
     }
 }

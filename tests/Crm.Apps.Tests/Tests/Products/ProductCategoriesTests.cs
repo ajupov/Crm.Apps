@@ -22,11 +22,11 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var categoriesId =
-                (await _create.ProductCategory.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false)).Id;
+                (await _create.ProductCategory.WithAccountId(account.Id).BuildAsync()).Id;
 
-            var categories = await _productCategoriesClient.GetAsync(categoriesId).ConfigureAwait(false);
+            var categories = await _productCategoriesClient.GetAsync(categoriesId);
 
             Assert.NotNull(categories);
             Assert.Equal(categoriesId, categories.Id);
@@ -35,13 +35,13 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var categoriesIds = (await Task.WhenAll(
                     _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.ProductCategory.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var categories = await _productCategoriesClient.GetListAsync(categoriesIds).ConfigureAwait(false);
+            var categories = await _productCategoriesClient.GetListAsync(categoriesIds);
 
             Assert.NotEmpty(categories);
             Assert.Equal(categoriesIds.Count, categories.Count);
@@ -50,13 +50,13 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             await Task.WhenAll(_create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var categories = await _productCategoriesClient
                 .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
-                .ConfigureAwait(false);
+                ;
 
             var results = categories.Skip(1).Zip(categories,
                 (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -68,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var categories = new ProductCategory
             {
                 AccountId = account.Id,
@@ -76,9 +76,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 IsDeleted = false
             };
 
-            var createdCategoryId = await _productCategoriesClient.CreateAsync(categories).ConfigureAwait(false);
+            var createdCategoryId = await _productCategoriesClient.CreateAsync(categories);
 
-            var createdCategory = await _productCategoriesClient.GetAsync(createdCategoryId).ConfigureAwait(false);
+            var createdCategory = await _productCategoriesClient.GetAsync(createdCategoryId);
 
             Assert.NotNull(createdCategory);
             Assert.Equal(createdCategoryId, createdCategory.Id);
@@ -91,16 +91,16 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var categories = await _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             categories.Name = "Test2";
             categories.IsDeleted = true;
 
-            await _productCategoriesClient.UpdateAsync(categories).ConfigureAwait(false);
+            await _productCategoriesClient.UpdateAsync(categories);
 
-            var updatedCategory = await _productCategoriesClient.GetAsync(categories.Id).ConfigureAwait(false);
+            var updatedCategory = await _productCategoriesClient.GetAsync(categories.Id);
 
             Assert.Equal(categories.Name, updatedCategory.Name);
             Assert.Equal(categories.IsDeleted, updatedCategory.IsDeleted);
@@ -109,15 +109,15 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var categoriesIds = (await Task.WhenAll(
                     _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.ProductCategory.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _productCategoriesClient.DeleteAsync(categoriesIds).ConfigureAwait(false);
+            await _productCategoriesClient.DeleteAsync(categoriesIds);
 
-            var categories = await _productCategoriesClient.GetListAsync(categoriesIds).ConfigureAwait(false);
+            var categories = await _productCategoriesClient.GetListAsync(categoriesIds);
 
             Assert.All(categories, x => Assert.True(x.IsDeleted));
         }
@@ -125,15 +125,15 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var categoriesIds = (await Task.WhenAll(
                     _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.ProductCategory.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _productCategoriesClient.RestoreAsync(categoriesIds).ConfigureAwait(false);
+            await _productCategoriesClient.RestoreAsync(categoriesIds);
 
-            var categories = await _productCategoriesClient.GetListAsync(categoriesIds).ConfigureAwait(false);
+            var categories = await _productCategoriesClient.GetListAsync(categoriesIds);
 
             Assert.All(categories, x => Assert.False(x.IsDeleted));
         }

@@ -74,13 +74,13 @@ namespace Crm.Apps.Products.Consumers
                 return;
             }
 
-            var oldProduct = await _productsService.GetAsync(newProduct.Id, ct).ConfigureAwait(false);
+            var oldProduct = await _productsService.GetAsync(newProduct.Id, ct);
             if (oldProduct == null)
             {
                 return;
             }
 
-            await _productsService.UpdateAsync(message.UserId, oldProduct, newProduct, ct).ConfigureAwait(false);
+            await _productsService.UpdateAsync(message.UserId, oldProduct, newProduct, ct);
         }
 
         private Task HideAsync(Message message, CancellationToken ct)

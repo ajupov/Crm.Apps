@@ -26,7 +26,7 @@ namespace Crm.Apps.Companies.Controllers
         public async Task<ActionResult<List<CompanyAttributeChange>>> GetPagedList(
             CompanyAttributeChangeGetPagedListParameter parameter, CancellationToken ct = default)
         {
-            return await _companyAttributeChangesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _companyAttributeChangesService.GetPagedListAsync(parameter, ct);
         }
     }
 }

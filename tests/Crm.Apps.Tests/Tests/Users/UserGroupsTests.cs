@@ -24,10 +24,10 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var groupId = (await _create.UserGroup.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false)).Id;
+            var account = await _create.Account.BuildAsync();
+            var groupId = (await _create.UserGroup.WithAccountId(account.Id).BuildAsync()).Id;
 
-            var group = await _userGroupsClient.GetAsync(groupId).ConfigureAwait(false);
+            var group = await _userGroupsClient.GetAsync(groupId);
 
             Assert.NotNull(group);
             Assert.Equal(groupId, group.Id);
@@ -36,13 +36,13 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var groupIds = (await Task.WhenAll(
                     _create.UserGroup.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.UserGroup.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var groups = await _userGroupsClient.GetListAsync(groupIds).ConfigureAwait(false);
+            var groups = await _userGroupsClient.GetListAsync(groupIds);
 
             Assert.NotEmpty(groups);
             Assert.Equal(groupIds.Count, groups.Count);
@@ -51,13 +51,13 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             await Task.WhenAll(_create.UserGroup.WithAccountId(account.Id).WithName("Test1").BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var groups = await _userGroupsClient
                 .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
-                .ConfigureAwait(false);
+                ;
 
             var results = groups.Skip(1).Zip(groups,
                 (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -69,7 +69,7 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var group = new UserGroup
             {
                 AccountId = account.Id,
@@ -84,9 +84,9 @@ namespace Crm.Apps.Tests.Tests.Users
                 }
             };
 
-            var createdGroupId = await _userGroupsClient.CreateAsync(group).ConfigureAwait(false);
+            var createdGroupId = await _userGroupsClient.CreateAsync(group);
 
-            var createdGroup = await _userGroupsClient.GetAsync(createdGroupId).ConfigureAwait(false);
+            var createdGroup = await _userGroupsClient.GetAsync(createdGroupId);
 
             Assert.NotNull(createdGroup);
             Assert.Equal(createdGroupId, createdGroup.Id);
@@ -100,17 +100,17 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var group = await _create.UserGroup.WithAccountId(account.Id).WithName("Test1").BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             group.Name = "Test2";
             group.IsDeleted = true;
             group.Permissions.Add(new UserGroupPermission {Permission = Permission.None});
 
-            await _userGroupsClient.UpdateAsync(group).ConfigureAwait(false);
+            await _userGroupsClient.UpdateAsync(group);
 
-            var updatedGroup = await _userGroupsClient.GetAsync(group.Id).ConfigureAwait(false);
+            var updatedGroup = await _userGroupsClient.GetAsync(group.Id);
 
             Assert.Equal(group.Name, updatedGroup.Name);
             Assert.Equal(group.IsDeleted, updatedGroup.IsDeleted);
@@ -120,15 +120,15 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var groupIds = (await Task.WhenAll(
                     _create.UserGroup.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.UserGroup.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _userGroupsClient.DeleteAsync(groupIds).ConfigureAwait(false);
+            await _userGroupsClient.DeleteAsync(groupIds);
 
-            var groups = await _userGroupsClient.GetListAsync(groupIds).ConfigureAwait(false);
+            var groups = await _userGroupsClient.GetListAsync(groupIds);
 
             Assert.All(groups, x => Assert.True(x.IsDeleted));
         }
@@ -136,15 +136,15 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var groupIds = (await Task.WhenAll(
                     _create.UserGroup.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.UserGroup.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _userGroupsClient.RestoreAsync(groupIds).ConfigureAwait(false);
+            await _userGroupsClient.RestoreAsync(groupIds);
 
-            var groups = await _userGroupsClient.GetListAsync(groupIds).ConfigureAwait(false);
+            var groups = await _userGroupsClient.GetListAsync(groupIds);
 
             Assert.All(groups, x => Assert.False(x.IsDeleted));
         }

@@ -243,9 +243,9 @@ namespace Crm.Apps.Tests.Builders.Contacts
                 throw new InvalidOperationException(nameof(_contact.LeadId));
             }
 
-            var createdId = await _contactsClient.CreateAsync(_contact).ConfigureAwait(false);
+            var createdId = await _contactsClient.CreateAsync(_contact);
 
-            return await _contactsClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _contactsClient.GetAsync(createdId);
         }
     }
 }

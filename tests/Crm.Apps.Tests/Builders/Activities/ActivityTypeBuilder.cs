@@ -42,9 +42,9 @@ namespace Crm.Apps.Tests.Builders.Activities
                 throw new InvalidOperationException(nameof(_activityType.AccountId));
             }
 
-            var createdId = await _activityTypesClient.CreateAsync(_activityType).ConfigureAwait(false);
+            var createdId = await _activityTypesClient.CreateAsync(_activityType);
 
-            return await _activityTypesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _activityTypesClient.GetAsync(createdId);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Crm.Apps.Identities.Services
 
         public async Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            var result = await _storage.Identities.Where(x => ids.Contains(x.Id)).ToListAsync(ct).ConfigureAwait(false);
+            var result = await _storage.Identities.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
 
             result.ForEach(x => x.PasswordHash = string.Empty);
 
@@ -50,7 +50,7 @@ namespace Crm.Apps.Identities.Services
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
                 .ToListAsync(ct)
-                .ConfigureAwait(false);
+                ;
 
             result.ForEach(x => x.PasswordHash = string.Empty);
 
@@ -72,9 +72,9 @@ namespace Crm.Apps.Identities.Services
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(newIdentity, ct).ConfigureAwait(false);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newIdentity, ct);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
@@ -90,8 +90,8 @@ namespace Crm.Apps.Identities.Services
             });
 
             _storage.Update(oldIdentity);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task SetPasswordAsync(Guid userId, Identity identity, string password, CancellationToken ct)
@@ -99,8 +99,8 @@ namespace Crm.Apps.Identities.Services
             var change = identity.WithUpdateLog(userId, x => { x.PasswordHash = Password.ToPasswordHash(password); });
 
             _storage.Update(identity);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public Task<bool> IsPasswordCorrectAsync(Guid userId, Identity identity, string password, CancellationToken ct)
@@ -119,10 +119,10 @@ namespace Crm.Apps.Identities.Services
 
             await _storage.Identities.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsVerified = true)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task UnverifyAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -131,10 +131,10 @@ namespace Crm.Apps.Identities.Services
 
             await _storage.Identities.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsVerified = false)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task SetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -143,10 +143,10 @@ namespace Crm.Apps.Identities.Services
 
             await _storage.Identities.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsPrimary = true)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task ResetAsPrimaryAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -155,10 +155,10 @@ namespace Crm.Apps.Identities.Services
 
             await _storage.Identities.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.WithUpdateLog(userId, x => x.IsPrimary = false)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

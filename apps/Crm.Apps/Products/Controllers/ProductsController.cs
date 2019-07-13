@@ -45,7 +45,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var product = await _productsService.GetAsync(id, ct).ConfigureAwait(false);
+            var product = await _productsService.GetAsync(id, ct);
             if (product == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var products = await _productsService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(products, products.Select(x => x.AccountId));
         }
@@ -75,7 +75,7 @@ namespace Crm.Apps.Products.Controllers
         public async Task<ActionResult<List<Product>>> GetPagedList(ProductGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var products = await _productsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var products = await _productsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(products, products.Select(x => x.AccountId));
         }
@@ -96,7 +96,7 @@ namespace Crm.Apps.Products.Controllers
                 product.AccountId = _userContext.AccountId;
             }
 
-            var id = await _productsService.CreateAsync(_userContext.UserId, product, ct).ConfigureAwait(false);
+            var id = await _productsService.CreateAsync(_userContext.UserId, product, ct);
 
             return Created(nameof(Get), id);
         }
@@ -111,7 +111,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var oldProduct = await _productsService.GetAsync(product.Id, ct).ConfigureAwait(false);
+            var oldProduct = await _productsService.GetAsync(product.Id, ct);
             if (oldProduct == null)
             {
                 return NotFound();
@@ -119,7 +119,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.UpdateAsync(_userContext.UserId, oldProduct, product, ct),
-                new[] {product.AccountId, oldProduct.AccountId}).ConfigureAwait(false);
+                new[] {product.AccountId, oldProduct.AccountId});
         }
 
         [HttpPost("Hide")]
@@ -132,11 +132,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var products = await _productsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _productsService.HideAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                products.Select(x => x.AccountId));
         }
 
         [HttpPost("Show")]
@@ -149,11 +149,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var products = await _productsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _productsService.ShowAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                products.Select(x => x.AccountId));
         }
 
         [HttpPost("Delete")]
@@ -166,11 +166,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var products = await _productsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _productsService.DeleteAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                products.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -183,11 +183,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var products = await _productsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var products = await _productsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _productsService.RestoreAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                products.Select(x => x.AccountId)).ConfigureAwait(false);
+                products.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -222,7 +222,7 @@ namespace Crm.Apps.Products.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -232,7 +232,7 @@ namespace Crm.Apps.Products.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

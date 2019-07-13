@@ -44,7 +44,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            var account = await _identitiesService.GetAsync(id, ct).ConfigureAwait(false);
+            var account = await _identitiesService.GetAsync(id, ct);
             if (account == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            return await _identitiesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            return await _identitiesService.GetListAsync(ids, ct);
         }
 
         [HttpPost("GetPagedList")]
@@ -72,14 +72,14 @@ namespace Crm.Apps.Identities.Controllers
         public async Task<ActionResult<List<Identity>>> GetPagedList(IdentityGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _identitiesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            return await _identitiesService.GetPagedListAsync(parameter, ct);
         }
 
         [HttpPost("Create")]
         [RequireAny(Permission.System, Permission.Development)]
         public async Task<ActionResult<Guid>> Create(Identity identity, CancellationToken ct = default)
         {
-            var id = await _identitiesService.CreateAsync(_userContext.UserId, identity, ct).ConfigureAwait(false);
+            var id = await _identitiesService.CreateAsync(_userContext.UserId, identity, ct);
 
             return Created(nameof(Get), id);
         }
@@ -93,13 +93,13 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            var oldIdentity = await _identitiesService.GetAsync(identity.Id, ct).ConfigureAwait(false);
+            var oldIdentity = await _identitiesService.GetAsync(identity.Id, ct);
             if (oldIdentity == null)
             {
                 return NotFound();
             }
 
-            await _identitiesService.UpdateAsync(_userContext.UserId, oldIdentity, identity, ct).ConfigureAwait(false);
+            await _identitiesService.UpdateAsync(_userContext.UserId, oldIdentity, identity, ct);
 
             return NoContent();
         }
@@ -113,14 +113,14 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            var identity = await _identitiesService.GetAsync(parameter.Id, ct).ConfigureAwait(false);
+            var identity = await _identitiesService.GetAsync(parameter.Id, ct);
             if (identity == null)
             {
                 return NotFound();
             }
 
             await _identitiesService.SetPasswordAsync(_userContext.UserId, identity, parameter.Password, ct)
-                .ConfigureAwait(false);
+                ;
 
             return NoContent();
         }
@@ -135,14 +135,14 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            var identity = await _identitiesService.GetAsync(id, ct).ConfigureAwait(false);
+            var identity = await _identitiesService.GetAsync(id, ct);
             if (identity == null)
             {
                 return NotFound();
             }
 
             return await _identitiesService.IsPasswordCorrectAsync(_userContext.UserId, identity, password, ct)
-                .ConfigureAwait(false);
+                ;
         }
 
         [HttpPost("Verify")]
@@ -154,7 +154,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            await _identitiesService.VerifyAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _identitiesService.VerifyAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }
@@ -168,7 +168,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            await _identitiesService.UnverifyAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _identitiesService.UnverifyAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }
@@ -182,7 +182,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            await _identitiesService.SetAsPrimaryAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _identitiesService.SetAsPrimaryAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }
@@ -196,7 +196,7 @@ namespace Crm.Apps.Identities.Controllers
                 return BadRequest();
             }
 
-            await _identitiesService.ResetAsPrimaryAsync(_userContext.UserId, ids, ct).ConfigureAwait(false);
+            await _identitiesService.ResetAsPrimaryAsync(_userContext.UserId, ids, ct);
 
             return NoContent();
         }

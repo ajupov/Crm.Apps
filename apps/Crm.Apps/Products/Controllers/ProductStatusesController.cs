@@ -36,7 +36,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var status = await _productStatusesService.GetAsync(id, ct).ConfigureAwait(false);
+            var status = await _productStatusesService.GetAsync(id, ct);
             if (status == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var statuss = await _productStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var statuss = await _productStatusesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(statuss, statuss.Select(x => x.AccountId));
         }
@@ -67,7 +67,7 @@ namespace Crm.Apps.Products.Controllers
             ProductStatusGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var statuss = await _productStatusesService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var statuss = await _productStatusesService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(statuss, statuss.Select(x => x.AccountId));
         }
@@ -88,7 +88,7 @@ namespace Crm.Apps.Products.Controllers
                 status.AccountId = _userContext.AccountId;
             }
 
-            var id = await _productStatusesService.CreateAsync(_userContext.UserId, status, ct).ConfigureAwait(false);
+            var id = await _productStatusesService.CreateAsync(_userContext.UserId, status, ct);
 
             return Created(nameof(Get), id);
         }
@@ -103,14 +103,14 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var oldStatus = await _productStatusesService.GetAsync(status.Id, ct).ConfigureAwait(false);
+            var oldStatus = await _productStatusesService.GetAsync(status.Id, ct);
             if (oldStatus == null)
             {
                 return NotFound();
             }
 
             return await ActionIfAllowed(() => _productStatusesService.UpdateAsync(_userContext.UserId, oldStatus,
-                status, ct), new[] {status.AccountId, oldStatus.AccountId}).ConfigureAwait(false);
+                status, ct), new[] {status.AccountId, oldStatus.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -123,11 +123,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _productStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _productStatusesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _productStatusesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -140,11 +140,11 @@ namespace Crm.Apps.Products.Controllers
                 return BadRequest();
             }
 
-            var attributes = await _productStatusesService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var attributes = await _productStatusesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _productStatusesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId)).ConfigureAwait(false);
+                attributes.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -179,7 +179,7 @@ namespace Crm.Apps.Products.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -189,7 +189,7 @@ namespace Crm.Apps.Products.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.ProductsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

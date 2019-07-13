@@ -22,13 +22,13 @@ namespace Crm.Apps.Tests.Tests.Identities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync().ConfigureAwait(false);
-            var token = await _create.IdentityToken.WithIdentityId(identity.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
+            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync();
+            var token = await _create.IdentityToken.WithIdentityId(identity.Id).BuildAsync();
 
             var createdToken =
-                await _identityTokensClient.GetAsync(token.IdentityId, token.Value).ConfigureAwait(false);
+                await _identityTokensClient.GetAsync(token.IdentityId, token.Value);
 
             Assert.NotNull(createdToken);
         }
@@ -36,9 +36,9 @@ namespace Crm.Apps.Tests.Tests.Identities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
+            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync();
             var token = new IdentityToken
             {
                 IdentityId = identity.Id,
@@ -46,10 +46,10 @@ namespace Crm.Apps.Tests.Tests.Identities
                 ExpirationDateTime = DateTime.Now.AddDays(1)
             };
 
-            var identityId = await _identityTokensClient.CreateAsync(token).ConfigureAwait(false);
+            var identityId = await _identityTokensClient.CreateAsync(token);
 
             var createdToken =
-                await _identityTokensClient.GetAsync(token.IdentityId, token.Value).ConfigureAwait(false);
+                await _identityTokensClient.GetAsync(token.IdentityId, token.Value);
 
             Assert.NotNull(createdToken);
             Assert.Equal(identityId, createdToken.Id);
@@ -62,14 +62,14 @@ namespace Crm.Apps.Tests.Tests.Identities
         [Fact]
         public async Task WhenSetIsUsed_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync().ConfigureAwait(false);
-            var token = await _create.IdentityToken.WithIdentityId(identity.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
+            var identity = await _create.Identity.WithUserId(user.Id).BuildAsync();
+            var token = await _create.IdentityToken.WithIdentityId(identity.Id).BuildAsync();
 
-            await _identityTokensClient.SetIsUsedAsync(token.Id).ConfigureAwait(false);
+            await _identityTokensClient.SetIsUsedAsync(token.Id);
 
-            var usedToken = await _identityTokensClient.GetAsync(token.IdentityId, token.Value).ConfigureAwait(false);
+            var usedToken = await _identityTokensClient.GetAsync(token.IdentityId, token.Value);
 
             Assert.True(usedToken.UseDateTime.HasValue);
             Assert.True(usedToken.UseDateTime.Value <= DateTime.Now);

@@ -51,9 +51,9 @@ namespace Crm.Apps.Tests.Builders.Users
                 throw new InvalidOperationException(nameof(_userAttribute.AccountId));
             }
 
-            var createdId = await _userAttributesClient.CreateAsync(_userAttribute).ConfigureAwait(false);
+            var createdId = await _userAttributesClient.CreateAsync(_userAttribute);
 
-            return await _userAttributesClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _userAttributesClient.GetAsync(createdId);
         }
     }
 }

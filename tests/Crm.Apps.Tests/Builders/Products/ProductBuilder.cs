@@ -134,9 +134,9 @@ namespace Crm.Apps.Tests.Builders.Products
                 throw new InvalidOperationException(nameof(_product.StatusId));
             }
 
-            var createdId = await _productsClient.CreateAsync(_product).ConfigureAwait(false);
+            var createdId = await _productsClient.CreateAsync(_product);
 
-            return await _productsClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _productsClient.GetAsync(createdId);
         }
     }
 }

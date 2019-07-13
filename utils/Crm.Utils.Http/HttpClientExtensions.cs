@@ -14,10 +14,10 @@ namespace Crm.Utils.Http
 
             using (var client = factory.CreateClient())
             {
-                var result = await client.GetAsync(fullUri, ct).ConfigureAwait(false);
+                var result = await client.GetAsync(fullUri, ct);
                 if (!result.IsSuccessStatusCode)
                 {
-                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
+                    await GenerateExceptionAsync(fullUri, result);
                 }
             }
         }
@@ -29,13 +29,13 @@ namespace Crm.Utils.Http
 
             using (var client = factory.CreateClient())
             {
-                var result = await client.GetAsync(fullUri, ct).ConfigureAwait(false);
+                var result = await client.GetAsync(fullUri, ct);
                 if (!result.IsSuccessStatusCode)
                 {
-                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
+                    await GenerateExceptionAsync(fullUri, result);
                 }
 
-                var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var content = await result.Content.ReadAsStringAsync();
 
                 return content.FromJsonString<TResponse>();
             }
@@ -48,10 +48,10 @@ namespace Crm.Utils.Http
 
             using (var client = factory.CreateClient())
             {
-                var result = await client.PostAsync(fullUri, body.ToJsonStringContent(), ct).ConfigureAwait(false);
+                var result = await client.PostAsync(fullUri, body.ToJsonStringContent(), ct);
                 if (!result.IsSuccessStatusCode)
                 {
-                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
+                    await GenerateExceptionAsync(fullUri, result);
                 }
             }
         }
@@ -63,13 +63,13 @@ namespace Crm.Utils.Http
 
             using (var client = factory.CreateClient())
             {
-                var result = await client.PostAsync(fullUri, body.ToJsonStringContent(), ct).ConfigureAwait(false);
+                var result = await client.PostAsync(fullUri, body.ToJsonStringContent(), ct);
                 if (!result.IsSuccessStatusCode)
                 {
-                    await GenerateExceptionAsync(fullUri, result).ConfigureAwait(false);
+                    await GenerateExceptionAsync(fullUri, result);
                 }
 
-                var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var content = await result.Content.ReadAsStringAsync();
 
                 return content.FromJsonString<TResponse>();
             }
@@ -82,7 +82,7 @@ namespace Crm.Utils.Http
 
         private static async Task GenerateExceptionAsync(string uri, HttpResponseMessage message)
         {
-            var content = await message.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var content = await message.Content.ReadAsStringAsync();
 
             throw new HttpRequestException($"Request to {uri} failed. Status code: {message.StatusCode}, " +
                                            $"Reason: {message.ReasonPhrase}. Details: {content}.");

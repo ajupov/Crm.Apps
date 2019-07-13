@@ -22,10 +22,10 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var statusId = (await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false)).Id;
+            var account = await _create.Account.BuildAsync();
+            var statusId = (await _create.LeadSource.WithAccountId(account.Id).BuildAsync()).Id;
 
-            var status = await _leadSourcesClient.GetAsync(statusId).ConfigureAwait(false);
+            var status = await _leadSourcesClient.GetAsync(statusId);
 
             Assert.NotNull(status);
             Assert.Equal(statusId, status.Id);
@@ -34,13 +34,13 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var statusIds = (await Task.WhenAll(
                     _create.LeadSource.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.LeadSource.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var statuses = await _leadSourcesClient.GetListAsync(statusIds).ConfigureAwait(false);
+            var statuses = await _leadSourcesClient.GetListAsync(statusIds);
 
             Assert.NotEmpty(statuses);
             Assert.Equal(statusIds.Count, statuses.Count);
@@ -49,13 +49,13 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             await Task.WhenAll(_create.LeadSource.WithAccountId(account.Id).WithName("Test1").BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var statuses = await _leadSourcesClient
                 .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
-                .ConfigureAwait(false);
+                ;
 
             var results = statuses.Skip(1).Zip(statuses,
                 (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -67,7 +67,7 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var status = new LeadSource
             {
                 AccountId = account.Id,
@@ -75,9 +75,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 IsDeleted = false
             };
 
-            var createdSourceId = await _leadSourcesClient.CreateAsync(status).ConfigureAwait(false);
+            var createdSourceId = await _leadSourcesClient.CreateAsync(status);
 
-            var createdSource = await _leadSourcesClient.GetAsync(createdSourceId).ConfigureAwait(false);
+            var createdSource = await _leadSourcesClient.GetAsync(createdSourceId);
 
             Assert.NotNull(createdSource);
             Assert.Equal(createdSourceId, createdSource.Id);
@@ -90,16 +90,16 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var status = await _create.LeadSource.WithAccountId(account.Id).WithName("Test1").BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             status.Name = "Test2";
             status.IsDeleted = true;
 
-            await _leadSourcesClient.UpdateAsync(status).ConfigureAwait(false);
+            await _leadSourcesClient.UpdateAsync(status);
 
-            var updatedSource = await _leadSourcesClient.GetAsync(status.Id).ConfigureAwait(false);
+            var updatedSource = await _leadSourcesClient.GetAsync(status.Id);
 
             Assert.Equal(status.Name, updatedSource.Name);
             Assert.Equal(status.IsDeleted, updatedSource.IsDeleted);
@@ -108,15 +108,15 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var statusIds = (await Task.WhenAll(
                     _create.LeadSource.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.LeadSource.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _leadSourcesClient.DeleteAsync(statusIds).ConfigureAwait(false);
+            await _leadSourcesClient.DeleteAsync(statusIds);
 
-            var statuses = await _leadSourcesClient.GetListAsync(statusIds).ConfigureAwait(false);
+            var statuses = await _leadSourcesClient.GetListAsync(statusIds);
 
             Assert.All(statuses, x => Assert.True(x.IsDeleted));
         }
@@ -124,15 +124,15 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
             var statusIds = (await Task.WhenAll(
                     _create.LeadSource.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
                     _create.LeadSource.WithAccountId(account.Id).WithName("Test2").BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _leadSourcesClient.RestoreAsync(statusIds).ConfigureAwait(false);
+            await _leadSourcesClient.RestoreAsync(statusIds);
 
-            var statuses = await _leadSourcesClient.GetListAsync(statusIds).ConfigureAwait(false);
+            var statuses = await _leadSourcesClient.GetListAsync(statusIds);
 
             Assert.All(statuses, x => Assert.False(x.IsDeleted));
         }

@@ -16,7 +16,7 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _userSettingsClient.GetTypesAsync().ConfigureAwait(false);
+            var types = await _userSettingsClient.GetTypesAsync();
 
             Assert.NotEmpty(types);
         }

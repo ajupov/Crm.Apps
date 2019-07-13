@@ -216,9 +216,9 @@ namespace Crm.Apps.Tests.Builders.Leads
                 throw new InvalidOperationException(nameof(_lead.SourceId));
             }
 
-            var createdId = await _leadsClient.CreateAsync(_lead).ConfigureAwait(false);
+            var createdId = await _leadsClient.CreateAsync(_lead);
 
-            return await _leadsClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _leadsClient.GetAsync(createdId);
         }
     }
 }

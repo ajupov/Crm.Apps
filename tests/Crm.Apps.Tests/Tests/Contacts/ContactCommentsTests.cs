@@ -23,19 +23,19 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             await Task.WhenAll(
                     _create.ContactComment.WithContactId(contact.Id).BuildAsync(),
                     _create.ContactComment.WithContactId(contact.Id).BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var comments = await _contactCommentsClient
-                .GetPagedListAsync(contact.Id, sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
+                .GetPagedListAsync(contact.Id, sortBy: "CreateDateTime", orderBy: "desc");
 
             var results = comments.Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -47,12 +47,12 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             var comment = new ContactComment
             {
@@ -60,10 +60,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 Value = "Test"
             };
 
-            await _contactCommentsClient.CreateAsync(comment).ConfigureAwait(false);
+            await _contactCommentsClient.CreateAsync(comment);
 
             var createdComment = (await _contactCommentsClient.GetPagedListAsync(contact.Id, sortBy: "CreateDateTime",
-                orderBy: "asc").ConfigureAwait(false)).First();
+                orderBy: "asc")).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.ContactId, createdComment.ContactId);

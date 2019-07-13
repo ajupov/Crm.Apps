@@ -48,9 +48,9 @@ namespace Crm.Apps.Tests.Builders.Accounts
 
         public async Task<Account> BuildAsync()
         {
-            var createdId = await _accountsClient.CreateAsync(_account).ConfigureAwait(false);
+            var createdId = await _accountsClient.CreateAsync(_account);
 
-            return await _accountsClient.GetAsync(createdId).ConfigureAwait(false);
+            return await _accountsClient.GetAsync(createdId);
         }
     }
 }

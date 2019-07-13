@@ -59,9 +59,9 @@ namespace Crm.Apps.Activities.Services
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(newType, ct).ConfigureAwait(false);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            var entry = await _storage.AddAsync(newType, ct);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
@@ -76,8 +76,8 @@ namespace Crm.Apps.Activities.Services
             });
 
             _storage.Update(oldType);
-            await _storage.AddAsync(change, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -86,10 +86,10 @@ namespace Crm.Apps.Activities.Services
 
             await _storage.ActivityTypes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
@@ -98,10 +98,10 @@ namespace Crm.Apps.Activities.Services
 
             await _storage.ActivityTypes.Where(x => ids.Contains(x.Id))
                 .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
-                .ConfigureAwait(false);
+                ;
 
-            await _storage.AddRangeAsync(changes, ct).ConfigureAwait(false);
-            await _storage.SaveChangesAsync(ct).ConfigureAwait(false);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

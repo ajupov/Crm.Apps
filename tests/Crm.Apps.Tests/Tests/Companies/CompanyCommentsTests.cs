@@ -23,20 +23,20 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var company = await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             await Task.WhenAll(
                     _create.CompanyComment.WithCompanyId(company.Id).BuildAsync(),
                     _create.CompanyComment.WithCompanyId(company.Id).BuildAsync())
-                .ConfigureAwait(false);
+                ;
 
             var comments = await _companyCommentsClient
-                .GetPagedListAsync(company.Id, sortBy: "CreateDateTime", orderBy: "desc").ConfigureAwait(false);
+                .GetPagedListAsync(company.Id, sortBy: "CreateDateTime", orderBy: "desc");
 
             var results = comments.Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -48,12 +48,12 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var company = await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             var comment = new CompanyComment
             {
@@ -61,10 +61,10 @@ namespace Crm.Apps.Tests.Tests.Companies
                 Value = "Test"
             };
 
-            await _companyCommentsClient.CreateAsync(comment).ConfigureAwait(false);
+            await _companyCommentsClient.CreateAsync(comment);
 
             var createdComment = (await _companyCommentsClient.GetPagedListAsync(company.Id, sortBy: "CreateDateTime",
-                orderBy: "asc").ConfigureAwait(false)).First();
+                orderBy: "asc")).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.CompanyId, createdComment.CompanyId);

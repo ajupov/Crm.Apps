@@ -27,14 +27,14 @@ namespace Crm.Apps.Tests.Tests.Users
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var user = await _create.User.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
             user.IsLocked = true;
-            await _usersClient.UpdateAsync(user).ConfigureAwait(false);
+            await _usersClient.UpdateAsync(user);
 
             var changes = await _userChangesClient
                 .GetPagedListAsync(userId: user.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                .ConfigureAwait(false);
+                ;
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

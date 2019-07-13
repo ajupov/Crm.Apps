@@ -74,13 +74,13 @@ namespace Crm.Apps.Users.Consumers
                 return;
             }
 
-            var oldUser = await _usersService.GetAsync(newUser.Id, ct).ConfigureAwait(false);
+            var oldUser = await _usersService.GetAsync(newUser.Id, ct);
             if (oldUser == null)
             {
                 return;
             }
 
-            await _usersService.UpdateAsync(message.UserId, oldUser, newUser, ct).ConfigureAwait(false);
+            await _usersService.UpdateAsync(message.UserId, oldUser, newUser, ct);
         }
 
         private Task LockAsync(Message message, CancellationToken ct)

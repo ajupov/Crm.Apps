@@ -36,7 +36,7 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var lead = await _leadsService.GetAsync(id, ct).ConfigureAwait(false);
+            var lead = await _leadsService.GetAsync(id, ct);
             if (lead == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var leads = await _leadsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var leads = await _leadsService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(leads, leads.Select(x => x.AccountId));
         }
@@ -66,7 +66,7 @@ namespace Crm.Apps.Leads.Controllers
         public async Task<ActionResult<List<Lead>>> GetPagedList(LeadGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var leads = await _leadsService.GetPagedListAsync(parameter, ct).ConfigureAwait(false);
+            var leads = await _leadsService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(leads, leads.Select(x => x.AccountId));
         }
@@ -87,7 +87,7 @@ namespace Crm.Apps.Leads.Controllers
                 lead.AccountId = _userContext.AccountId;
             }
 
-            var id = await _leadsService.CreateAsync(_userContext.UserId, lead, ct).ConfigureAwait(false);
+            var id = await _leadsService.CreateAsync(_userContext.UserId, lead, ct);
 
             return Created(nameof(Get), id);
         }
@@ -102,7 +102,7 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var oldLead = await _leadsService.GetAsync(lead.Id, ct).ConfigureAwait(false);
+            var oldLead = await _leadsService.GetAsync(lead.Id, ct);
             if (oldLead == null)
             {
                 return NotFound();
@@ -110,7 +110,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadsService.UpdateAsync(_userContext.UserId, oldLead, lead, ct),
-                new[] {lead.AccountId, oldLead.AccountId}).ConfigureAwait(false);
+                new[] {lead.AccountId, oldLead.AccountId});
         }
 
         [HttpPost("Delete")]
@@ -123,11 +123,11 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var leads = await _leadsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var leads = await _leadsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _leadsService.DeleteAsync(_userContext.UserId, leads.Select(x => x.Id), ct),
-                leads.Select(x => x.AccountId)).ConfigureAwait(false);
+                leads.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
@@ -140,11 +140,11 @@ namespace Crm.Apps.Leads.Controllers
                 return BadRequest();
             }
 
-            var leads = await _leadsService.GetListAsync(ids, ct).ConfigureAwait(false);
+            var leads = await _leadsService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
                 () => _leadsService.RestoreAsync(_userContext.UserId, leads.Select(x => x.Id), ct),
-                leads.Select(x => x.AccountId)).ConfigureAwait(false);
+                leads.Select(x => x.AccountId));
         }
 
         [NonAction]
@@ -179,7 +179,7 @@ namespace Crm.Apps.Leads.Controllers
             if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
                 Permission.TechnicalSupport))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }
@@ -189,7 +189,7 @@ namespace Crm.Apps.Leads.Controllers
             if (_userContext.HasAny(Permission.AccountOwning, Permission.LeadsManagement) &&
                 _userContext.Belongs(accountIdsAsArray))
             {
-                await action().ConfigureAwait(false);
+                await action();
 
                 return NoContent();
             }

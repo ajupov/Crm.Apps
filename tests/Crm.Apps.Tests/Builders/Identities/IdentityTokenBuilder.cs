@@ -55,9 +55,9 @@ namespace Crm.Apps.Tests.Builders.Identities
                 throw new InvalidOperationException(nameof(_token.IdentityId));
             }
 
-            await _identityTokensClient.CreateAsync(_token).ConfigureAwait(false);
+            await _identityTokensClient.CreateAsync(_token);
 
-            return await _identityTokensClient.GetAsync(_token.IdentityId, _token.Value).ConfigureAwait(false);
+            return await _identityTokensClient.GetAsync(_token.IdentityId, _token.Value);
         }
     }
 }

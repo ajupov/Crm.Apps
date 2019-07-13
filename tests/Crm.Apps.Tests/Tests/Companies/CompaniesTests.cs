@@ -25,7 +25,7 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _companiesClient.GetTypesAsync().ConfigureAwait(false);
+            var types = await _companiesClient.GetTypesAsync();
 
             Assert.NotEmpty(types);
         }
@@ -33,7 +33,7 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetIndustryTypes_ThenSuccess()
         {
-            var types = await _companiesClient.GetIndustryTypesAsync().ConfigureAwait(false);
+            var types = await _companiesClient.GetIndustryTypesAsync();
 
             Assert.NotEmpty(types);
         }
@@ -41,14 +41,14 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var companyId = (await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false)).Id;
+                ).Id;
 
-            var company = await _companiesClient.GetAsync(companyId).ConfigureAwait(false);
+            var company = await _companiesClient.GetAsync(companyId);
 
             Assert.NotNull(company);
             Assert.Equal(companyId, company.Id);
@@ -57,20 +57,20 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var companyIds = (await Task.WhenAll(
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .BuildAsync(),
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead2.Id).WithTaxNumber("999999999991")
                         .BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            var companies = await _companiesClient.GetListAsync(companyIds).ConfigureAwait(false);
+            var companies = await _companiesClient.GetListAsync(companyIds);
 
             Assert.NotEmpty(companies);
             Assert.Equal(companyIds.Count, companies.Count);
@@ -79,24 +79,24 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
-            var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                ;
+            var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync();
 
             await Task.WhenAll(
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead2.Id).WithTaxNumber("999999999991")
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync())
-                .ConfigureAwait(false);
+                ;
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
 
             var companies = await _companiesClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime",
-                orderBy: "desc", allAttributes: false, attributes: filterAttributes).ConfigureAwait(false);
+                orderBy: "desc", allAttributes: false, attributes: filterAttributes);
 
             var results = companies.Skip(1)
                 .Zip(companies, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
@@ -108,11 +108,11 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
-            var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                ;
+            var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync();
 
             var company = new Company
             {
@@ -168,9 +168,9 @@ namespace Crm.Apps.Tests.Tests.Companies
                 }
             };
 
-            var createdCompanyId = await _companiesClient.CreateAsync(company).ConfigureAwait(false);
+            var createdCompanyId = await _companiesClient.CreateAsync(company);
 
-            var createdCompany = await _companiesClient.GetAsync(createdCompanyId).ConfigureAwait(false);
+            var createdCompany = await _companiesClient.GetAsync(createdCompanyId);
 
             Assert.NotNull(createdCompany);
             Assert.Equal(createdCompanyId, createdCompany.Id);
@@ -216,13 +216,13 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
-            var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+                ;
+            var attribute = await _create.CompanyAttribute.WithAccountId(account.Id).BuildAsync();
             var company = await _create.Company.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
 
             company.Type = CompanyType.None;
             company.IndustryType = CompanyIndustryType.None;
@@ -262,9 +262,9 @@ namespace Crm.Apps.Tests.Tests.Companies
                 BankCorrespondentNumber = "9999999999999999999999999",
                 BankName = "Test"
             });
-            await _companiesClient.UpdateAsync(company).ConfigureAwait(false);
+            await _companiesClient.UpdateAsync(company);
 
-            var updatedCompany = await _companiesClient.GetAsync(company.Id).ConfigureAwait(false);
+            var updatedCompany = await _companiesClient.GetAsync(company.Id);
 
             Assert.Equal(company.AccountId, updatedCompany.AccountId);
             Assert.Equal(company.Type, updatedCompany.Type);
@@ -311,22 +311,22 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var companyIds = (await Task.WhenAll(
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .BuildAsync(),
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead2.Id).WithTaxNumber("999999999991")
                         .BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _companiesClient.DeleteAsync(companyIds).ConfigureAwait(false);
+            await _companiesClient.DeleteAsync(companyIds);
 
-            var companies = await _companiesClient.GetListAsync(companyIds).ConfigureAwait(false);
+            var companies = await _companiesClient.GetListAsync(companyIds);
 
             Assert.All(companies, x => Assert.True(x.IsDeleted));
         }
@@ -334,22 +334,22 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync().ConfigureAwait(false);
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
+            var account = await _create.Account.BuildAsync();
+            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
             var lead1 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var lead2 = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
-                .ConfigureAwait(false);
+                ;
             var companyIds = (await Task.WhenAll(
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead1.Id).WithTaxNumber("999999999990")
                         .BuildAsync(),
                     _create.Company.WithAccountId(account.Id).WithLeadId(lead2.Id).WithTaxNumber("999999999991")
                         .BuildAsync())
-                .ConfigureAwait(false)).Select(x => x.Id).ToList();
+                ).Select(x => x.Id).ToList();
 
-            await _companiesClient.RestoreAsync(companyIds).ConfigureAwait(false);
+            await _companiesClient.RestoreAsync(companyIds);
 
-            var companies = await _companiesClient.GetListAsync(companyIds).ConfigureAwait(false);
+            var companies = await _companiesClient.GetListAsync(companyIds);
 
             Assert.All(companies, x => Assert.False(x.IsDeleted));
         }
