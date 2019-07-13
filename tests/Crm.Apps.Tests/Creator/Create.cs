@@ -1,5 +1,6 @@
 using System;
 using Crm.Apps.Tests.Builders.Accounts;
+using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
@@ -69,5 +70,16 @@ namespace Crm.Apps.Tests.Creator
         public IDealAttributeBuilder DealAttribute => _serviceCollection.GetService<IDealAttributeBuilder>();
 
         public IDealCommentBuilder DealComment => _serviceCollection.GetService<IDealCommentBuilder>();
+
+        public IActivityBuilder Activity => _serviceCollection.GetService<IActivityBuilder>();
+
+        public IActivityStatusBuilder ActivityStatus => _serviceCollection.GetService<IActivityStatusBuilder>();
+
+        public IActivityTypeBuilder ActivityType => _serviceCollection.GetService<IActivityTypeBuilder>();
+
+        public IActivityAttributeBuilder ActivityAttribute =>
+            _serviceCollection.GetService<IActivityAttributeBuilder>();
+
+        public IActivityCommentBuilder ActivityComment => _serviceCollection.GetService<IActivityCommentBuilder>();
     }
 }

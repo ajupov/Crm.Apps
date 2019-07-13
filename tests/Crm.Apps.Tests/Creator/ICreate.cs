@@ -1,4 +1,5 @@
 using Crm.Apps.Tests.Builders.Accounts;
+using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
@@ -60,5 +61,15 @@ namespace Crm.Apps.Tests.Creator
         IDealAttributeBuilder DealAttribute { get; }
 
         IDealCommentBuilder DealComment { get; }
+        
+        IActivityBuilder Activity { get; }
+
+        IActivityStatusBuilder ActivityStatus { get; }
+
+        IActivityTypeBuilder ActivityType { get; }
+        
+        IActivityAttributeBuilder ActivityAttribute { get; }
+
+        IActivityCommentBuilder ActivityComment { get; }
     }
 }

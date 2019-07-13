@@ -1,4 +1,5 @@
 using Crm.Apps.Tests.Builders.Accounts;
+using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
@@ -64,7 +65,12 @@ namespace Crm.Apps.Tests
                 .AddTransient<IDealAttributeBuilder, DealAttributeBuilder>()
                 .AddTransient<IDealCommentBuilder, DealCommentBuilder>()
                 .AddTransient<IDealStatusBuilder, DealStatusBuilder>()
-                .AddTransient<IDealTypeBuilder, DealTypeBuilder>();
+                .AddTransient<IDealTypeBuilder, DealTypeBuilder>()  
+                .AddTransient<IActivityBuilder, ActivityBuilder>()
+                .AddTransient<IActivityAttributeBuilder, ActivityAttributeBuilder>()
+                .AddTransient<IActivityCommentBuilder, ActivityCommentBuilder>()
+                .AddTransient<IActivityStatusBuilder, ActivityStatusBuilder>()
+                .AddTransient<IActivityTypeBuilder, ActivityTypeBuilder>();
         }
     }
 }
