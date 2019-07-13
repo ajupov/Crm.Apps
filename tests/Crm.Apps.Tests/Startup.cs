@@ -9,6 +9,7 @@ using Crm.Apps.Tests.Builders.Products;
 using Crm.Apps.Tests.Builders.Users;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Accounts;
+using Crm.Clients.Activities;
 using Crm.Clients.Companies;
 using Crm.Clients.Contacts;
 using Crm.Clients.Deals;
@@ -40,6 +41,7 @@ namespace Crm.Apps.Tests
                 .ConfigureCompaniesClient(configuration)
                 .ConfigureContactsClient(configuration)
                 .ConfigureDealsClient(configuration)
+                .ConfigureActivitiesClient(configuration)
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IAccountBuilder, AccountBuilder>()
                 .AddTransient<IUserBuilder, UserBuilder>()

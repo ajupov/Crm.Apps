@@ -111,6 +111,7 @@ namespace Crm.Apps.Activities.Services
                 x.Priority = newActivity.Priority;
                 x.StartDateTime = newActivity.StartDateTime;
                 x.EndDateTime = newActivity.EndDateTime;
+                x.DeadLineDateTime = newActivity.DeadLineDateTime;
                 x.IsDeleted = newActivity.IsDeleted;
                 x.AttributeLinks = newActivity.AttributeLinks;
             });

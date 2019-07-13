@@ -159,10 +159,6 @@ namespace Crm.Apps.Tests.Tests.Activities
             var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
             var activityStatus =
                 await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var productStatus =
-                await _create.ProductStatus.WithAccountId(account.Id).BuildAsync().ConfigureAwait(false);
-            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(productStatus.Id).BuildAsync()
-                .ConfigureAwait(false);
             var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync()
                 .ConfigureAwait(false);
             var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id)
@@ -204,7 +200,7 @@ namespace Crm.Apps.Tests.Tests.Activities
             Assert.Equal(activity.Priority, updatedActivity.Priority);
             Assert.Equal(activity.StartDateTime.Date, updatedActivity.StartDateTime.Date);
             Assert.Equal(activity.EndDateTime?.Date, updatedActivity.EndDateTime?.Date);
-            Assert.Equal(activity.DeadLineDateTime, updatedActivity.DeadLineDateTime);
+            Assert.Equal(activity.DeadLineDateTime?.Date, updatedActivity.DeadLineDateTime?.Date);
             Assert.Equal(activity.IsDeleted, updatedActivity.IsDeleted);
             Assert.Equal(activity.AttributeLinks.Single().ActivityAttributeId,
                 updatedActivity.AttributeLinks.Single().ActivityAttributeId);

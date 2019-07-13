@@ -20,7 +20,7 @@ namespace Crm.Clients.Activities
                 .AddSingleton<IActivityStatusesClient, ActivityStatusesClient>()
                 .AddSingleton<IActivityStatusChangesClient, ActivityStatusChangesClient>()
                 .AddSingleton<IActivityTypesClient, ActivityTypesClient>()
-                .AddSingleton<IActivityStatusChangesClient, ActivityStatusChangesClient>()
+                .AddSingleton<IActivityTypeChangesClient, ActivityTypeChangesClient>()
                 .AddSingleton<IActivityCommentsClient, ActivityCommentsClient>();
         }
     }
