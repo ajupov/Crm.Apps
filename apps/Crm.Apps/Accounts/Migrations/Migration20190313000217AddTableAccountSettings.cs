@@ -8,29 +8,27 @@ namespace Crm.Apps.Accounts.Migrations
         public override void Up()
         {
             Create.Table("AccountSettings")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_AccountSettings_Id")
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
-                .WithColumn("Value").AsString().NotNullable();
+                .WithColumn("Value").AsString().Nullable();
+
+            Create.PrimaryKey("PK_AccountSettings_AccountId_Type").OnTable("AccountSettings")
+                .Columns("AccountId", "Type");
 
             Create.ForeignKey("FK_AccountSettings_AccountId")
                 .FromTable("AccountSettings").ForeignColumn("AccountId")
                 .ToTable("Accounts").PrimaryColumn("Id");
 
-            Create.UniqueConstraint("UQ_AccountSettings_AccountId_Type").OnTable("AccountSettings")
-                .Columns("AccountId", "Type");
-
-            Create.Index("IX_AccountSettings_AccountId_Type").OnTable("AccountSettings")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("Type").Ascending()
+            Create.Index("IX_AccountSettings_AccountId").OnTable("AccountSettings")
+                .OnColumn("AccountId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_AccountSettings_AccountId_Type").OnTable("AccountSettings");
-            Delete.UniqueConstraint("UQ_AccountSettings_AccountId_Type").FromTable("AccountSettings");
+            Delete.Index("IX_AccountSettings_AccountId").OnTable("AccountSettings");
             Delete.ForeignKey("FK_AccountSettings_AccountId").OnTable("AccountSettings");
+            Delete.PrimaryKey("PK_AccountSettings_AccountId_Type").FromTable("AccountSettings");
             Delete.Table("AccountSettings");
         }
     }

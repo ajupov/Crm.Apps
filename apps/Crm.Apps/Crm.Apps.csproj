@@ -26,4 +26,16 @@
         <ProjectReference Include="..\..\utils\Crm.Utils.Password\Crm.Utils.Password.csproj" />
         <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="NewModels\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="NewModels\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="NewModels\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Remove="NewModels\**" />
+    </ItemGroup>
 </Project>

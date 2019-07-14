@@ -1,15 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Accounts.Models
 {
     public class Account
     {
-        public Guid Id { get; set; }
+        public Account()
+        {
+        }
+        
+        public Account(
+            AccountType type,
+            List<AccountSetting> settings = null)
+        {
+            Id = Guid.NewGuid();
+            Type = type;
+            IsLocked = false;
+            IsDeleted = false;
+            CreateDateTime = DateTime.UtcNow;
+            Settings = settings ?? new List<AccountSetting>();
+        }
 
-        public bool IsLocked { get; set; }
+        [Required] public Guid Id { get; set; }
 
-        public bool IsDeleted { get; set; }
+        [Required] public AccountType Type { get; set; }
+
+        [Required] public bool IsLocked { get; set; }
+
+        [Required] public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

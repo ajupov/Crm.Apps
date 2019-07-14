@@ -4,41 +4,42 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Accounts.Models;
+using Crm.Clients.Accounts.Parameters;
 using Crm.Clients.Accounts.Settings;
 using Crm.Utils.Http;
 using Microsoft.Extensions.Options;
+using UriBuilder = Crm.Utils.Http.UriBuilder;
 
 namespace Crm.Clients.Accounts.Clients
 {
     public class AccountChangesClient : IAccountChangesClient
     {
-        private readonly AccountsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AccountChangesClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public AccountChangesClient(
+            IOptions<AccountsClientSettings> options,
+            IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, "Api/Accounts/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<AccountChange>> GetPagedListAsync(Guid? changerUserId = default, Guid? accountId = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default,
-            int limit = 10, string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<AccountChange[]> GetPagedListAsync(
+            Guid accountId,
+            Guid? changerUserId = default,
+            DateTime? minCreateDate = default,
+            DateTime? maxCreateDate = default,
+            int offset = default,
+            int limit = 10,
+            string sortBy = default,
+            string orderBy = default,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerUserId = changerUserId,
-                AccountId = accountId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
+            var parameter = new AccountChangeGetPagedListParameter(
+                accountId, changerUserId, minCreateDate, maxCreateDate, offset, limit, sortBy, orderBy);
 
-            return _httpClientFactory.PostAsync<List<AccountChange>>(
-                $"{_settings.Host}/Api/Accounts/Changes/GetPagedList", parameter, ct);
+            return _httpClientFactory.PostAsync<AccountChange[]>($"{_url}/GetPagedList", parameter, ct);
         }
     }
 }

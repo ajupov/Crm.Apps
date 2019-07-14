@@ -10,10 +10,11 @@ namespace Crm.Apps.Tests.Builders.Accounts
         private readonly IAccountsClient _accountsClient;
         private readonly Account _account;
 
-        public AccountBuilder(IAccountsClient accountsClient)
+        public AccountBuilder(
+            IAccountsClient accountsClient)
         {
             _accountsClient = accountsClient;
-            _account = new Account();
+            _account = new Account(AccountType.MlmSystem);
         }
 
         public AccountBuilder AsLocked()
@@ -30,18 +31,16 @@ namespace Crm.Apps.Tests.Builders.Accounts
             return this;
         }
 
-        public AccountBuilder WithSetting(string value)
+        public AccountBuilder WithSetting(
+            AccountSettingType type,
+            string value)
         {
             if (_account.Settings == null)
             {
                 _account.Settings = new List<AccountSetting>();
             }
 
-            _account.Settings.Add(new AccountSetting
-            {
-                Type = AccountSettingType.None,
-                Value = value
-            });
+            _account.Settings.Add(new AccountSetting(type, value));
 
             return this;
         }

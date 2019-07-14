@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Accounts.Helpers;
@@ -15,12 +14,14 @@ namespace Crm.Apps.Accounts.Services
     {
         private readonly AccountsStorage _storage;
 
-        public AccountChangesService(AccountsStorage storage)
+        public AccountChangesService(
+            AccountsStorage storage)
         {
             _storage = storage;
         }
 
-        public Task<List<AccountChange>> GetPagedListAsync(AccountChangeGetPagedListParameter parameter,
+        public Task<AccountChange[]> GetPagedListAsync(
+            AccountChangeGetPagedListParameter parameter,
             CancellationToken ct)
         {
             return _storage.AccountChanges.Where(x =>
@@ -31,7 +32,7 @@ namespace Crm.Apps.Accounts.Services
                 .Sort(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
-                .ToListAsync(ct);
+                .ToArrayAsync(ct);
         }
     }
 }

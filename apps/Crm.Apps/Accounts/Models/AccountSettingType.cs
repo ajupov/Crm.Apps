@@ -1,9 +1,7 @@
 ﻿namespace Crm.Apps.Accounts.Models
 {
-    public enum AccountSettingType : byte
+    public enum AccountSettingType : short
     {
-        None
-
-        // TODO Заполнить
+        PartnersEnabled = 1
     }
 }

@@ -10,5 +10,10 @@ namespace Crm.Utils.Enums
         {
             return Enum.GetValues(typeof(T)).OfType<T>();
         }
+
+        public static Dictionary<T, string> GetAsDictionary<T>()
+        {
+            return GetValues<T>().ToDictionary(k => k, v => v.ToString());
+        }
     }
 }

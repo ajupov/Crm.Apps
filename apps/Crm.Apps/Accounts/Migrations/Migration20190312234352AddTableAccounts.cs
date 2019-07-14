@@ -8,21 +8,24 @@ namespace Crm.Apps.Accounts.Migrations
         public override void Up()
         {
             Create.Table("Accounts")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Accounts_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
+                .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("IsLocked").AsBoolean().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
-            Create.Index("IX_Accounts_CreateDateTime_IsLocked_IsDeleted").OnTable("Accounts")
+            Create.PrimaryKey("PK_Accounts_Id").OnTable("Accounts")
+                .Column("Id");
+
+            Create.Index("IX_Accounts_CreateDateTime").OnTable("Accounts")
                 .OnColumn("CreateDateTime").Descending()
-                .OnColumn("IsLocked").Ascending()
-                .OnColumn("IsDeleted").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_Accounts_CreateDateTime_IsLocked_IsDeleted").OnTable("Accounts");
+            Delete.Index("IX_Accounts_CreateDateTime").OnTable("Accounts");
+            Delete.PrimaryKey("PK_Accounts_Id").FromTable("Accounts");
             Delete.Table("Accounts");
         }
     }

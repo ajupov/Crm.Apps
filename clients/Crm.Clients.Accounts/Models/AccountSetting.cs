@@ -1,12 +1,14 @@
-﻿using System;
-
-namespace Crm.Clients.Accounts.Models
+﻿namespace Crm.Clients.Accounts.Models
 {
     public class AccountSetting
     {
-        public Guid Id { get; set; }
-
-        public Guid AccountId { get; set; }
+        public AccountSetting(
+            AccountSettingType type,
+            string value = null)
+        {
+            Type = type;
+            Value = value;
+        }
 
         public AccountSettingType Type { get; set; }
 

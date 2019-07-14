@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Accounts.Parameters
+namespace Crm.Clients.Accounts.Parameters
 {
     public class AccountChangeGetPagedListParameter
     {

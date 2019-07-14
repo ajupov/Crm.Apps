@@ -1,37 +1,41 @@
 using System;
-using System.ComponentModel.DataAnnotations;
+using Crm.Clients.Accounts.Models;
 
-namespace Crm.Apps.Accounts.Parameters
+namespace Crm.Clients.Accounts.Parameters
 {
-    public class AccountChangeGetPagedListParameter
+    public class AccountGetPagedListParameter
     {
-        public AccountChangeGetPagedListParameter(
-            Guid accountId,
-            Guid? changerUserId = default,
+        public AccountGetPagedListParameter(
+            bool? isLocked = default,
+            bool? isDeleted = default,
             DateTime? minCreateDate = default,
             DateTime? maxCreateDate = default,
+            AccountType[] types = default,
             int offset = default,
             int limit = 10,
             string sortBy = "CreateDateTime",
             string orderBy = "desc")
         {
-            AccountId = accountId;
-            ChangerUserId = changerUserId;
+            IsLocked = isLocked;
+            IsDeleted = isDeleted;
             MinCreateDate = minCreateDate;
             MaxCreateDate = maxCreateDate;
+            Types = types;
             Offset = offset;
             Limit = limit;
             OrderBy = orderBy;
             SortBy = sortBy;
         }
 
-        [Required] public Guid AccountId { get; set; }
+        public bool? IsLocked { get; set; }
 
-        public Guid? ChangerUserId { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+
+        public AccountType[] Types { get; set; }
 
         public int Offset { get; set; }
 

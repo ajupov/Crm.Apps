@@ -1,32 +1,36 @@
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Accounts.Models;
 using Crm.Apps.Accounts.Parameters;
 using Crm.Apps.Accounts.Services;
-using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Infrastructure.ApiDocumentation.Attributes;
+using Crm.Infrastructure.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Accounts.Controllers
 {
     [ApiController]
+    [IgnoreApiDocumentation]
     [Route("Api/Accounts/Changes")]
-    public class AccountChangesController : ControllerBase
+    public class AccountChangesController : DefaultController
     {
         private readonly IAccountChangesService _accountChangesService;
 
-        public AccountChangesController(IAccountChangesService accountChangesService)
+        public AccountChangesController(
+            IAccountChangesService accountChangesService)
         {
             _accountChangesService = accountChangesService;
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult<List<AccountChange>>> GetPagedList(AccountChangeGetPagedListParameter parameter,
+        [RequirePrivileged]
+        public Task<ActionResult<AccountChange[]>> GetPagedList(
+            [Required] AccountChangeGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _accountChangesService.GetPagedListAsync(parameter, ct);
+            return Get(_accountChangesService.GetPagedListAsync(parameter, ct));
         }
     }
 }

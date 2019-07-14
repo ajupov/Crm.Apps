@@ -8,7 +8,8 @@ namespace Crm.Apps.Tests.Tests.Accounts
     {
         private readonly IAccountSettingsClient _accountSettingsClient;
 
-        public AccountSettingsTests(IAccountSettingsClient accountSettingsClient)
+        public AccountSettingsTests(
+            IAccountSettingsClient accountSettingsClient)
         {
             _accountSettingsClient = accountSettingsClient;
         }

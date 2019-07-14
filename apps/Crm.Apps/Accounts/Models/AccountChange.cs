@@ -1,14 +1,29 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Accounts.Models
 {
     public class AccountChange
     {
-        public Guid Id { get; set; }
+        public AccountChange(
+            Guid accountId,
+            Guid changerUserId,
+            string oldValueJson = default,
+            string newValueJson = default)
+        {
+            Id = Guid.NewGuid();
+            AccountId = accountId;
+            ChangerUserId = changerUserId;
+            CreateDateTime = DateTime.UtcNow;
+            OldValueJson = oldValueJson;
+            NewValueJson = newValueJson;
+        }
 
-        public Guid ChangerUserId { get; set; }
+        [Required] public Guid Id { get; set; }
 
-        public Guid AccountId { get; set; }
+        [Required] public Guid ChangerUserId { get; set; }
+
+        [Required] public Guid AccountId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

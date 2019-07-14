@@ -8,8 +8,10 @@ namespace Crm.Apps.Tests.Builders.Accounts
         AccountBuilder AsLocked();
 
         AccountBuilder AsDeleted();
-        
-        AccountBuilder WithSetting(string value);
+
+        AccountBuilder WithSetting(
+            AccountSettingType type,
+            string value);
 
         Task<Account> BuildAsync();
     }

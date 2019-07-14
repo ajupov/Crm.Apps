@@ -8,7 +8,9 @@ namespace Crm.Apps.Accounts.Storages
 {
     public class AccountsStorage : Storage
     {
-        public AccountsStorage(IOptions<OrmSettings> options) : base(options)
+        public AccountsStorage(
+            IOptions<OrmSettings> options)
+            : base(options)
         {
         }
 
@@ -17,5 +19,33 @@ namespace Crm.Apps.Accounts.Storages
         public DbSet<AccountSetting> AccountSettings { get; set; }
 
         public DbSet<AccountChange> AccountChanges { get; set; }
+
+        protected override void OnModelCreating(
+            ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.HasKey(x => x.Id)
+                    .HasName("PK_Accounts_Id");
+
+                entity.HasIndex(x => x.CreateDateTime)
+                    .HasName("IX_Accounts_CreateDateTime");
+            });
+
+            modelBuilder.Entity<AccountSetting>(entity =>
+            {
+                entity.HasKey(x => new {x.AccountId, x.Type})
+                    .HasName("PK_AccountSettings_AccountId_Type");
+
+                entity.HasIndex(x => x.AccountId)
+                    .HasName("IX_AccountSettings_AccountId");
+            });
+
+            modelBuilder.Entity<AccountChange>(entity =>
+            {
+                entity.HasIndex(x => new {x.AccountId, x.CreateDateTime})
+                    .HasName("IX_AccountChanges_AccountId_CreateDateTime");
+            });
+        }
     }
 }

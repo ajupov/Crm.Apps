@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Accounts.Models;
@@ -8,145 +8,117 @@ using Crm.Apps.Accounts.Parameters;
 using Crm.Apps.Accounts.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
-using Crm.Utils.Guid;
+using Crm.Infrastructure.ApiDocumentation.Attributes;
+using Crm.Infrastructure.Mvc;
+using Crm.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Accounts.Controllers
 {
     [ApiController]
+    [IgnoreApiDocumentation]
     [Route("Api/Accounts")]
-    public class AccountsController : ControllerBase
+    public class AccountsController : DefaultController
     {
         private readonly IUserContext _userContext;
         private readonly IAccountsService _accountsService;
 
-        public AccountsController(IUserContext userContext, IAccountsService accountsService)
+        public AccountsController(
+            IUserContext userContext,
+            IAccountsService accountsService)
         {
             _userContext = userContext;
             _accountsService = accountsService;
         }
 
-        [HttpGet("Get")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult<Account>> Get(Guid id, CancellationToken ct = default)
+        [HttpGet("GetTypes")]
+        [RequirePrivileged]
+        public ActionResult<Dictionary<AccountType, string>> GetTypes()
         {
-            if (id.IsEmpty())
-            {
-                return BadRequest();
-            }
+            return Get(EnumsExtensions.GetAsDictionary<AccountType>());
+        }
 
-            var account = await _accountsService.GetAsync(id, ct);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return account;
+        [HttpGet("Get")]
+        [RequirePrivileged]
+        public Task<ActionResult<Account>> Get(
+            [Required] Guid id,
+            CancellationToken ct = default)
+        {
+            return Get(_accountsService.GetAsync(id, ct));
         }
 
         [HttpPost("GetList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult<List<Account>>> GetList(List<Guid> ids, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult<Account[]>> GetList(
+            [Required] List<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            return await _accountsService.GetListAsync(ids, ct);
+            return Get(_accountsService.GetListAsync(ids, ct));
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult<List<Account>>> GetPagedList(AccountGetPagedListParameter parameter,
+        [RequirePrivileged]
+        public Task<ActionResult<Account[]>> GetPagedList(
+            AccountGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _accountsService.GetPagedListAsync(parameter, ct);
+            return Get(_accountsService.GetPagedListAsync(parameter, ct));
         }
 
         [HttpPost("Create")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<Guid>> Create(Account account, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult<Guid>> Create(
+            [Required] Account account,
+            CancellationToken ct = default)
         {
-            var id = await _accountsService.CreateAsync(_userContext.UserId, account, ct);
-
-            return Created(nameof(Get), id);
+            return Create(_accountsService.CreateAsync(_userContext.UserId, account, ct));
         }
 
         [HttpPost("Update")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult> Update(Account account, CancellationToken ct = default)
+        [RequirePrivileged]
+        public async Task<ActionResult> Update(
+            [Required] Account account,
+            CancellationToken ct = default)
         {
-            if (account.Id.IsEmpty())
-            {
-                return BadRequest();
-            }
-
             var oldAccount = await _accountsService.GetAsync(account.Id, ct);
-            if (oldAccount == null)
-            {
-                return NotFound();
-            }
 
-            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct);
-
-            return NoContent();
+            return await Action(_accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct), oldAccount);
         }
 
         [HttpPost("Lock")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult> Lock(List<Guid> ids, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult> Lock(
+            [Required] List<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            await _accountsService.LockAsync(_userContext.UserId, ids, ct);
-
-            return NoContent();
+            return Action(_accountsService.LockAsync(_userContext.UserId, ids, ct));
         }
 
         [HttpPost("Unlock")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport)]
-        public async Task<ActionResult> Unlock(List<Guid> ids, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult> Unlock(
+            [Required] List<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            await _accountsService.UnlockAsync(_userContext.UserId, ids, ct);
-
-            return NoContent();
+            return Action(_accountsService.UnlockAsync(_userContext.UserId, ids, ct));
         }
 
         [HttpPost("Delete")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult> Delete(
+            [Required] List<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            await _accountsService.DeleteAsync(_userContext.UserId, ids, ct);
-
-            return NoContent();
+            return Action(_accountsService.DeleteAsync(_userContext.UserId, ids, ct));
         }
 
         [HttpPost("Restore")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult> Restore(
+            [Required] List<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            await _accountsService.RestoreAsync(_userContext.UserId, ids, ct);
-
-            return NoContent();
+            return Action(_accountsService.RestoreAsync(_userContext.UserId, ids, ct));
         }
     }
 }
