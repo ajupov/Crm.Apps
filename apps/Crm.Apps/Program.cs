@@ -25,6 +25,7 @@ using Crm.Infrastructure.Logging;
 using Crm.Infrastructure.Metrics;
 using Crm.Infrastructure.Migrations;
 using Crm.Infrastructure.Mvc;
+using Crm.Infrastructure.OAuthClients;
 using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Tracing;
 using Crm.Infrastructure.UserContext;
@@ -47,6 +48,7 @@ namespace Crm.Apps
                         .ConfigureApiDocumentation()
                         .ConfigureMetrics(builder.Configuration)
                         .ConfigureMigrator(builder.Configuration)
+                        .ConfigureOAuthClients(builder.Configuration)
                         .ConfigureOrm<AccountsStorage>(builder.Configuration)
                         .ConfigureOrm<UsersStorage>(builder.Configuration)
                         .ConfigureOrm<IdentitiesStorage>(builder.Configuration)
@@ -115,7 +117,8 @@ namespace Crm.Apps
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
-                        .UseMvcMiddleware())
+                        .UseMvcMiddleware()
+                        .UseOAuthClients())
                     .Build()
                     .RunAsync();
         }

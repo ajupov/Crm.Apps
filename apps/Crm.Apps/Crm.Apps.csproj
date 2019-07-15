@@ -17,6 +17,7 @@
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Metrics\Crm.Infrastructure.Metrics.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Migrations\Crm.Infrastructure.Migrations.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Mvc\Crm.Infrastructure.Mvc.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.OAuthClients\Crm.Infrastructure.OAuthClients.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Orm\Crm.Infrastructure.Orm.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Tracing\Crm.Infrastructure.Tracing.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj" />

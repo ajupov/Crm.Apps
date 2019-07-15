@@ -6,12 +6,15 @@ namespace Crm.Infrastructure.Orm
 {
     public static class OrmExtensions
     {
-        public static IServiceCollection ConfigureOrm<TStorage>(this IServiceCollection services,
+        public static IServiceCollection ConfigureOrm<TStorage>(
+            this IServiceCollection services,
             IConfiguration configuration) where TStorage : Storage
         {
-            services.Configure<OrmSettings>(configuration.GetSection("OrmSettings"));
+            var section = configuration.GetSection("OrmSettings");
+            
+            services.Configure<OrmSettings>(section);
 
-            var isTestMode = configuration.GetSection("OrmSettings").GetValue<bool>("IsTestMode");
+            var isTestMode = section.GetValue<bool>("IsTestMode");
             if (isTestMode)
             {
                 services.AddEntityFrameworkInMemoryDatabase();
