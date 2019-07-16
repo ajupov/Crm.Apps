@@ -12,6 +12,7 @@
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Hosting\Crm.Infrastructure.Hosting.csproj" />
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.HotStorage\Crm.Infrastructure.HotStorage.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Logging\Crm.Infrastructure.Logging.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj" />
         <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Metrics\Crm.Infrastructure.Metrics.csproj" />

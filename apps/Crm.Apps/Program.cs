@@ -21,6 +21,7 @@ using Crm.Common.UserContext;
 using Crm.Infrastructure.ApiDocumentation;
 using Crm.Infrastructure.Configuration;
 using Crm.Infrastructure.Hosting;
+using Crm.Infrastructure.HotStorage;
 using Crm.Infrastructure.Logging;
 using Crm.Infrastructure.Metrics;
 using Crm.Infrastructure.Migrations;
@@ -58,6 +59,7 @@ namespace Crm.Apps
                         .ConfigureOrm<ContactsStorage>(builder.Configuration)
                         .ConfigureOrm<DealsStorage>(builder.Configuration)
                         .ConfigureOrm<ActivitiesStorage>(builder.Configuration)
+                        .ConfigureHotStorage(builder.Configuration)
                         .ConfigureUserContext<IUserContext, UserContext>()
                         .AddTransient<IAccountsService, AccountsService>()
                         .AddTransient<IAccountChangesService, AccountChangesService>()

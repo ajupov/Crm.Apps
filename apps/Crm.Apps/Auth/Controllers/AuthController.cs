@@ -3,56 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Crm.Attributes;
-using Crm.Businness.Registration;
-using Crm.Extensions;
-using Crm.Infrastructure.HotStorage;
-using Crm.Models.Authentication;
-using Crm.Modules.Identities.Enums;
-using Crm.Modules.Identities.Extensions;
-using Crm.Modules.Identities.Models;
-using Crm.Modules.Identities.Storages;
-using Crm.Modules.Users.Enums;
-using Crm.Modules.Users.Models;
-using Crm.Modules.Users.Storages;
-using Crm.Other;
-using Crm.Utils.DateTime;
-using Crm.Utils.Generator;
-using Crm.Utils.Password;
+using Crm.Apps.Identities.Models;
+using Crm.Apps.Identities.Storages;
+using Crm.Apps.Users.Models;
+using Crm.Apps.Users.Storages;
+using Crm.Infrastructure.HotStorage.HotStorage;
+using Crm.Infrastructure.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crm.Controllers
+namespace Crm.Apps.Auth.Controllers
 {
-    [Route(Route.DefaultV1Controller)]
-    public class AuthenticationController : BaseController
+    [ApiController]
+    [Route("Api/Auth")]
+    public class AuthController : DefaultController
     {
         private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
-        private readonly IHotStorage _hotStorageService;
+        private readonly IHotStorage _hotStorage;
         private readonly IRegistrationService _registrationService;
         private readonly UsersStorage _usersStorage;
         private readonly IdentitiesStorage _identitiesStorage;
-        private readonly Businness.Authentication.IAuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(
+        public AuthController(
             IAuthenticationSchemeProvider authenticationSchemeProvider,
             IRegistrationService registrationService,
-            IHotStorage hotStorageService,
+            IHotStorage hotStorage,
             UsersStorage usersStorage,
             IdentitiesStorage identitiesStorage,
             Businness.Authentication.IAuthenticationService authenticationService)
         {
             _authenticationSchemeProvider = authenticationSchemeProvider;
             _registrationService = registrationService;
-            _hotStorageService = hotStorageService;
+            _hotStorage = hotStorage;
             _usersStorage = usersStorage;
             _identitiesStorage = identitiesStorage;
             _authenticationService = authenticationService;
         }
 
-        [HttpGet(Route.DefaultAction)]
+        [HttpGet("GetProviders")]
         public async Task<IEnumerable<object>> GetProviders()
         {
             var schemes = await _authenticationSchemeProvider.GetAllSchemesAsync().ConfigureAwait(false);
@@ -64,6 +56,7 @@ namespace Crm.Controllers
             });
         }
 
+        [HttpPost("GetProviders")]
         [HttpPost(Route.DefaultAction), ValidateModel]
         public async Task<SignInResponseModel> SignIn([FromBody] SignInRequestModel model)
         {
@@ -103,10 +96,10 @@ namespace Crm.Controllers
             var nonce = Generator.GenerateAlphaNumbericString(20);
             var storageValue = GetStorageValue(state, nonce);
 
-            var saved = await _hotStorageService.SaveAsync(storageValue, storageValue).ConfigureAwait(false);
+            var saved = await _hotStorage.SaveAsync(storageValue, storageValue).ConfigureAwait(false);
             if (!saved)
             {
-                throw new Exception($"Cannot save {nameof(state)} and {nameof(nonce)} in {nameof(_hotStorageService)}.");
+                throw new Exception($"Cannot save {nameof(state)} and {nameof(nonce)} in {nameof(_hotStorage)}.");
             }
 
             var properties = new AuthenticationProperties
@@ -129,11 +122,11 @@ namespace Crm.Controllers
         {
             var storageValue = GetStorageValue(model.State, model.Nonce);
 
-            var isExist = await _hotStorageService.IsExistAsync(storageValue).ConfigureAwait(false);
+            var isExist = await _hotStorage.IsExistAsync(storageValue).ConfigureAwait(false);
             if (!isExist)
             {
                 throw new Exception(
-                    $"Cannot get {nameof(model.State)} and {nameof(model.Nonce)} from {nameof(_hotStorageService)}.");
+                    $"Cannot get {nameof(model.State)} and {nameof(model.Nonce)} from {nameof(_hotStorage)}.");
             }
 
             var user = await GetOrRegisterUserAsync().ConfigureAwait(false);
