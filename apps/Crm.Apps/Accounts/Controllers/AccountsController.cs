@@ -18,12 +18,12 @@ namespace Crm.Apps.Accounts.Controllers
     [ApiController]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts")]
-    public class AccountsController : DefaultController
+    public class AccountsApiController : DefaultApiController
     {
         private readonly IUserContext _userContext;
         private readonly IAccountsService _accountsService;
 
-        public AccountsController(
+        public AccountsApiController(
             IUserContext userContext,
             IAccountsService accountsService)
         {

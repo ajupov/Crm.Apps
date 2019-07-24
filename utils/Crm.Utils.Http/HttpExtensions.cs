@@ -5,13 +5,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Web;
 using Crm.Utils.Json;
 
 namespace Crm.Utils.Http
 {
     public static class HttpExtensions
     {
-        public static string ToQueryParams(this object parameters)
+        public static string ToQueryParams(
+            this object parameters)
         {
             var properties = TypeDescriptor.GetProperties(parameters);
             var result = new List<string>();
@@ -34,14 +36,28 @@ namespace Crm.Utils.Http
             return result.Any() ? $"?{string.Join("&", result)}" : string.Empty;
         }
 
-        public static StringContent ToJsonStringContent(this object model)
+
+        public static string AddParameters(
+            this string uri,
+            params (string key, object value)[] parameters)
         {
-            return new StringContent(model.ToJsonString(), Encoding.UTF8, "application/json");
+            var uriBuilder = new System.UriBuilder(uri);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            foreach (var (key, value) in parameters)
+            {
+                query[key] = value.ToString();
+            }
+
+            uriBuilder.Query = query.ToString();
+            return uriBuilder.ToString();
         }
 
-        public static bool IsCollectionType(Type type)
+
+        public static StringContent ToJsonStringContent(
+            this object model)
         {
-            return type.GetInterface(nameof(IEnumerable)) != null;
+            return new StringContent(model.ToJsonString(), Encoding.UTF8, "application/json");
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace Crm.Models.Registration
+namespace Crm.Apps.OAuth.Models.Registration
 {
     public class RegisterResponseModel
     {

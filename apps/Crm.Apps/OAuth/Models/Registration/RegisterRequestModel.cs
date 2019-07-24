@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Models.Registration
+namespace Crm.Apps.OAuth.Models.Registration
 {
     public class RegisterRequestModel
     {

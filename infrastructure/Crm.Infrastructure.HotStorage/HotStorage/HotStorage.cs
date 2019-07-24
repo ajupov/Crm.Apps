@@ -32,7 +32,7 @@ namespace Crm.Infrastructure.HotStorage.HotStorage
                 client.ContainsKey(key);
             }
         }
-        
+
         public T GetValue<T>(
             string key)
         {

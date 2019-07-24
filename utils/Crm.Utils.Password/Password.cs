@@ -11,8 +11,13 @@ namespace Crm.Utils.Password
         private const int IterationsCount = 1000;
         private const int HashLength = 256;
         private const int SaltLength = 16;
+        private const int BytesRequested = HashLength - SaltLength - 1;
 
-        public static string ToPasswordHash(string value)
+        private const KeyDerivationPrf KeyDerivationPrf =
+            Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA512;
+
+        public static string ToPasswordHash(
+            string value)
         {
             var salt = GetSalt();
             var bytes = GetBytes(value, salt);
@@ -24,7 +29,9 @@ namespace Crm.Utils.Password
             return Convert.ToBase64String(array);
         }
 
-        public static bool IsVerifiedPassword(string value, string hashedValue)
+        public static bool IsVerifiedPassword(
+            string value,
+            string hashedValue)
         {
             var hashedPasswordArray = Convert.FromBase64String(hashedValue);
             if (hashedPasswordArray.Length != HashLength)
@@ -35,9 +42,9 @@ namespace Crm.Utils.Password
             var salt = GetVerifySalt(hashedPasswordArray);
             var array = GetVerifyArray(hashedPasswordArray);
 
-            return IsEqual(
-                KeyDerivation.Pbkdf2(value, salt, KeyDerivationPrf.HMACSHA512, IterationsCount,
-                    HashLength - SaltLength - 1), array);
+            var pbkdf2 = KeyDerivation.Pbkdf2(value, salt, KeyDerivationPrf, IterationsCount, BytesRequested);
+
+            return IsEqual(pbkdf2, array);
         }
 
         private static byte[] GetSalt()
@@ -53,10 +60,11 @@ namespace Crm.Utils.Password
             return salt;
         }
 
-        private static byte[] GetBytes(string password, byte[] salt)
+        private static byte[] GetBytes(
+            string password,
+            byte[] salt)
         {
-            return KeyDerivation.Pbkdf2(password, salt, KeyDerivationPrf.HMACSHA512, IterationsCount,
-                HashLength - SaltLength - 1);
+            return KeyDerivation.Pbkdf2(password, salt, KeyDerivationPrf, IterationsCount, BytesRequested);
         }
 
         private static byte[] GetArray(byte[] salt)
@@ -69,12 +77,15 @@ namespace Crm.Utils.Password
             return array;
         }
 
-        private static void CopyArray(byte[] bytes, byte[] result)
+        private static void CopyArray(
+            byte[] bytes,
+            byte[] result)
         {
             Buffer.BlockCopy(bytes, 0, result, SaltLength + 1, HashLength - SaltLength - 1);
         }
 
-        private static byte[] GetVerifyArray(byte[] hashedPasswordArray)
+        private static byte[] GetVerifyArray(
+            byte[] hashedPasswordArray)
         {
             var array = new byte[HashLength - SaltLength - 1];
 
@@ -83,7 +94,8 @@ namespace Crm.Utils.Password
             return array;
         }
 
-        private static byte[] GetVerifySalt(byte[] hashedPasswordArray)
+        private static byte[] GetVerifySalt(
+            byte[] hashedPasswordArray)
         {
             var salt = new byte[SaltLength];
 
@@ -93,7 +105,9 @@ namespace Crm.Utils.Password
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static bool IsEqual(IReadOnlyList<byte> byteArray1, IReadOnlyList<byte> byteArray2)
+        private static bool IsEqual(
+            IReadOnlyList<byte> byteArray1,
+            IReadOnlyList<byte> byteArray2)
         {
             if (byteArray1 == null && byteArray2 == null)
             {

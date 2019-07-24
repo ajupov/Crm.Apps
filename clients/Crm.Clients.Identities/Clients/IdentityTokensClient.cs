@@ -3,37 +3,49 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Identities.Models;
+using Crm.Clients.Identities.Parameters;
 using Crm.Clients.Identities.Settings;
 using Crm.Utils.Http;
 using Microsoft.Extensions.Options;
+using UriBuilder = Crm.Utils.Http.UriBuilder;
 
 namespace Crm.Clients.Identities.Clients
 {
     public class IdentityTokensClient : IIdentityTokensClient
     {
-        private readonly IdentitiesClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public IdentityTokensClient(IOptions<IdentitiesClientSettings> options, IHttpClientFactory httpClientFactory)
+        public IdentityTokensClient(
+            IOptions<IdentitiesClientSettings> options,
+            IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, "Api/Identities/Tokens");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<IdentityToken> GetAsync(Guid identityId, string value, CancellationToken ct = default)
+        public Task<IdentityToken> GetAsync(
+            Guid identityId,
+            string value,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<IdentityToken>($"{_settings.Host}/Api/Identities/Tokens/Get",
-                new {identityId, value}, ct);
+            var parameter = new IdentityTokenGetParameter(identityId, value);
+
+            return _httpClientFactory.GetAsync<IdentityToken>($"{_url}/Get", parameter, ct);
         }
 
-        public Task<Guid> CreateAsync(IdentityToken token, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(
+            IdentityToken token,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Identities/Tokens/Create", token, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_url}/Create", token, ct);
         }
 
-        public Task SetIsUsedAsync(Guid id, CancellationToken ct = default)
+        public Task SetIsUsedAsync(
+            Guid id,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Tokens/SetIsUsed", id, ct);
+            return _httpClientFactory.PostAsync($"{_url}/SetIsUsed", id, ct);
         }
     }
 }

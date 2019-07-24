@@ -10,8 +10,8 @@
             Value = value;
         }
 
-        public AccountSettingType Type { get; set; }
+        public AccountSettingType Type { get; }
 
-        public string Value { get; set; }
+        public string Value { get; }
     }
 }

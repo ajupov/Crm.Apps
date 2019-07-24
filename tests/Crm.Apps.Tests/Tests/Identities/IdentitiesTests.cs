@@ -138,10 +138,9 @@ namespace Crm.Apps.Tests.Tests.Identities
         {
             var account = await _create.Account.BuildAsync();
             var user = await _create.User.WithAccountId(account.Id).BuildAsync();
-            var identity = await _create.Identity.WithUserId(user.Id).WithPassword("Test").BuildAsync()
-                ;
+            await _create.Identity.WithUserId(user.Id).WithKey("Test").WithPassword("Test").BuildAsync();
 
-            var result = await _identitiesClient.IsPasswordCorrectAsync(identity.Id, "Test");
+            var result = await _identitiesClient.IsPasswordCorrectAsync("Test", "Test");
 
             Assert.True(result);
         }

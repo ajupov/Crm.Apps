@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ using Crm.Apps.Identities.Parameters;
 using Crm.Apps.Identities.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Infrastructure.ApiDocumentation.Attributes;
+using Crm.Infrastructure.Mvc;
 using Crm.Utils.Enums;
 using Crm.Utils.Guid;
 using Crm.Utils.String;
@@ -16,133 +19,109 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Identities.Controllers
 {
     [ApiController]
+    [IgnoreApiDocumentation]
     [Route("Api/Identities")]
-    public class IdentitiesController : ControllerBase
+    public class IdentitiesApiController : DefaultApiController
     {
         private readonly IUserContext _userContext;
         private readonly IIdentitiesService _identitiesService;
 
-        public IdentitiesController(IUserContext userContext, IIdentitiesService identitiesService)
+        public IdentitiesApiController(
+            IUserContext userContext,
+            IIdentitiesService identitiesService)
         {
             _userContext = userContext;
             _identitiesService = identitiesService;
         }
 
         [HttpGet("GetTypes")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public ActionResult<List<IdentityType>> GetTypes()
+        [RequirePrivileged]
+        public ActionResult<Dictionary<IdentityType, string>> GetTypes()
         {
-            return EnumsExtensions.GetValues<IdentityType>().ToList();
+            return Get(EnumsExtensions.GetAsDictionary<IdentityType>());
         }
 
         [HttpGet("Get")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<Identity>> Get(Guid id, CancellationToken ct = default)
+        [RequirePrivileged]
+        public async Task<ActionResult<Identity>> Get(
+            [Required] Guid id,
+            CancellationToken ct = default)
         {
-            if (id.IsEmpty())
+            var identity = await _identitiesService.GetAsync(id, ct);
+
+            if (identity != null)
             {
-                return BadRequest();
+                identity.PasswordHash = null;
             }
 
-            var account = await _identitiesService.GetAsync(id, ct);
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            account.PasswordHash = string.Empty;
-            
-            return account;
+            return Get(identity);
         }
 
         [HttpPost("GetList")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<List<Identity>>> GetList(List<Guid> ids, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult<Identity[]>> GetList(
+            [Required] Guid[] ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            return await _identitiesService.GetListAsync(ids, ct);
+            return Get(_identitiesService.GetListAsync(ids, ct));
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<List<Identity>>> GetPagedList(IdentityGetPagedListParameter parameter,
+        [RequirePrivileged]
+        public Task<ActionResult<Identity[]>> GetPagedList(
+            [Required] IdentityGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return await _identitiesService.GetPagedListAsync(parameter, ct);
+            return Get(_identitiesService.GetPagedListAsync(parameter, ct));
         }
 
         [HttpPost("Create")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<Guid>> Create(Identity identity, CancellationToken ct = default)
+        [RequirePrivileged]
+        public Task<ActionResult<Guid>> Create(
+            [Required] Identity identity,
+            CancellationToken ct = default)
         {
-            var id = await _identitiesService.CreateAsync(_userContext.UserId, identity, ct);
-
-            return Created(nameof(Get), id);
+            return Create(_identitiesService.CreateAsync(_userContext.UserId, identity, ct));
         }
 
         [HttpPost("Update")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult> Update(Identity identity, CancellationToken ct = default)
+        [RequirePrivileged]
+        public async Task<ActionResult> Update(
+            [Required] Identity identity,
+            CancellationToken ct = default)
         {
-            if (identity.Id.IsEmpty())
-            {
-                return BadRequest();
-            }
-
             var oldIdentity = await _identitiesService.GetAsync(identity.Id, ct);
-            if (oldIdentity == null)
-            {
-                return NotFound();
-            }
 
-            await _identitiesService.UpdateAsync(_userContext.UserId, oldIdentity, identity, ct);
-
-            return NoContent();
+            return await Action(
+                _identitiesService.UpdateAsync(_userContext.UserId, oldIdentity, identity, ct), oldIdentity);
         }
 
         [HttpPost("SetPassword")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult> SetPassword(SetPasswordParameter parameter, CancellationToken ct = default)
+        [RequirePrivileged]
+        public async Task<ActionResult> SetPassword(
+            [Required] SetPasswordParameter parameter,
+            CancellationToken ct = default)
         {
-            if (parameter.Id.IsEmpty())
-            {
-                return BadRequest();
-            }
+            var identity = await _identitiesService.GetAsync(parameter.Id, ct);
+            
+            return await Action(
+                _identitiesService.SetPasswordAsync(_userContext.UserId, identity, parameter.Password, ct), identity);
+        }
 
+        [HttpGet("IsPasswordCorrect")]      
+        [RequirePrivileged]
+        public async Task<ActionResult<bool>> IsPasswordCorrect(
+            IsPasswordCorrectParameter parameter,
+            CancellationToken ct = default)
+        {
             var identity = await _identitiesService.GetAsync(parameter.Id, ct);
             if (identity == null)
             {
                 return NotFound();
             }
 
-            await _identitiesService.SetPasswordAsync(_userContext.UserId, identity, parameter.Password, ct)
-                ;
-
-            return NoContent();
-        }
-
-        [HttpGet("IsPasswordCorrect")]
-        [RequireAny(Permission.System, Permission.Development)]
-        public async Task<ActionResult<bool>> IsPasswordCorrect(Guid id, string password,
-            CancellationToken ct = default)
-        {
-            if (id.IsEmpty() || password.IsEmpty())
-            {
-                return BadRequest();
-            }
-
-            var identity = await _identitiesService.GetAsync(id, ct);
-            if (identity == null)
-            {
-                return NotFound();
-            }
-
-            return await _identitiesService.IsPasswordCorrectAsync(_userContext.UserId, identity, password, ct)
-                ;
+            return await _identitiesService.IsPasswordCorrectAsync(_userContext.UserId, identity, parameter.Password,
+                ct);
         }
 
         [HttpPost("Verify")]

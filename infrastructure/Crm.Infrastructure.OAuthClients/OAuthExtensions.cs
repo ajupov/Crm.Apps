@@ -11,13 +11,22 @@ namespace Crm.Infrastructure.OAuthClients
             IConfiguration configuration)
         {
             services.AddAuthentication()
+                .AddOAuth("Crm", x =>
+                {
+                    var section = configuration.GetSection("CrmOauthClientSettings");
+                  
+                    x.ClientId = section.GetValue<string>("ClientId");
+                    x.ClientSecret = section.GetValue<string>("ClientSecret");
+                    x.CallbackPath = "/CrmCallback";
+//                    x.Scope.Add("");
+                })
                 .AddVkontakte(x =>
                 {
                     var section = configuration.GetSection("VkontakteOauthClientSettings");
 
                     x.ClientId = section.GetValue<string>("ClientId");
                     x.ClientSecret = section.GetValue<string>("ClientSecret");
-                    x.CallbackPath = "/signin-vkontakte";
+                    x.CallbackPath = "/VkontakteCallback";
                 })
                 .AddOdnoklassniki(x =>
                 {
@@ -25,7 +34,7 @@ namespace Crm.Infrastructure.OAuthClients
 
                     x.ClientId = section.GetValue<string>("ClientId");
                     x.ClientSecret = section.GetValue<string>("ClientSecret");
-                    x.CallbackPath = "/signin-odnoklassniki";
+                    x.CallbackPath = "/OdnoklassnikiCallback";
 //                    x.Scope.Add("VALUABLE_ACCESS");
 //                    x.Scope.Add("LONG_ACCESS_TOKEN");
                 })
@@ -35,7 +44,7 @@ namespace Crm.Infrastructure.OAuthClients
 
                     x.ClientId = section.GetValue<string>("ClientId");
                     x.ClientSecret = section.GetValue<string>("ClientSecret");
-                    x.CallbackPath = "/signin-instagram";
+                    x.CallbackPath = "/InstagramCallback";
                 })
                 .AddYandex(x =>
                 {
@@ -43,7 +52,7 @@ namespace Crm.Infrastructure.OAuthClients
 
                     x.ClientId = section.GetValue<string>("ClientId");
                     x.ClientSecret = section.GetValue<string>("ClientSecret");
-                    x.CallbackPath = "/signin-yandex";
+                    x.CallbackPath = "/YandexCallback";
                 })
                 .AddMailRu(x =>
                 {
@@ -51,7 +60,7 @@ namespace Crm.Infrastructure.OAuthClients
 
                     x.ClientId = section.GetValue<string>("ClientId");
                     x.ClientSecret = section.GetValue<string>("ClientSecret");
-                    x.CallbackPath = "/signin-mailru";
+                    x.CallbackPath = "/MailRuCallback";
                 });
 
             return services;

@@ -12,7 +12,7 @@ namespace Crm.Apps.Accounts.Models
         
         public Account(
             AccountType type,
-            List<AccountSetting> settings = null)
+            List<AccountSetting> settings = default)
         {
             Id = Guid.NewGuid();
             Type = type;

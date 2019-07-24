@@ -1,4 +1,6 @@
-﻿namespace Crm.Clients.Identities.Models
+﻿using System.Linq;
+
+namespace Crm.Clients.Identities.Models
 {
     public enum IdentityType : byte
     {
@@ -61,5 +63,20 @@
         // Через Instagram
         // Instagram
         Instagram
+    }
+
+    public static class IdentityTypeExtensions
+    {
+        public static readonly IdentityType[] TypesWithPassword =
+        {
+            IdentityType.LoginAndPassword,
+            IdentityType.EmailAndPassword,
+            IdentityType.PhoneAndPassword
+        };
+
+        public static bool IsTypeWithPassword(this IdentityType type)
+        {
+            return TypesWithPassword.Contains(type);
+        }
     }
 }

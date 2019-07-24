@@ -11,7 +11,7 @@ namespace Crm.Apps.Accounts.Controllers
     [ApiController]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts/Settings")]
-    public class AccountSettingsController : DefaultController
+    public class AccountSettingsApiController : DefaultApiController
     {
         [HttpGet("GetTypes")]
         [RequirePrivileged]

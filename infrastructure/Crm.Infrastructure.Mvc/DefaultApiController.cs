@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Infrastructure.Mvc
 {
-    public class DefaultController : ControllerBase
+    public class DefaultApiController : ControllerBase
     {
         protected ActionResult<T> Get<T>(
             T model)
@@ -25,7 +25,8 @@ namespace Crm.Infrastructure.Mvc
             return model == null ? (ActionResult<T>) NotFound() : model;
         }
 
-        protected async Task<ActionResult> Action(Task task)
+        protected async Task<ActionResult> Action(
+            Task task)
         {
             await task;
 
@@ -51,5 +52,9 @@ namespace Crm.Infrastructure.Mvc
 
             return Created("Get", id);
         }
+        
+        protected string IpAddress => Request.HttpContext.Connection.RemoteIpAddress.ToString();
+
+        protected string UserAgent => Request.Headers["User-Agent"].ToString();
     }
 }

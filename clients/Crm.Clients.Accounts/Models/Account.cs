@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Clients.Accounts.Models
 {
@@ -8,7 +7,7 @@ namespace Crm.Clients.Accounts.Models
     {
         public Account(
             AccountType type,
-            List<AccountSetting> settings = null)
+            List<AccountSetting> settings = default)
         {
             Id = Guid.NewGuid();
             Type = type;
@@ -18,15 +17,15 @@ namespace Crm.Clients.Accounts.Models
             Settings = settings ?? new List<AccountSetting>();
         }
 
-        public Guid Id { get; set; }
+        public Guid Id { get; }
 
-        public AccountType Type { get; set; }
+        public AccountType Type { get; }
 
         public bool IsLocked { get; set; }
 
         public bool IsDeleted { get; set; }
 
-        public DateTime CreateDateTime { get; set; }
+        public DateTime CreateDateTime { get; }
 
         public List<AccountSetting> Settings { get; set; }
     }

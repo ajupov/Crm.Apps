@@ -4,7 +4,22 @@ namespace Crm.Clients.Identities.Models
 {
     public class Identity
     {
-        public Guid Id { get; set; }
+        public Identity(Guid userId,
+            IdentityType type,
+            string key,
+            bool isPrimary,
+            bool isVerified)
+        {
+            Id = Guid.Empty;
+            UserId = userId;
+            Type = type;
+            Key = key;
+            IsPrimary = isPrimary;
+            IsVerified = isVerified;
+            CreateDateTime = DateTime.UtcNow;
+        }
+
+        public Guid Id { get; }
 
         public Guid UserId { get; set; }
 
@@ -16,6 +31,6 @@ namespace Crm.Clients.Identities.Models
 
         public bool IsVerified { get; set; }
 
-        public DateTime CreateDateTime { get; set; }
+        public DateTime CreateDateTime { get; }
     }
 }

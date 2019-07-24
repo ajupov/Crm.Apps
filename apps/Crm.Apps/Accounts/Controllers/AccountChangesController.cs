@@ -14,11 +14,11 @@ namespace Crm.Apps.Accounts.Controllers
     [ApiController]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts/Changes")]
-    public class AccountChangesController : DefaultController
+    public class AccountChangesApiController : DefaultApiController
     {
         private readonly IAccountChangesService _accountChangesService;
 
-        public AccountChangesController(
+        public AccountChangesApiController(
             IAccountChangesService accountChangesService)
         {
             _accountChangesService = accountChangesService;

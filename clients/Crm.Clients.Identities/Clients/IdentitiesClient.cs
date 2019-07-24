@@ -4,42 +4,67 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Identities.Models;
+using Crm.Clients.Identities.Parameters;
 using Crm.Clients.Identities.Settings;
 using Crm.Utils.Http;
 using Microsoft.Extensions.Options;
+using UriBuilder = Crm.Utils.Http.UriBuilder;
 
 namespace Crm.Clients.Identities.Clients
 {
     public class IdentitiesClient : IIdentitiesClient
     {
-        private readonly IdentitiesClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public IdentitiesClient(IOptions<IdentitiesClientSettings> options, IHttpClientFactory httpClientFactory)
+        public IdentitiesClient(
+            IOptions<IdentitiesClientSettings> options,
+            IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, "Api/Identities");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<IdentityType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, IdentityType>> GetTypesAsync(
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<IdentityType>>($"{_settings.Host}/Api/Identities/GetTypes", ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<string, IdentityType>>($"{_url}/GetTypes", ct: ct);
         }
 
-        public Task<Identity> GetAsync(Guid id, CancellationToken ct = default)
+        public Task<Identity> GetAsync(
+            Guid id,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<Identity>($"{_settings.Host}/Api/Identities/Get", new {id}, ct);
+            return _httpClientFactory.GetAsync<Identity>($"{_url}/Get", new {id}, ct);
         }
 
-        public Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<Identity> GetByKeyAndTypesAsync(
+            string key,
+            IdentityType[] types,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<Identity>>($"{_settings.Host}/Api/Identities/GetList", ids, ct);
+            return _httpClientFactory.GetAsync<Identity>($"{_url}/Get", new {key}, ct);
         }
 
-        public Task<List<Identity>> GetPagedListAsync(Guid? userId = default, List<IdentityType> types = default,
-            string key = default, bool? isPrimary = default, bool? isVerified = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default,
+        public Task<Identity[]> GetListAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
+        {
+            return _httpClientFactory.PostAsync<Identity[]>($"{_url}/GetList", ids, ct);
+        }
+
+        public Task<Identity[]> GetPagedListAsync(
+            Guid? userId = default,
+            IdentityType[] types = default,
+            string key = default,
+            bool? isPrimary = default,
+            bool? isVerified = default,
+            DateTime? minCreateDate = default,
+            DateTime? maxCreateDate = default,
+            int offset = default,
+            int limit = 10,
+            string sortBy = "CreateDateTime",
+            string orderBy = "desc",
             CancellationToken ct = default)
         {
             var parameter = new
@@ -57,55 +82,69 @@ namespace Crm.Clients.Identities.Clients
                 OrderBy = orderBy
             };
 
-            return _httpClientFactory.PostAsync<List<Identity>>($"{_settings.Host}/Api/Identities/GetPagedList",
-                parameter, ct);
+            return _httpClientFactory.PostAsync<Identity[]>($"{_url}/GetPagedList", parameter, ct);
         }
 
-        public Task<Guid> CreateAsync(Identity identity, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(
+            Identity identity,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Identities/Create", identity, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_url}/Create", identity, ct);
         }
 
-        public Task UpdateAsync(Identity identity, CancellationToken ct = default)
+        public Task UpdateAsync(
+            Identity identity,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Update", identity, ct);
+            return _httpClientFactory.PostAsync($"{_url}/Update", identity, ct);
         }
 
-        public Task SetPasswordAsync(Guid id, string password, CancellationToken ct = default)
+        public Task SetPasswordAsync(
+            Guid id,
+            string password,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                Id = id,
-                Password = password
-            };
+            var parameter = new SetPasswordParameter(id, password);
 
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/SetPassword", parameter, ct);
+            return _httpClientFactory.PostAsync($"{_url}/SetPassword", parameter, ct);
         }
 
-        public Task<bool> IsPasswordCorrectAsync(Guid id, string password, CancellationToken ct = default)
+        public Task<bool> IsPasswordCorrectAsync(
+            string key,
+            string password,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<bool>($"{_settings.Host}/Api/Identities/IsPasswordCorrect",
-                new {id, password}, ct);
+            var parameter = new IsPasswordCorrectParameter(key, password);
+            
+            return _httpClientFactory.GetAsync<bool>($"{_url}/IsPasswordCorrect", parameter, ct);
         }
 
-        public Task VerifyAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task VerifyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Verify", ids, ct);
+            return _httpClientFactory.PostAsync($"{_url}/Verify", ids, ct);
         }
 
-        public Task UnverifyAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task UnverifyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/Unverify", ids, ct);
+            return _httpClientFactory.PostAsync($"{_url}/Unverify", ids, ct);
         }
 
-        public Task SetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task SetAsPrimaryAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/SetAsPrimary", ids, ct);
+            return _httpClientFactory.PostAsync($"{_url}/SetAsPrimary", ids, ct);
         }
 
-        public Task ResetAsPrimaryAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task ResetAsPrimaryAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Identities/ResetAsPrimary", ids, ct);
+            return _httpClientFactory.PostAsync($"{_url}/ResetAsPrimary", ids, ct);
         }
     }
 }

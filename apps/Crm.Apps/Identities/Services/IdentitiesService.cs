@@ -27,16 +27,16 @@ namespace Crm.Apps.Identities.Services
             return _storage.Identities.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public async Task<List<Identity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task<Identity[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             var result = await _storage.Identities.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
 
             result.ForEach(x => x.PasswordHash = string.Empty);
 
-            return result;
+            return result.ToArray();
         }
 
-        public async Task<List<Identity>> GetPagedListAsync(IdentityGetPagedListParameter parameter,
+        public async Task<Identity[]> GetPagedListAsync(IdentityGetPagedListParameter parameter,
             CancellationToken ct)
         {
             var result = await _storage.Identities.Where(x =>
@@ -54,7 +54,7 @@ namespace Crm.Apps.Identities.Services
 
             result.ForEach(x => x.PasswordHash = string.Empty);
 
-            return result;
+            return result.ToArray();
         }
 
         public async Task<Guid> CreateAsync(Guid userId, Identity identity, CancellationToken ct)
