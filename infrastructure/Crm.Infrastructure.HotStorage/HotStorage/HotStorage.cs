@@ -7,16 +7,20 @@ namespace Crm.Infrastructure.HotStorage.HotStorage
     {
         private readonly IRedisClientsManager _redisClientsManager;
 
-        public HotStorage(
-            IRedisClientsManager redisClientsManager)
+        public HotStorage(IRedisClientsManager redisClientsManager)
         {
             _redisClientsManager = redisClientsManager;
         }
+        
+        public void SetTempString(string value, TimeSpan timeSpan)
+        {
+            using (var client = _redisClientsManager.GetClient())
+            {
+                client.SetValue(value, value, timeSpan);
+            }
+        }
 
-        public void SetValue<T>(
-            string key,
-            T value,
-            TimeSpan timeSpan)
+        public void SetValue<T>(string key, T value, TimeSpan timeSpan)
         {
             using (var client = _redisClientsManager.GetClient())
             {
@@ -24,17 +28,15 @@ namespace Crm.Infrastructure.HotStorage.HotStorage
             }
         }
 
-        public void IsExist(
-            string key)
+        public bool IsExist(string key)
         {
             using (var client = _redisClientsManager.GetClient())
             {
-                client.ContainsKey(key);
+                return client.ContainsKey(key);
             }
         }
 
-        public T GetValue<T>(
-            string key)
+        public T GetValue<T>(string key)
         {
             using (var client = _redisClientsManager.GetClient())
             {

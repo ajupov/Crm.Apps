@@ -25,20 +25,21 @@ namespace Crm.Apps.Accounts.Parameters
             SortBy = sortBy;
         }
 
-        [Required] public Guid AccountId { get; set; }
+        [Required]
+        public Guid AccountId { get; }
 
-        public Guid? ChangerUserId { get; set; }
+        public Guid? ChangerUserId { get; }
 
-        public DateTime? MinCreateDate { get; set; }
+        public DateTime? MinCreateDate { get; }
 
-        public DateTime? MaxCreateDate { get; set; }
+        public DateTime? MaxCreateDate { get; }
 
-        public int Offset { get; set; }
+        public int Offset { get; }
 
-        public int Limit { get; set; }
+        public int Limit { get; }
 
-        public string SortBy { get; set; }
+        public string SortBy { get; }
 
-        public string OrderBy { get; set; }
+        public string OrderBy { get; }
     }
 }

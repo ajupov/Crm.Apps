@@ -91,6 +91,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.OAuthCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Infrastructure.HotStorage", "infrastructure\Crm.Infrastructure.HotStorage\Crm.Infrastructure.HotStorage.csproj", "{80853BA7-39C9-4B40-A1A7-B6772CA225BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "apps\Identity\Identity.csproj", "{FDFFC98C-78C9-4343-9255-295BC16A0E6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Utils.Sorting", "utils\Crm.Utils.Sorting\Crm.Utils.Sorting.csproj", "{05E40E65-C9D5-450B-8404-53A7AA3322DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Utils.ChangesSerializing", "utils\Crm.Utils.ChangesSerializing\Crm.Utils.ChangesSerializing.csproj", "{BB58D7E1-ED6F-4174-82AE-02438C8B1FBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +143,9 @@ Global
 		{6B0CD63C-342A-48AD-A1BB-7822F987B291} = {E69BED64-9FBC-4ED0-953B-8F32A2C72315}
 		{27FE7EF7-C59D-426F-B931-1A9291572A76} = {8C3BB657-F1FF-4FE9-BB5D-1C3430438118}
 		{80853BA7-39C9-4B40-A1A7-B6772CA225BB} = {8C3BB657-F1FF-4FE9-BB5D-1C3430438118}
+		{FDFFC98C-78C9-4343-9255-295BC16A0E6D} = {46076ADA-9EBF-4FC2-990E-0BF82D7EA883}
+		{05E40E65-C9D5-450B-8404-53A7AA3322DC} = {205533D4-E234-419B-91A4-BDF7D7022310}
+		{BB58D7E1-ED6F-4174-82AE-02438C8B1FBF} = {205533D4-E234-419B-91A4-BDF7D7022310}
 	EndGlobalSection
 GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6ADEA938-63C2-4199-BD99-B15BE22C35A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -299,5 +308,17 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 	{80853BA7-39C9-4B40-A1A7-B6772CA225BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	{80853BA7-39C9-4B40-A1A7-B6772CA225BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	{80853BA7-39C9-4B40-A1A7-B6772CA225BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	{FDFFC98C-78C9-4343-9255-295BC16A0E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{FDFFC98C-78C9-4343-9255-295BC16A0E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{FDFFC98C-78C9-4343-9255-295BC16A0E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{FDFFC98C-78C9-4343-9255-295BC16A0E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+	{05E40E65-C9D5-450B-8404-53A7AA3322DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{05E40E65-C9D5-450B-8404-53A7AA3322DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{05E40E65-C9D5-450B-8404-53A7AA3322DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{05E40E65-C9D5-450B-8404-53A7AA3322DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	{BB58D7E1-ED6F-4174-82AE-02438C8B1FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+	{BB58D7E1-ED6F-4174-82AE-02438C8B1FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	{BB58D7E1-ED6F-4174-82AE-02438C8B1FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	{BB58D7E1-ED6F-4174-82AE-02438C8B1FBF}.Release|Any CPU.Build.0 = Release|Any CPU
 EndGlobalSection
 EndGlobal

@@ -1,30 +1,29 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Accounts.Helpers;
 using Crm.Apps.Accounts.Models;
 using Crm.Apps.Accounts.Parameters;
 using Crm.Apps.Accounts.Storages;
 using Crm.Utils.Guid;
+using Crm.Utils.Sorting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Accounts.Services
 {
     public class AccountChangesService : IAccountChangesService
     {
-        private readonly AccountsStorage _storage;
+        private readonly AccountsStorage _accountsStorage;
 
-        public AccountChangesService(
-            AccountsStorage storage)
+        public AccountChangesService(AccountsStorage accountsStorage)
         {
-            _storage = storage;
+            _accountsStorage = accountsStorage;
         }
 
         public Task<AccountChange[]> GetPagedListAsync(
             AccountChangeGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.AccountChanges.Where(x =>
+            return _accountsStorage.AccountChanges.Where(x =>
                     (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&

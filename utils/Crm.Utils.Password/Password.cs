@@ -16,8 +16,7 @@ namespace Crm.Utils.Password
         private const KeyDerivationPrf KeyDerivationPrf =
             Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA512;
 
-        public static string ToPasswordHash(
-            string value)
+        public static string ToPasswordHash(string value)
         {
             var salt = GetSalt();
             var bytes = GetBytes(value, salt);
@@ -84,8 +83,7 @@ namespace Crm.Utils.Password
             Buffer.BlockCopy(bytes, 0, result, SaltLength + 1, HashLength - SaltLength - 1);
         }
 
-        private static byte[] GetVerifyArray(
-            byte[] hashedPasswordArray)
+        private static byte[] GetVerifyArray(byte[] hashedPasswordArray)
         {
             var array = new byte[HashLength - SaltLength - 1];
 
@@ -94,8 +92,7 @@ namespace Crm.Utils.Password
             return array;
         }
 
-        private static byte[] GetVerifySalt(
-            byte[] hashedPasswordArray)
+        private static byte[] GetVerifySalt(byte[] hashedPasswordArray)
         {
             var salt = new byte[SaltLength];
 

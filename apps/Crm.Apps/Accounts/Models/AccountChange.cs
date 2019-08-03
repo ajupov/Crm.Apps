@@ -19,16 +19,19 @@ namespace Crm.Apps.Accounts.Models
             NewValueJson = newValueJson;
         }
 
-        [Required] public Guid Id { get; set; }
+        [Required]
+        public Guid Id { get; }
 
-        [Required] public Guid ChangerUserId { get; set; }
+        [Required]
+        public Guid ChangerUserId { get; }
 
-        [Required] public Guid AccountId { get; set; }
+        [Required]
+        public Guid AccountId { get; }
 
-        public DateTime CreateDateTime { get; set; }
+        public DateTime CreateDateTime { get; }
 
-        public string OldValueJson { get; set; }
+        public string OldValueJson { get; }
 
-        public string NewValueJson { get; set; }
+        public string NewValueJson { get; }
     }
 }

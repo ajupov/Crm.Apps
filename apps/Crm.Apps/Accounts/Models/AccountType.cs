@@ -1,6 +1,6 @@
 namespace Crm.Apps.Accounts.Models
 {
-    public enum AccountType : short
+    public enum AccountType : byte
     {
         MlmSystem = 1
     }

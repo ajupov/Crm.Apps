@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
@@ -76,14 +74,13 @@ namespace Crm.Apps.Activities.Consumers
                 return;
             }
 
-            await _activityAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct)
-                ;
+            await _activityAttributesService.UpdateAsync(message.UserId, oldAttribute, newAttribute, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
+            var ids = message.Data.FromJsonString<Guid[]>();
+            if (ids.IsEmpty())
             {
                 return Task.CompletedTask;
             }
@@ -93,8 +90,8 @@ namespace Crm.Apps.Activities.Consumers
 
         private Task RestoreAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
+            var ids = message.Data.FromJsonString<Guid[]>();
+            if (ids.IsEmpty())
             {
                 return Task.CompletedTask;
             }

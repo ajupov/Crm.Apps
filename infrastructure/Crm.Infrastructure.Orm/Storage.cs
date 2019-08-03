@@ -22,7 +22,7 @@ namespace Crm.Infrastructure.Orm
             else
             {
                 builder.UseNpgsql(_config.MainConnectionString);
-            }            
+            }
         }
     }
 }

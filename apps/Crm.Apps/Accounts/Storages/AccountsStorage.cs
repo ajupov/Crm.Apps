@@ -8,8 +8,7 @@ namespace Crm.Apps.Accounts.Storages
 {
     public class AccountsStorage : Storage
     {
-        public AccountsStorage(
-            IOptions<OrmSettings> options)
+        public AccountsStorage(IOptions<OrmSettings> options)
             : base(options)
         {
         }
@@ -20,30 +19,29 @@ namespace Crm.Apps.Accounts.Storages
 
         public DbSet<AccountChange> AccountChanges { get; set; }
 
-        protected override void OnModelCreating(
-            ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<Account>(entity =>
+            builder.Entity<Account>(e =>
             {
-                entity.HasKey(x => x.Id)
+                e.HasKey(x => x.Id)
                     .HasName("PK_Accounts_Id");
 
-                entity.HasIndex(x => x.CreateDateTime)
+                e.HasIndex(x => x.CreateDateTime)
                     .HasName("IX_Accounts_CreateDateTime");
             });
 
-            modelBuilder.Entity<AccountSetting>(entity =>
+            builder.Entity<AccountSetting>(e =>
             {
-                entity.HasKey(x => new {x.AccountId, x.Type})
+                e.HasKey(x => new {x.AccountId, x.Type})
                     .HasName("PK_AccountSettings_AccountId_Type");
 
-                entity.HasIndex(x => x.AccountId)
+                e.HasIndex(x => x.AccountId)
                     .HasName("IX_AccountSettings_AccountId");
             });
 
-            modelBuilder.Entity<AccountChange>(entity =>
+            builder.Entity<AccountChange>(e =>
             {
-                entity.HasIndex(x => new {x.AccountId, x.CreateDateTime})
+                e.HasIndex(x => new {x.AccountId, x.CreateDateTime})
                     .HasName("IX_AccountChanges_AccountId_CreateDateTime");
             });
         }

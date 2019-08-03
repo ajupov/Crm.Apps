@@ -28,16 +28,14 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpGet("GetTypes")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public ActionResult<List<ActivityType>> GetTypes()
         {
             return EnumsExtensions.GetValues<ActivityType>().ToList();
         }
 
         [HttpGet("Get")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult<Activity>> Get(Guid id, CancellationToken ct = default)
         {
             if (id.IsEmpty())
@@ -55,8 +53,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("GetList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult<List<Activity>>> GetList(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -70,9 +67,9 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
-        public async Task<ActionResult<List<Activity>>> GetPagedList(ActivityGetPagedListParameter parameter,
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
+        public async Task<ActionResult<List<Activity>>> GetPagedList(
+            ActivityGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
             var activities = await _activitiesService.GetPagedListAsync(parameter, ct);
@@ -81,8 +78,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("Create")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult<Guid>> Create(Activity activity, CancellationToken ct = default)
         {
             if (activity == null)
@@ -102,8 +98,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("Update")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Update(Activity activity, CancellationToken ct = default)
         {
             if (activity.Id.IsEmpty())
@@ -123,8 +118,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("Delete")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))
@@ -140,8 +134,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("Restore")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
         {
             if (ids == null || ids.All(x => x.IsEmpty()))

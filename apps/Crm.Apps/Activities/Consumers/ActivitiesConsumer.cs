@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
@@ -16,12 +14,12 @@ namespace Crm.Apps.Activities.Consumers
     public class ActivitiesConsumer : IHostedService
     {
         private readonly IConsumer _consumer;
-        private readonly IActivitiesService _dealsService;
+        private readonly IActivitiesService _activitiesService;
 
-        public ActivitiesConsumer(IConsumer consumer, IActivitiesService dealsService)
+        public ActivitiesConsumer(IConsumer consumer, IActivitiesService activitiesService)
         {
             _consumer = consumer;
-            _dealsService = dealsService;
+            _activitiesService = activitiesService;
         }
 
         public Task StartAsync(CancellationToken ct)
@@ -59,7 +57,7 @@ namespace Crm.Apps.Activities.Consumers
         {
             var deal = message.Data.FromJsonString<Activity>();
 
-            return _dealsService.CreateAsync(message.UserId, deal, ct);
+            return _activitiesService.CreateAsync(message.UserId, deal, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
@@ -70,35 +68,35 @@ namespace Crm.Apps.Activities.Consumers
                 return;
             }
 
-            var oldActivity = await _dealsService.GetAsync(newActivity.Id, ct);
+            var oldActivity = await _activitiesService.GetAsync(newActivity.Id, ct);
             if (oldActivity == null)
             {
                 return;
             }
 
-            await _dealsService.UpdateAsync(message.UserId, oldActivity, newActivity, ct);
+            await _activitiesService.UpdateAsync(message.UserId, oldActivity, newActivity, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
+            var ids = message.Data.FromJsonString<Guid[]>();
+            if (ids.IsEmpty())
             {
                 return Task.CompletedTask;
             }
 
-            return _dealsService.DeleteAsync(message.UserId, ids, ct);
+            return _activitiesService.DeleteAsync(message.UserId, ids, ct);
         }
 
         private Task RestoreAsync(Message message, CancellationToken ct)
         {
-            var ids = message.Data.FromJsonString<List<Guid>>();
-            if (ids == null || ids.All(x => x.IsEmpty()))
+            var ids = message.Data.FromJsonString<Guid[]>();
+            if (ids.IsEmpty())
             {
                 return Task.CompletedTask;
             }
 
-            return _dealsService.RestoreAsync(message.UserId, ids, ct);
+            return _activitiesService.RestoreAsync(message.UserId, ids, ct);
         }
     }
 }

@@ -7,8 +7,6 @@ namespace Crm.Apps.Accounts.Services
 {
     public interface IAccountChangesService
     {
-        Task<AccountChange[]> GetPagedListAsync(
-            AccountChangeGetPagedListParameter parameter,
-            CancellationToken ct);
+        Task<AccountChange[]> GetPagedListAsync(AccountChangeGetPagedListParameter parameter, CancellationToken ct);
     }
 }

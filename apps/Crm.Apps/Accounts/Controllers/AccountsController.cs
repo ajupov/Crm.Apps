@@ -9,7 +9,6 @@ using Crm.Apps.Accounts.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
 using Crm.Infrastructure.ApiDocumentation.Attributes;
-using Crm.Infrastructure.Mvc;
 using Crm.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +17,7 @@ namespace Crm.Apps.Accounts.Controllers
     [ApiController]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts")]
-    public class AccountsApiController : DefaultApiController
+    public class AccountsApiController : ControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IAccountsService _accountsService;
@@ -33,92 +32,98 @@ namespace Crm.Apps.Accounts.Controllers
 
         [HttpGet("GetTypes")]
         [RequirePrivileged]
-        public ActionResult<Dictionary<AccountType, string>> GetTypes()
+        public ActionResult<Dictionary<string, AccountType>> GetTypes()
         {
-            return Get(EnumsExtensions.GetAsDictionary<AccountType>());
+            return EnumsExtensions.GetAsDictionary<AccountType>();
         }
 
         [HttpGet("Get")]
         [RequirePrivileged]
-        public Task<ActionResult<Account>> Get(
-            [Required] Guid id,
-            CancellationToken ct = default)
+        public async Task<ActionResult<Account>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            return Get(_accountsService.GetAsync(id, ct));
+            var model = await _accountsService.GetAsync(id, ct);
+            if (model == null)
+            {
+                return BadRequest(id);
+            }
+
+            return model;
         }
 
         [HttpPost("GetList")]
         [RequirePrivileged]
-        public Task<ActionResult<Account[]>> GetList(
-            [Required] List<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult<Account[]>> GetList([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            return Get(_accountsService.GetListAsync(ids, ct));
+            return await _accountsService.GetListAsync(ids, ct);
         }
 
         [HttpPost("GetPagedList")]
         [RequirePrivileged]
-        public Task<ActionResult<Account[]>> GetPagedList(
+        public async Task<ActionResult<Account[]>> GetPagedList(
             AccountGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            return Get(_accountsService.GetPagedListAsync(parameter, ct));
+            return await _accountsService.GetPagedListAsync(parameter, ct);
         }
 
         [HttpPost("Create")]
         [RequirePrivileged]
-        public Task<ActionResult<Guid>> Create(
-            [Required] Account account,
-            CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(Account account, CancellationToken ct = default)
         {
-            return Create(_accountsService.CreateAsync(_userContext.UserId, account, ct));
+            var id = await _accountsService.CreateAsync(_userContext.UserId, account, ct);
+
+            return Created("Get", id);
         }
 
         [HttpPost("Update")]
         [RequirePrivileged]
-        public async Task<ActionResult> Update(
-            [Required] Account account,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Update(Account account, CancellationToken ct = default)
         {
             var oldAccount = await _accountsService.GetAsync(account.Id, ct);
+            if (oldAccount == null)
+            {
+                return BadRequest(account);
+            }
 
-            return await Action(_accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct), oldAccount);
+            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, account, ct);
+
+            return NoContent();
         }
 
         [HttpPost("Lock")]
         [RequirePrivileged]
-        public Task<ActionResult> Lock(
-            [Required] List<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Lock([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            return Action(_accountsService.LockAsync(_userContext.UserId, ids, ct));
+            await _accountsService.LockAsync(_userContext.UserId, ids, ct);
+
+            return NoContent();
         }
 
         [HttpPost("Unlock")]
         [RequirePrivileged]
-        public Task<ActionResult> Unlock(
-            [Required] List<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Unlock([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            return Action(_accountsService.UnlockAsync(_userContext.UserId, ids, ct));
+            await _accountsService.UnlockAsync(_userContext.UserId, ids, ct);
+
+            return NoContent();
         }
 
         [HttpPost("Delete")]
         [RequirePrivileged]
-        public Task<ActionResult> Delete(
-            [Required] List<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            return Action(_accountsService.DeleteAsync(_userContext.UserId, ids, ct));
+            await _accountsService.DeleteAsync(_userContext.UserId, ids, ct);
+
+            return NoContent();
         }
 
         [HttpPost("Restore")]
         [RequirePrivileged]
-        public Task<ActionResult> Restore(
-            [Required] List<Guid> ids,
-            CancellationToken ct = default)
+        public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            return Action(_accountsService.RestoreAsync(_userContext.UserId, ids, ct));
+            await _accountsService.RestoreAsync(_userContext.UserId, ids, ct);
+
+            return NoContent();
         }
     }
 }
