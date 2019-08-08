@@ -23,9 +23,16 @@ namespace Identity.Identities.Services
                 .FirstOrDefaultAsync(x => x.IdentityId == identityId && x.Value == value, ct);
         }
 
+        public Task<IdentityToken> GetByValueAsync(IdentityTokenType type, string value, CancellationToken ct)
+        {
+            return _identitiesStorage.IdentityTokens
+                .FirstOrDefaultAsync(x => x.Type == type && x.Value == value, ct);
+        }
+
         public async Task<Guid> CreateAsync(IdentityToken token, CancellationToken ct)
         {
-            var newToken = new IdentityToken(token.IdentityId, token.Type, token.Value, token.ExpirationDateTime);
+            var newToken = new IdentityToken(token.IdentityId, token.Type, token.Value, token.ExpirationDateTime,
+                token.UserAgent, token.IpAddress);
 
             var entry = await _identitiesStorage.AddAsync(newToken, ct);
             await _identitiesStorage.SaveChangesAsync(ct);

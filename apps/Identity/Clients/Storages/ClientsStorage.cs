@@ -1,7 +1,6 @@
 using Crm.Infrastructure.Orm;
 using Crm.Infrastructure.Orm.Settings;
 using Identity.Clients.Models;
-using Identity.OAuth.Models.OAuth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

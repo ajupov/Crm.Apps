@@ -18,19 +18,19 @@ namespace Identity.OAuth.Controllers
     public class OAuthController : DefaultMvcController
     {
         private readonly IOAuthService _oauthService;
-        private readonly IClientsService _oauthClientsService;
+        private readonly IClientsService _clientsService;
 
-        public OAuthController(IOAuthService oauthService, IClientsService oauthClientsService)
+        public OAuthController(IOAuthService oauthService, IClientsService clientsService)
         {
             _oauthService = oauthService;
-            _oauthClientsService = oauthClientsService;
+            _clientsService = clientsService;
         }
 
         // Show authorize form
         [HttpGet("Authorize")]
         public async Task<ActionResult> Authorize(GetAuthorizeRequest request, CancellationToken ct)
         {
-            var client = await _oauthClientsService.GetByClientIdAsync(request.ClientId, ct);
+            var client = await _clientsService.GetByClientIdAsync(request.ClientId, ct);
             if (client == null)
             {
                 return BadRequest(request.ClientId);
@@ -75,7 +75,7 @@ namespace Identity.OAuth.Controllers
         [HttpPost("Token")]
         public async Task<ActionResult<TokenResponse>> Token(TokenRequest request, CancellationToken ct)
         {
-            var client = await _oauthClientsService.GetByClientIdAsync(request.ClientId, ct);
+            var client = await _clientsService.GetByClientIdAsync(request.ClientId, ct);
             if (client == null)
             {
                 return BadRequest(request.ClientId);
@@ -102,7 +102,13 @@ namespace Identity.OAuth.Controllers
                 return Redirect(request.RedirectUri);
             }
 
-            return await _oauthService.GetTokenAsync(request, HttpContext.User, UserAgent, IpAddress, ct);
+            var response = await _oauthService.GetTokenAsync(request, HttpContext.User, UserAgent, IpAddress, ct);
+            if (response.HasError)
+            {
+                return BadRequest(response.Error);
+            }
+
+            return response;
         }
     }
 }

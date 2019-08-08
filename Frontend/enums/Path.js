@@ -1,0 +1,20 @@
+export const Path = {
+    account: '/account',
+    activities: '/activities',
+    authentication: '/authentication',
+    calendar: '/calendar',
+    contacts: '/contacts',
+    dashboard: '/',
+    deals: '/deals',
+    employees: '/employees',
+    home: '/',
+    leads: '/leads',
+    mail: '/mail',
+    offer: '/offer',
+    products: '/products',
+    registration: '/registration',
+    restore: '/restore',
+    settings: '/settings',
+    settingsCommon: '/settings/common',
+    settingsMenu: '/settings/menu'
+};

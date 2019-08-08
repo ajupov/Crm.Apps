@@ -7,7 +7,6 @@ using Crm.Utils.Sorting;
 using Identity.Clients.Models;
 using Identity.Clients.Parameters;
 using Identity.Clients.Storages;
-using Identity.OAuth.Models.OAuth;
 using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Clients.Services

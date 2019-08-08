@@ -9,6 +9,8 @@ namespace Identity.Identities.Services
     {
         Task<IdentityToken> GetAsync(Guid identityId, string value, CancellationToken ct);
 
+        Task<IdentityToken> GetByValueAsync(IdentityTokenType type, string value, CancellationToken ct);
+
         Task<Guid> CreateAsync(IdentityToken token, CancellationToken ct);
 
         Task SetIsUsedAsync(Guid id, CancellationToken ct);

@@ -1,0 +1,77 @@
+@primary-color: #00bcd4;
+@secondary-color: #26d6ea;
+@primary-color-disabled: #aaaaaa;
+@secondary-color-disabled: rgba(255, 255, 255, 0.5);
+@size: 32px;
+@border-radius: 4px;
+@margin: 12px;
+
+.button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  height: @size;
+  line-height: @size;
+  width: 100%;
+  margin: 0 @margin @margin 0;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    background: @primary-color-disabled;
+  }
+}
+
+.square {
+  padding: 0 8px;
+  border-radius: @border-radius;
+
+  .buttonIcon {
+    margin-right: 4px;
+  }
+}
+
+.circle {
+  width: @size;
+  border-radius: 50%;
+
+  .buttonIcon {
+    margin: 0;
+  }
+}
+
+.blank {
+  color: @primary-color;
+  background: transparent;
+
+  &:hover {
+    color: @secondary-color;
+    background: @secondary-color-disabled;
+  }
+}
+
+.outlined {
+  color: @primary-color;
+  border: 1px solid @primary-color;
+  background: transparent;
+
+  &:hover {
+    color: @secondary-color;
+    background: @secondary-color-disabled;
+  }
+}
+
+.filled {
+  color: #ffffff;
+  background: @primary-color;
+  
+  &:hover {
+    background: @secondary-color;
+  }
+}
+
+.disabled {
+  background: @primary-color-disabled;
+  pointer-events: none;
+}

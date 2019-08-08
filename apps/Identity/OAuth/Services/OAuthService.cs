@@ -41,7 +41,7 @@ namespace Identity.OAuth.Services
 
         public bool IsAuthorized(ClaimsPrincipal claimsPrincipal)
         {
-            var claim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid);
+            var claim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
             return claim != null;
         }
@@ -87,24 +87,82 @@ namespace Identity.OAuth.Services
             switch (request.GrantType)
             {
                 case AuthorizeGrandType.AuthorizationCode:
-                    var isExist = _hotStorage.IsExist(request.Code);
-                    if (!isExist)
+                    var identityId = _hotStorage.GetValue<Guid>(request.Code);
+                    var identityByCode = await _identitiesService.GetAsync(identityId, ct);
+                    if (identityByCode == null)
                     {
-                        throw new ArgumentException("Invalid code", request.Code);
+                        return new TokenResponse("Invalid code");
                     }
 
-                    var accessToken = await CreateAccessTokenAsync(request.RedirectUri, user, identity, userAgent, ipAddress, ct);
-                    var refreshToken = await CreateRefreshTokenAsync(identity, userAgent, ipAddress, ct);
+                    var userByCode = await _usersService.GetAsync(identityByCode.UserId, ct);
+                    if (userByCode == null)
+                    {
+                        return new TokenResponse("Invalid code");
+                    }
 
-                    return new TokenResponse(accessToken.Value, refreshToken.Value, "bearer",
-                        TimeSpan.FromMinutes(30).TotalSeconds);
+                    var accessTokenByCode =
+                        await CreateAccessTokenAsync(request.RedirectUri, userByCode, identityByCode, userAgent,
+                            ipAddress, ct);
+                    var refreshTokenByCode = await CreateRefreshTokenAsync(identityByCode, userAgent, ipAddress, ct);
 
-                    return await GetTokensUriParametersAsync(request, user, identity, userAgent, ipAddress, ct);
+                    return new TokenResponse(accessTokenByCode.Value, refreshTokenByCode.Value, "bearer",
+                        TimeSpan.FromMinutes(30).Seconds);
 
-                    break;
+                case AuthorizeGrandType.Password:
+                    var identityTypes = IdentityTypeExtensions.TypesWithPassword;
+                    var identityByPassword =
+                        await _identitiesService.GetByKeyAndTypesAsync(request.Username, identityTypes, ct);
+                    if (identityByPassword == null)
+                    {
+                        return new TokenResponse("Invalid credentials");
+                    }
+
+                    var userByPassword = await _usersService.GetAsync(identityByPassword.UserId, ct);
+                    if (userByPassword == null)
+                    {
+                        return new TokenResponse("Invalid credentials");
+                    }
+
+                    var isPasswordCorrect = _identitiesService.IsPasswordCorrect(identityByPassword, request.Password);
+                    if (!isPasswordCorrect)
+                    {
+                        return new TokenResponse("Invalid credentials");
+                    }
+
+                    var accessTokenByPassword =
+                        await CreateAccessTokenAsync(request.RedirectUri, userByPassword, identityByPassword, userAgent,
+                            ipAddress, ct);
+                    var refreshTokenByPassword =
+                        await CreateRefreshTokenAsync(identityByPassword, userAgent, ipAddress, ct);
+
+                    return new TokenResponse(accessTokenByPassword.Value, refreshTokenByPassword.Value, "bearer",
+                        TimeSpan.FromMinutes(30).Seconds);
+
+                case AuthorizeGrandType.RefreshToken:
+
+                    var oldRefreshToken = await _identityTokensService.GetByValueAsync(IdentityTokenType.RefreshToken,
+                        request.RefreshToken, ct);
+
+                    if (oldRefreshToken.ExpirationDateTime > DateTime.UtcNow)
+                    {
+                        return new TokenResponse("Refresh token is expired");
+                    }
+
+                    var identityByRefresh = await _identitiesService.GetAsync(oldRefreshToken.IdentityId, ct);
+                    var userByRefresh = await _usersService.GetAsync(identityByRefresh.UserId, ct);
+
+                    var accessTokenByRefresh =
+                        await CreateAccessTokenAsync(request.RedirectUri, userByRefresh, identityByRefresh, userAgent,
+                            ipAddress, ct);
+                    var refreshTokenByRefresh =
+                        await CreateRefreshTokenAsync(identityByRefresh, userAgent, ipAddress, ct);
+
+                    return new TokenResponse(accessTokenByRefresh.Value, refreshTokenByRefresh.Value, "bearer",
+                        TimeSpan.FromMinutes(30).Seconds);
+
+                default:
+                    return new TokenResponse("Invalid grand type");
             }
-
-            return Task.FromResult(new TokenResponse("", "", "", 0));
         }
 
         private async Task<(string key, object value)[]> GetRedirectUrlParametersAsync(
@@ -118,7 +176,7 @@ namespace Identity.OAuth.Services
             switch (request.ResponseType)
             {
                 case AuthorizeResponseType.Code:
-                    return GetCodeUriParameters();
+                    return GetCodeUriParameters(identity);
                 case AuthorizeResponseType.Token:
                     return await GetTokensUriParametersAsync(request, user, identity, userAgent, ipAddress, ct);
                 default:
@@ -126,11 +184,11 @@ namespace Identity.OAuth.Services
             }
         }
 
-        private (string key, object value)[] GetCodeUriParameters()
+        private (string key, object value)[] GetCodeUriParameters(Identities.Models.Identity identity)
         {
             var code = Generator.GenerateAlphaNumericString(8);
 
-            _hotStorage.SetTempString(code, TimeSpan.FromMinutes(10));
+            _hotStorage.SetValue(code, identity.Id, TimeSpan.FromMinutes(10));
 
             return new (string key, object value)[]
             {

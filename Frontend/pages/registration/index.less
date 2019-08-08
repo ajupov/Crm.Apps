@@ -1,0 +1,44 @@
+@errors-color: red;
+
+.layout {
+  display: grid;
+  grid-template-areas: 'left form right';
+  grid-template-columns: 5fr 3fr 5fr;
+
+  height: 100%;
+
+  .left {
+    grid-area: left;
+  }
+
+  .form {
+    grid-area: form;
+    margin: auto;
+
+    .registerLayout {
+      display: grid;
+      grid-template-areas: 'links button';
+      grid-template-columns: 5fr 3fr;
+
+      .button {
+        grid-area: button;
+      }
+
+      .links {
+        grid-area: links;
+
+        line-height: 32px;
+      }
+    }
+
+    .errors {
+      color: @errors-color;
+      font-size: 0.85em;
+      text-align: center;
+    }
+  }
+
+  .right {
+    grid-area: right;
+  }
+}

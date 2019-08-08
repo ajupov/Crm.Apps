@@ -1,0 +1,34 @@
+@primary-color: #4B77A8;
+@secondary-color: #ffffff;
+
+.link {
+  color: @primary-color;
+  display: block;
+  padding: 8px 20px;
+
+  .text {
+    margin-left: 10px;
+  }
+
+  .icon {
+    color: @primary-color;
+  }
+
+  &:hover {
+    .text {
+      color: @secondary-color;
+      background: @primary-color;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+  }
+}
+
+.activeLink {
+  .text {
+    color: @secondary-color;
+    background: @primary-color;
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+}

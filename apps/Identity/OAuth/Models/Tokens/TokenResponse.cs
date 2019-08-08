@@ -1,19 +1,21 @@
+using Crm.Utils.String;
 using Newtonsoft.Json;
 
 namespace Identity.OAuth.Models.Tokens
 {
     public class TokenResponse
     {
-        public TokenResponse(
-            string accessToken,
-            string refreshToken,
-            string tokenType,
-            int expiresIn)
+        public TokenResponse(string accessToken, string refreshToken, string tokenType, int expiresIn)
         {
             AccessToken = accessToken;
             RefreshToken = refreshToken;
             TokenType = tokenType;
             ExpiresIn = expiresIn;
+        }
+
+        public TokenResponse(string error)
+        {
+            Error = error;
         }
 
         [JsonProperty("access_token")]
@@ -27,5 +29,10 @@ namespace Identity.OAuth.Models.Tokens
 
         [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; }
+
+        [JsonProperty("error")]
+        public string Error { get; set; }
+
+        public bool HasError => !Error.IsEmpty();
     }
 }

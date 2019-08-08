@@ -1,0 +1,43 @@
+@errors-color: red;
+
+.layout {
+  display: grid;
+  grid-template-areas: 'left form right';
+  grid-template-columns: 5fr 3fr 5fr;
+
+  height: 100%;
+
+  .left {
+    grid-area: left;
+  }
+
+  .form {
+    grid-area: form;
+
+    margin: auto;
+
+    .signInLayout {
+      display: grid;
+      grid-template-areas: 'links signInButton';
+      grid-template-columns: 4fr 4fr;
+
+      .signInButton {
+        grid-area: signInButton;
+      }
+
+      .links {
+        grid-area: links;
+      }
+    }
+
+    .errors {
+      color: @errors-color;
+      font-size: 0.85em;
+      text-align: center;
+    }
+  }
+
+  .right {
+    grid-area: right;
+  }
+}
