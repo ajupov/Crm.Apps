@@ -2,16 +2,8 @@
 {
     public class AccountSetting
     {
-        public AccountSetting(
-            AccountSettingType type,
-            string value = null)
-        {
-            Type = type;
-            Value = value;
-        }
+        public AccountSettingType Type { get; set; }
 
-        public AccountSettingType Type { get; }
-
-        public string Value { get; }
+        public string? Value { get; set; }
     }
 }

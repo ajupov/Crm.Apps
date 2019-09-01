@@ -11,7 +11,11 @@ namespace Crm.Infrastructure.Mvc
         public static IServiceCollection ConfigureMvc(this IServiceCollection services, params Type[] filters)
         {
             services
-                .AddMvc(x => filters.ToList().ForEach(f => x.Filters.Add(f)))
+                .AddMvc(x =>
+                {
+                    x.EnableEndpointRouting = false;
+                    filters.ToList().ForEach(f => x.Filters.Add(f));
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             return services;

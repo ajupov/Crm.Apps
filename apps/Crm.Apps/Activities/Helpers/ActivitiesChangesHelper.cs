@@ -6,33 +6,33 @@ namespace Crm.Apps.Activities.Helpers
 {
     public static class ActivitiesChangesHelper
     {
-        public static ActivityChange CreateWithLog(this Activity deal, Guid dealId, Action<Activity> action)
+        public static ActivityChange CreateWithLog(this Activity activity, Guid userId, Action<Activity> action)
         {
-            action(deal);
+            action(activity);
 
             return new ActivityChange
             {
-                ActivityId = deal.Id,
-                ChangerUserId = dealId,
+                ActivityId = activity.Id,
+                ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
-                NewValueJson = deal.ToJsonString()
+                NewValueJson = activity.ToJsonString()
             };
         }
 
-        public static ActivityChange UpdateWithLog(this Activity deal, Guid dealId, Action<Activity> action)
+        public static ActivityChange UpdateWithLog(this Activity activity, Guid userId, Action<Activity> action)
         {
-            var oldValueJson = deal.ToJsonString();
+            var oldValueJson = activity.ToJsonString();
 
-            action(deal);
+            action(activity);
 
             return new ActivityChange
             {
-                ActivityId = deal.Id,
-                ChangerUserId = dealId,
+                ActivityId = activity.Id,
+                ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,
-                NewValueJson = deal.ToJsonString()
+                NewValueJson = activity.ToJsonString()
             };
         }
     }

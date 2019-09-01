@@ -14,16 +14,13 @@ namespace Crm.Clients.Accounts.Clients
         private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AccountSettingsClient(
-            IOptions<AccountsClientSettings> options,
-            IHttpClientFactory httpClientFactory)
+        public AccountSettingsClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
         {
             _url = UriBuilder.Combine(options.Value.Host, "Api/Accounts/Settings");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<Dictionary<AccountSettingType, string>> GetTypesAsync(
-            CancellationToken ct = default)
+        public Task<Dictionary<AccountSettingType, string>> GetTypesAsync(CancellationToken ct = default)
         {
             return _httpClientFactory.GetAsync<Dictionary<AccountSettingType, string>>($"{_url}/GetTypes", ct: ct);
         }

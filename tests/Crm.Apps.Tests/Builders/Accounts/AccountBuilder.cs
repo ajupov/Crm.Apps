@@ -2,52 +2,74 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Models;
+using Crm.Clients.Accounts.RequestParameters;
 
 namespace Crm.Apps.Tests.Builders.Accounts
 {
     public class AccountBuilder : IAccountBuilder
     {
         private readonly IAccountsClient _accountsClient;
-        private readonly Account _account;
 
-        public AccountBuilder(
-            IAccountsClient accountsClient)
+        private AccountType _type;
+        private bool _isLocked;
+        private bool _isDeleted;
+        private List<AccountSetting> _settings;
+
+        public AccountBuilder(IAccountsClient accountsClient)
         {
             _accountsClient = accountsClient;
-            _account = new Account(AccountType.MlmSystem);
+        }
+
+        public AccountBuilder WithType(AccountType type)
+        {
+            _type = type;
+
+            return this;
         }
 
         public AccountBuilder AsLocked()
         {
-            _account.IsLocked = true;
+            _isLocked = true;
 
             return this;
         }
 
         public AccountBuilder AsDeleted()
         {
-            _account.IsDeleted = true;
+            _isDeleted = true;
 
             return this;
         }
 
-        public AccountBuilder WithSetting(
-            AccountSettingType type,
-            string value)
+        public AccountBuilder WithSetting(AccountSettingType type, string value = null)
         {
-            if (_account.Settings == null)
+            if (_settings == null)
             {
-                _account.Settings = new List<AccountSetting>();
+                _settings = new List<AccountSetting>();
             }
 
-            _account.Settings.Add(new AccountSetting(type, value));
+            var setting = new AccountSetting
+            {
+                Type = type,
+                Value = value
+            };
+
+            _settings.Add(setting);
 
             return this;
         }
 
         public async Task<Account> BuildAsync()
         {
-            var createdId = await _accountsClient.CreateAsync(_account);
+            var request = new AccountCreateRequest
+            {
+                Type = _type,
+                IsLocked = _isLocked,
+                IsDeleted = _isDeleted,
+                Settings = _settings.ToArray()
+            };
+
+            var createdId = await _accountsClient.CreateAsync(request);
 
             return await _accountsClient.GetAsync(createdId);
         }

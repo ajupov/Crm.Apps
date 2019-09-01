@@ -9,8 +9,6 @@ using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Identities.Services;
-using Crm.Apps.Identities.Storages;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
@@ -52,7 +50,7 @@ namespace Crm.Apps
                         .ConfigureOAuthClients(builder.Configuration)
                         .ConfigureOrm<AccountsStorage>(builder.Configuration)
                         .ConfigureOrm<UsersStorage>(builder.Configuration)
-                        .ConfigureOrm<IdentitiesStorage>(builder.Configuration)
+//                        .ConfigureOrm<IdentitiesStorage>(builder.Configuration)
                         .ConfigureOrm<ProductsStorage>(builder.Configuration)
                         .ConfigureOrm<LeadsStorage>(builder.Configuration)
                         .ConfigureOrm<CompaniesStorage>(builder.Configuration)
@@ -69,9 +67,9 @@ namespace Crm.Apps
                         .AddTransient<IUserAttributeChangesService, UserAttributeChangesService>()
                         .AddTransient<IUserGroupsService, UserGroupsService>()
                         .AddTransient<IUserGroupChangesService, UserGroupChangesService>()
-                        .AddTransient<IIdentitiesService, IdentitiesService>()
-                        .AddTransient<IIdentityTokensService, IdentityTokensService>()
-                        .AddTransient<IIdentityChangesService, IdentityChangesService>()
+//                        .AddTransient<IIdentitiesService, IdentitiesService>()
+//                        .AddTransient<IIdentityTokensService, IdentityTokensService>()
+//                        .AddTransient<IIdentityChangesService, IdentityChangesService>()
                         .AddTransient<IProductsService, ProductsService>()
                         .AddTransient<IProductChangesService, ProductChangesService>()
                         .AddTransient<IProductCategoriesService, ProductCategoriesService>()
@@ -120,7 +118,8 @@ namespace Crm.Apps
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
                         .UseMvcMiddleware()
-                        .UseOAuthClients())
+//                        .UseOAuthClients()
+                    )
                     .Build()
                     .RunAsync();
         }

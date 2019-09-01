@@ -48,10 +48,10 @@ namespace Crm.Apps.Auth
             CancellationToken ct)
         {
             var response = await _authService.CallbackAsync(request, User, IpAddress, ct);
-            if (!response.IsSuccess)
-            {
-                return Forbid();
-            }
+//            if (!response.IsSuccess)
+//            {
+//                return Forbid();
+//            }
 
             return Redirect(response.RedirectUri);
         }

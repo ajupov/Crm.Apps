@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Accounts.Models;
+using Crm.Apps.Accounts.RequestParameters;
 using Crm.Apps.Accounts.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
@@ -59,26 +59,26 @@ namespace Crm.Apps.Accounts.Consumers
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var account = message.Data.FromJsonString<Account>();
+            var request = message.Data.FromJsonString<AccountCreateRequest>();
 
-            return _accountsService.CreateAsync(message.UserId, account, ct);
+            return _accountsService.CreateAsync(message.UserId, request, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newAccount = message.Data.FromJsonString<Account>();
-            if (newAccount.Id.IsEmpty())
+            var request = message.Data.FromJsonString<AccountUpdateRequest>();
+            if (request.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldAccount = await _accountsService.GetAsync(newAccount.Id, ct);
-            if (oldAccount == null)
+            var account = await _accountsService.GetAsync(request.Id, ct);
+            if (account == null)
             {
                 return;
             }
 
-            await _accountsService.UpdateAsync(message.UserId, oldAccount, newAccount, ct);
+            await _accountsService.UpdateAsync(message.UserId, account, request, ct);
         }
 
         private Task LockAsync(Message message, CancellationToken ct)

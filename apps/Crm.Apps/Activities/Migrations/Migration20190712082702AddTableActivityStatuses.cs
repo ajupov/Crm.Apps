@@ -15,6 +15,10 @@ namespace Crm.Apps.Activities.Migrations
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
+//            Create.PrimaryKey("PK_AccountSettings_AccountId_Type").OnTable("AccountSettings")
+//                .Columns("AccountId", "Type");
+//
+//            
             Create.UniqueConstraint("UQ_ActivityStatuses_AccountId_Name").OnTable("ActivityStatuses")
                 .Columns("AccountId", "Name");
 

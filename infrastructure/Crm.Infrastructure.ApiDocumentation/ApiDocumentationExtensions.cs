@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Crm.Infrastructure.ApiDocumentation
@@ -12,7 +13,7 @@ namespace Crm.Infrastructure.ApiDocumentation
         public static IServiceCollection ConfigureApiDocumentation(this IServiceCollection services,
             string apiVersion = DefaultApiVersion)
         {
-            var info = new Info
+            var info = new OpenApiInfo
             {
                 Title = Assembly.GetCallingAssembly().GetName().Name,
                 Version = apiVersion

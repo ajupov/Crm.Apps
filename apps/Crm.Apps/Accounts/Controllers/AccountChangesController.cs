@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Accounts.Models;
-using Crm.Apps.Accounts.Parameters;
+using Crm.Apps.Accounts.RequestParameters;
 using Crm.Apps.Accounts.Services;
 using Crm.Common.UserContext.Attributes;
 using Crm.Infrastructure.ApiDocumentation.Attributes;
@@ -21,13 +21,13 @@ namespace Crm.Apps.Accounts.Controllers
             _accountChangesService = accountChangesService;
         }
 
-        [HttpPost("GetPagedList")]
         [RequirePrivileged]
+        [HttpPost("GetPagedList")]
         public async Task<ActionResult<AccountChange[]>> GetPagedList(
-            AccountChangeGetPagedListParameter parameter,
+            AccountChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            return await _accountChangesService.GetPagedListAsync(parameter, ct);
+            return await _accountChangesService.GetPagedListAsync(request, ct);
         }
     }
 }

@@ -3,10 +3,10 @@
         <TargetFramework>netcoreapp2.2</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="MailKit" Version="2.2.0" />
+        <PackageReference Include="MailKit" Version="2.3.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
-        <PackageReference Include="MimeKit" Version="2.2.0" />
+        <PackageReference Include="MimeKit" Version="2.3.0" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />

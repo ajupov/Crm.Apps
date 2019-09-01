@@ -5,13 +5,13 @@ namespace Crm.Apps.Tests.Builders.Accounts
 {
     public interface IAccountBuilder
     {
+        AccountBuilder WithType(AccountType type);
+
         AccountBuilder AsLocked();
 
         AccountBuilder AsDeleted();
 
-        AccountBuilder WithSetting(
-            AccountSettingType type,
-            string value);
+        AccountBuilder WithSetting(AccountSettingType type, string value = null);
 
         Task<Account> BuildAsync();
     }

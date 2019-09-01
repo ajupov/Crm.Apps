@@ -14,13 +14,13 @@ namespace Crm.Apps.Tests.Creator
     {
         IAccountBuilder Account { get; }
 
-        IUserBuilder User { get; }
+//        IUserBuilder User { get; }
 
         IUserAttributeBuilder UserAttribute { get; }
 
         IUserGroupBuilder UserGroup { get; }
 
-        IIdentityBuilder Identity { get; }
+//        IIdentityBuilder Identity { get; }
 
         IIdentityTokenBuilder IdentityToken { get; }
 

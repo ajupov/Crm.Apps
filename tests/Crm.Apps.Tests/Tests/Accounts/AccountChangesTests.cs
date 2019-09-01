@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Models;
+using Crm.Clients.Accounts.RequestParameters;
 using Crm.Utils.DateTime;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
@@ -30,34 +31,45 @@ namespace Crm.Apps.Tests.Tests.Accounts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account
-                .BuildAsync();
+            var account = await _create.Account.BuildAsync();
 
-            account.IsLocked = true;
-
-            await _accountsClient.UpdateAsync(account);
-
-            var changes = await _accountChangesClient
-                .GetPagedListAsync(account.Id, sortBy: "CreateDateTime", orderBy: "asc");
-
-            Assert.NotEmpty(changes);
-
-            Assert.True(changes.All(x => x.AccountId == account.Id));
-            Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));
-            Assert.True(changes.All(x => x.CreateDateTime.IsMoreThanMinValue()));
-
-            Assert.True(changes.First().OldValueJson.IsEmpty());
-            Assert.True(changes.First().NewValueJson.IsNotEmpty());
-            Assert.NotNull(changes.First().NewValueJson.FromJsonString<Account>());
-
-            Assert.True(changes.Last().OldValueJson.IsNotEmpty());
-            Assert.NotNull(changes.Last().OldValueJson.FromJsonString<Account>());
-
-            Assert.True(changes.Last().NewValueJson.IsNotEmpty());
-            Assert.NotNull(changes.Last().NewValueJson.FromJsonString<Account>());
-
-            Assert.False(changes.Last().OldValueJson.FromJsonString<Account>().IsLocked);
-            Assert.True(changes.Last().NewValueJson.FromJsonString<Account>().IsLocked);
+            var updateRequest = new AccountUpdateRequest
+            {
+                Id = account.Id,
+                Type = AccountType.MlmSystem,
+                IsLocked = true,
+                IsDeleted = true,
+                Settings = new[]
+                {
+                    new AccountSetting
+                    {
+                        Type = AccountSettingType.PartnersEnabled
+                    }
+                }
+            };
+            
+            await _accountsClient.UpdateAsync(updateRequest);
+            var getPagedListRequest = new AccountChangeGetPagedListRequest
+            {
+                AccountId = account.Id,
+                SortBy = "asc"
+            };
+            
+            var actualChanges = await _accountChangesClient.GetPagedListAsync(getPagedListRequest);
+            
+            Assert.NotEmpty(actualChanges);
+            Assert.True(actualChanges.All(x => x.AccountId == account.Id));
+            Assert.True(actualChanges.All(x => !x.ChangerUserId.IsEmpty()));
+            Assert.True(actualChanges.All(x => x.CreateDateTime.IsMoreThanMinValue()));
+            Assert.True(actualChanges.First().OldValueJson.IsEmpty());
+            Assert.True(actualChanges.First().NewValueJson.IsNotEmpty());
+            Assert.NotNull(actualChanges.First().NewValueJson.FromJsonString<Account>());
+            Assert.True(actualChanges.Last().OldValueJson.IsNotEmpty());
+            Assert.NotNull(actualChanges.Last().OldValueJson.FromJsonString<Account>());
+            Assert.True(actualChanges.Last().NewValueJson.IsNotEmpty());
+            Assert.NotNull(actualChanges.Last().NewValueJson.FromJsonString<Account>());
+            Assert.False(actualChanges.Last().OldValueJson.FromJsonString<Account>().IsLocked);
+            Assert.True(actualChanges.Last().NewValueJson.FromJsonString<Account>().IsLocked);
         }
     }
 }

@@ -93,9 +93,9 @@ namespace Crm.Apps.Activities.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid activityId, Activity oldActivity, Activity newActivity, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Activity oldActivity, Activity newActivity, CancellationToken ct)
         {
-            var change = oldActivity.UpdateWithLog(activityId, x =>
+            var change = oldActivity.UpdateWithLog(userId, x =>
             {
                 x.AccountId = newActivity.AccountId;
                 x.TypeId = newActivity.TypeId;
@@ -126,8 +126,7 @@ namespace Crm.Apps.Activities.Services
             var changes = new List<ActivityChange>();
 
             await _storage.Activities.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x => x.IsDeleted = true)), ct)
-                ;
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x => x.IsDeleted = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

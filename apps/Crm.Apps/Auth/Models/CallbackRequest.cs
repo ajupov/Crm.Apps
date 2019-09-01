@@ -14,7 +14,7 @@ namespace Identity.OAuth.Models
         }
 
         [Required]
-        [StateValidation]
+//        [StateValidation]
         public string State { get; }
 
         [StringLength(2048)]

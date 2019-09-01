@@ -23,13 +23,13 @@ namespace Crm.Apps.Tests.Creator
 
         public IAccountBuilder Account => _serviceCollection.GetService<IAccountBuilder>();
 
-        public IUserBuilder User => _serviceCollection.GetService<IUserBuilder>();
+//        public IUserBuilder User => _serviceCollection.GetService<IUserBuilder>();
 
         public IUserAttributeBuilder UserAttribute => _serviceCollection.GetService<IUserAttributeBuilder>();
 
         public IUserGroupBuilder UserGroup => _serviceCollection.GetService<IUserGroupBuilder>();
 
-        public IIdentityBuilder Identity => _serviceCollection.GetService<IIdentityBuilder>();
+//        public IIdentityBuilder Identity => _serviceCollection.GetService<IIdentityBuilder>();
 
         public IIdentityTokenBuilder IdentityToken => _serviceCollection.GetService<IIdentityTokenBuilder>();
 

@@ -9,7 +9,7 @@ namespace Identity.OAuth.Models
         [OAuthProviderValidation]
         public string Provider { get; set; }
 
-        [RedirectUriValidation]
+//        [RedirectUriValidation]
         public string RedirectUri { get; set; }
     }
 }

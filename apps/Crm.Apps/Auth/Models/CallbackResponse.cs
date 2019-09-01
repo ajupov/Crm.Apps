@@ -1,4 +1,4 @@
-﻿using Identity.OAuth.Models.Authorize;
+﻿//using Identity.OAuth.Models.Authorize;
 
 namespace Identity.OAuth.Models
 {
@@ -10,15 +10,14 @@ namespace Identity.OAuth.Models
             RedirectUri = redirectUri;
         }
 
-        public CallbackResponse(
-            AuthorizeResponseError error)
-        {
-            Error = error;
-        }
+//        public CallbackResponse(AuthorizeResponseError error)
+//        {
+//            Error = error;
+//        }
 
-        public bool IsSuccess => Error.HasValue;
+//        public bool IsSuccess => Error.HasValue;
 
-        public AuthorizeResponseError? Error { get; }
+//        public AuthorizeResponseError? Error { get; }
 
         public string RedirectUri { get; }
     }

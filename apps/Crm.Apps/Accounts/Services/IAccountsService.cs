@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Accounts.Models;
-using Crm.Apps.Accounts.Parameters;
+using Crm.Apps.Accounts.RequestParameters;
 
 namespace Crm.Apps.Accounts.Services
 {
@@ -13,11 +13,11 @@ namespace Crm.Apps.Accounts.Services
 
         Task<Account[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<Account[]> GetPagedListAsync(AccountGetPagedListParameter parameter, CancellationToken ct);
+        Task<Account[]> GetPagedListAsync(AccountGetPagedListRequest request, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, Account account, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid userId, AccountCreateRequest request, CancellationToken ct);
 
-        Task UpdateAsync(Guid userId, Account oldAccount, Account account, CancellationToken ct);
+        Task UpdateAsync(Guid userId, Account account, AccountUpdateRequest request, CancellationToken ct);
 
         Task LockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
 

@@ -5,28 +5,16 @@ namespace Crm.Clients.Accounts.Models
 {
     public class Account
     {
-        public Account(
-            AccountType type,
-            List<AccountSetting> settings = default)
-        {
-            Id = Guid.NewGuid();
-            Type = type;
-            IsLocked = false;
-            IsDeleted = false;
-            CreateDateTime = DateTime.UtcNow;
-            Settings = settings ?? new List<AccountSetting>();
-        }
+        public Guid Id { get; set; }
 
-        public Guid Id { get; }
-
-        public AccountType Type { get; }
+        public AccountType Type { get; set; }
 
         public bool IsLocked { get; set; }
 
         public bool IsDeleted { get; set; }
 
-        public DateTime CreateDateTime { get; }
+        public DateTime CreateDateTime { get; set; }
 
-        public List<AccountSetting> Settings { get; set; }
+        public ICollection<AccountSetting>? Settings { get; set; }
     }
 }

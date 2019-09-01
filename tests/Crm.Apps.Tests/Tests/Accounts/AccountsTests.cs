@@ -1,9 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Models;
+using Crm.Clients.Accounts.RequestParameters;
 using Crm.Utils.DateTime;
 using Xunit;
 
@@ -14,9 +14,7 @@ namespace Crm.Apps.Tests.Tests.Accounts
         private readonly ICreate _create;
         private readonly IAccountsClient _accountsClient;
 
-        public AccountsTests(
-            ICreate create,
-            IAccountsClient accountsClient)
+        public AccountsTests(ICreate create, IAccountsClient accountsClient)
         {
             _create = create;
             _accountsClient = accountsClient;
@@ -25,20 +23,19 @@ namespace Crm.Apps.Tests.Tests.Accounts
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _accountsClient.GetTypesAsync();
+            var actualTypes = await _accountsClient.GetTypesAsync();
 
-            Assert.NotEmpty(types);
+            Assert.NotEmpty(actualTypes);
         }
 
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account
-                .BuildAsync();
+            var account = await _create.Account.BuildAsync();
 
-            var createdAccount = await _accountsClient.GetAsync(account.Id);
+            var actualAccount = await _accountsClient.GetAsync(account.Id);
 
-            Assert.NotNull(createdAccount);
+            Assert.NotNull(actualAccount);
         }
 
         [Fact]
@@ -50,11 +47,10 @@ namespace Crm.Apps.Tests.Tests.Accounts
                 .Select(x => x.Id)
                 .ToArray();
 
-            var accounts = await _accountsClient.GetListAsync(accountIds);
+            var actualAccounts = await _accountsClient.GetListAsync(accountIds);
 
-            Assert.NotEmpty(accounts);
-
-            Assert.Equal(accountIds.Length, accounts.Length);
+            Assert.NotEmpty(actualAccounts);
+            Assert.Equal(accountIds.Length, actualAccounts.Length);
         }
 
         [Fact]
@@ -64,59 +60,77 @@ namespace Crm.Apps.Tests.Tests.Accounts
                 _create.Account.BuildAsync(),
                 _create.Account.BuildAsync());
 
-            var accounts = await _accountsClient.GetPagedListAsync();
+            var request = new AccountGetPagedListParameter();
+            
+            var actualAccounts = await _accountsClient.GetPagedListAsync(request);
 
-            var results = accounts
+            var results = actualAccounts
                 .Skip(1)
-                .Zip(accounts, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+                .Zip(actualAccounts, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
-            Assert.NotEmpty(accounts);
-
+            Assert.NotEmpty(actualAccounts);
             Assert.All(results, Assert.True);
         }
 
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = new Account(AccountType.MlmSystem, new List<AccountSetting>
+            var request = new AccountCreateRequest
             {
-                new AccountSetting(AccountSettingType.PartnersEnabled, "Test")
-            });
+                Type = AccountType.MlmSystem,
+                IsLocked = false,
+                IsDeleted = false,
+                Settings = new[]
+                {
+                    new AccountSetting
+                    {
+                        Type = AccountSettingType.PartnersEnabled,
+                        Value = "Test"
+                    }
+                }
+            };
 
-            var accountId = await _accountsClient.CreateAsync(account);
+            var accountId = await _accountsClient.CreateAsync(request);
 
-            var createdAccount = await _accountsClient.GetAsync(accountId);
+            var actualAccount = await _accountsClient.GetAsync(accountId);
 
-            Assert.NotNull(createdAccount);
-
-            Assert.False(createdAccount.IsLocked);
-            Assert.False(createdAccount.IsDeleted);
-            Assert.True(createdAccount.CreateDateTime.IsMoreThanMinValue());
-
-            Assert.NotEmpty(createdAccount.Settings.Select(x => x.Value));
-
-            Assert.Equal(account.Settings.Single().Type, createdAccount.Settings.Single().Type);
-            Assert.Equal(account.Settings.Single().Value, createdAccount.Settings.Single().Value);
+            Assert.NotNull(actualAccount);
+            Assert.False(actualAccount.IsLocked);
+            Assert.False(actualAccount.IsDeleted);
+            Assert.True(actualAccount.CreateDateTime.IsMoreThanMinValue());
+            Assert.NotEmpty(actualAccount.Settings.Select(x => x.Value));
+            Assert.Equal(request.Settings.Single().Type, actualAccount.Settings.Single().Type);
+            Assert.Equal(request.Settings.Single().Value, actualAccount.Settings.Single().Value);
         }
 
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account
-                .BuildAsync();
+            var account = await _create.Account.BuildAsync();
+            var request = new AccountUpdateRequest
+            {
+                Type = AccountType.MlmSystem,
+                IsLocked = true,
+                IsDeleted = true,
+                Settings = new[]
+                {
+                    new AccountSetting
+                    {
+                        Type = AccountSettingType.PartnersEnabled,
+                        Value = "Test"
+                    }
+                }
+            };
+            
+            await _accountsClient.UpdateAsync(request);
 
-            account.IsLocked = true;
-            account.IsDeleted = true;
-            account.Settings.Add(new AccountSetting(AccountSettingType.PartnersEnabled, "Test"));
+            var actualAccount = await _accountsClient.GetAsync(account.Id);
 
-            await _accountsClient.UpdateAsync(account);
-
-            var updatedAccount = await _accountsClient.GetAsync(account.Id);
-
-            Assert.Equal(account.IsLocked, updatedAccount.IsLocked);
-            Assert.Equal(account.IsDeleted, updatedAccount.IsDeleted);
-            Assert.Equal(account.Settings.Single().Type, updatedAccount.Settings.Single().Type);
-            Assert.Equal(account.Settings.Single().Value, updatedAccount.Settings.Single().Value);
+            Assert.Equal(account.Type, actualAccount.Type);
+            Assert.Equal(account.IsLocked, actualAccount.IsLocked);
+            Assert.Equal(account.IsDeleted, actualAccount.IsDeleted);
+            Assert.Equal(account.Settings.Single().Type, actualAccount.Settings.Single().Type);
+            Assert.Equal(account.Settings.Single().Value, actualAccount.Settings.Single().Value);
         }
 
         [Fact]
@@ -130,9 +144,9 @@ namespace Crm.Apps.Tests.Tests.Accounts
 
             await _accountsClient.LockAsync(accountIds);
 
-            var accounts = await _accountsClient.GetListAsync(accountIds);
+            var actualAccounts = await _accountsClient.GetListAsync(accountIds);
 
-            Assert.All(accounts, x => Assert.True(x.IsLocked));
+            Assert.All(actualAccounts, x => Assert.True(x.IsLocked));
         }
 
         [Fact]
@@ -146,9 +160,9 @@ namespace Crm.Apps.Tests.Tests.Accounts
 
             await _accountsClient.UnlockAsync(accountIds);
 
-            var accounts = await _accountsClient.GetListAsync(accountIds);
+            var actualAccounts = await _accountsClient.GetListAsync(accountIds);
 
-            Assert.All(accounts, x => Assert.False(x.IsLocked));
+            Assert.All(actualAccounts, x => Assert.False(x.IsLocked));
         }
 
         [Fact]
@@ -162,9 +176,9 @@ namespace Crm.Apps.Tests.Tests.Accounts
 
             await _accountsClient.DeleteAsync(accountIds);
 
-            var accounts = await _accountsClient.GetListAsync(accountIds);
+            var actualAccounts = await _accountsClient.GetListAsync(accountIds);
 
-            Assert.All(accounts, x => Assert.True(x.IsDeleted));
+            Assert.All(actualAccounts, x => Assert.True(x.IsDeleted));
         }
 
         [Fact]
@@ -178,9 +192,9 @@ namespace Crm.Apps.Tests.Tests.Accounts
 
             await _accountsClient.RestoreAsync(accountIds);
 
-            var accounts = await _accountsClient.GetListAsync(accountIds);
+            var actualAccounts = await _accountsClient.GetListAsync(accountIds);
 
-            Assert.All(accounts, x => Assert.False(x.IsDeleted));
+            Assert.All(actualAccounts, x => Assert.False(x.IsDeleted));
         }
     }
 }

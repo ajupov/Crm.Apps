@@ -41,6 +41,9 @@ namespace Crm.Apps.Accounts.Storages
 
             builder.Entity<AccountChange>(e =>
             {
+                e.HasKey(x => x.Id)
+                    .HasName("PK_AccountChanges_Id");
+                
                 e.HasIndex(x => new {x.AccountId, x.CreateDateTime})
                     .HasName("IX_AccountChanges_AccountId_CreateDateTime");
             });
