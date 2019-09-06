@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
@@ -61,7 +62,6 @@ namespace Crm.Apps.Tests.Tests.Accounts
                 _create.Account.BuildAsync());
 
             var request = new AccountGetPagedListParameter();
-            
             var actualAccounts = await _accountsClient.GetPagedListAsync(request);
 
             var results = actualAccounts
@@ -80,7 +80,7 @@ namespace Crm.Apps.Tests.Tests.Accounts
                 Type = AccountType.MlmSystem,
                 IsLocked = false,
                 IsDeleted = false,
-                Settings = new[]
+                Settings = new List<AccountSetting>
                 {
                     new AccountSetting
                     {
@@ -109,10 +109,11 @@ namespace Crm.Apps.Tests.Tests.Accounts
             var account = await _create.Account.BuildAsync();
             var request = new AccountUpdateRequest
             {
+                Id = account.Id,
                 Type = AccountType.MlmSystem,
                 IsLocked = true,
                 IsDeleted = true,
-                Settings = new[]
+                Settings = new List<AccountSetting>
                 {
                     new AccountSetting
                     {
@@ -121,16 +122,16 @@ namespace Crm.Apps.Tests.Tests.Accounts
                     }
                 }
             };
-            
+
             await _accountsClient.UpdateAsync(request);
 
             var actualAccount = await _accountsClient.GetAsync(account.Id);
 
-            Assert.Equal(account.Type, actualAccount.Type);
-            Assert.Equal(account.IsLocked, actualAccount.IsLocked);
-            Assert.Equal(account.IsDeleted, actualAccount.IsDeleted);
-            Assert.Equal(account.Settings.Single().Type, actualAccount.Settings.Single().Type);
-            Assert.Equal(account.Settings.Single().Value, actualAccount.Settings.Single().Value);
+            Assert.Equal(request.Type, actualAccount.Type);
+            Assert.Equal(request.IsLocked, actualAccount.IsLocked);
+            Assert.Equal(request.IsDeleted, actualAccount.IsDeleted);
+            Assert.Equal(request.Settings.Single().Type, actualAccount.Settings.Single().Type);
+            Assert.Equal(request.Settings.Single().Value, actualAccount.Settings.Single().Value);
         }
 
         [Fact]

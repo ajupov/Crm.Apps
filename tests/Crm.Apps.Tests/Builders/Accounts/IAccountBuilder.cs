@@ -11,7 +11,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
 
         AccountBuilder AsDeleted();
 
-        AccountBuilder WithSetting(AccountSettingType type, string value = null);
+        AccountBuilder WithSetting(AccountSettingType type, string? value = null);
 
         Task<Account> BuildAsync();
     }

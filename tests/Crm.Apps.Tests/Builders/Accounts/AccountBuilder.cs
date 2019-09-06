@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Models;
@@ -13,7 +14,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
         private AccountType _type;
         private bool _isLocked;
         private bool _isDeleted;
-        private List<AccountSetting> _settings;
+        private List<AccountSetting>? _settings;
 
         public AccountBuilder(IAccountsClient accountsClient)
         {
@@ -41,7 +42,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
             return this;
         }
 
-        public AccountBuilder WithSetting(AccountSettingType type, string value = null)
+        public AccountBuilder WithSetting(AccountSettingType type, string? value = null)
         {
             if (_settings == null)
             {
@@ -66,7 +67,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
                 Type = _type,
                 IsLocked = _isLocked,
                 IsDeleted = _isDeleted,
-                Settings = _settings?.ToArray()
+                Settings = _settings?.ToList()
             };
 
             var createdId = await _accountsClient.CreateAsync(request);

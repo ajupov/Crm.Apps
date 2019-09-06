@@ -11,6 +11,6 @@ namespace Crm.Clients.Accounts.RequestParameters
 
         public bool IsDeleted { get; set; }
 
-        public ICollection<AccountSetting>? Settings { get; set; }
+        public List<AccountSetting>? Settings { get; set; }
     }
 }

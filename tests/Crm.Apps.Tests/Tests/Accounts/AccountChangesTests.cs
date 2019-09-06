@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
@@ -39,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Accounts
                 Type = AccountType.MlmSystem,
                 IsLocked = true,
                 IsDeleted = true,
-                Settings = new[]
+                Settings = new List<AccountSetting>
                 {
                     new AccountSetting
                     {
@@ -47,16 +48,17 @@ namespace Crm.Apps.Tests.Tests.Accounts
                     }
                 }
             };
-            
+
             await _accountsClient.UpdateAsync(updateRequest);
             var getPagedListRequest = new AccountChangeGetPagedListRequest
             {
                 AccountId = account.Id,
-                SortBy = "asc"
+                OrderBy = "asc",
+                SortBy = "CreateDateTime"
             };
-            
+
             var actualChanges = await _accountChangesClient.GetPagedListAsync(getPagedListRequest);
-            
+
             Assert.NotEmpty(actualChanges);
             Assert.True(actualChanges.All(x => x.AccountId == account.Id));
             Assert.True(actualChanges.All(x => !x.ChangerUserId.IsEmpty()));

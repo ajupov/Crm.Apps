@@ -9,10 +9,10 @@ namespace Crm.Apps.Accounts.RequestParameters
         [Required]
         public AccountType Type { get; set; }
 
-        public bool IsLocked { get; set; } = false;
+        public bool IsLocked { get; set; }
 
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
 
-        public List<AccountSetting>? Settings { get; set; } = null;
+        public List<AccountSetting>? Settings { get; set; }
     }
 }
