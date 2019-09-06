@@ -66,7 +66,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
                 Type = _type,
                 IsLocked = _isLocked,
                 IsDeleted = _isDeleted,
-                Settings = _settings.ToArray()
+                Settings = _settings?.ToArray()
             };
 
             var createdId = await _accountsClient.CreateAsync(request);

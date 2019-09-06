@@ -8,12 +8,13 @@ namespace Crm.Apps.Accounts.Migrations
         public override void Up()
         {
             Create.Table("AccountSettings")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Value").AsString().Nullable();
 
-            Create.PrimaryKey("PK_AccountSettings_AccountId_Type").OnTable("AccountSettings")
-                .Columns("AccountId", "Type");
+            Create.PrimaryKey("PK_AccountSettings_Id").OnTable("AccountSettings")
+                .Columns("Id");
 
             Create.ForeignKey("FK_AccountSettings_AccountId")
                 .FromTable("AccountSettings").ForeignColumn("AccountId")
@@ -28,7 +29,7 @@ namespace Crm.Apps.Accounts.Migrations
         {
             Delete.Index("IX_AccountSettings_AccountId").OnTable("AccountSettings");
             Delete.ForeignKey("FK_AccountSettings_AccountId").OnTable("AccountSettings");
-            Delete.PrimaryKey("PK_AccountSettings_AccountId_Type").FromTable("AccountSettings");
+            Delete.PrimaryKey("PK_AccountSettings_Id").FromTable("AccountSettings");
             Delete.Table("AccountSettings");
         }
     }

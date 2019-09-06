@@ -15,6 +15,6 @@ namespace Crm.Apps.Accounts.Models
 
         public DateTime CreateDateTime { get; set; }
 
-        public ICollection<AccountSetting>? Settings { get; set; }
+        public List<AccountSetting>? Settings { get; set; }
     }
 }

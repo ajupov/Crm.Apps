@@ -58,12 +58,12 @@ namespace Crm.Apps.Accounts.Services
                 x.IsLocked = request.IsLocked;
                 x.IsDeleted = request.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.Settings = request.Settings.Select(s => new AccountSetting
+                x.Settings = request.Settings?.Select(s => new AccountSetting
                 {
                     AccountId = x.Id,
                     Type = s.Type,
                     Value = s.Value
-                }).ToArray();
+                }).ToList();
             });
 
             var entry = await _accountsStorage.AddAsync(account, ct);
@@ -87,7 +87,7 @@ namespace Crm.Apps.Accounts.Services
                         Type = s.Type,
                         Value = s.Value
                     })
-                    .ToArray();
+                    .ToList();
             });
 
             _accountsStorage.Update(account);

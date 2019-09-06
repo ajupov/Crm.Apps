@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Crm.Apps.Accounts.Models;
 
@@ -6,28 +7,19 @@ namespace Crm.Apps.Accounts.RequestParameters
 {
     public class AccountUpdateRequest
     {
-        public AccountUpdateRequest(Guid id, AccountType type, bool isLocked, bool isDeleted, AccountSetting[] settings)
-        {
-            Id = id;
-            Type = type;
-            IsLocked = isLocked;
-            IsDeleted = isDeleted;
-            Settings = settings;
-        }
+        [Required]
+        public Guid Id { get; set; }
 
         [Required]
-        public Guid Id { get; }
+        public AccountType Type { get; set; }
 
         [Required]
-        public AccountType Type { get; }
+        public bool IsLocked { get; set; }
 
         [Required]
-        public bool IsLocked { get; }
+        public bool IsDeleted { get; set; }
 
         [Required]
-        public bool IsDeleted { get; }
-
-        [Required]
-        public AccountSetting[] Settings { get; }
+        public List<AccountSetting>? Settings { get; set; }
     }
 }

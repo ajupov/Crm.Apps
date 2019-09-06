@@ -32,8 +32,8 @@ namespace Crm.Apps.Accounts.Storages
 
             builder.Entity<AccountSetting>(e =>
             {
-                e.HasKey(x => new {x.AccountId, x.Type})
-                    .HasName("PK_AccountSettings_AccountId_Type");
+                e.HasKey(x => x.Id)
+                    .HasName("PK_AccountSettings_Id");
 
                 e.HasIndex(x => x.AccountId)
                     .HasName("IX_AccountSettings_AccountId");
@@ -43,7 +43,7 @@ namespace Crm.Apps.Accounts.Storages
             {
                 e.HasKey(x => x.Id)
                     .HasName("PK_AccountChanges_Id");
-                
+
                 e.HasIndex(x => new {x.AccountId, x.CreateDateTime})
                     .HasName("IX_AccountChanges_AccountId_CreateDateTime");
             });
