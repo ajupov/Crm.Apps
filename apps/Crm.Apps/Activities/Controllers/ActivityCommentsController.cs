@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.Parameters;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
@@ -28,41 +28,33 @@ namespace Crm.Apps.Activities.Controllers
             _activityCommentsService = activityCommentsService;
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("GetPagedList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.SalesManagement)]
-        public async Task<ActionResult<List<ActivityComment>>> GetPagedList(
-            ActivityCommentGetPagedListParameter parameter,
+        public async Task<ActionResult<ActivityComment[]>> GetPagedList(
+            ActivityCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var activity = await _activitiesService.GetAsync(parameter.ActivityId, ct);
-            var comments = await _activityCommentsService.GetPagedListAsync(parameter, ct);
+            var activity = await _activitiesService.GetAsync(request.ActivityId, ct);
+            var comments = await _activityCommentsService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(comments, new[] {activity.AccountId});
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("Create")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.SalesManagement)]
-        public async Task<ActionResult> Create(ActivityComment comment, CancellationToken ct = default)
+        public async Task<ActionResult> Create(ActivityCommentCreateRequest request, CancellationToken ct = default)
         {
-            if (comment == null)
-            {
-                return BadRequest();
-            }
-
-            var activity = await _activitiesService.GetAsync(comment.ActivityId, ct);
+            var activity = await _activitiesService.GetAsync(request.ActivityId, ct);
 
             return await ActionIfAllowed(
-                () => _activityCommentsService.CreateAsync(_userContext.UserId, comment, ct)
-                , new[] {activity.AccountId});
+                () => _activityCommentsService.CreateAsync(_userContext.UserId, request, ct),
+                new[] {activity.AccountId});
         }
 
         [NonAction]
         private ActionResult<TResult> ReturnIfAllowed<TResult>(TResult result, IEnumerable<Guid> accountIds)
         {
-            if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
-                Permission.TechnicalSupport))
+            if (_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedPermissions))
             {
                 return result;
             }
@@ -87,8 +79,7 @@ namespace Crm.Apps.Activities.Controllers
         [NonAction]
         private async Task<ActionResult> ActionIfAllowed(Func<Task> action, IEnumerable<Guid> accountIds)
         {
-            if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
-                Permission.TechnicalSupport))
+            if (_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedPermissions))
             {
                 await action();
 

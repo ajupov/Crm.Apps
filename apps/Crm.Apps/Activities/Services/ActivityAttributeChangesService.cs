@@ -1,37 +1,38 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Activities.Helpers;
 using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.Parameters;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Storages;
 using Crm.Utils.Guid;
+using Crm.Utils.Sorting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Activities.Services
 {
     public class ActivityAttributeChangesService : IActivityAttributeChangesService
     {
-        private readonly ActivitiesStorage _storage;
+        private readonly ActivitiesStorage _activitiesStorage;
 
-        public ActivityAttributeChangesService(ActivitiesStorage storage)
+        public ActivityAttributeChangesService(ActivitiesStorage activitiesStorage)
         {
-            _storage = storage;
+            _activitiesStorage = activitiesStorage;
         }
 
-        public Task<List<ActivityAttributeChange>> GetPagedListAsync(
-            ActivityAttributeChangeGetPagedListParameter parameter, CancellationToken ct)
+        public Task<ActivityAttributeChange[]> GetPagedListAsync(
+            ActivityAttributeChangeGetPagedListRequest request,
+            CancellationToken ct)
         {
-            return _storage.ActivityAttributeChanges.Where(x =>
-                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.AttributeId.IsEmpty() || x.AttributeId == parameter.AttributeId) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
-                .ToListAsync(ct);
+            return _activitiesStorage.ActivityAttributeChanges
+                .Where(x =>
+                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
+                    (request.AttributeId.IsEmpty() || x.AttributeId == request.AttributeId) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
+                .ToArrayAsync(ct);
         }
     }
 }

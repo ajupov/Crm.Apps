@@ -6,7 +6,7 @@ namespace Crm.Utils.Sorting
 {
     public static class SortingHelper
     {
-        public static IQueryable<T> Sort<T>(this IQueryable<T> queryable, string? sortBy, string? orderBy)
+        public static IQueryable<T> SortBy<T>(this IQueryable<T> queryable, string? sortBy, string? orderBy)
         {
             var type = typeof(T);
             var property = type.GetProperty(sortBy);

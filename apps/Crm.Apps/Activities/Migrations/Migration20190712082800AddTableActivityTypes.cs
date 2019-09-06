@@ -14,22 +14,24 @@ namespace Crm.Apps.Activities.Migrations
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
+            Create.PrimaryKey("PK_ActivityTypes_Id").OnTable("ActivityTypes")
+                .Columns("Id");
+
             Create.UniqueConstraint("UQ_ActivityTypes_AccountId_Name").OnTable("ActivityTypes")
                 .Columns("AccountId", "Name");
 
-            Create.Index("IX_ActivityTypes_AccountId_Name_IsDeleted_CreateDateTime")
+            Create.Index("IX_ActivityTypes_AccountId_CreateDateTime")
                 .OnTable("ActivityTypes")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("Name").Ascending()
-                .OnColumn("IsDeleted").Ascending()
+                .OnColumn("AccountId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ActivityTypes_AccountId_Name_IsDeleted_CreateDateTime").OnTable("ActivityTypes");
+            Delete.Index("IX_ActivityTypes_AccountId_CreateDateTime").OnTable("ActivityTypes");
             Delete.UniqueConstraint("UQ_ActivityTypes_AccountId_Name").FromTable("ActivityTypes");
+            Delete.PrimaryKey("PK_ActivityTypes_Id").FromTable("ActivityTypes");
             Delete.Table("ActivityTypes");
         }
     }

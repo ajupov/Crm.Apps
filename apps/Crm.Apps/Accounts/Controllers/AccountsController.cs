@@ -39,18 +39,20 @@ namespace Crm.Apps.Accounts.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<Account>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var model = await _accountsService.GetAsync(id, ct);
-            if (model == null)
+            var account = await _accountsService.GetAsync(id, ct);
+            if (account == null)
             {
                 return NotFound(id);
             }
 
-            return model;
+            return account;
         }
 
         [RequirePrivileged]
         [HttpPost("GetList")]
-        public async Task<ActionResult<Account[]>> GetList([Required] List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult<Account[]>> GetList(
+            [Required] IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
             return await _accountsService.GetListAsync(ids, ct);
         }
@@ -77,13 +79,13 @@ namespace Crm.Apps.Accounts.Controllers
         [HttpPost("Update")]
         public async Task<ActionResult> Update(AccountUpdateRequest request, CancellationToken ct = default)
         {
-            var oldAccount = await _accountsService.GetAsync(request.Id, ct);
-            if (oldAccount == null)
+            var account = await _accountsService.GetAsync(request.Id, ct);
+            if (account == null)
             {
                 return NotFound(request.Id);
             }
 
-            await _accountsService.UpdateAsync(_userContext.UserId, oldAccount, request, ct);
+            await _accountsService.UpdateAsync(_userContext.UserId, account, request, ct);
 
             return NoContent();
         }

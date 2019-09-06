@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Activities.Models;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
@@ -36,20 +36,18 @@ namespace Crm.Apps.Activities.Consumers
 
         private Task ActionAsync(Message message, CancellationToken ct)
         {
-            switch (message.Type)
+            return message.Type switch
             {
-                case "Create":
-                    return CreateAsync(message, ct);
-                default:
-                    return Task.CompletedTask;
-            }
+                "Create" => CreateAsync(message, ct),
+                _ => Task.CompletedTask
+            };
         }
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var comment = message.Data.FromJsonString<ActivityComment>();
+            var request = message.Data.FromJsonString<ActivityCommentCreateRequest>();
 
-            return _activityCommentsService.CreateAsync(message.UserId, comment, ct);
+            return _activityCommentsService.CreateAsync(message.UserId, request, ct);
         }
     }
 }

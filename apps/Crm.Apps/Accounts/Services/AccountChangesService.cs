@@ -21,12 +21,13 @@ namespace Crm.Apps.Accounts.Services
 
         public Task<AccountChange[]> GetPagedListAsync(AccountChangeGetPagedListRequest request, CancellationToken ct)
         {
-            return _accountsStorage.AccountChanges.Where(x =>
+            return _accountsStorage.AccountChanges
+                .Where(x =>
                     (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .Sort(request.SortBy, request.OrderBy)
+                .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
                 .ToArrayAsync(ct);

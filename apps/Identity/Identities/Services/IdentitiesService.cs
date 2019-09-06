@@ -53,7 +53,7 @@ namespace Identity.Identities.Services
                     (!parameter.IsVerified.HasValue || x.IsVerified == parameter.IsVerified) &&
                     (!parameter.MinCreateDateTime.HasValue || x.CreateDateTime >= parameter.MinCreateDateTime) &&
                     (!parameter.MaxCreateDateTime.HasValue || x.CreateDateTime <= parameter.MaxCreateDateTime))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
                 .ToArrayAsync(ct);

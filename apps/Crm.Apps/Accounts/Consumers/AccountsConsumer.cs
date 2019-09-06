@@ -38,23 +38,16 @@ namespace Crm.Apps.Accounts.Consumers
 
         private Task ActionAsync(Message message, CancellationToken ct)
         {
-            switch (message.Type)
+            return message.Type switch
             {
-                case "Create":
-                    return CreateAsync(message, ct);
-                case "Update":
-                    return UpdateAsync(message, ct);
-                case "Lock":
-                    return LockAsync(message, ct);
-                case "Unlock":
-                    return UnlockAsync(message, ct);
-                case "Delete":
-                    return DeleteAsync(message, ct);
-                case "Restore":
-                    return RestoreAsync(message, ct);
-                default:
-                    return Task.CompletedTask;
-            }
+                "Create" => CreateAsync(message, ct),
+                "Update" => UpdateAsync(message, ct),
+                "Lock" => LockAsync(message, ct),
+                "Unlock" => UnlockAsync(message, ct),
+                "Delete" => DeleteAsync(message, ct),
+                "Restore" => RestoreAsync(message, ct),
+                _ => Task.CompletedTask
+            };
         }
 
         private Task CreateAsync(Message message, CancellationToken ct)

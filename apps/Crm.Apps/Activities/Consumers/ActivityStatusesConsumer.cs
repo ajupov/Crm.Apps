@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Activities.Models;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
@@ -38,43 +38,38 @@ namespace Crm.Apps.Activities.Consumers
 
         private Task ActionAsync(Message message, CancellationToken ct)
         {
-            switch (message.Type)
+            return message.Type switch
             {
-                case "Create":
-                    return CreateAsync(message, ct);
-                case "Update":
-                    return UpdateAsync(message, ct);
-                case "Delete":
-                    return DeleteAsync(message, ct);
-                case "Restore":
-                    return RestoreAsync(message, ct);
-                default:
-                    return Task.CompletedTask;
-            }
+                "Create" => CreateAsync(message, ct),
+                "Update" => UpdateAsync(message, ct),
+                "Delete" => DeleteAsync(message, ct),
+                "Restore" => RestoreAsync(message, ct),
+                _ => Task.CompletedTask
+            };
         }
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var status = message.Data.FromJsonString<ActivityStatus>();
+            var request = message.Data.FromJsonString<ActivityStatusCreateRequest>();
 
-            return _activityStatusesService.CreateAsync(message.UserId, status, ct);
+            return _activityStatusesService.CreateAsync(message.UserId, request, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newStatus = message.Data.FromJsonString<ActivityStatus>();
-            if (newStatus.Id.IsEmpty())
+            var request = message.Data.FromJsonString<ActivityStatusUpdateRequest>();
+            if (request.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldStatus = await _activityStatusesService.GetAsync(newStatus.Id, ct);
-            if (oldStatus == null)
+            var status = await _activityStatusesService.GetAsync(request.Id, ct);
+            if (status == null)
             {
                 return;
             }
 
-            await _activityStatusesService.UpdateAsync(message.UserId, oldStatus, newStatus, ct);
+            await _activityStatusesService.UpdateAsync(message.UserId, status, request, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

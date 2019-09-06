@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Activities.Models;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
 using Crm.Infrastructure.MessageBroking.Consuming;
 using Crm.Infrastructure.MessageBroking.Models;
@@ -38,43 +38,38 @@ namespace Crm.Apps.Activities.Consumers
 
         private Task ActionAsync(Message message, CancellationToken ct)
         {
-            switch (message.Type)
+            return message.Type switch
             {
-                case "Create":
-                    return CreateAsync(message, ct);
-                case "Update":
-                    return UpdateAsync(message, ct);
-                case "Delete":
-                    return DeleteAsync(message, ct);
-                case "Restore":
-                    return RestoreAsync(message, ct);
-                default:
-                    return Task.CompletedTask;
-            }
+                "Create" => CreateAsync(message, ct),
+                "Update" => UpdateAsync(message, ct),
+                "Delete" => DeleteAsync(message, ct),
+                "Restore" => RestoreAsync(message, ct),
+                _ => Task.CompletedTask
+            };
         }
 
         private Task CreateAsync(Message message, CancellationToken ct)
         {
-            var type = message.Data.FromJsonString<ActivityType>();
+            var request = message.Data.FromJsonString<ActivityTypeCreateRequest>();
 
-            return _activityTypesService.CreateAsync(message.UserId, type, ct);
+            return _activityTypesService.CreateAsync(message.UserId, request, ct);
         }
 
         private async Task UpdateAsync(Message message, CancellationToken ct)
         {
-            var newType = message.Data.FromJsonString<ActivityType>();
-            if (newType.Id.IsEmpty())
+            var request = message.Data.FromJsonString<ActivityTypeUpdateRequest>();
+            if (request.Id.IsEmpty())
             {
                 return;
             }
 
-            var oldType = await _activityTypesService.GetAsync(newType.Id, ct);
-            if (oldType == null)
+            var type = await _activityTypesService.GetAsync(request.Id, ct);
+            if (type == null)
             {
                 return;
             }
 
-            await _activityTypesService.UpdateAsync(message.UserId, oldType, newType, ct);
+            await _activityTypesService.UpdateAsync(message.UserId, type, request, ct);
         }
 
         private Task DeleteAsync(Message message, CancellationToken ct)

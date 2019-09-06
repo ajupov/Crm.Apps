@@ -8,11 +8,14 @@ namespace Crm.Apps.Activities.Migrations
         public override void Up()
         {
             Create.Table("ActivityAttributeLinks")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ActivityAttributeLinks_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ActivityId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
-                .WithColumn("Value").AsString().NotNullable()
+                .WithColumn("Value").AsString().Nullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+
+            Create.PrimaryKey("PK_ActivityAttributeLinks_Id").OnTable("ActivityAttributeLinks")
+                .Columns("Id");
 
             Create.ForeignKey("FK_ActivityAttributeLinks_ActivityId")
                 .FromTable("ActivityAttributeLinks").ForeignColumn("ActivityId")
@@ -28,8 +31,8 @@ namespace Crm.Apps.Activities.Migrations
 
             Create.Index("IX_ActivityAttributeLinks_ActivityId_AttributeId_CreateDateTime")
                 .OnTable("ActivityAttributeLinks")
-                .OnColumn("ActivityId").Descending()
-                .OnColumn("AttributeId").Descending()
+                .OnColumn("ActivityId").Ascending()
+                .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
@@ -42,6 +45,7 @@ namespace Crm.Apps.Activities.Migrations
                 .FromTable("ActivityAttributeLinks");
             Delete.ForeignKey("FK_ActivityAttributeLinks_AttributeId").OnTable("ActivityAttributeLinks");
             Delete.ForeignKey("FK_ActivityAttributeLinks_ActivityId").OnTable("ActivityAttributeLinks");
+            Delete.PrimaryKey("PK_ActivityAttributeLinks_Id").FromTable("ActivityAttributeLinks");
             Delete.Table("ActivityAttributeLinks");
         }
     }

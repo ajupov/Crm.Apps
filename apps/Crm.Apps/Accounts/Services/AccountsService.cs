@@ -37,12 +37,13 @@ namespace Crm.Apps.Accounts.Services
 
         public Task<Account[]> GetPagedListAsync(AccountGetPagedListRequest request, CancellationToken ct)
         {
-            return _accountsStorage.Accounts.Where(x =>
+            return _accountsStorage.Accounts
+                .Where(x =>
                     (!request.IsLocked.HasValue || x.IsLocked == request.IsLocked) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .Sort(request.SortBy, request.OrderBy)
+                .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
                 .ToArrayAsync(ct);
@@ -58,12 +59,13 @@ namespace Crm.Apps.Accounts.Services
                 x.IsLocked = request.IsLocked;
                 x.IsDeleted = request.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.Settings = request.Settings?.Select(s => new AccountSetting
-                {
-                    AccountId = x.Id,
-                    Type = s.Type,
-                    Value = s.Value
-                }).ToList();
+                x.Settings = request.Settings?
+                    .Select(s => new AccountSetting
+                    {
+                        AccountId = x.Id,
+                        Type = s.Type,
+                        Value = s.Value
+                    }).ToList();
             });
 
             var entry = await _accountsStorage.AddAsync(account, ct);
@@ -99,7 +101,8 @@ namespace Crm.Apps.Accounts.Services
         {
             var changes = new List<AccountChange>();
 
-            await _accountsStorage.Accounts.Where(x => ids.Contains(x.Id))
+            await _accountsStorage.Accounts
+                .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.UpdateWithLog(userId, x => x.IsLocked = true)), ct);
 
             await _accountsStorage.AddRangeAsync(changes, ct);
@@ -110,7 +113,8 @@ namespace Crm.Apps.Accounts.Services
         {
             var changes = new List<AccountChange>();
 
-            await _accountsStorage.Accounts.Where(x => ids.Contains(x.Id))
+            await _accountsStorage.Accounts
+                .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.UpdateWithLog(userId, x => x.IsLocked = false)), ct);
 
             await _accountsStorage.AddRangeAsync(changes, ct);
@@ -121,7 +125,8 @@ namespace Crm.Apps.Accounts.Services
         {
             var changes = new List<AccountChange>();
 
-            await _accountsStorage.Accounts.Where(x => ids.Contains(x.Id))
+            await _accountsStorage.Accounts
+                .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.UpdateWithLog(userId, x => x.IsDeleted = true)), ct);
 
             await _accountsStorage.AddRangeAsync(changes, ct);
@@ -132,7 +137,8 @@ namespace Crm.Apps.Accounts.Services
         {
             var changes = new List<AccountChange>();
 
-            await _accountsStorage.Accounts.Where(x => ids.Contains(x.Id))
+            await _accountsStorage.Accounts
+                .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(a => changes.Add(a.UpdateWithLog(userId, x => x.IsDeleted = false)), ct);
 
             await _accountsStorage.AddRangeAsync(changes, ct);

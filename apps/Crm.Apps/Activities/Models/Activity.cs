@@ -12,33 +12,33 @@ namespace Crm.Apps.Activities.Models
         public Guid TypeId { get; set; }
 
         public Guid StatusId { get; set; }
-        
-        public Guid LeadId { get; set; }
-        
-        public Guid CompanyId { get; set; }
-        
-        public Guid ContactId { get; set; }
-        
-        public Guid DealId { get; set; }
-        
+
+        public Guid? LeadId { get; set; }
+
+        public Guid? CompanyId { get; set; }
+
+        public Guid? ContactId { get; set; }
+
+        public Guid? DealId { get; set; }
+
         public Guid CreateUserId { get; set; }
-        
-        public Guid ResponsibleUserId { get; set; }
+
+        public Guid? ResponsibleUserId { get; set; }
 
         public string Name { get; set; }
-        
-        public string Description { get; set; }
-        
-        public string Result { get; set; }
-        
+
+        public string? Description { get; set; }
+
+        public string? Result { get; set; }
+
         public ActivityPriority Priority { get; set; }
 
-        public DateTime StartDateTime { get; set; }
-        
+        public DateTime? StartDateTime { get; set; }
+
         public DateTime? EndDateTime { get; set; }
-        
+
         public DateTime? DeadLineDateTime { get; set; }
-        
+
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
@@ -46,7 +46,7 @@ namespace Crm.Apps.Activities.Models
         public ActivityType Type { get; set; }
 
         public ActivityStatus Status { get; set; }
-        
-        public List<ActivityAttributeLink> AttributeLinks { get; set; }
+
+        public List<ActivityAttributeLink>? AttributeLinks { get; set; }
     }
 }

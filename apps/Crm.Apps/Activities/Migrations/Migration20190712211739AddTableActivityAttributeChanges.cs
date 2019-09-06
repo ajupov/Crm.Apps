@@ -8,17 +8,20 @@ namespace Crm.Apps.Activities.Migrations
         public override void Up()
         {
             Create.Table("ActivityAttributeChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ActivityAttributeChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("OldValueJson").AsString().NotNullable()
-                .WithColumn("NewValueJson").AsString().NotNullable();
+                .WithColumn("OldValueJson").AsString().Nullable()
+                .WithColumn("NewValueJson").AsString().Nullable();
+
+            Create.PrimaryKey("PK_ActivityAttributeChanges_Id").OnTable("ActivityAttributeChanges")
+                .Columns("Id");
 
             Create.Index("IX_ActivityAttributeChanges_ChangerUserId_AttributeId_CreateDateTime")
                 .OnTable("ActivityAttributeChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("AttributeId").Descending()
+                .OnColumn("ChangerUserId").Ascending()
+                .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
@@ -27,6 +30,7 @@ namespace Crm.Apps.Activities.Migrations
         {
             Delete.Index("IX_ActivityAttributeChanges_ChangerUserId_AttributeId_CreateDateTime")
                 .OnTable("ActivityAttributeChanges");
+            Delete.PrimaryKey("PK_ActivityAttributeChanges_Id").FromTable("ActivityAttributeChanges");
             Delete.Table("ActivityAttributeChanges");
         }
     }

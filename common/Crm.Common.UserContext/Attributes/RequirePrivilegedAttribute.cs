@@ -4,7 +4,7 @@ namespace Crm.Common.UserContext.Attributes
 {
     public class RequirePrivilegedAttribute : RequireAnyAttribute
     {
-        private static readonly Permission[] PrivilegedPermissions =
+        public static readonly Permission[] PrivilegedPermissions =
         {
             Permission.System,
             Permission.Development,

@@ -5,9 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Helpers;
 using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.Parameters;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Storages;
 using Crm.Utils.Guid;
+using Crm.Utils.Sorting;
 using Crm.Utils.String;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,93 +16,98 @@ namespace Crm.Apps.Activities.Services
 {
     public class ActivityTypesService : IActivityTypesService
     {
-        private readonly ActivitiesStorage _storage;
+        private readonly ActivitiesStorage _activitiesStorage;
 
-        public ActivityTypesService(ActivitiesStorage storage)
+        public ActivityTypesService(ActivitiesStorage activitiesStorage)
         {
-            _storage = storage;
+            _activitiesStorage = activitiesStorage;
         }
 
         public Task<ActivityType> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.ActivityTypes.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _activitiesStorage.ActivityTypes.FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<ActivityType[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.ActivityTypes.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _activitiesStorage.ActivityTypes
+                .Where(x => ids.Contains(x.Id))
+                .ToArrayAsync(ct);
         }
 
-        public Task<List<ActivityType>> GetPagedListAsync(ActivityTypeGetPagedListParameter parameter,
-            CancellationToken ct)
+        public Task<ActivityType[]> GetPagedListAsync(ActivityTypeGetPagedListRequest request, CancellationToken ct)
         {
-            return _storage.ActivityTypes.Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
-                .ToListAsync(ct);
+            return _activitiesStorage.ActivityTypes
+                .Where(x =>
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
+                .ToArrayAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ActivityType type, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, ActivityTypeCreateRequest request, CancellationToken ct)
         {
-            var newType = new ActivityType();
-            var change = newType.WithCreateLog(userId, x =>
+            var type = new ActivityType();
+            var change = type.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = type.AccountId;
-                x.Name = type.Name;
-                x.IsDeleted = type.IsDeleted;
+                x.AccountId = request.AccountId;
+                x.Name = request.Name;
+                x.IsDeleted = request.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _storage.AddAsync(newType, ct);
-            await _storage.AddAsync(change, ct);
-            await _storage.SaveChangesAsync(ct);
+            var entry = await _activitiesStorage.AddAsync(type, ct);
+            await _activitiesStorage.AddAsync(change, ct);
+            await _activitiesStorage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, ActivityType oldType, ActivityType newType,
+        public async Task UpdateAsync(
+            Guid userId,
+            ActivityType type,
+            ActivityTypeUpdateRequest request,
             CancellationToken ct)
         {
-            var change = oldType.WithUpdateLog(userId, x =>
+            var change = type.WithUpdateLog(userId, x =>
             {
-                x.Name = newType.Name;
-                x.IsDeleted = newType.IsDeleted;
+                x.Name = request.Name;
+                x.IsDeleted = request.IsDeleted;
             });
 
-            _storage.Update(oldType);
-            await _storage.AddAsync(change, ct);
-            await _storage.SaveChangesAsync(ct);
+            _activitiesStorage.Update(type);
+            await _activitiesStorage.AddAsync(change, ct);
+            await _activitiesStorage.SaveChangesAsync(ct);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityTypeChange>();
 
-            await _storage.ActivityTypes.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
-                ;
+            await _activitiesStorage.ActivityTypes
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
 
-            await _storage.AddRangeAsync(changes, ct);
-            await _storage.SaveChangesAsync(ct);
+            await _activitiesStorage.AddRangeAsync(changes, ct);
+            await _activitiesStorage.SaveChangesAsync(ct);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityTypeChange>();
 
-            await _storage.ActivityTypes.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
-                ;
+            await _activitiesStorage.ActivityTypes
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
 
-            await _storage.AddRangeAsync(changes, ct);
-            await _storage.SaveChangesAsync(ct);
+            await _activitiesStorage.AddRangeAsync(changes, ct);
+            await _activitiesStorage.SaveChangesAsync(ct);
         }
     }
 }

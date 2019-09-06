@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.Parameters;
+using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
-using Crm.Utils.Guid;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Activities.Controllers
@@ -26,103 +26,72 @@ namespace Crm.Apps.Activities.Controllers
             _activityTypesService = activityTypesService;
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpGet("Get")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
-        public async Task<ActionResult<ActivityType>> Get(Guid id, CancellationToken ct = default)
+        public async Task<ActionResult<ActivityType>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            if (id.IsEmpty())
-            {
-                return BadRequest();
-            }
-
             var type = await _activityTypesService.GetAsync(id, ct);
             if (type == null)
             {
-                return NotFound();
+                return NotFound(id);
             }
 
             return ReturnIfAllowed(type, new[] {type.AccountId});
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("GetList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
-        public async Task<ActionResult<List<ActivityType>>> GetList(List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult<ActivityType[]>> GetList([Required] IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
             var types = await _activityTypesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(types, types.Select(x => x.AccountId));
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("GetPagedList")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
-        public async Task<ActionResult<List<ActivityType>>> GetPagedList(
-            ActivityTypeGetPagedListParameter parameter,
+        public async Task<ActionResult<ActivityType[]>> GetPagedList(
+            ActivityTypeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var types = await _activityTypesService.GetPagedListAsync(parameter, ct);
+            var types = await _activityTypesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(types, types.Select(x => x.AccountId));
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("Create")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.AccountOwning,
-            Permission.SalesManagement)]
-        public async Task<ActionResult<Guid>> Create(ActivityType type, CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(ActivityTypeCreateRequest request, CancellationToken ct = default)
         {
+            if (!_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedPermissions))
+            {
+                request.AccountId = _userContext.AccountId;
+            }
+
+            var id = await _activityTypesService.CreateAsync(_userContext.UserId, request, ct);
+
+            return Created("Get", id);
+        }
+
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
+        [HttpPost("Update")]
+        public async Task<ActionResult> Update(ActivityTypeUpdateRequest request, CancellationToken ct = default)
+        {
+            var type = await _activityTypesService.GetAsync(request.Id, ct);
             if (type == null)
             {
-                return BadRequest();
+                return NotFound(request.Id);
             }
 
-            if (!_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
-                Permission.TechnicalSupport))
-            {
-                type.AccountId = _userContext.AccountId;
-            }
-
-            var id = await _activityTypesService.CreateAsync(_userContext.UserId, type, ct);
-
-            return Created(nameof(Get), id);
+            return await ActionIfAllowed(() => _activityTypesService.UpdateAsync(_userContext.UserId, type,
+                request, ct), new[] {type.AccountId, type.AccountId});
         }
 
-        [HttpPost("Update")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.SalesManagement)]
-        public async Task<ActionResult> Update(ActivityType type, CancellationToken ct = default)
-        {
-            if (type.Id.IsEmpty())
-            {
-                return BadRequest();
-            }
-
-            var oldType = await _activityTypesService.GetAsync(type.Id, ct);
-            if (oldType == null)
-            {
-                return NotFound();
-            }
-
-            return await ActionIfAllowed(() => _activityTypesService.UpdateAsync(_userContext.UserId, oldType,
-                type, ct), new[] {type.AccountId, oldType.AccountId});
-        }
-
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("Delete")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
-        public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Delete([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
             var attributes = await _activityTypesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
@@ -130,16 +99,10 @@ namespace Crm.Apps.Activities.Controllers
                 attributes.Select(x => x.AccountId));
         }
 
+        [RequirePrivileged(Permission.AccountOwning, Permission.SalesManagement)]
         [HttpPost("Restore")]
-        [RequireAny(Permission.System, Permission.Development, Permission.Administration, Permission.TechnicalSupport,
-            Permission.AccountOwning, Permission.SalesManagement)]
-        public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Restore([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
             var attributes = await _activityTypesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
@@ -150,8 +113,7 @@ namespace Crm.Apps.Activities.Controllers
         [NonAction]
         private ActionResult<TResult> ReturnIfAllowed<TResult>(TResult result, IEnumerable<Guid> accountIds)
         {
-            if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
-                Permission.TechnicalSupport))
+            if (_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedPermissions))
             {
                 return result;
             }
@@ -176,8 +138,7 @@ namespace Crm.Apps.Activities.Controllers
         [NonAction]
         private async Task<ActionResult> ActionIfAllowed(Func<Task> action, IEnumerable<Guid> accountIds)
         {
-            if (_userContext.HasAny(Permission.System, Permission.Development, Permission.Administration,
-                Permission.TechnicalSupport))
+            if (_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedPermissions))
             {
                 await action();
 

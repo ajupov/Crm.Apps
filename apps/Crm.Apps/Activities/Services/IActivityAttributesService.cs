@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.Parameters;
+using Crm.Apps.Activities.RequestParameters;
 
 namespace Crm.Apps.Activities.Services
 {
@@ -11,14 +11,16 @@ namespace Crm.Apps.Activities.Services
     {
         Task<ActivityAttribute> GetAsync(Guid id, CancellationToken ct);
 
-        Task<List<ActivityAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
+        Task<ActivityAttribute[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<ActivityAttribute>> GetPagedListAsync(ActivityAttributeGetPagedListParameter parameter,
-            CancellationToken ct);
+        Task<ActivityAttribute[]> GetPagedListAsync(ActivityAttributeGetPagedListRequest request, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, ActivityAttribute attribute, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid userId, ActivityAttributeCreateRequest request, CancellationToken ct);
 
-        Task UpdateAsync(Guid userId, ActivityAttribute oldAttribute, ActivityAttribute newAttribute,
+        Task UpdateAsync(
+            Guid userId,
+            ActivityAttribute attribute,
+            ActivityAttributeUpdateRequest request,
             CancellationToken ct);
 
         Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
