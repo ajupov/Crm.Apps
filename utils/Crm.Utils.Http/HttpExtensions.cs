@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,14 +11,18 @@ namespace Crm.Utils.Http
 {
     public static class HttpExtensions
     {
-        public static string ToQueryParams(
-            this object parameters)
+        public static string ToQueryParams(this object parameters)
         {
             var properties = TypeDescriptor.GetProperties(parameters);
             var result = new List<string>();
 
-            foreach (PropertyDescriptor property in properties)
+            foreach (PropertyDescriptor? property in properties)
             {
+                if (property == null)
+                {
+                    continue;
+                }   
+                
                 var value = property.GetValue(parameters);
                 if (value is IEnumerable enumerable && !(value is string))
                 {
@@ -37,9 +40,7 @@ namespace Crm.Utils.Http
         }
 
 
-        public static string AddParameters(
-            this string uri,
-            params (string key, object value)[] parameters)
+        public static string AddParameters(this string uri, params (string key, object value)[] parameters)
         {
             var uriBuilder = new System.UriBuilder(uri);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -54,8 +55,7 @@ namespace Crm.Utils.Http
         }
 
 
-        public static StringContent ToJsonStringContent(
-            this object model)
+        public static StringContent ToJsonStringContent(this object model)
         {
             return new StringContent(model.ToJsonString(), Encoding.UTF8, "application/json");
         }

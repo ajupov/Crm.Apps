@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Crm.Utils.Sorting
@@ -10,7 +11,7 @@ namespace Crm.Utils.Sorting
             var type = typeof(T);
             var property = type.GetProperty(sortBy);
             var parameter = Expression.Parameter(type, "p");
-            var memberAccess = Expression.MakeMemberAccess(parameter, property);
+            var memberAccess = Expression.MakeMemberAccess(parameter, property ?? throw new ArgumentNullException(nameof(parameter)));
             var expression = Expression.Lambda(memberAccess, parameter);
             var method = orderBy == "desc" ? "OrderByDescending" : "OrderBy";
 

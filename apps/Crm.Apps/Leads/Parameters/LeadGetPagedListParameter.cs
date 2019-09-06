@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Crm.Apps.Products.Models;
 
 namespace Crm.Apps.Leads.Parameters
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using Crm.Apps.Accounts.Models;
-using Crm.Apps.Activities.Models;
 using Crm.Utils.Json;
 
 namespace Crm.Apps.Accounts.Helpers

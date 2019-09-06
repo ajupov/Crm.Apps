@@ -2,10 +2,7 @@ namespace Crm.Utils.Http
 {
     public static class UriBuilder
     {
-        public static string Combine(
-            string host,
-            string resource,
-            string action = null)
+        public static string Combine(string host, string resource, string? action = null)
         {
             const char slash = '/';
 

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Identity.OAuth.Models;
 using Identity.OAuth.Models.Authorize;
 
 namespace Identity.OAuth.Attributes.Validation

@@ -14,7 +14,7 @@ namespace Crm.Infrastructure.OAuthClients
                 .AddOAuth("Crm", x =>
                 {
                     var section = configuration.GetSection("CrmOauthClientSettings");
-                  
+
                     x.ClientId = section.GetValue<string>("ClientId");
                     x.ClientSecret = section.GetValue<string>("ClientSecret");
                     x.CallbackPath = "/CrmCallback";

@@ -32,11 +32,10 @@ namespace Crm.Infrastructure.Migrations
 
         public static IApplicationBuilder UseMigrationsMiddleware(this IApplicationBuilder applicationBuilder)
         {
-            using (var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                scope.ServiceProvider.GetService<IMigrationRunner>()?.MigrateUp();
-            }
+            using var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            
+            scope.ServiceProvider.GetService<IMigrationRunner>()?.MigrateUp();
 
             return applicationBuilder;
         }

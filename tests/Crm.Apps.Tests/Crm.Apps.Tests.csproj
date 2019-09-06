@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
-        <IsPackable>false</IsPackable>
+        <TargetFramework>netcoreapp3</TargetFramework>
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0"/>
+        <PackageReference Include="xunit" Version="2.4.1"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1"/>
     </ItemGroup>
     <ItemGroup>
         <Content Include="appsettings.json">
@@ -16,18 +16,18 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Activities\Crm.Clients.Activities.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Companies\Crm.Clients.Companies.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Contacts\Crm.Clients.Contacts.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Deals\Crm.Clients.Deals.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Identities\Crm.Clients.Identities.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Leads\Crm.Clients.Leads.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Products\Crm.Clients.Products.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Users\Crm.Clients.Users.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.DependencyInjection.Tests\Crm.Infrastructure.DependencyInjection.Tests.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.DateTime\Crm.Utils.DateTime.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
+        <ProjectReference Include="..\..\clients\Crm.Clients.Accounts\Crm.Clients.Accounts.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Activities\Crm.Clients.Activities.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Companies\Crm.Clients.Companies.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Contacts\Crm.Clients.Contacts.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Deals\Crm.Clients.Deals.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Identities\Crm.Clients.Identities.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Leads\Crm.Clients.Leads.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Products\Crm.Clients.Products.csproj"/>
+        <ProjectReference Include="..\..\clients\Crm.Clients.Users\Crm.Clients.Users.csproj"/>
+        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.DependencyInjection.Tests\Crm.Infrastructure.DependencyInjection.Tests.csproj"/>
+        <ProjectReference Include="..\..\utils\Crm.Utils.DateTime\Crm.Utils.DateTime.csproj"/>
+        <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj"/>
+        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj"/>
     </ItemGroup>
 </Project>

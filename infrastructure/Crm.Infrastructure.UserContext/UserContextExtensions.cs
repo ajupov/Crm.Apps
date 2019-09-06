@@ -7,7 +7,7 @@ namespace Crm.Infrastructure.UserContext
     {
         public static IServiceCollection ConfigureUserContext<TUserContext, TUserContextImplementation>(
             this IServiceCollection services)
-            where TUserContext : class 
+            where TUserContext : class
             where TUserContextImplementation : class, TUserContext
         {
             return services

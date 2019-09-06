@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Crm.Apps.Accounts.Models;
 
 namespace Crm.Apps.Accounts.RequestParameters
@@ -10,8 +11,10 @@ namespace Crm.Apps.Accounts.RequestParameters
 
         public bool? IsDeleted { get; set; } = false;
 
+        [DataType(DataType.DateTime)]
         public DateTime? MinCreateDate { get; set; } = DateTime.UtcNow.AddDays(-1);
 
+        [DataType(DataType.DateTime)]
         public DateTime? MaxCreateDate { get; set; } = DateTime.UtcNow;
 
         public List<AccountType>? Types { get; set; } = null;

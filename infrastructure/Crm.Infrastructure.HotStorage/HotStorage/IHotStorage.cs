@@ -5,7 +5,7 @@ namespace Crm.Infrastructure.HotStorage.HotStorage
     public interface IHotStorage
     {
         void SetTempString(string value, TimeSpan timeSpan);
-        
+
         void SetValue<T>(string key, T value, TimeSpan timeSpan);
 
         bool IsExist(string key);

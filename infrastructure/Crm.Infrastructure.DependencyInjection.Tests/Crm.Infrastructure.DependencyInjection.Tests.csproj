@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netcoreapp3</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Xunit.DependencyInjection" Version="5.4.0" />
+        <PackageReference Include="Xunit.DependencyInjection" Version="5.4.0"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
+        <ProjectReference Include="..\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj"/>
     </ItemGroup>
 </Project>

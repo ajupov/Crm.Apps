@@ -21,12 +21,10 @@ using Crm.Infrastructure.Configuration;
 using Crm.Infrastructure.Hosting;
 using Crm.Infrastructure.HotStorage;
 using Crm.Infrastructure.Logging;
-using Crm.Infrastructure.Metrics;
 using Crm.Infrastructure.Migrations;
 using Crm.Infrastructure.Mvc;
 using Crm.Infrastructure.OAuthClients;
 using Crm.Infrastructure.Orm;
-using Crm.Infrastructure.Tracing;
 using Crm.Infrastructure.UserContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -114,7 +112,7 @@ namespace Crm.Apps
                         .AddTransient<IActivityAttributesService, ActivityAttributesService>()
                         .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>())
                     .Configure(builder => builder
-//                        .UseApiDocumentationsMiddleware()
+//                            .UseApiDocumentationsMiddleware()
                             .UseMigrationsMiddleware()
 //                        .UseMetricsMiddleware()
                             .UseMvcMiddleware()

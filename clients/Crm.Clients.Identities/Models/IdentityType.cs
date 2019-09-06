@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Crm.Clients.Identities.Models
+﻿namespace Crm.Clients.Identities.Models
 {
     public enum IdentityType : byte
     {

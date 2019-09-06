@@ -15,10 +15,9 @@ namespace Crm.Infrastructure.Tracing.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            using (var scope = _tracer.BuildSpan(context.HttpContext.Request.Path).StartActive(true))
-            {
-                await next();
-            }
+            using var scope = _tracer.BuildSpan(context.HttpContext.Request.Path).StartActive(true);
+            
+            await next();
         }
     }
 }

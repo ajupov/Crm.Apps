@@ -5,8 +5,7 @@ namespace Crm.Infrastructure.Mvc
 {
     public class DefaultApiController : ControllerBase
     {
-        protected ActionResult<T> Get<T>(
-            T model)
+        protected ActionResult<T> Get<T>(T model)
         {
             if (model == null)
             {
@@ -16,8 +15,7 @@ namespace Crm.Infrastructure.Mvc
             return model;
         }
 
-        protected async Task<ActionResult> Action(
-            Task task)
+        protected async Task<ActionResult> Action(Task task)
         {
             await task;
 
