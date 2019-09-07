@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Common.Types;
 using Crm.Utils.DateTime;
 using Xunit;
@@ -33,9 +33,7 @@ namespace Crm.Apps.Tests.Tests.Activities
         public async Task WhenGet_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync();
-            var attributeId =
-                (await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync())
-                .Id;
+            var attributeId = (await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync()).Id;
 
             var attribute = await _activityAttributesClient.GetAsync(attributeId);
 
@@ -50,12 +48,14 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (await Task.WhenAll(
                     _create.ActivityAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
                     _create.ActivityAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+                )
+                .Select(x => x.Id)
+                .ToArray();
 
             var attributes = await _activityAttributesClient.GetListAsync(attributeIds);
 
             Assert.NotEmpty(attributes);
-            Assert.Equal(attributeIds.Count, attributes.Count);
+            Assert.Equal(attributeIds.Length, attributes.Length);
         }
 
         [Fact]
@@ -66,12 +66,18 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .WithKey("Test1").BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
-            var attributes = await _activityAttributesClient.GetPagedListAsync(account.Id, key: "Test1",
-                types: filterTypes,
-                sortBy: "CreateDateTime", orderBy: "desc");
+            var request = new ActivityAttributeGetPagedListRequest
+            {
+                AccountId = account.Id,
+                Key = "Test1",
+                Types = filterTypes,
+            };
 
-            var results = attributes.Skip(1).Zip(attributes,
-                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+            var attributes = await _activityAttributesClient.GetPagedListAsync(request);
+
+            var results = attributes
+                .Skip(1)
+                .Zip(attributes, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(attributes);
             Assert.All(results, Assert.True);
@@ -81,7 +87,7 @@ namespace Crm.Apps.Tests.Tests.Activities
         public async Task WhenCreate_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync();
-            var attribute = new ActivityAttribute
+            var request = new ActivityAttributeCreateRequest
             {
                 AccountId = account.Id,
                 Type = AttributeType.Text,
@@ -89,16 +95,16 @@ namespace Crm.Apps.Tests.Tests.Activities
                 IsDeleted = false
             };
 
-            var createdAttributeId = await _activityAttributesClient.CreateAsync(attribute);
+            var createdAttributeId = await _activityAttributesClient.CreateAsync(request);
 
             var createdAttribute = await _activityAttributesClient.GetAsync(createdAttributeId);
 
             Assert.NotNull(createdAttribute);
             Assert.Equal(createdAttributeId, createdAttribute.Id);
-            Assert.Equal(attribute.AccountId, createdAttribute.AccountId);
-            Assert.Equal(attribute.Type, createdAttribute.Type);
-            Assert.Equal(attribute.Key, createdAttribute.Key);
-            Assert.Equal(attribute.IsDeleted, createdAttribute.IsDeleted);
+            Assert.Equal(request.AccountId, createdAttribute.AccountId);
+            Assert.Equal(request.Type, createdAttribute.Type);
+            Assert.Equal(request.Key, createdAttribute.Key);
+            Assert.Equal(request.IsDeleted, createdAttribute.IsDeleted);
             Assert.True(createdAttribute.CreateDateTime.IsMoreThanMinValue());
         }
 
@@ -109,11 +115,14 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
                 .WithKey("Test").BuildAsync();
 
-            attribute.Type = AttributeType.Link;
-            attribute.Key = "test.com";
-            attribute.IsDeleted = true;
+            var request = new ActivityAttributeUpdateRequest
+            {
+                Type = AttributeType.Link,
+                Key = "test.com",
+                IsDeleted = true
+            };
 
-            await _activityAttributesClient.UpdateAsync(attribute);
+            await _activityAttributesClient.UpdateAsync(request);
 
             var updatedAttribute = await _activityAttributesClient.GetAsync(attribute.Id);
 

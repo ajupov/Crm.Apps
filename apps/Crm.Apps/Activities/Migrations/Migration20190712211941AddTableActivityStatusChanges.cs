@@ -8,7 +8,7 @@ namespace Crm.Apps.Activities.Migrations
         public override void Up()
         {
             Create.Table("ActivityStatusChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ActivityStatusChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("StatusId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()

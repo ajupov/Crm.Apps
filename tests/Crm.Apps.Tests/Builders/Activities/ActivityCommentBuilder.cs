@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Activities
@@ -9,34 +10,33 @@ namespace Crm.Apps.Tests.Builders.Activities
     public class ActivityCommentBuilder : IActivityCommentBuilder
     {
         private readonly IActivityCommentsClient _activityCommentsClient;
-        private readonly ActivityComment _activityComment;
+        private readonly ActivityCommentCreateRequest _request;
 
         public ActivityCommentBuilder(IActivityCommentsClient activityCommentsClient)
         {
             _activityCommentsClient = activityCommentsClient;
-            _activityComment = new ActivityComment
+            _request = new ActivityCommentCreateRequest
             {
                 ActivityId = Guid.Empty,
-                CommentatorUserId = Guid.Empty,
                 Value = "Test"
             };
         }
 
         public ActivityCommentBuilder WithActivityId(Guid activityId)
         {
-            _activityComment.ActivityId = activityId;
+            _request.ActivityId = activityId;
 
             return this;
         }
 
         public Task BuildAsync()
         {
-            if (_activityComment.ActivityId.IsEmpty())
+            if (_request.ActivityId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_activityComment.ActivityId));
+                throw new InvalidOperationException(nameof(_request.ActivityId));
             }
 
-            return _activityCommentsClient.CreateAsync(_activityComment);
+            return _activityCommentsClient.CreateAsync(_request);
         }
     }
 }

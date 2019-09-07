@@ -4,75 +4,60 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Clients.Activities.Settings;
 using Crm.Utils.Http;
 using Microsoft.Extensions.Options;
+using UriBuilder = Crm.Utils.Http.UriBuilder;
 
 namespace Crm.Clients.Activities.Clients
 {
     public class ActivityStatusesClient : IActivityStatusesClient
     {
-        private readonly ActivitiesClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
         public ActivityStatusesClient(IOptions<ActivitiesClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, "Api/Activities/Statuses");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<ActivityStatus> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ActivityStatus>($"{_settings.Host}/Api/Activities/Statuses/Get",
-                new {id}, ct);
+            return _httpClientFactory.GetAsync<ActivityStatus>($"{_url}/Get", new {id}, ct);
         }
 
-        public Task<List<ActivityStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<ActivityStatus[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ActivityStatus>>(
-                $"{_settings.Host}/Api/Activities/Statuses/GetList", ids, ct);
+            return _httpClientFactory.PostAsync<ActivityStatus[]>($"{_url}/GetList", ids, ct);
         }
 
-        public Task<List<ActivityStatus>> GetPagedListAsync(Guid? accountId = default, string name = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<ActivityStatus[]> GetPagedListAsync(
+            ActivityStatusGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Name = name,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<ActivityStatus>>(
-                $"{_settings.Host}/Api/Activities/Statuses/GetPagedList", parameter, ct);
+            return _httpClientFactory.PostAsync<ActivityStatus[]>($"{_url}/GetPagedList", request, ct);
         }
 
-        public Task<Guid> CreateAsync(ActivityStatus status, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(ActivityStatusCreateRequest request, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Activities/Statuses/Create", status, ct);
+            return _httpClientFactory.PostAsync<Guid>($"{_url}/Create", request, ct);
         }
 
-        public Task UpdateAsync(ActivityStatus status, CancellationToken ct = default)
+        public Task UpdateAsync(ActivityStatusUpdateRequest request, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Activities/Statuses/Update", status, ct);
+            return _httpClientFactory.PostAsync($"{_url}/Update", request, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Activities/Statuses/Delete", ids, ct);
+            return _httpClientFactory.PostAsync($"{_url}/Delete", ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Activities/Statuses/Restore", ids, ct);
+            return _httpClientFactory.PostAsync($"{_url}/Restore", ids, ct);
         }
     }
 }

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 
 namespace Crm.Clients.Activities.Clients
 {
     public interface IActivityCommentsClient
     {
-        Task<List<ActivityComment>> GetPagedListAsync(Guid? activityId = default, Guid? commentatorUserId = default,
-            string value = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        Task<ActivityComment[]> GetPagedListAsync(
+            ActivityCommentGetPagedListRequest request,
             CancellationToken ct = default);
 
-        Task CreateAsync(ActivityComment comment, CancellationToken ct = default);
+        Task CreateAsync(ActivityCommentCreateRequest request, CancellationToken ct = default);
     }
 }

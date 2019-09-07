@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Utils.DateTime;
 using Crm.Utils.Guid;
 using Xunit;
@@ -26,17 +26,27 @@ namespace Crm.Apps.Tests.Tests.Activities
             var account = await _create.Account.BuildAsync();
             var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
             var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
-            var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            var activity = await _create.Activity
+                .WithAccountId(account.Id)
+                .WithTypeId(type.Id)
+                .WithStatusId(status.Id)
                 .BuildAsync();
+
             await Task.WhenAll(
-                    _create.ActivityComment.WithActivityId(activity.Id).BuildAsync(),
-                    _create.ActivityComment.WithActivityId(activity.Id).BuildAsync())
-                ;
+                _create.ActivityComment.WithActivityId(activity.Id).BuildAsync(),
+                _create.ActivityComment.WithActivityId(activity.Id).BuildAsync());
 
-            var comments = await _activityCommentsClient
-                .GetPagedListAsync(activity.Id, sortBy: "CreateDateTime", orderBy: "desc");
+            var request = new ActivityCommentGetPagedListRequest
+            {
+                ActivityId = activity.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "desc"
+            };
+            
+            var comments = await _activityCommentsClient.GetPagedListAsync(request);
 
-            var results = comments.Skip(1)
+            var results = comments
+                .Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(comments);
@@ -52,21 +62,27 @@ namespace Crm.Apps.Tests.Tests.Activities
             var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
                 .BuildAsync();
 
-            var comment = new ActivityComment
+            var createRequest = new ActivityCommentCreateRequest
             {
                 ActivityId = activity.Id,
                 Value = "Test"
             };
 
-            await _activityCommentsClient.CreateAsync(comment);
+            await _activityCommentsClient.CreateAsync(createRequest);
 
-            var createdComment = (await _activityCommentsClient.GetPagedListAsync(activity.Id, sortBy: "CreateDateTime",
-                orderBy: "asc")).First();
+            var getPagedListRequest = new ActivityCommentGetPagedListRequest
+            {
+                ActivityId = activity.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var createdComment = (await _activityCommentsClient.GetPagedListAsync(getPagedListRequest)).First();
 
             Assert.NotNull(createdComment);
-            Assert.Equal(comment.ActivityId, createdComment.ActivityId);
+            Assert.Equal(createRequest.ActivityId, createdComment.ActivityId);
             Assert.True(!createdComment.CommentatorUserId.IsEmpty());
-            Assert.Equal(comment.Value, createdComment.Value);
+            Assert.Equal(createRequest.Value, createdComment.Value);
             Assert.True(createdComment.CreateDateTime.IsMoreThanMinValue());
         }
     }

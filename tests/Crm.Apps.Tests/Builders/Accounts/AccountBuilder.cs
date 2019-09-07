@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Crm.Clients.Accounts.Clients;
 using Crm.Clients.Accounts.Models;
@@ -10,43 +9,46 @@ namespace Crm.Apps.Tests.Builders.Accounts
     public class AccountBuilder : IAccountBuilder
     {
         private readonly IAccountsClient _accountsClient;
-
-        private AccountType _type;
-        private bool _isLocked;
-        private bool _isDeleted;
-        private List<AccountSetting>? _settings;
+        private readonly AccountCreateRequest _request;
 
         public AccountBuilder(IAccountsClient accountsClient)
         {
             _accountsClient = accountsClient;
+            _request = new AccountCreateRequest
+            {
+                Type = AccountType.MlmSystem,
+                IsLocked = false,
+                IsDeleted = false,
+                Settings = null
+            };
         }
 
         public AccountBuilder WithType(AccountType type)
         {
-            _type = type;
+            _request.Type = type;
 
             return this;
         }
 
         public AccountBuilder AsLocked()
         {
-            _isLocked = true;
+            _request.IsLocked = true;
 
             return this;
         }
 
         public AccountBuilder AsDeleted()
         {
-            _isDeleted = true;
+            _request.IsDeleted = true;
 
             return this;
         }
 
         public AccountBuilder WithSetting(AccountSettingType type, string? value = null)
         {
-            if (_settings == null)
+            if (_request.Settings == null)
             {
-                _settings = new List<AccountSetting>();
+                _request.Settings = new List<AccountSetting>();
             }
 
             var setting = new AccountSetting
@@ -55,22 +57,14 @@ namespace Crm.Apps.Tests.Builders.Accounts
                 Value = value
             };
 
-            _settings.Add(setting);
+            _request.Settings.Add(setting);
 
             return this;
         }
 
         public async Task<Account> BuildAsync()
         {
-            var request = new AccountCreateRequest
-            {
-                Type = _type,
-                IsLocked = _isLocked,
-                IsDeleted = _isDeleted,
-                Settings = _settings?.ToList()
-            };
-
-            var createdId = await _accountsClient.CreateAsync(request);
+            var createdId = await _accountsClient.CreateAsync(_request);
 
             return await _accountsClient.GetAsync(createdId);
         }

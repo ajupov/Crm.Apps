@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Utils.DateTime;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
@@ -17,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         private readonly IActivityTypesClient _activityTypesClient;
         private readonly IActivityTypeChangesClient _typeChangesClient;
 
-        public ActivityTypeChangesTests(ICreate create, IActivityTypesClient activityTypesClient,
+        public ActivityTypeChangesTests(
+            ICreate create,
+            IActivityTypesClient activityTypesClient,
             IActivityTypeChangesClient typeChangesClient)
         {
             _create = create;
@@ -30,13 +33,23 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var account = await _create.Account.BuildAsync();
             var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
-            type.Name = "Test2";
-            type.IsDeleted = true;
-            await _activityTypesClient.UpdateAsync(type);
 
-            var changes = await _typeChangesClient
-                .GetPagedListAsync(typeId: type.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var updateRequest = new ActivityTypeUpdateRequest
+            {
+                Name = "Test2",
+                IsDeleted = true
+            };
+
+            await _activityTypesClient.UpdateAsync(updateRequest);
+
+            var getPagedListRequest = new ActivityTypeChangeGetPagedListRequest
+            {
+                TypeId = type.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _typeChangesClient.GetPagedListAsync(getPagedListRequest);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

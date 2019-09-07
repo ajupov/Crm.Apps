@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Common.Types;
 using Crm.Utils.Guid;
 
@@ -10,12 +11,12 @@ namespace Crm.Apps.Tests.Builders.Activities
     public class ActivityAttributeBuilder : IActivityAttributeBuilder
     {
         private readonly IActivityAttributesClient _activityAttributesClient;
-        private readonly ActivityAttribute _activityAttribute;
+        private readonly ActivityAttributeCreateRequest _request;
 
         public ActivityAttributeBuilder(IActivityAttributesClient activityAttributesClient)
         {
             _activityAttributesClient = activityAttributesClient;
-            _activityAttribute = new ActivityAttribute
+            _request = new ActivityAttributeCreateRequest
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
@@ -25,33 +26,33 @@ namespace Crm.Apps.Tests.Builders.Activities
 
         public ActivityAttributeBuilder WithAccountId(Guid accountId)
         {
-            _activityAttribute.AccountId = accountId;
+            _request.AccountId = accountId;
 
             return this;
         }
 
         public ActivityAttributeBuilder WithType(AttributeType type)
         {
-            _activityAttribute.Type = type;
+            _request.Type = type;
 
             return this;
         }
 
         public ActivityAttributeBuilder WithKey(string key)
         {
-            _activityAttribute.Key = key;
+            _request.Key = key;
 
             return this;
         }
 
         public async Task<ActivityAttribute> BuildAsync()
         {
-            if (_activityAttribute.AccountId.IsEmpty())
+            if (_request.AccountId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_activityAttribute.AccountId));
+                throw new InvalidOperationException(nameof(_request.AccountId));
             }
 
-            var createdId = await _activityAttributesClient.CreateAsync(_activityAttribute);
+            var createdId = await _activityAttributesClient.CreateAsync(_request);
 
             return await _activityAttributesClient.GetAsync(createdId);
         }

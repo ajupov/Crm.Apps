@@ -20,8 +20,8 @@ namespace Crm.Clients.Accounts.RequestParameters
 
         public int Limit { get; set; } = 10;
 
-        public string SortBy { get; set; } = "CreateDateTime";
+        public string? SortBy { get; set; } = "CreateDateTime";
 
-        public string OrderBy { get; set; } = "desc";
+        public string? OrderBy { get; set; } = "desc";
     }
 }

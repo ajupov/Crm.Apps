@@ -9,7 +9,7 @@ namespace Crm.Utils.Json
             return JsonConvert.DeserializeObject<T>(value);
         }
 
-        public static string ToJsonString(this object? value)
+        public static string? ToJsonString(this object? value)
         {
             return value == null ? null : JsonConvert.SerializeObject(value);
         }

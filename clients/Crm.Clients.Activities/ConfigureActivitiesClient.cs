@@ -7,7 +7,8 @@ namespace Crm.Clients.Activities
 {
     public static class ActivitiesClientExtensions
     {
-        public static IServiceCollection ConfigureActivitiesClient(this IServiceCollection services,
+        public static IServiceCollection ConfigureActivitiesClient(
+            this IServiceCollection services,
             IConfiguration configuration)
         {
             return services

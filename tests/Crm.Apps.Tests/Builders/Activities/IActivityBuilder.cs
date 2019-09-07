@@ -20,8 +20,6 @@ namespace Crm.Apps.Tests.Builders.Activities
         
         ActivityBuilder WithDealId(Guid dealId);
         
-        ActivityBuilder WithCreateUserId(Guid createUserId);
-        
         ActivityBuilder WithResponsibleUserId(Guid responsibleUserId);
         
         ActivityBuilder WithName(string name);

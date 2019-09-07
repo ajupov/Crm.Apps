@@ -8,7 +8,7 @@ namespace Crm.Apps.Activities.Migrations
         public override void Up()
         {
             Create.Table("Activities")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Activities_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("TypeId").AsGuid().NotNullable()
                 .WithColumn("StatusId").AsGuid().NotNullable()

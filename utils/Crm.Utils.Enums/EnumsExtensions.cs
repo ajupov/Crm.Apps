@@ -11,9 +11,9 @@ namespace Crm.Utils.Enums
             return Enum.GetValues(typeof(T)).OfType<T>();
         }
 
-        public static Dictionary<string, T> GetAsDictionary<T>()
+        public static Dictionary<string?, T>? GetAsDictionary<T>()
         {
-            return GetValues<T>().ToDictionary(k => k.ToString(), v => v);
+            return GetValues<T>()?.ToDictionary(k => k?.ToString(), v => v);
         }
     }
 }

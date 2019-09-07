@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 
 namespace Crm.Clients.Activities.Clients
 {
@@ -10,16 +11,15 @@ namespace Crm.Clients.Activities.Clients
     {
         Task<ActivityType> GetAsync(Guid id, CancellationToken ct = default);
 
-        Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<ActivityType[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task<List<ActivityType>> GetPagedListAsync(Guid? accountId = default, string name = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        Task<ActivityType[]> GetPagedListAsync(
+            ActivityTypeGetPagedListRequest request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(ActivityType type, CancellationToken ct = default);
+        Task<Guid> CreateAsync(ActivityTypeCreateRequest request, CancellationToken ct = default);
 
-        Task UpdateAsync(ActivityType type, CancellationToken ct = default);
+        Task UpdateAsync(ActivityTypeUpdateRequest request, CancellationToken ct = default);
 
         Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 

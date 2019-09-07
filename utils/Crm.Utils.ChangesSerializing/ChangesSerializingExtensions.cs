@@ -14,7 +14,7 @@ namespace Crm.Utils.ChangesSerializing
         }
 
         public static (string? OldValue, string? NewValue) UpdateWithAudit<TModel>(this TModel? model,
-            Action<TModel> action) where TModel : class
+            Action<TModel?> action) where TModel : class
         {
             var oldValue = model == null ? null : JsonConvert.SerializeObject(model);
 

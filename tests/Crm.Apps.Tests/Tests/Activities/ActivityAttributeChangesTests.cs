@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Common.Types;
 using Crm.Utils.DateTime;
 using Crm.Utils.Guid;
@@ -18,7 +19,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         private readonly IActivityAttributesClient _activityAttributesClient;
         private readonly IActivityAttributeChangesClient _attributeChangesClient;
 
-        public ActivityAttributeChangesTests(ICreate create, IActivityAttributesClient activityAttributesClient,
+        public ActivityAttributeChangesTests(
+            ICreate create,
+            IActivityAttributesClient activityAttributesClient,
             IActivityAttributeChangesClient attributeChangesClient)
         {
             _create = create;
@@ -30,16 +33,25 @@ namespace Crm.Apps.Tests.Tests.Activities
         public async Task WhenGetPagedList_ThenSuccess()
         {
             var account = await _create.Account.BuildAsync();
-            var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync()
-                ;
-            attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink";
-            attribute.IsDeleted = true;
-            await _activityAttributesClient.UpdateAsync(attribute);
+            var attribute = await _create.ActivityAttribute.WithAccountId(account.Id).BuildAsync();
 
-            var changes = await _attributeChangesClient
-                .GetPagedListAsync(attributeId: attribute.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var updateRequest = new ActivityAttributeUpdateRequest
+            {
+                Type = AttributeType.Link,
+                Key = "TestLink",
+                IsDeleted = true
+            };
+
+            await _activityAttributesClient.UpdateAsync(updateRequest);
+
+            var getPagesListRequest = new ActivityAttributeChangeGetPagedListRequest
+            {
+                AttributeId = attribute.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _attributeChangesClient.GetPagedListAsync(getPagesListRequest);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

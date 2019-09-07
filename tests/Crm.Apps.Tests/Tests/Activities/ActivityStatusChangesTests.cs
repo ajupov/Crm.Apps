@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Utils.DateTime;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
@@ -17,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         private readonly IActivityStatusesClient _activityStatusesClient;
         private readonly IActivityStatusChangesClient _statusChangesClient;
 
-        public ActivityStatusChangesTests(ICreate create, IActivityStatusesClient activityStatusesClient,
+        public ActivityStatusChangesTests(
+            ICreate create,
+            IActivityStatusesClient activityStatusesClient,
             IActivityStatusChangesClient statusChangesClient)
         {
             _create = create;
@@ -30,13 +33,24 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var account = await _create.Account.BuildAsync();
             var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
-            status.Name = "Test2";
-            status.IsDeleted = true;
-            await _activityStatusesClient.UpdateAsync(status);
 
-            var changes = await _statusChangesClient
-                .GetPagedListAsync(statusId: status.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var updateRequest = new ActivityStatusUpdateRequest
+            {
+                Id = status.Id,
+                Name = "Test2",
+                IsDeleted = true
+            };
+
+            await _activityStatusesClient.UpdateAsync(updateRequest);
+
+            var getPagedListRequest = new ActivityStatusChangeGetPagedListRequest
+            {
+                StatusId = status.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _statusChangesClient.GetPagedListAsync(getPagedListRequest);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

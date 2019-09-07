@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Utils.Guid;
 
 namespace Crm.Apps.Tests.Builders.Activities
@@ -10,12 +11,12 @@ namespace Crm.Apps.Tests.Builders.Activities
     public class ActivityBuilder : IActivityBuilder
     {
         private readonly IActivitiesClient _activitiesClient;
-        private readonly Activity _activity;
+        private readonly ActivityCreateRequest _request;
 
         public ActivityBuilder(IActivitiesClient activitiesClient)
         {
             _activitiesClient = activitiesClient;
-            _activity = new Activity
+            _request = new ActivityCreateRequest
             {
                 AccountId = Guid.Empty,
                 TypeId = Guid.Empty,
@@ -24,14 +25,13 @@ namespace Crm.Apps.Tests.Builders.Activities
                 CompanyId = Guid.Empty,
                 ContactId = Guid.Empty,
                 DealId = Guid.Empty,
-                CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
                 Name = "Test",
                 Description = "Test",
                 Result = "Test",
-                Priority = ActivityPriority.None,
-                StartDateTime = DateTime.Now,
-                EndDateTime = DateTime.Now.AddDays(1),
+                Priority = ActivityPriority.Medium,
+                StartDateTime = DateTime.UtcNow,
+                EndDateTime = DateTime.UtcNow.AddDays(1),
                 DeadLineDateTime = null,
                 IsDeleted = false
             };
@@ -39,131 +39,124 @@ namespace Crm.Apps.Tests.Builders.Activities
 
         public ActivityBuilder WithAccountId(Guid accountId)
         {
-            _activity.AccountId = accountId;
+            _request.AccountId = accountId;
 
             return this;
         }
 
         public ActivityBuilder WithTypeId(Guid typeId)
         {
-            _activity.TypeId = typeId;
+            _request.TypeId = typeId;
 
             return this;
         }
 
         public ActivityBuilder WithLeadId(Guid leadId)
         {
-            _activity.LeadId = leadId;
+            _request.LeadId = leadId;
 
             return this;
         }
 
         public ActivityBuilder WithStatusId(Guid statusId)
         {
-            _activity.StatusId = statusId;
+            _request.StatusId = statusId;
 
             return this;
         }
 
         public ActivityBuilder WithCompanyId(Guid companyId)
         {
-            _activity.CompanyId = companyId;
+            _request.CompanyId = companyId;
 
             return this;
         }
 
         public ActivityBuilder WithContactId(Guid contactId)
         {
-            _activity.ContactId = contactId;
+            _request.ContactId = contactId;
 
             return this;
         }
 
         public ActivityBuilder WithDealId(Guid dealId)
         {
-            _activity.DealId = dealId;
-
-            return this;
-        }
-
-        public ActivityBuilder WithCreateUserId(Guid createUserId)
-        {
-            _activity.CreateUserId = createUserId;
+            _request.DealId = dealId;
 
             return this;
         }
 
         public ActivityBuilder WithResponsibleUserId(Guid responsibleUserId)
         {
-            _activity.ResponsibleUserId = responsibleUserId;
+            _request.ResponsibleUserId = responsibleUserId;
 
             return this;
         }
 
         public ActivityBuilder WithName(string name)
         {
-            _activity.Name = name;
+            _request.Name = name;
 
             return this;
         }
 
         public ActivityBuilder WithDescription(string description)
         {
-            _activity.Description = description;
+            _request.Description = description;
 
             return this;
         }
 
         public ActivityBuilder WithResult(string result)
         {
-            _activity.Result = result;
+            _request.Result = result;
 
             return this;
         }
 
         public ActivityBuilder WithPriority(ActivityPriority priority)
         {
-            _activity.Priority = priority;
+            _request.Priority = priority;
 
             return this;
         }
 
         public ActivityBuilder WithStartDateTime(DateTime startDateTime)
         {
-            _activity.StartDateTime = startDateTime;
+            _request.StartDateTime = startDateTime;
 
             return this;
         }
 
         public ActivityBuilder WithEndDateTime(DateTime endDateTime)
         {
-            _activity.EndDateTime = endDateTime;
+            _request.EndDateTime = endDateTime;
 
             return this;
         }
 
         public ActivityBuilder WithDeadLineDateTime(DateTime deadLineDateTime)
         {
-            _activity.DeadLineDateTime = deadLineDateTime;
+            _request.DeadLineDateTime = deadLineDateTime;
 
             return this;
         }
 
         public ActivityBuilder AsDeleted()
         {
-            _activity.IsDeleted = true;
+            _request.IsDeleted = true;
 
             return this;
         }
 
         public ActivityBuilder WithAttributeLink(Guid attributeId, string value)
         {
-            if (_activity.AttributeLinks == null)
+            if (_request.AttributeLinks == null)
             {
-                _activity.AttributeLinks = new List<ActivityAttributeLink>();
+                _request.AttributeLinks = new List<ActivityAttributeLink>();
             }
 
-            _activity.AttributeLinks.Add(new ActivityAttributeLink
+            _request.AttributeLinks.Add(new ActivityAttributeLink
             {
                 ActivityAttributeId = attributeId,
                 Value = value
@@ -174,22 +167,22 @@ namespace Crm.Apps.Tests.Builders.Activities
 
         public async Task<Activity> BuildAsync()
         {
-            if (_activity.AccountId.IsEmpty())
+            if (_request.AccountId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_activity.AccountId));
+                throw new InvalidOperationException(nameof(_request.AccountId));
             }
 
-            if (_activity.TypeId.IsEmpty())
+            if (_request.TypeId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_activity.TypeId));
+                throw new InvalidOperationException(nameof(_request.TypeId));
             }
 
-            if (_activity.StatusId.IsEmpty())
+            if (_request.StatusId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_activity.StatusId));
+                throw new InvalidOperationException(nameof(_request.StatusId));
             }
 
-            var createdId = await _activitiesClient.CreateAsync(_activity);
+            var createdId = await _activitiesClient.CreateAsync(_request);
 
             return await _activitiesClient.GetAsync(createdId);
         }

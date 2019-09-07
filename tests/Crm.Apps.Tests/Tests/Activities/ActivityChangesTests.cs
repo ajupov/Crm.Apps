@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Tests.Creator;
 using Crm.Clients.Activities.Clients;
 using Crm.Clients.Activities.Models;
+using Crm.Clients.Activities.RequestParameters;
 using Crm.Utils.DateTime;
 using Crm.Utils.Guid;
 using Crm.Utils.Json;
@@ -17,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         private readonly IActivitiesClient _activitiesClient;
         private readonly IActivityChangesClient _activityChangesClient;
 
-        public ActivityChangesTests(ICreate create, IActivitiesClient activitiesClient,
+        public ActivityChangesTests(
+            ICreate create,
+            IActivitiesClient activitiesClient,
             IActivityChangesClient activityChangesClient)
         {
             _create = create;
@@ -31,14 +34,36 @@ namespace Crm.Apps.Tests.Tests.Activities
             var account = await _create.Account.BuildAsync();
             var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
             var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
-            var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            var activity = await _create.Activity
+                .WithAccountId(account.Id)
+                .WithTypeId(type.Id)
+                .WithStatusId(status.Id)
                 .BuildAsync();
-            activity.IsDeleted = true;
-            await _activitiesClient.UpdateAsync(activity);
 
-            var changes = await _activityChangesClient
-                .GetPagedListAsync(activityId: activity.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var updateRequest = new ActivityUpdateRequest
+            {
+                Name = "Test1",
+                DealId = null,
+                LeadId = null,
+                CompanyId = null,
+                ContactId = null,
+                StatusId = status.Id,
+                Description = null,
+                Result = null,
+                
+                IsDeleted = true
+            };
+
+            await _activitiesClient.UpdateAsync(updateRequest);
+
+            var getPagedListRequest = new ActivityChangeGetPagedListRequest
+            {
+                ActivityId = activity.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _activityChangesClient.GetPagedListAsync(getPagedListRequest);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

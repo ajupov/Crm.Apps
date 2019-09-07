@@ -8,7 +8,7 @@ namespace Crm.Apps.Activities.Migrations
         public override void Up()
         {
             Create.Table("ActivityTypes")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ActivityTypes_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Name").AsString(64).NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()

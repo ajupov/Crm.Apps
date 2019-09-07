@@ -6,7 +6,7 @@ namespace Crm.Utils.Phone
     {
         private const int DefaultMaxLength = 10;
 
-        public static string ExtractPhone(this string value, int maxLength = DefaultMaxLength)
+        public static string? ExtractPhone(this string value, int maxLength = DefaultMaxLength)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

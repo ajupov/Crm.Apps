@@ -10,17 +10,17 @@ namespace Crm.Utils.DateTime
         private const string DefaultTimeFormat = "HH:mm:ss";
         private const string DefaultDateTimeFormat = "dd.MM.yyyy HH:mm:ss";
 
-        public static string ToDateString(this SystemDateTime? value, string format = DefaultDateFormat)
+        public static string? ToDateString(this SystemDateTime? value, string format = DefaultDateFormat)
         {
             return value?.ToString(format);
         }
 
-        public static string ToTimeString(this SystemDateTime? value, string format = DefaultTimeFormat)
+        public static string? ToTimeString(this SystemDateTime? value, string format = DefaultTimeFormat)
         {
             return value?.ToString(format);
         }
 
-        public static string ToDateTimeString(this SystemDateTime? value, string format = DefaultDateTimeFormat)
+        public static string? ToDateTimeString(this SystemDateTime? value, string format = DefaultDateTimeFormat)
         {
             return value?.ToString(format);
         }
@@ -49,12 +49,12 @@ namespace Crm.Utils.DateTime
                 : null;
         }
 
-        public static string ToWeekName(this DayOfWeek dayOfWeek)
+        public static string? ToWeekName(this DayOfWeek dayOfWeek)
         {
             return DateTimeFormatInfo.CurrentInfo?.GetDayName(dayOfWeek);
         }
 
-        public static string ToMonthName(this int month)
+        public static string? ToMonthName(this int month)
         {
             return DateTimeFormatInfo.CurrentInfo?.GetMonthName(month);
         }
