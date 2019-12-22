@@ -13,26 +13,25 @@ namespace Crm.Apps.Areas.Companies.Migrations
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Key").AsString().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+
+            Create.PrimaryKey("PK_CompanyAttributes_Id").OnTable("CompanyAttributes")
+                .Column("Id");
 
             Create.UniqueConstraint("UQ_CompanyAttributes_AccountId_Key").OnTable("CompanyAttributes")
                 .Columns("AccountId", "Key");
 
-            Create.Index("IX_CompanyAttributes_AccountId_Type_Key_IsDeleted_CreateDateTime")
-                .OnTable("CompanyAttributes")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("Type").Ascending()
-                .OnColumn("Key").Ascending()
-                .OnColumn("IsDeleted").Ascending()
-                .OnColumn("CreateDateTime").Descending()
+            Create.Index("IX_CompanyAttributes_AccountId").OnTable("CompanyAttributes")
+                .OnColumn("AccountId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_CompanyAttributes_AccountId_Type_Key_IsDeleted_CreateDateTime")
-                .OnTable("CompanyAttributes");
+            Delete.Index("IX_CompanyAttributes_AccountId").OnTable("CompanyAttributes");
             Delete.UniqueConstraint("UQ_CompanyAttributes_AccountId_Key").FromTable("CompanyAttributes");
+            Delete.PrimaryKey("PK_CompanyAttributes_Id").FromTable("CompanyAttributes");
             Delete.Table("CompanyAttributes");
         }
     }

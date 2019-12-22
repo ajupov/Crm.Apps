@@ -16,5 +16,7 @@ namespace Crm.Apps.Areas.Companies.Models
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
     }
 }

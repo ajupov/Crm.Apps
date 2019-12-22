@@ -8,25 +8,26 @@ namespace Crm.Apps.Areas.Companies.Migrations
         public override void Up()
         {
             Create.Table("CompanyComments")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_CompanyComments_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("CompanyId").AsGuid().NotNullable()
                 .WithColumn("CommentatorUserId").AsGuid().NotNullable()
                 .WithColumn("Value").AsString().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
-            Create.Index("IX_CompanyComments_CompanyId_CommentatorUserId_Value_CreateDateTime")
+            Create.PrimaryKey("PK_CompanyComments_Id").OnTable("CompanyComments")
+                .Column("Id");
+
+            Create.Index("IX_CompanyComments_CompanyId_CreateDateTime")
                 .OnTable("CompanyComments")
-                .OnColumn("CompanyId").Descending()
-                .OnColumn("CommentatorUserId").Descending()
-                .OnColumn("Value").Ascending()
+                .OnColumn("CompanyId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_CompanyComments_CompanyId_CommentatorUserId_Value_CreateDateTime")
-                .OnTable("CompanyComments");
+            Delete.Index("IX_CompanyComments_CompanyId_CreateDateTime").OnTable("CompanyComments");
+            Delete.PrimaryKey("PK_CompanyComments_Id").FromTable("CompanyComments");
             Delete.Table("CompanyComments");
         }
     }

@@ -1,9 +1,11 @@
 using System;
+using ServiceStack.DataAnnotations;
 
 namespace Crm.Apps.Areas.Companies.Parameters
 {
     public class CompanyCommentGetPagedListParameter
     {
+        [Required]
         public Guid CompanyId { get; set; }
 
         public Guid? CommentatorUserId { get; set; }

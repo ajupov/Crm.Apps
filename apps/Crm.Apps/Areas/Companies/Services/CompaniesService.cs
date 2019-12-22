@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Companies.Helpers;
 using Crm.Apps.Areas.Companies.Models;
 using Crm.Apps.Areas.Companies.Parameters;
 using Crm.Apps.Areas.Companies.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Companies.Services
@@ -22,18 +25,27 @@ namespace Crm.Apps.Areas.Companies.Services
 
         public Task<Company> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Companies.Include(x => x.BankAccounts).Include(x => x.AttributeLinks)
+            return _storage.Companies
+                .AsNoTracking()
+                .Include(x => x.BankAccounts)
+                .Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Companies.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Companies
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(ct);
         }
 
         public async Task<List<Company>> GetPagedListAsync(CompanyGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Companies.Include(x => x.BankAccounts).Include(x => x.AttributeLinks)
+            var temp = await _storage.Companies
+                .AsNoTracking()
+                .Include(x => x.BankAccounts)
+                .Include(x => x.AttributeLinks)
                 .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.LeadId.IsEmpty() || x.LeadId == parameter.LeadId) &&
@@ -77,11 +89,16 @@ namespace Crm.Apps.Areas.Companies.Services
                     (parameter.LegalApartment.IsEmpty() || x.LegalApartment == parameter.LegalApartment) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
+                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
+                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .ToListAsync(ct);
 
-            return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
+            return temp
+                .Where(x => x.FilterByAdditional(parameter))
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToList();
         }
 
@@ -182,9 +199,9 @@ namespace Crm.Apps.Areas.Companies.Services
         {
             var changes = new List<CompanyChange>();
 
-            await _storage.Companies.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = true)), ct)
-                ;
+            await _storage.Companies
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -194,9 +211,9 @@ namespace Crm.Apps.Areas.Companies.Services
         {
             var changes = new List<CompanyChange>();
 
-            await _storage.Companies.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = false)), ct)
-                ;
+            await _storage.Companies
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = false)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

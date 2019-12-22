@@ -9,7 +9,8 @@ namespace Crm.Apps.Areas.Companies.Services
 {
     public interface ICompanyCommentsService
     {
-        Task<List<CompanyComment>> GetPagedListAsync(CompanyCommentGetPagedListParameter parameter,
+        Task<List<CompanyComment>> GetPagedListAsync(
+            CompanyCommentGetPagedListParameter parameter,
             CancellationToken ct);
 
         Task CreateAsync(Guid userId, CompanyComment comment, CancellationToken ct);

@@ -6,7 +6,7 @@ namespace Crm.Apps.Areas.Companies.Parameters
 {
     public class CompanyGetPagedListParameter
     {
-        public Guid? AccountId { get; set; }
+        public Guid AccountId { get; set; }
 
         public Guid? LeadId { get; set; }
 
@@ -72,6 +72,10 @@ namespace Crm.Apps.Areas.Companies.Parameters
 
         public DateTime? MaxCreateDate { get; set; }
 
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
+
         public List<CompanyType> Types { get; set; }
 
         public List<CompanyIndustryType> IndustryTypes { get; set; }
@@ -81,11 +85,11 @@ namespace Crm.Apps.Areas.Companies.Parameters
         public IDictionary<Guid, string> Attributes { get; set; }
 
         public string BankAccountNumber { get; set; }
-        
+
         public string BankAccountBankNumber { get; set; }
 
         public string BankAccountBankCorrespondentNumber { get; set; }
-        
+
         public string BankAccountBankName { get; set; }
 
         public List<Guid> CreateUserIds { get; set; }
