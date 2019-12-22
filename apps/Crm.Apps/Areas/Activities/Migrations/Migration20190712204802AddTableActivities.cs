@@ -26,7 +26,8 @@ namespace Crm.Apps.Areas.Activities.Migrations
                 .WithColumn("EndDateTime").AsDateTime2().Nullable()
                 .WithColumn("DeadLineDateTime").AsDateTime2().Nullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
 
             Create.PrimaryKey("PK_Activities_Id").OnTable("Activities")
                 .Columns("Id");
@@ -39,16 +40,8 @@ namespace Crm.Apps.Areas.Activities.Migrations
                 .FromTable("Activities").ForeignColumn("StatusId")
                 .ToTable("ActivityStatuses").PrimaryColumn("Id");
 
-            Create.Index(
-                    "IX_Activities_AccountId_TypeId_StatusId_LeadId_CompanyId_ContactId_DealId_CreateUserId_ResponsibleUserId_CreateDateTime")
-                .OnTable("Activities")
+            Create.Index("IX_Activities_AccountId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Activities")
                 .OnColumn("AccountId").Ascending()
-                .OnColumn("TypeId").Ascending()
-                .OnColumn("StatusId").Ascending()
-                .OnColumn("LeadId").Ascending()
-                .OnColumn("CompanyId").Ascending()
-                .OnColumn("ContactId").Ascending()
-                .OnColumn("DealId").Ascending()
                 .OnColumn("CreateUserId").Ascending()
                 .OnColumn("ResponsibleUserId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
@@ -57,10 +50,7 @@ namespace Crm.Apps.Areas.Activities.Migrations
 
         public override void Down()
         {
-            Delete.Index(
-                    "IX_Activities_AccountId_TypeId_StatusId_LeadId_CompanyId_ContactId_DealId_CreateUserId_ResponsibleUserId_CreateDateTime")
-                .OnTable("Activities");
-
+            Delete.Index("IX_Activities_AccountId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Activities");
             Delete.ForeignKey("FK_Activities_TypeId").OnTable("Activities");
             Delete.ForeignKey("FK_Activities_StatusId").OnTable("Activities");
             Delete.PrimaryKey("PK_Activities_Id").FromTable("Activities");

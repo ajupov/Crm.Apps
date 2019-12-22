@@ -17,8 +17,7 @@ namespace Crm.Apps.Areas.Activities.Migrations
             Create.PrimaryKey("PK_ActivityComments_Id").OnTable("ActivityComments")
                 .Columns("Id");
 
-            Create.Index("IX_ActivityComments_ActivityId_CreateDateTime")
-                .OnTable("ActivityComments")
+            Create.Index("IX_ActivityComments_ActivityId_CreateDateTime").OnTable("ActivityComments")
                 .OnColumn("ActivityId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();

@@ -2,7 +2,6 @@
 {
     public enum AttributeType : byte
     {
-        None = 0,
         Tag = 1,
         Bool = 2,
         Byte = 3,

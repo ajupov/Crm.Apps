@@ -1,14 +1,14 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Infrastructure.ApiDocumentation.Attributes
+namespace Crm.Apps.Infrastructure
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class IgnoreApiDocumentationAttribute : ApiExplorerSettingsAttribute
     {
         public IgnoreApiDocumentationAttribute()
         {
-            base.IgnoreApi = true;
+            IgnoreApi = true;
         }
     }
 }

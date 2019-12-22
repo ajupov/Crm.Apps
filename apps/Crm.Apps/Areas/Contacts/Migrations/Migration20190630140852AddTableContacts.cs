@@ -37,19 +37,22 @@ namespace Crm.Apps.Areas.Contacts.Migrations
 
             Create.PrimaryKey("PK_Contacts_Id").OnTable("Contacts")
                 .Column("Id");
-            
-            Create.Index("IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId").OnTable("Contacts")
+
+            Create.Index("IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId_CreateDateTime")
+                .OnTable("Contacts")
                 .OnColumn("AccountId").Ascending()
                 .OnColumn("LeadId").Ascending()
                 .OnColumn("CompanyId").Ascending()
                 .OnColumn("CreateUserId").Ascending()
                 .OnColumn("ResponsibleUserId").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId").OnTable("Contacts");
+            Delete.Index("IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId_CreateDateTime")
+                .OnTable("Contacts");
             Delete.PrimaryKey("PK_Contacts_Id").FromTable("Contacts");
             Delete.Table("Contacts");
         }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Crm.Apps.Areas.Accounts.Models;
+using Crm.Apps.Infrastructure;
 using Crm.Apps.Utils;
 using Crm.Common.UserContext.Attributes;
-using Crm.Infrastructure.ApiDocumentation.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Accounts.Controllers

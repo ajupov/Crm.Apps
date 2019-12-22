@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Apps.Areas.Users.RequestParameters;
 using Crm.Apps.Areas.Users.Services;
+using Crm.Apps.Infrastructure;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
-using Crm.Common.UserContext.Extensions;
-using Crm.Infrastructure.ApiDocumentation.Attributes;
+using Crm.Common.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Users.Controllers

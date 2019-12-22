@@ -1,9 +1,13 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Activities.Services
@@ -18,10 +22,11 @@ namespace Crm.Apps.Areas.Activities.Services
         }
 
         public Task<ActivityComment[]> GetPagedListAsync(
-            ActivityCommentGetPagedListRequest request,
+            ActivityCommentGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _activitiesStorage.ActivityComments
+                .AsNoTracking()
                 .Where(x =>
                     x.ActivityId == request.ActivityId &&
                     (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&
@@ -34,14 +39,14 @@ namespace Crm.Apps.Areas.Activities.Services
                 .ToArrayAsync(ct);
         }
 
-        public async Task CreateAsync(Guid userId, ActivityCommentCreateRequest request, CancellationToken ct)
+        public async Task CreateAsync(Guid userId, ActivityComment comment, CancellationToken ct)
         {
             var newComment = new ActivityComment
             {
                 Id = Guid.NewGuid(),
-                ActivityId = request.ActivityId,
+                ActivityId = comment.ActivityId,
                 CommentatorUserId = userId,
-                Value = request.Value,
+                Value = comment.Value,
                 CreateDateTime = DateTime.UtcNow
             };
 

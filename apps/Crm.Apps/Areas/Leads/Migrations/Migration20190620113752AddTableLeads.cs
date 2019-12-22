@@ -40,18 +40,18 @@ namespace Crm.Apps.Areas.Leads.Migrations
                 .FromTable("Leads").ForeignColumn("SourceId")
                 .ToTable("LeadSources").PrimaryColumn("Id");
 
-            Create.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId")
-                .OnTable("Leads")
+            Create.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Leads")
                 .OnColumn("AccountId").Ascending()
                 .OnColumn("SourceId").Ascending()
                 .OnColumn("CreateUserId").Ascending()
                 .OnColumn("ResponsibleUserId").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId").OnTable("Leads");
+            Delete.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Leads");
             Delete.UniqueConstraint("UQ_Leads_AccountId_Name").FromTable("Leads");
             Delete.ForeignKey("FK_Leads_SourceId").OnTable("Leads");
             Delete.PrimaryKey("PK_Leads_Id").FromTable("Leads");

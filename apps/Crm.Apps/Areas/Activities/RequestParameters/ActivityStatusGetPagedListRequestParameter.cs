@@ -1,31 +1,31 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Activities.RequestParameters
 {
-    public class ActivityStatusGetPagedListRequest
+    public class ActivityStatusGetPagedListRequestParameter
     {
-        [Required]
         public Guid AccountId { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public bool? IsFinish { get; set; }
 
         public bool? IsDeleted { get; set; }
-        
-        [DataType(DataType.DateTime)]
+
         public DateTime? MinCreateDate { get; set; }
 
-        [DataType(DataType.DateTime)]
         public DateTime? MaxCreateDate { get; set; }
+
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public int Offset { get; set; }
 
-        public int Limit { get; set; }
+        public int Limit { get; set; } = 10;
 
-        public string? SortBy { get; set; }
+        public string SortBy { get; set; }
 
-        public string? OrderBy { get; set; }
+        public string OrderBy { get; set; }
     }
 }

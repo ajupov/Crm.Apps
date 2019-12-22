@@ -25,8 +25,7 @@ namespace Crm.Apps.Areas.Companies.Migrations
                 .FromTable("CompanyBankAccounts").ForeignColumn("CompanyId")
                 .ToTable("Companies").PrimaryColumn("Id");
 
-            Create.Index("IX_CompanyBankAccounts_CompanyId")
-                .OnTable("CompanyBankAccounts")
+            Create.Index("IX_CompanyBankAccounts_CompanyId").OnTable("CompanyBankAccounts")
                 .OnColumn("CompanyId").Ascending()
                 .WithOptions().NonClustered();
         }

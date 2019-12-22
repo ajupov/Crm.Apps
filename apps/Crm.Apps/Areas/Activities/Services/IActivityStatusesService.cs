@@ -13,15 +13,13 @@ namespace Crm.Apps.Areas.Activities.Services
 
         Task<ActivityStatus[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<ActivityStatus[]> GetPagedListAsync(ActivityStatusGetPagedListRequest request, CancellationToken ct);
-
-        Task<Guid> CreateAsync(Guid userId, ActivityStatusCreateRequest request, CancellationToken ct);
-
-        Task UpdateAsync(
-            Guid userId,
-            ActivityStatus status,
-            ActivityStatusUpdateRequest request,
+        Task<ActivityStatus[]> GetPagedListAsync(
+            ActivityStatusGetPagedListRequestParameter request,
             CancellationToken ct);
+
+        Task<Guid> CreateAsync(Guid userId, ActivityStatus status, CancellationToken ct);
+
+        Task UpdateAsync(Guid userId, ActivityStatus oldStatus, ActivityStatus newStatus, CancellationToken ct);
 
         Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
 

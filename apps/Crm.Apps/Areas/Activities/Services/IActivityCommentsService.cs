@@ -8,8 +8,10 @@ namespace Crm.Apps.Areas.Activities.Services
 {
     public interface IActivityCommentsService
     {
-        Task<ActivityComment[]> GetPagedListAsync(ActivityCommentGetPagedListRequest request, CancellationToken ct);
+        Task<ActivityComment[]> GetPagedListAsync(
+            ActivityCommentGetPagedListRequestParameter request,
+            CancellationToken ct);
 
-        Task CreateAsync(Guid userId, ActivityCommentCreateRequest request, CancellationToken ct);
+        Task CreateAsync(Guid userId, ActivityComment comment, CancellationToken ct);
     }
 }

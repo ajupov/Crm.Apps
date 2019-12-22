@@ -18,9 +18,7 @@ namespace Crm.Apps.Areas.Activities.Migrations
             Create.PrimaryKey("PK_ActivityAttributeChanges_Id").OnTable("ActivityAttributeChanges")
                 .Columns("Id");
 
-            Create.Index("IX_ActivityAttributeChanges_ChangerUserId_AttributeId_CreateDateTime")
-                .OnTable("ActivityAttributeChanges")
-                .OnColumn("ChangerUserId").Ascending()
+            Create.Index("IX_ActivityAttributeChanges_AttributeId_CreateDateTime").OnTable("ActivityAttributeChanges")
                 .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
@@ -28,8 +26,7 @@ namespace Crm.Apps.Areas.Activities.Migrations
 
         public override void Down()
         {
-            Delete.Index("IX_ActivityAttributeChanges_ChangerUserId_AttributeId_CreateDateTime")
-                .OnTable("ActivityAttributeChanges");
+            Delete.Index("IX_ActivityAttributeChanges_AttributeId_CreateDateTime").OnTable("ActivityAttributeChanges");
             Delete.PrimaryKey("PK_ActivityAttributeChanges_Id").FromTable("ActivityAttributeChanges");
             Delete.Table("ActivityAttributeChanges");
         }

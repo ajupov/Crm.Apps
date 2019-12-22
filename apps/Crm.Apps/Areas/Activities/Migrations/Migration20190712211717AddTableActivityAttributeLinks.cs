@@ -12,7 +12,8 @@ namespace Crm.Apps.Areas.Activities.Migrations
                 .WithColumn("ActivityId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("Value").AsString().Nullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
 
             Create.PrimaryKey("PK_ActivityAttributeLinks_Id").OnTable("ActivityAttributeLinks")
                 .Columns("Id");
@@ -29,18 +30,15 @@ namespace Crm.Apps.Areas.Activities.Migrations
                 .OnTable("ActivityAttributeLinks")
                 .Columns("ActivityId", "AttributeId");
 
-            Create.Index("IX_ActivityAttributeLinks_ActivityId_AttributeId_CreateDateTime")
-                .OnTable("ActivityAttributeLinks")
+            Create.Index("IX_ActivityAttributeLinks_ActivityId_AttributeId").OnTable("ActivityAttributeLinks")
                 .OnColumn("ActivityId").Ascending()
                 .OnColumn("AttributeId").Ascending()
-                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ActivityAttributeLinks_ActivityId_AttributeId_CreateDateTime")
-                .OnTable("ActivityAttributeLinks");
+            Delete.Index("IX_ActivityAttributeLinks_ActivityId_AttributeId").OnTable("ActivityAttributeLinks");
             Delete.UniqueConstraint("UQ_ActivityAttributeLinks_ActivityId_AttributeId")
                 .FromTable("ActivityAttributeLinks");
             Delete.ForeignKey("FK_ActivityAttributeLinks_AttributeId").OnTable("ActivityAttributeLinks");

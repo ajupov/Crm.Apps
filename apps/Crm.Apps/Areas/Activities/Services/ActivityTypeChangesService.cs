@@ -1,8 +1,12 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Storages;
+using Crm.Apps.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Activities.Services
 {
@@ -16,10 +20,11 @@ namespace Crm.Apps.Areas.Activities.Services
         }
 
         public Task<ActivityTypeChange[]> GetPagedListAsync(
-            ActivityTypeChangeGetPagedListRequest request,
+            ActivityTypeChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _activitiesStorage.ActivityTypeChanges
+                .AsNoTracking()
                 .Where(x =>
                     (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.TypeId.IsEmpty() || x.TypeId == request.TypeId) &&

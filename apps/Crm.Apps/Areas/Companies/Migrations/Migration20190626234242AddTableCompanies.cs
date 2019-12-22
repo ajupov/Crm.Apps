@@ -50,18 +50,20 @@ namespace Crm.Apps.Areas.Companies.Migrations
             Create.UniqueConstraint("UQ_Companies_TaxNumber").OnTable("Companies")
                 .Columns("AccountId", "TaxNumber");
 
-            Create.Index("IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId")
+            Create.Index("IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId_CreateDateTime")
                 .OnTable("Companies")
                 .OnColumn("AccountId").Ascending()
                 .OnColumn("LeadId").Ascending()
                 .OnColumn("CreateUserId").Ascending()
                 .OnColumn("ResponsibleUserId").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId").OnTable("Companies");
+            Delete.Index("IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId_CreateDateTime")
+                .OnTable("Companies");
             Delete.UniqueConstraint("UQ_Companies_TaxNumber").FromTable("Companies");
             Delete.PrimaryKey("PK_Companies_Id").FromTable("Companies");
             Delete.Table("Companies");

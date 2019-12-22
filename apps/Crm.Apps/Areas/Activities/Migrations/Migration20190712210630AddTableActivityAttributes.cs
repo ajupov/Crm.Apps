@@ -13,7 +13,8 @@ namespace Crm.Apps.Areas.Activities.Migrations
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Key").AsString().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
 
             Create.PrimaryKey("PK_ActivityAttributes_Id").OnTable("ActivityAttributes")
                 .Columns("Id");
@@ -21,8 +22,7 @@ namespace Crm.Apps.Areas.Activities.Migrations
             Create.UniqueConstraint("UQ_ActivityAttributes_AccountId_Key").OnTable("ActivityAttributes")
                 .Columns("AccountId", "Key");
 
-            Create.Index("IX_ActivityAttributes_AccountId_CreateDateTime")
-                .OnTable("ActivityAttributes")
+            Create.Index("IX_ActivityAttributes_AccountId_CreateDateTime").OnTable("ActivityAttributes")
                 .OnColumn("AccountId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();

@@ -32,10 +32,8 @@ namespace Crm.Apps.Areas.Products.Migrations
             Create.UniqueConstraint("UQ_Products_AccountId_Name").OnTable("Products")
                 .Columns("AccountId", "Name");
 
-            Create.Index("IX_Products_AccountId_Type_Name_VendorCode_CreateDateTime")
-                .OnTable("Products")
+            Create.Index("IX_Products_AccountId_Name_VendorCode_CreateDateTime").OnTable("Products")
                 .OnColumn("AccountId").Ascending()
-                .OnColumn("Type").Ascending()
                 .OnColumn("Name").Ascending()
                 .OnColumn("VendorCode").Ascending()
                 .OnColumn("CreateDateTime").Descending()
@@ -44,7 +42,7 @@ namespace Crm.Apps.Areas.Products.Migrations
 
         public override void Down()
         {
-            Delete.Index("IX_Products_AccountId_Type_Name_VendorCode_CreateDateTime").OnTable("Products");
+            Delete.Index("IX_Products_AccountId_Name_VendorCode_CreateDateTime").OnTable("Products");
             Delete.UniqueConstraint("UQ_Products_AccountId_Name").FromTable("Products");
             Delete.ForeignKey("FK_Products_StatusId").OnTable("Products");
             Delete.PrimaryKey("PK_Products_Id").FromTable("Products");

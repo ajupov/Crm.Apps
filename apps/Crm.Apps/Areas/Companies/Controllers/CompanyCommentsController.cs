@@ -6,7 +6,7 @@ using Crm.Apps.Areas.Companies.RequestParameters;
 using Crm.Apps.Areas.Companies.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
-using Crm.Common.UserContext.Extensions;
+using Crm.Common.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Companies.Controllers

@@ -17,10 +17,15 @@ namespace Crm.Apps.Areas.Accounts.Migrations
 
             Create.PrimaryKey("PK_Accounts_Id").OnTable("Accounts")
                 .Column("Id");
+
+            Create.Index("IX_Accounts_CreateDateTime").OnTable("Accounts")
+                .OnColumn("CreateDateTime").Descending()
+                .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
+            Delete.Index("IX_Accounts_CreateDateTime").OnTable("Users");
             Delete.PrimaryKey("PK_Accounts_Id").FromTable("Accounts");
             Delete.Table("Accounts");
         }

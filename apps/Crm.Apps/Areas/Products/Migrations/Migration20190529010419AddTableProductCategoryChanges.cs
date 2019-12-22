@@ -18,8 +18,7 @@ namespace Crm.Apps.Areas.Products.Migrations
             Create.PrimaryKey("PK_ProductCategoryChanges_Id").OnTable("ProductCategoryChanges")
                 .Column("Id");
 
-            Create.Index("IX_ProductCategoryChanges_CategoryId_CreateDateTime")
-                .OnTable("ProductCategoryChanges")
+            Create.Index("IX_ProductCategoryChanges_CategoryId_CreateDateTime").OnTable("ProductCategoryChanges")
                 .OnColumn("CategoryId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();

@@ -29,8 +29,7 @@ namespace Crm.Apps.Areas.Companies.Migrations
             Create.UniqueConstraint("UQ_CompanyAttributeLinks_CompanyId_AttributeId").OnTable("CompanyAttributeLinks")
                 .Columns("CompanyId", "AttributeId");
 
-            Create.Index("IX_CompanyAttributeLinks_CompanyId_AttributeId")
-                .OnTable("CompanyAttributeLinks")
+            Create.Index("IX_CompanyAttributeLinks_CompanyId_AttributeId").OnTable("CompanyAttributeLinks")
                 .OnColumn("CompanyId").Ascending()
                 .OnColumn("AttributeId").Ascending()
                 .WithOptions().NonClustered();

@@ -17,9 +17,8 @@ namespace Crm.Apps.Areas.Leads.Migrations
 
             Create.PrimaryKey("PK_LeadSourceChanges_Id").OnTable("LeadSourceChanges")
                 .Column("Id");
-            
-            Create.Index("IX_LeadSourceChanges_SourceId_CreateDateTime")
-                .OnTable("LeadSourceChanges")
+
+            Create.Index("IX_LeadSourceChanges_SourceId_CreateDateTime").OnTable("LeadSourceChanges")
                 .OnColumn("SourceId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();

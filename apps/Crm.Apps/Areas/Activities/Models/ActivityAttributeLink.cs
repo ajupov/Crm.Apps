@@ -10,8 +10,10 @@ namespace Crm.Apps.Areas.Activities.Models
 
         public Guid ActivityAttributeId { get; set; }
 
-        public string? Value { get; set; }
+        public string Value { get; set; }
 
         public DateTime CreateDateTime { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
     }
 }

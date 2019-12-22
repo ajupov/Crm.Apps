@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Activities.Helpers;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Activities.Services
@@ -23,48 +26,53 @@ namespace Crm.Apps.Areas.Activities.Services
         public Task<ActivityAttribute> GetAsync(Guid id, CancellationToken ct)
         {
             return _activitiesStorage.ActivityAttributes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<ActivityAttribute[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _activitiesStorage.ActivityAttributes
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToArrayAsync(ct);
         }
 
         public Task<ActivityAttribute[]> GetPagedListAsync(
-            ActivityAttributeGetPagedListRequest request,
+            ActivityAttributeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _activitiesStorage.ActivityAttributes
+                .AsNoTracking()
                 .Where(x =>
                     (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
                     (request.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{request.Key}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
                 .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
                 .ToArrayAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ActivityAttributeCreateRequest request, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, ActivityAttribute attribute, CancellationToken ct)
         {
-            var attribute = new ActivityAttribute();
-            var change = attribute.WithCreateLog(userId, x =>
+            var newAttribute = new ActivityAttribute();
+            var change = newAttribute.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = request.AccountId;
-                x.Type = request.Type;
-                x.Key = request.Key;
-                x.IsDeleted = request.IsDeleted;
+                x.AccountId = attribute.AccountId;
+                x.Type = attribute.Type;
+                x.Key = attribute.Key;
+                x.IsDeleted = attribute.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _activitiesStorage.AddAsync(attribute, ct);
+            var entry = await _activitiesStorage.AddAsync(newAttribute, ct);
             await _activitiesStorage.AddAsync(change, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
 
@@ -73,19 +81,19 @@ namespace Crm.Apps.Areas.Activities.Services
 
         public async Task UpdateAsync(
             Guid userId,
-            ActivityAttribute attribute,
-            ActivityAttributeUpdateRequest request,
+            ActivityAttribute oldAttribute,
+            ActivityAttribute newAttribute,
             CancellationToken ct)
         {
-            var change = attribute.WithUpdateLog(userId, x =>
+            var change = oldAttribute.WithUpdateLog(userId, x =>
             {
-                x.AccountId = request.AccountId;
-                x.Type = request.Type;
-                x.Key = request.Key;
-                x.IsDeleted = request.IsDeleted;
+                x.AccountId = newAttribute.AccountId;
+                x.Type = newAttribute.Type;
+                x.Key = newAttribute.Key;
+                x.IsDeleted = newAttribute.IsDeleted;
             });
 
-            _activitiesStorage.Update(attribute);
+            _activitiesStorage.Update(oldAttribute);
             await _activitiesStorage.AddAsync(change, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
         }

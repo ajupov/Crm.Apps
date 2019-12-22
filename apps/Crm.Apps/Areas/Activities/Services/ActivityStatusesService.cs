@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Activities.Helpers;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Activities.Services
@@ -23,46 +26,51 @@ namespace Crm.Apps.Areas.Activities.Services
         public Task<ActivityStatus> GetAsync(Guid id, CancellationToken ct)
         {
             return _activitiesStorage.ActivityStatuses
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<ActivityStatus[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _activitiesStorage.ActivityStatuses
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToArrayAsync(ct);
         }
 
         public Task<ActivityStatus[]> GetPagedListAsync(
-            ActivityStatusGetPagedListRequest request,
+            ActivityStatusGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _activitiesStorage.ActivityStatuses
+                .AsNoTracking()
                 .Where(x =>
                     (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
                 .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
                 .ToArrayAsync(ct);
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ActivityStatusCreateRequest request, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, ActivityStatus status, CancellationToken ct)
         {
-            var status = new ActivityStatus();
-            var change = status.WithCreateLog(userId, x =>
+            var newStatus = new ActivityStatus();
+            var change = newStatus.WithCreateLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = request.AccountId;
-                x.Name = request.Name;
-                x.IsDeleted = request.IsDeleted;
+                x.AccountId = status.AccountId;
+                x.Name = status.Name;
+                x.IsDeleted = status.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _activitiesStorage.AddAsync(status, ct);
+            var entry = await _activitiesStorage.AddAsync(newStatus, ct);
             await _activitiesStorage.AddAsync(change, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
 
@@ -71,17 +79,17 @@ namespace Crm.Apps.Areas.Activities.Services
 
         public async Task UpdateAsync(
             Guid userId,
-            ActivityStatus status,
-            ActivityStatusUpdateRequest request,
+            ActivityStatus oldStatus,
+            ActivityStatus newStatus,
             CancellationToken ct)
         {
-            var change = status.WithUpdateLog(userId, x =>
+            var change = oldStatus.WithUpdateLog(userId, x =>
             {
-                x.Name = request.Name;
-                x.IsDeleted = request.IsDeleted;
+                x.Name = newStatus.Name;
+                x.IsDeleted = newStatus.IsDeleted;
             });
 
-            _activitiesStorage.Update(status);
+            _activitiesStorage.Update(oldStatus);
             await _activitiesStorage.AddAsync(change, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
         }

@@ -10,7 +10,7 @@ using Crm.Apps.Areas.Deals.Services;
 using Crm.Apps.Utils;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
-using Crm.Common.UserContext.Extensions;
+using Crm.Common.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Deals.Controllers

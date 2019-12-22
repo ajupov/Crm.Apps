@@ -3,29 +3,40 @@ using System.Threading.Tasks;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Services;
+using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Activities.Controllers
 {
     [ApiController]
+    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Activities/Statuses/Changes")]
-    public class ActivityStatusesChangesController : ControllerBase
+    public class ActivityStatusesChangesController : UserContextController
     {
+        private readonly IActivityStatusesService _activityStatusesService;
         private readonly IActivityStatusChangesService _activityStatusChangesService;
 
-        public ActivityStatusesChangesController(IActivityStatusChangesService activityStatusChangesService)
+        public ActivityStatusesChangesController(
+            IUserContext userContext,
+            IActivityStatusesService activityStatusesService,
+            IActivityStatusChangesService activityStatusChangesService)
+            : base(userContext)
         {
+            _activityStatusesService = activityStatusesService;
             _activityStatusChangesService = activityStatusChangesService;
         }
 
-        [RequirePrivileged]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<ActivityStatusChange[]>> GetPagedList(
-            ActivityStatusChangeGetPagedListRequest request,
+            ActivityStatusChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return await _activityStatusChangesService.GetPagedListAsync(request, ct);
+            var status = await _activityStatusesService.GetAsync(request.StatusId, ct);
+            var changes = await _activityStatusChangesService.GetPagedListAsync(request, ct);
+
+            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.SalesManagement}, status.AccountId);
         }
     }
 }

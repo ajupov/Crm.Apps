@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Crm.Common.UserContext.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Common.UserContext.Extensions
+namespace Crm.Common.UserContext.BaseControllers
 {
     public class UserContextController : ControllerBase
     {

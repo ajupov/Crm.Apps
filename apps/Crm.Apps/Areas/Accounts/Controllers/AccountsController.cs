@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Models;
 using Crm.Apps.Areas.Accounts.RequestParameters;
 using Crm.Apps.Areas.Accounts.Services;
+using Crm.Apps.Infrastructure;
 using Crm.Apps.Utils;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
-using Crm.Infrastructure.ApiDocumentation.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Accounts.Controllers

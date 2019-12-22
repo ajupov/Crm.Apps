@@ -18,8 +18,7 @@ namespace Crm.Apps.Areas.Companies.Migrations
             Create.PrimaryKey("PK_CompanyAttributeChanges_Id").OnTable("CompanyAttributeChanges")
                 .Column("Id");
 
-            Create.Index("IX_CompanyAttributeChanges_AttributeId_CreateDateTime")
-                .OnTable("CompanyAttributeChanges")
+            Create.Index("IX_CompanyAttributeChanges_AttributeId_CreateDateTime").OnTable("CompanyAttributeChanges")
                 .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();

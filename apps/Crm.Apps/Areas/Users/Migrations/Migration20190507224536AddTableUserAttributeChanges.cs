@@ -18,8 +18,7 @@ namespace Crm.Apps.Areas.Users.Migrations
             Create.PrimaryKey("PK_UserAttributeChanges_Id").OnTable("UserAttributeChanges")
                 .Column("Id");
 
-            Create.Index("IX_UserAttributeChanges_AttributeId")
-                .OnTable("UserAttributeChanges")
+            Create.Index("IX_UserAttributeChanges_AttributeId").OnTable("UserAttributeChanges")
                 .OnColumn("AttributeId").Ascending()
                 .WithOptions().NonClustered();
         }

@@ -9,24 +9,26 @@ using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Activities.Controllers
 {
     [ApiController]
+    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Activities/Types")]
-    public class ActivityTypesController : ControllerBase
+    public class ActivityTypesController : UserContextController
     {
         private readonly IUserContext _userContext;
         private readonly IActivityTypesService _activityTypesService;
 
         public ActivityTypesController(IUserContext userContext, IActivityTypesService activityTypesService)
+            : base(userContext)
         {
             _userContext = userContext;
             _activityTypesService = activityTypesService;
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpGet("Get")]
         public async Task<ActionResult<ActivityType>> Get([Required] Guid id, CancellationToken ct = default)
         {
@@ -36,59 +38,62 @@ namespace Crm.Apps.Areas.Activities.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(type, new[] {type.AccountId});
+            return ReturnIfAllowed(type, new[] {Role.AccountOwning, Role.SalesManagement}, type.AccountId);
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpPost("GetList")]
-        public async Task<ActionResult<ActivityType[]>> GetList([Required] IEnumerable<Guid> ids,
+        public async Task<ActionResult<ActivityType[]>> GetList(
+            [Required] IEnumerable<Guid> ids,
             CancellationToken ct = default)
         {
             var types = await _activityTypesService.GetListAsync(ids, ct);
 
-            return ReturnIfAllowed(types, types.Select(x => x.AccountId));
+            return ReturnIfAllowed(
+                types,
+                new[] {Role.AccountOwning, Role.SalesManagement},
+                types.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<ActivityType[]>> GetPagedList(
-            ActivityTypeGetPagedListRequest request,
+            ActivityTypeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
+            request.AccountId = _userContext.AccountId;
+
             var types = await _activityTypesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(types, types.Select(x => x.AccountId));
+            return ReturnIfAllowed(
+                types,
+                new[] {Role.AccountOwning, Role.SalesManagement},
+                types.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpPost("Create")]
-        public async Task<ActionResult<Guid>> Create(ActivityTypeCreateRequest request, CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(ActivityType type, CancellationToken ct = default)
         {
-            if (!_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedRoles))
-            {
-                request.AccountId = _userContext.AccountId;
-            }
+            type.AccountId = _userContext.AccountId;
 
-            var id = await _activityTypesService.CreateAsync(_userContext.UserId, request, ct);
+            var id = await _activityTypesService.CreateAsync(_userContext.UserId, type, ct);
 
             return Created("Get", id);
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpPost("Update")]
-        public async Task<ActionResult> Update(ActivityTypeUpdateRequest request, CancellationToken ct = default)
+        public async Task<ActionResult> Update(ActivityType type, CancellationToken ct = default)
         {
-            var type = await _activityTypesService.GetAsync(request.Id, ct);
-            if (type == null)
+            var oldType = await _activityTypesService.GetAsync(type.Id, ct);
+            if (oldType == null)
             {
-                return NotFound(request.Id);
+                return NotFound(type.Id);
             }
 
-            return await ActionIfAllowed(() => _activityTypesService.UpdateAsync(_userContext.UserId, type,
-                request, ct), new[] {type.AccountId, type.AccountId});
+            return await ActionIfAllowed(
+                () => _activityTypesService.UpdateAsync(_userContext.UserId, oldType, type, ct),
+                new[] {Role.AccountOwning, Role.SalesManagement},
+                oldType.AccountId, oldType.AccountId);
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpPost("Delete")]
         public async Task<ActionResult> Delete([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
@@ -96,10 +101,10 @@ namespace Crm.Apps.Areas.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                new[] {Role.AccountOwning, Role.SalesManagement},
                 attributes.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
         [HttpPost("Restore")]
         public async Task<ActionResult> Restore([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
@@ -107,61 +112,8 @@ namespace Crm.Apps.Areas.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
+                new[] {Role.AccountOwning, Role.SalesManagement},
                 attributes.Select(x => x.AccountId));
-        }
-
-        [NonAction]
-        private ActionResult<TResult> ReturnIfAllowed<TResult>(TResult result, IEnumerable<Guid> accountIds)
-        {
-            if (_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedRoles))
-            {
-                return result;
-            }
-
-            var accountIdsAsArray = accountIds.ToArray();
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.SalesManagement) &&
-                _userContext.Belongs(accountIdsAsArray))
-            {
-                return result;
-            }
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.SalesManagement) &&
-                !_userContext.Belongs(accountIdsAsArray))
-            {
-                return Forbid();
-            }
-
-            throw new Exception();
-        }
-
-        [NonAction]
-        private async Task<ActionResult> ActionIfAllowed(Func<Task> action, IEnumerable<Guid> accountIds)
-        {
-            if (_userContext.HasAny(RequirePrivilegedAttribute.PrivilegedRoles))
-            {
-                await action();
-
-                return NoContent();
-            }
-
-            var accountIdsAsArray = accountIds.ToArray();
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.SalesManagement) &&
-                _userContext.Belongs(accountIdsAsArray))
-            {
-                await action();
-
-                return NoContent();
-            }
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.SalesManagement) &&
-                !_userContext.Belongs(accountIdsAsArray))
-            {
-                return Forbid();
-            }
-
-            throw new Exception();
         }
     }
 }

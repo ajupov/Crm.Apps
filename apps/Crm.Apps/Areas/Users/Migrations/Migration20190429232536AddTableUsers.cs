@@ -20,21 +20,19 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
-            
+
             Create.PrimaryKey("PK_Users_Id").OnTable("Users")
                 .Column("Id");
-            
-            Create.Index("IX_Users_AccountId_IsLocked_IsDeleted")
-                .OnTable("Users")
+
+            Create.Index("IX_Users_AccountId_CreateDateTime").OnTable("Users")
                 .OnColumn("AccountId").Ascending()
-                .OnColumn("IsLocked").Ascending()
-                .OnColumn("IsDeleted").Ascending()
+                .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_Users_AccountId_IsLocked_IsDeleted").OnTable("Users");
+            Delete.Index("IX_Users_AccountId_CreateDateTime").OnTable("Users");
             Delete.PrimaryKey("PK_Users_Id").FromTable("Users");
             Delete.Table("Users");
         }

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Activities.Helpers;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 using Crm.Apps.Areas.Activities.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Activities.Services
@@ -23,6 +26,7 @@ namespace Crm.Apps.Areas.Activities.Services
         public Task<Activity> GetAsync(Guid id, CancellationToken ct)
         {
             return _activitiesStorage.Activities
+                .AsNoTracking()
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
@@ -32,13 +36,16 @@ namespace Crm.Apps.Areas.Activities.Services
         public Task<Activity[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _activitiesStorage.Activities
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToArrayAsync(ct);
         }
 
-        public async Task<Activity[]> GetPagedListAsync(ActivityGetPagedListRequest request, CancellationToken ct)
+        public async Task<Activity[]> GetPagedListAsync(ActivityGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             var temp = await _activitiesStorage.Activities
+                .AsNoTracking()
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
@@ -56,7 +63,9 @@ namespace Crm.Apps.Areas.Activities.Services
                     (!request.MaxDeadLineDateTime.HasValue || x.DeadLineDateTime <= request.MaxDeadLineDateTime) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
                 .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
@@ -67,31 +76,31 @@ namespace Crm.Apps.Areas.Activities.Services
                 .ToArray();
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, ActivityCreateRequest request, CancellationToken ct)
+        public async Task<Guid> CreateAsync(Guid userId, Activity activity, CancellationToken ct)
         {
-            var activity = new Activity();
-            var change = activity.CreateWithLog(userId, x =>
+            var newActivity = new Activity();
+            var change = newActivity.CreateWithLog(userId, x =>
             {
                 x.Id = Guid.NewGuid();
-                x.AccountId = request.AccountId;
-                x.TypeId = request.TypeId;
-                x.StatusId = request.StatusId;
-                x.LeadId = request.LeadId;
-                x.CompanyId = request.CompanyId;
-                x.ContactId = request.ContactId;
-                x.DealId = request.DealId;
+                x.AccountId = activity.AccountId;
+                x.TypeId = activity.TypeId;
+                x.StatusId = activity.StatusId;
+                x.LeadId = activity.LeadId;
+                x.CompanyId = activity.CompanyId;
+                x.ContactId = activity.ContactId;
+                x.DealId = activity.DealId;
                 x.CreateUserId = userId;
-                x.ResponsibleUserId = request.ResponsibleUserId;
-                x.Name = request.Name;
-                x.Description = request.Description;
-                x.Result = request.Result;
-                x.Priority = request.Priority;
-                x.StartDateTime = request.StartDateTime;
-                x.EndDateTime = request.EndDateTime;
-                x.DeadLineDateTime = request.DeadLineDateTime;
-                x.IsDeleted = request.IsDeleted;
+                x.ResponsibleUserId = activity.ResponsibleUserId;
+                x.Name = activity.Name;
+                x.Description = activity.Description;
+                x.Result = activity.Result;
+                x.Priority = activity.Priority;
+                x.StartDateTime = activity.StartDateTime;
+                x.EndDateTime = activity.EndDateTime;
+                x.DeadLineDateTime = activity.DeadLineDateTime;
+                x.IsDeleted = activity.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = request.AttributeLinks?
+                x.AttributeLinks = activity.AttributeLinks?
                     .Select(l => new ActivityAttributeLink
                     {
                         ActivityId = x.Id,
@@ -101,35 +110,38 @@ namespace Crm.Apps.Areas.Activities.Services
                     }).ToList();
             });
 
-            var entry = await _activitiesStorage.AddAsync(activity, ct);
+            var entry = await _activitiesStorage.AddAsync(newActivity, ct);
             await _activitiesStorage.AddAsync(change, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, Activity activity, ActivityUpdateRequest request,
+        public async Task UpdateAsync(
+            Guid userId,
+            Activity oldActivity,
+            Activity newActivity,
             CancellationToken ct)
         {
-            var change = activity.UpdateWithLog(userId, x =>
+            var change = oldActivity.UpdateWithLog(userId, x =>
             {
-                x.AccountId = request.AccountId;
-                x.TypeId = request.TypeId;
-                x.StatusId = request.StatusId;
-                x.LeadId = request.LeadId;
-                x.CompanyId = request.CompanyId;
-                x.ContactId = request.ContactId;
-                x.DealId = request.DealId;
-                x.ResponsibleUserId = request.ResponsibleUserId;
-                x.Name = request.Name;
-                x.Description = request.Description;
-                x.Result = request.Result;
-                x.Priority = request.Priority;
-                x.StartDateTime = request.StartDateTime;
-                x.EndDateTime = request.EndDateTime;
-                x.DeadLineDateTime = request.DeadLineDateTime;
-                x.IsDeleted = request.IsDeleted;
-                x.AttributeLinks = request.AttributeLinks?
+                x.AccountId = newActivity.AccountId;
+                x.TypeId = newActivity.TypeId;
+                x.StatusId = newActivity.StatusId;
+                x.LeadId = newActivity.LeadId;
+                x.CompanyId = newActivity.CompanyId;
+                x.ContactId = newActivity.ContactId;
+                x.DealId = newActivity.DealId;
+                x.ResponsibleUserId = newActivity.ResponsibleUserId;
+                x.Name = newActivity.Name;
+                x.Description = newActivity.Description;
+                x.Result = newActivity.Result;
+                x.Priority = newActivity.Priority;
+                x.StartDateTime = newActivity.StartDateTime;
+                x.EndDateTime = newActivity.EndDateTime;
+                x.DeadLineDateTime = newActivity.DeadLineDateTime;
+                x.IsDeleted = newActivity.IsDeleted;
+                x.AttributeLinks = newActivity.AttributeLinks?
                     .Select(l => new ActivityAttributeLink
                     {
                         ActivityId = x.Id,
@@ -139,7 +151,7 @@ namespace Crm.Apps.Areas.Activities.Services
                     }).ToList();
             });
 
-            _activitiesStorage.Update(activity);
+            _activitiesStorage.Update(oldActivity);
             await _activitiesStorage.AddAsync(change, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
         }

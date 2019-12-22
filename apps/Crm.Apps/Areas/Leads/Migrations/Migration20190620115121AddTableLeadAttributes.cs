@@ -22,8 +22,7 @@ namespace Crm.Apps.Areas.Leads.Migrations
             Create.UniqueConstraint("UQ_LeadAttributes_AccountId_Key").OnTable("LeadAttributes")
                 .Columns("AccountId", "Key");
 
-            Create.Index("IX_LeadAttributes_AccountId")
-                .OnTable("LeadAttributes")
+            Create.Index("IX_LeadAttributes_AccountId").OnTable("LeadAttributes")
                 .OnColumn("AccountId").Ascending()
                 .WithOptions().NonClustered();
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Activities.Models;
 using Crm.Apps.Areas.Activities.RequestParameters;
 
@@ -8,31 +9,30 @@ namespace Crm.Apps.Areas.Activities.Helpers
 {
     public static class ActivitiesFiltersHelper
     {
-        public static bool FilterByAdditional(this Activity activity, ActivityGetPagedListRequest request)
+        public static bool FilterByAdditional(this Activity activity, ActivityGetPagedListRequestParameter request)
         {
-            return
-                (request.TypeIds == null || !request.TypeIds.Any() ||
-                 request.TypeIds.Any(x => TypeIdsPredicate(activity, x))) &&
-                (request.StatusIds == null || !request.StatusIds.Any() ||
-                 request.StatusIds.Any(x => StatusIdsPredicate(activity, x))) &&
-                (request.LeadIds == null || !request.LeadIds.Any() ||
-                 request.LeadIds.Any(x => LeadIdsPredicate(activity, x))) &&
-                (request.CompanyIds == null || !request.CompanyIds.Any() ||
-                 request.CompanyIds.Any(x => CompanyIdsPredicate(activity, x))) &&
-                (request.ContactIds == null || !request.ContactIds.Any() ||
-                 request.ContactIds.Any(x => ContactIdsPredicate(activity, x))) &&
-                (request.DealIds == null || !request.DealIds.Any() ||
-                 request.DealIds.Any(x => DealIdsPredicate(activity, x))) &&
-                (request.CreateUserIds == null || !request.CreateUserIds.Any() ||
-                 request.CreateUserIds.Any(x => CreateUserIdsPredicate(activity, x))) &&
-                (request.ResponsibleUserIds == null || !request.ResponsibleUserIds.Any() ||
-                 request.ResponsibleUserIds.Any(x => ResponsibleUserIdsPredicate(activity, x))) &&
-                (request.Attributes == null || !request.Attributes.Any() ||
-                 (request.AllAttributes is false
-                     ? request.Attributes.Any(x => AttributePredicate(activity, x))
-                     : request.Attributes.All(x => AttributePredicate(activity, x)))) &&
-                (request.Priorities == null || !request.Priorities.Any() ||
-                 request.Priorities.Any(x => PrioritiesPredicate(activity, x)));
+            return (request.TypeIds == null || !request.TypeIds.Any() ||
+                    request.TypeIds.Any(x => TypeIdsPredicate(activity, x))) &&
+                   (request.StatusIds == null || !request.StatusIds.Any() ||
+                    request.StatusIds.Any(x => StatusIdsPredicate(activity, x))) &&
+                   (request.LeadIds == null || !request.LeadIds.Any() ||
+                    request.LeadIds.Any(x => LeadIdsPredicate(activity, x))) &&
+                   (request.CompanyIds == null || !request.CompanyIds.Any() ||
+                    request.CompanyIds.Any(x => CompanyIdsPredicate(activity, x))) &&
+                   (request.ContactIds == null || !request.ContactIds.Any() ||
+                    request.ContactIds.Any(x => ContactIdsPredicate(activity, x))) &&
+                   (request.DealIds == null || !request.DealIds.Any() ||
+                    request.DealIds.Any(x => DealIdsPredicate(activity, x))) &&
+                   (request.CreateUserIds == null || !request.CreateUserIds.Any() ||
+                    request.CreateUserIds.Any(x => CreateUserIdsPredicate(activity, x))) &&
+                   (request.ResponsibleUserIds == null || !request.ResponsibleUserIds.Any() ||
+                    request.ResponsibleUserIds.Any(x => ResponsibleUserIdsPredicate(activity, x))) &&
+                   (request.Attributes == null || !request.Attributes.Any() ||
+                    (request.AllAttributes is false
+                        ? request.Attributes.Any(x => AttributePredicate(activity, x))
+                        : request.Attributes.All(x => AttributePredicate(activity, x)))) &&
+                   (request.Priorities == null || !request.Priorities.Any() ||
+                    request.Priorities.Any(x => PrioritiesPredicate(activity, x)));
         }
 
         private static bool TypeIdsPredicate(Activity activity, Guid id)

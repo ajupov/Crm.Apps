@@ -17,8 +17,7 @@ namespace Crm.Apps.Areas.Companies.Migrations
             Create.PrimaryKey("PK_CompanyComments_Id").OnTable("CompanyComments")
                 .Column("Id");
 
-            Create.Index("IX_CompanyComments_CompanyId_CreateDateTime")
-                .OnTable("CompanyComments")
+            Create.Index("IX_CompanyComments_CompanyId_CreateDateTime").OnTable("CompanyComments")
                 .OnColumn("CompanyId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
