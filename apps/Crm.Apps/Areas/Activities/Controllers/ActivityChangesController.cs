@@ -13,7 +13,7 @@ namespace Crm.Apps.Areas.Activities.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Activities/Changes")]
-    public class ActivityChangesController : UserContextController
+    public class ActivityChangesController : AllowingCheckControllerBase
     {
         private readonly IActivitiesService _activitiesService;
         private readonly IActivityChangesService _activityChangesService;

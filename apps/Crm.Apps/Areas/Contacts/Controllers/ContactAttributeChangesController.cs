@@ -15,7 +15,7 @@ namespace Crm.Apps.Areas.Contacts.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Contacts/Attributes/Changes")]
-    public class ContactAttributeChangesController : UserContextController
+    public class ContactAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly ICompanyAttributesService _companyAttributesService;
         private readonly IContactAttributeChangesService _contactAttributeChangesService;

@@ -13,7 +13,7 @@ namespace Crm.Apps.Areas.Activities.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Activities/Comments")]
-    public class ActivityCommentsController : UserContextController
+    public class ActivityCommentsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IActivitiesService _activitiesService;

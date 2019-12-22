@@ -18,7 +18,7 @@ namespace Crm.Apps.Areas.Activities.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Activities")]
-    public class ActivitiesController : UserContextController
+    public class ActivitiesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IActivitiesService _activitiesService;

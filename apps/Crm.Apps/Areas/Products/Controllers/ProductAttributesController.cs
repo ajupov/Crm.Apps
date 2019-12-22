@@ -20,7 +20,7 @@ namespace Crm.Apps.Areas.Products.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
     [Route("Api/Products/Attributes")]
-    public class ProductAttributesController : UserContextController
+    public class ProductAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IProductAttributesService _productAttributesService;

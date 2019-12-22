@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Deals.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Deals/Comments")]
-    public class DealCommentsController : UserContextController
+    public class DealCommentsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IDealsService _dealsService;

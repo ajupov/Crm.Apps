@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Products.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
     [Route("Api/Products/Changes")]
-    public class ProductChangesController : UserContextController
+    public class ProductChangesController : AllowingCheckControllerBase
     {
         private readonly IProductsService _productsService;
         private readonly IProductChangesService _productChangesService;

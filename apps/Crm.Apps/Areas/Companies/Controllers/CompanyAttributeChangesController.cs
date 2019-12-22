@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Companies.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Companies/Attributes/Changes")]
-    public class CompanyAttributeChangesController : UserContextController
+    public class CompanyAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly ICompanyAttributesService _companyAttributesService;
         private readonly ICompanyAttributeChangesService _companyAttributeChangesService;

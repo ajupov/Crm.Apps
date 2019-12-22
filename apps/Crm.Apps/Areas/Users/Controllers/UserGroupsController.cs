@@ -19,7 +19,7 @@ namespace Crm.Apps.Areas.Users.Controllers
     [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users/Groups")]
-    public class UserGroupsController : UserContextController
+    public class UserGroupsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IUserGroupsService _userGroupsService;

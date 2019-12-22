@@ -19,7 +19,7 @@ namespace Crm.Apps.Areas.Companies.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Companies/Attributes")]
-    public class CompanyAttributesController : UserContextController
+    public class CompanyAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly ICompanyAttributesService _companyAttributesService;

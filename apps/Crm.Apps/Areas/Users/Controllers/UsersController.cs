@@ -20,7 +20,7 @@ namespace Crm.Apps.Areas.Users.Controllers
     [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users")]
-    public class UsersController : UserContextController
+    public class UsersController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IUsersService _usersService;

@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Companies.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Companies/Comments")]
-    public class CompanyCommentsController : UserContextController
+    public class CompanyCommentsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly ICompaniesService _companiesService;

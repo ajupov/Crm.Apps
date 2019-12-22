@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Activities.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Activities/Statuses")]
-    public class ActivityStatusesController : UserContextController
+    public class ActivityStatusesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IActivityStatusesService _activityStatusesService;

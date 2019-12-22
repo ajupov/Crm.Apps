@@ -12,7 +12,7 @@ namespace Crm.Apps.Areas.Activities.Controllers
 {
     [ApiController]
     [Route("Api/Activities/Types/Changes")]
-    public class ActivityTypesChangesController : UserContextController
+    public class ActivityTypesChangesController : AllowingCheckControllerBase
     {
         private readonly IActivityTypesService _activityTypesService;
         private readonly IActivityTypeChangesService _activityTypeChangesService;

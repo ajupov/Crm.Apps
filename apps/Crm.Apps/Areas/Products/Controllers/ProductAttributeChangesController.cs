@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Products.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
     [Route("Api/Products/Attributes/Changes")]
-    public class ProductAttributeChangesController : UserContextController
+    public class ProductAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly IProductAttributesService _productAttributesService;
         private readonly IProductAttributeChangesService _productAttributeChangesService;

@@ -19,7 +19,7 @@ namespace Crm.Apps.Areas.Contacts.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Contacts/Attributes")]
-    public class ContactAttributesController : UserContextController
+    public class ContactAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IContactAttributesService _contactAttributesService;

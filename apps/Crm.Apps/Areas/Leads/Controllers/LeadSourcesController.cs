@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Leads.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
     [Route("Api/Leads/Sources")]
-    public class LeadSourcesController : UserContextController
+    public class LeadSourcesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly ILeadSourcesService _leadSourcesService;

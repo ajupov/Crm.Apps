@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Products.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
     [Route("Api/Products/Statuses")]
-    public class ProductStatusesController : UserContextController
+    public class ProductStatusesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IProductStatusesService _productStatusesService;

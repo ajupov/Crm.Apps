@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Common.UserContext.BaseControllers
 {
-    public class UserContextController : ControllerBase
+    public class AllowingCheckControllerBase : ControllerBase
     {
         private readonly IUserContext _userContext;
 
-        public UserContextController(IUserContext userContext)
+        public AllowingCheckControllerBase(IUserContext userContext)
         {
             _userContext = userContext;
         }

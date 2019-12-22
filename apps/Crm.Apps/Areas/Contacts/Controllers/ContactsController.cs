@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Contacts.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Contacts")]
-    public class ContactsController : UserContextController
+    public class ContactsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IContactsService _contactsService;

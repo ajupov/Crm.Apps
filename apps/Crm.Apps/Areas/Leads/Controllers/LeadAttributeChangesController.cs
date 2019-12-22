@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Leads.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
     [Route("Api/Leads/Attributes/Changes")]
-    public class LeadAttributeChangesController : UserContextController
+    public class LeadAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly ILeadAttributesService _leadAttributesService;
         private readonly ILeadAttributeChangesService _leadAttributeChangesService;

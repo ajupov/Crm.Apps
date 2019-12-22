@@ -21,7 +21,7 @@ namespace Crm.Apps.Areas.Users.Controllers
     [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users/Attributes")]
-    public class UserAttributesController : UserContextController
+    public class UserAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IUserAttributesService _userAttributesService;

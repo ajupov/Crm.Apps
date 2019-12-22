@@ -16,7 +16,7 @@ namespace Crm.Apps.Areas.Users.Controllers
     [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users/Attributes/Changes")]
-    public class UserAttributeChangesController : UserContextController
+    public class UserAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly IUserAttributesService _userAttributesService;
         private readonly IUserAttributeChangesService _userAttributeChangesService;

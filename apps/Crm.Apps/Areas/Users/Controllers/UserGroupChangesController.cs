@@ -16,7 +16,7 @@ namespace Crm.Apps.Areas.Users.Controllers
     [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users/Groups/Changes")]
-    public class UserGroupChangesController : UserContextController
+    public class UserGroupChangesController : AllowingCheckControllerBase
     {
         private readonly IUserGroupsService _userGroupsService;
         private readonly IUserGroupChangesService _userGroupChangesService;

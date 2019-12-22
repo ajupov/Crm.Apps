@@ -17,7 +17,7 @@ namespace Crm.Apps.Areas.Deals.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Deals/Types")]
-    public class DealTypesController : UserContextController
+    public class DealTypesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
         private readonly IDealTypesService _dealTypesService;

@@ -14,7 +14,7 @@ namespace Crm.Apps.Areas.Deals.Controllers
     [ApiController]
     [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Deals/Attributes/Changes")]
-    public class DealAttributeChangesController : UserContextController
+    public class DealAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly IDealAttributesService _dealAttributesService;
         private readonly IDealAttributeChangesService _dealAttributeChangesService;
