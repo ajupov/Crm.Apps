@@ -6,7 +6,7 @@ namespace Crm.Apps.Areas.Deals.Parameters
 {
     public class DealAttributeGetPagedListParameter
     {
-        public Guid? AccountId { get; set; }
+        public Guid AccountId { get; set; }
 
         public List<AttributeType> Types { get; set; }
 
@@ -17,6 +17,10 @@ namespace Crm.Apps.Areas.Deals.Parameters
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public int Offset { get; set; }
 

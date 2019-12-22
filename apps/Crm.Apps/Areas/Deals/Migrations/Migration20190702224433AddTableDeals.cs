@@ -8,7 +8,7 @@ namespace Crm.Apps.Areas.Deals.Migrations
         public override void Up()
         {
             Create.Table("Deals")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Deals_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("TypeId").AsGuid().NotNullable()
                 .WithColumn("StatusId").AsGuid().NotNullable()
@@ -23,7 +23,11 @@ namespace Crm.Apps.Areas.Deals.Migrations
                 .WithColumn("SumWithoutDiscount").AsDecimal().NotNullable()
                 .WithColumn("FinishProbability").AsByte().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+
+            Create.PrimaryKey("PK_Deals_Id").OnTable("Deals")
+                .Column("Id");
 
             Create.ForeignKey("FK_Deals_TypeId")
                 .FromTable("Deals").ForeignColumn("TypeId")
@@ -33,37 +37,20 @@ namespace Crm.Apps.Areas.Deals.Migrations
                 .FromTable("Deals").ForeignColumn("StatusId")
                 .ToTable("DealStatuses").PrimaryColumn("Id");
 
-            Create.Index(
-                    "IX_Deals_AccountId_TypeId_TypeId_StatusId_CompanyId_CreateUserId_ResponsibleUserId_Name_" +
-                    "StartDateTime_EndDateTime_Sum_SumWithoutDiscount_FinishProbability_IsDeleted_CreateDateTime")
-                .OnTable("Deals")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("TypeId").Descending()
-                .OnColumn("StatusId").Descending()
-                .OnColumn("CompanyId").Descending()
-                .OnColumn("ContactId").Descending()
-                .OnColumn("CreateUserId").Descending()
-                .OnColumn("ResponsibleUserId").Descending()
-                .OnColumn("Name").Ascending()
-                .OnColumn("StartDateTime").Descending()
-                .OnColumn("EndDateTime").Descending()
-                .OnColumn("Sum").Ascending()
-                .OnColumn("SumWithoutDiscount").Ascending()
-                .OnColumn("FinishProbability").Ascending()
-                .OnColumn("IsDeleted").Ascending()
+            Create.Index("IX_Deals_AccountId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Deals")
+                .OnColumn("AccountId").Ascending()
+                .OnColumn("CreateUserId").Ascending()
+                .OnColumn("ResponsibleUserId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index(
-                    "IX_Deals_AccountId_TypeId_TypeId_StatusId_CompanyId_CreateUserId_ResponsibleUserId_Name_" +
-                    "StartDateTime_EndDateTime_Sum_SumWithoutDiscount_FinishProbability_IsDeleted_CreateDateTime")
-                .OnTable("Deals");
-
+            Delete.Index("IX_Deals_AccountId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Deals");
             Delete.ForeignKey("FK_Deals_TypeId").OnTable("Deals");
             Delete.ForeignKey("FK_Deals_StatusId").OnTable("Deals");
+            Delete.PrimaryKey("PK_Deals_Id").FromTable("Deals");
             Delete.Table("Deals");
         }
     }

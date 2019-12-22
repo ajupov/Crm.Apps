@@ -12,8 +12,8 @@ namespace Crm.Apps.Areas.Users.Migrations
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("OldValueJson").AsString().NotNullable()
-                .WithColumn("NewValueJson").AsString().NotNullable();
+                .WithColumn("OldValueJson").AsString().Nullable()
+                .WithColumn("NewValueJson").AsString().Nullable();
 
             Create.PrimaryKey("PK_UserChanges_Id").OnTable("UserChanges")
                 .Column("Id");

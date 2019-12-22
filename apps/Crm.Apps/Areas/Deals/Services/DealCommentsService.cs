@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Areas.Deals.Helpers;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Deals.Models;
 using Crm.Apps.Areas.Deals.Parameters;
 using Crm.Apps.Areas.Deals.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Deals.Services
@@ -23,13 +25,15 @@ namespace Crm.Apps.Areas.Deals.Services
         public Task<List<DealComment>> GetPagedListAsync(DealCommentGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.DealComments.Where(x =>
+            return _storage.DealComments
+                .AsNoTracking()
+                .Where(x =>
                     x.DealId == parameter.DealId &&
                     (parameter.CommentatorUserId.IsEmpty() || x.CommentatorUserId == parameter.CommentatorUserId) &&
                     (parameter.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{parameter.Value}%")) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
                 .ToListAsync(ct);

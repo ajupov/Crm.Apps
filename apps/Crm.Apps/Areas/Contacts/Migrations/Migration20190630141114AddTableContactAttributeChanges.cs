@@ -12,8 +12,8 @@ namespace Crm.Apps.Areas.Contacts.Migrations
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("OldValueJson").AsString().NotNullable()
-                .WithColumn("NewValueJson").AsString().NotNullable();
+                .WithColumn("OldValueJson").AsString().Nullable()
+                .WithColumn("NewValueJson").AsString().Nullable();
 
             Create.PrimaryKey("PK_ContactAttributeChanges_Id").OnTable("ContactAttributeChanges")
                 .Column("Id");

@@ -8,7 +8,8 @@ namespace Crm.Apps.Areas.Deals.Services
 {
     public interface IDealTypeChangesService
     {
-        Task<List<DealTypeChange>> GetPagedListAsync(DealTypeChangeGetPagedListParameter parameter,
+        Task<List<DealTypeChange>> GetPagedListAsync(
+            DealTypeChangeGetPagedListParameter parameter,
             CancellationToken ct);
     }
 }

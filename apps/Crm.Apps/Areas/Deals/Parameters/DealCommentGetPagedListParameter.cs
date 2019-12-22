@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Deals.Parameters
 {
     public class DealCommentGetPagedListParameter
     {
+        [Required]
         public Guid DealId { get; set; }
 
         public Guid? CommentatorUserId { get; set; }

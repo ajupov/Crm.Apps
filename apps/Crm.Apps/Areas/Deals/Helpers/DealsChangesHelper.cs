@@ -1,4 +1,5 @@
 ﻿using System;
+using Ajupov.Utils.All.Json;
 using Crm.Apps.Areas.Deals.Models;
 
 namespace Crm.Apps.Areas.Deals.Helpers

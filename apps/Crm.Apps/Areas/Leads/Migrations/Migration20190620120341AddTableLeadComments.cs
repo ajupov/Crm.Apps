@@ -18,7 +18,7 @@ namespace Crm.Apps.Areas.Leads.Migrations
                 .Column("Id");
 
             Create.Index("IX_LeadComments_LeadId_CreateDateTime").OnTable("LeadComments")
-                .OnColumn("LeadId").Descending()
+                .OnColumn("LeadId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }

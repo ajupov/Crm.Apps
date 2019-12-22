@@ -15,7 +15,7 @@ namespace Crm.Apps.Areas.Deals.Services
 
         Task<List<DealType>> GetPagedListAsync(DealTypeGetPagedListParameter parameter, CancellationToken ct);
 
-        Task<Guid> CreateAsync(Guid userId, DealType status, CancellationToken ct);
+        Task<Guid> CreateAsync(Guid userId, DealType type, CancellationToken ct);
 
         Task UpdateAsync(Guid userId, DealType oldType, DealType newType, CancellationToken ct);
 

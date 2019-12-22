@@ -6,27 +6,38 @@ using Crm.Apps.Areas.Deals.Parameters;
 using Crm.Apps.Areas.Deals.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Deals.Controllers
 {
     [ApiController]
+    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
     [Route("Api/Deals/Types/Changes")]
-    public class DealTypesChangesController : ControllerBase
+    public class DealTypesChangesController : UserContextController
     {
+        private readonly IDealTypesService _dealTypesService;
         private readonly IDealTypeChangesService _dealTypeChangesService;
 
-        public DealTypesChangesController(IDealTypeChangesService dealTypeChangesService)
+        public DealTypesChangesController(
+            IUserContext userContext,
+            IDealTypesService dealTypesService,
+            IDealTypeChangesService dealTypeChangesService)
+            : base(userContext)
         {
+            _dealTypesService = dealTypesService;
             _dealTypeChangesService = dealTypeChangesService;
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport)]
         public async Task<ActionResult<List<DealTypeChange>>> GetPagedList(
-            DealTypeChangeGetPagedListParameter parameter, CancellationToken ct = default)
+            DealTypeChangeGetPagedListParameter parameter,
+            CancellationToken ct = default)
         {
-            return await _dealTypeChangesService.GetPagedListAsync(parameter, ct);
+            var type = await _dealTypesService.GetAsync(parameter.TypeId, ct);
+            var changes = await _dealTypeChangesService.GetPagedListAsync(parameter, ct);
+
+            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.SalesManagement}, type.AccountId);
         }
     }
 }

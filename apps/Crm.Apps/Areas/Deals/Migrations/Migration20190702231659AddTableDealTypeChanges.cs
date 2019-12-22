@@ -8,25 +8,26 @@ namespace Crm.Apps.Areas.Deals.Migrations
         public override void Up()
         {
             Create.Table("DealTypeChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_DealTypeChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("TypeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("OldValueJson").AsString().NotNullable()
-                .WithColumn("NewValueJson").AsString().NotNullable();
+                .WithColumn("OldValueJson").AsString().Nullable()
+                .WithColumn("NewValueJson").AsString().Nullable();
 
-            Create.Index("IX_DealTypeChanges_ChangerUserId_TypeId_CreateDateTime")
-                .OnTable("DealTypeChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("TypeId").Descending()
+            Create.PrimaryKey("PK_DealTypeChanges_Id").OnTable("DealTypeChanges")
+                .Column("Id");
+
+            Create.Index("IX_DealTypeChanges_TypeId_CreateDateTime").OnTable("DealTypeChanges")
+                .OnColumn("TypeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_DealTypeChanges_ChangerUserId_TypeId_CreateDateTime")
-                .OnTable("DealTypeChanges");
+            Delete.Index("IX_DealTypeChanges_TypeId_CreateDateTime").OnTable("DealTypeChanges");
+            Delete.PrimaryKey("PK_DealTypeChanges_Id").FromTable("DealTypeChanges");
             Delete.Table("DealTypeChanges");
         }
     }

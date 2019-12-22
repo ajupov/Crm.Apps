@@ -8,23 +8,26 @@ namespace Crm.Apps.Areas.Deals.Migrations
         public override void Up()
         {
             Create.Table("DealChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_DealChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("DealId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("OldValueJson").AsString().NotNullable()
-                .WithColumn("NewValueJson").AsString().NotNullable();
+                .WithColumn("OldValueJson").AsString().Nullable()
+                .WithColumn("NewValueJson").AsString().Nullable();
 
-            Create.Index("IX_DealChanges_ChangerUserId_DealId_CreateDateTime").OnTable("DealChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("DealId").Descending()
+            Create.PrimaryKey("PK_DealChanges_Id").OnTable("DealChanges")
+                .Column("Id");
+
+            Create.Index("IX_DealChanges_DealId_CreateDateTime").OnTable("DealChanges")
+                .OnColumn("DealId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_DealChanges_ChangerUserId_DealId_CreateDateTime").OnTable("DealChanges");
+            Delete.Index("IX_DealChanges_DealId_CreateDateTime").OnTable("DealChanges");
+            Delete.PrimaryKey("PK_DealChanges_Id").FromTable("DealChanges");
             Delete.Table("DealChanges");
         }
     }

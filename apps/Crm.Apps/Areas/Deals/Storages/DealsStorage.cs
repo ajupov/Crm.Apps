@@ -29,7 +29,7 @@ namespace Crm.Apps.Areas.Deals.Storages
         public DbSet<DealStatusChange> DealStatusChanges { get; set; }
 
         public DbSet<DealComment> DealComments { get; set; }
-        
+
         public DbSet<DealPosition> DealPositions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

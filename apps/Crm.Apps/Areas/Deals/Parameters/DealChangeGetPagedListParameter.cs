@@ -1,12 +1,14 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Deals.Parameters
 {
     public class DealChangeGetPagedListParameter
     {
+        [Required]
+        public Guid DealId { get; set; }
+        
         public Guid? ChangerUserId { get; set; }
-
-        public Guid? DealId { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 
