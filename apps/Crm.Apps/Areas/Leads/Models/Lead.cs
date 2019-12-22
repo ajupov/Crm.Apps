@@ -51,6 +51,8 @@ namespace Crm.Apps.Areas.Leads.Models
 
         public DateTime CreateDateTime { get; set; }
 
+        public DateTime? ModifyDateTime { get; set; }
+
         public LeadSource Source { get; set; }
 
         public List<LeadAttributeLink> AttributeLinks { get; set; }

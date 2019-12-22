@@ -8,23 +8,25 @@ namespace Crm.Apps.Areas.Leads.Migrations
         public override void Up()
         {
             Create.Table("LeadComments")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_LeadComments_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("LeadId").AsGuid().NotNullable()
                 .WithColumn("CommentatorUserId").AsGuid().NotNullable()
                 .WithColumn("Value").AsString().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
 
-            Create.Index("IX_LeadComments_LeadId_CommentatorUserId_Value_CreateDateTime").OnTable("LeadComments")
+            Create.PrimaryKey("PK_LeadComments_Id").OnTable("LeadComments")
+                .Column("Id");
+
+            Create.Index("IX_LeadComments_LeadId_CreateDateTime").OnTable("LeadComments")
                 .OnColumn("LeadId").Descending()
-                .OnColumn("CommentatorUserId").Descending()
-                .OnColumn("Value").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_LeadComments_LeadId_CommentatorUserId_Value_CreateDateTime").OnTable("LeadComments");
+            Delete.Index("IX_LeadComments_LeadId_CreateDateTime").OnTable("LeadComments");
+            Delete.PrimaryKey("PK_LeadComments_Id").FromTable("LeadComments");
             Delete.Table("LeadComments");
         }
     }

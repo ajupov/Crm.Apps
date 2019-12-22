@@ -8,23 +8,26 @@ namespace Crm.Apps.Areas.Leads.Migrations
         public override void Up()
         {
             Create.Table("LeadAttributeChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_LeadAttributeChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_LeadAttributeChanges_ChangerUserId_AttributeId_CreateDateTime").OnTable("LeadAttributeChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("AttributeId").Descending()
+            Create.PrimaryKey("PK_LeadAttributeChanges_Id").OnTable("LeadAttributeChanges")
+                .Column("Id");
+
+            Create.Index("IX_LeadAttributeChanges_AttributeId_CreateDateTime").OnTable("LeadAttributeChanges")
+                .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_LeadAttributeChanges_ChangerUserId_AttributeId_CreateDateTime").OnTable("LeadAttributeChanges");
+            Delete.Index("IX_LeadAttributeChanges_AttributeId_CreateDateTime").OnTable("LeadAttributeChanges");
+            Delete.PrimaryKey("PK_LeadAttributeChanges_Id").FromTable("LeadAttributeChanges");
             Delete.Table("LeadAttributeChanges");
         }
     }

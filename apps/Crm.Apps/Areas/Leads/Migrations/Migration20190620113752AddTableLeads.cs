@@ -8,7 +8,7 @@ namespace Crm.Apps.Areas.Leads.Migrations
         public override void Up()
         {
             Create.Table("Leads")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Leads_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("SourceId").AsGuid().NotNullable()
                 .WithColumn("CreateUserId").AsGuid().NotNullable()
@@ -30,48 +30,31 @@ namespace Crm.Apps.Areas.Leads.Migrations
                 .WithColumn("Apartment").AsString(64).NotNullable()
                 .WithColumn("OpportunitySum").AsDecimal(18, 2).NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+
+            Create.PrimaryKey("PK_Leads_Id").OnTable("Leads")
+                .Column("Id");
 
             Create.ForeignKey("FK_Leads_SourceId")
                 .FromTable("Leads").ForeignColumn("SourceId")
                 .ToTable("LeadSources").PrimaryColumn("Id");
 
-            Create.Index(
-                    "IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId_Surname_Name_Patronymic_Phone_Email_CompanyName_Post_Postcode_Country_Region_Province_City_Street_House_Apartment_OpportunitySum_IsDeleted_CreateDateTime")
+            Create.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId")
                 .OnTable("Leads")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("SourceId").Descending()
-                .OnColumn("CreateUserId").Descending()
-                .OnColumn("ResponsibleUserId").Descending()
-                .OnColumn("Surname").Ascending()
-                .OnColumn("Name").Ascending()
-                .OnColumn("Patronymic").Ascending()
-                .OnColumn("Phone").Ascending()
-                .OnColumn("Email").Ascending()
-                .OnColumn("CompanyName").Ascending()
-                .OnColumn("Post").Ascending()
-                .OnColumn("Postcode").Ascending()
-                .OnColumn("Country").Ascending()
-                .OnColumn("Region").Ascending()
-                .OnColumn("Province").Ascending()
-                .OnColumn("City").Ascending()
-                .OnColumn("Street").Ascending()
-                .OnColumn("House").Ascending()
-                .OnColumn("Apartment").Ascending()
-                .OnColumn("OpportunitySum").Ascending()
-                .OnColumn("IsDeleted").Ascending()
-                .OnColumn("CreateDateTime").Descending()
+                .OnColumn("AccountId").Ascending()
+                .OnColumn("SourceId").Ascending()
+                .OnColumn("CreateUserId").Ascending()
+                .OnColumn("ResponsibleUserId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index(
-                    "IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId_Surname_Name_Patronymic_Phone_Email_CompanyName_Post_Postcode_Country_Region_Province_City_Street_House_Apartment_OpportunitySum_IsDeleted_CreateDateTime")
-                .OnTable("Leads");
-
+            Delete.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId").OnTable("Leads");
             Delete.UniqueConstraint("UQ_Leads_AccountId_Name").FromTable("Leads");
             Delete.ForeignKey("FK_Leads_SourceId").OnTable("Leads");
+            Delete.PrimaryKey("PK_Leads_Id").FromTable("Leads");
             Delete.Table("Leads");
         }
     }

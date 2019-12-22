@@ -4,10 +4,10 @@ namespace Crm.Apps.Areas.Leads.Parameters
 {
     public class LeadSourceChangeGetPagedListParameter
     {
+        public Guid SourceId { get; set; }
+        
         public Guid? ChangerUserId { get; set; }
-        
-        public Guid? SourceId { get; set; }
-        
+
         public DateTime? MinCreateDate { get; set; }
         
         public DateTime? MaxCreateDate { get; set; }
