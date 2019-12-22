@@ -8,7 +8,7 @@ namespace Crm.Apps.Areas.Products.Migrations
         public override void Up()
         {
             Create.Table("Products")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Products_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("ParentProductId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
@@ -19,7 +19,11 @@ namespace Crm.Apps.Areas.Products.Migrations
                 .WithColumn("Image").AsBinary().Nullable()
                 .WithColumn("IsHidden").AsBoolean().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+
+            Create.PrimaryKey("PK_Products_Id").OnTable("Products")
+                .Column("Id");
 
             Create.ForeignKey("FK_Products_StatusId")
                 .FromTable("Products").ForeignColumn("StatusId")
@@ -28,30 +32,22 @@ namespace Crm.Apps.Areas.Products.Migrations
             Create.UniqueConstraint("UQ_Products_AccountId_Name").OnTable("Products")
                 .Columns("AccountId", "Name");
 
-            Create.Index(
-                    "IX_Products_AccountId_ParentProductId_Type_StatusId_Name_VendorCode_Price_IsHidden_IsDeleted_CreateDateTime")
+            Create.Index("IX_Products_AccountId_Type_Name_VendorCode_CreateDateTime")
                 .OnTable("Products")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("ParentProductId").Descending()
+                .OnColumn("AccountId").Ascending()
                 .OnColumn("Type").Ascending()
-                .OnColumn("StatusId").Ascending()
                 .OnColumn("Name").Ascending()
                 .OnColumn("VendorCode").Ascending()
-                .OnColumn("Price").Ascending()
-                .OnColumn("IsHidden").Ascending()
-                .OnColumn("IsDeleted").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index(
-                    "IX_Products_AccountId_ParentProductId_Type_StatusId_Name_VendorCode_Price_IsHidden_IsDeleted_CreateDateTime")
-                .OnTable("Products");
-            
+            Delete.Index("IX_Products_AccountId_Type_Name_VendorCode_CreateDateTime").OnTable("Products");
             Delete.UniqueConstraint("UQ_Products_AccountId_Name").FromTable("Products");
             Delete.ForeignKey("FK_Products_StatusId").OnTable("Products");
+            Delete.PrimaryKey("PK_Products_Id").FromTable("Products");
             Delete.Table("Products");
         }
     }

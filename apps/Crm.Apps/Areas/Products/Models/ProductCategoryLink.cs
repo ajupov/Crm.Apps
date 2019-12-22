@@ -11,5 +11,7 @@ namespace Crm.Apps.Areas.Products.Models
         public Guid ProductCategoryId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
+        
+        public DateTime? ModifyDateTime { get; set; }
     }
 }

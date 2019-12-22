@@ -13,12 +13,16 @@ namespace Crm.Apps.Areas.Products.Services
 
         Task<List<ProductAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<ProductAttribute>> GetPagedListAsync(ProductAttributeGetPagedListParameter parameter,
+        Task<List<ProductAttribute>> GetPagedListAsync(
+            ProductAttributeGetPagedListParameter parameter,
             CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, ProductAttribute attribute, CancellationToken ct);
 
-        Task UpdateAsync(Guid userId, ProductAttribute oldAttribute, ProductAttribute newAttribute,
+        Task UpdateAsync(
+            Guid userId,
+            ProductAttribute oldAttribute,
+            ProductAttribute newAttribute,
             CancellationToken ct);
 
         Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);

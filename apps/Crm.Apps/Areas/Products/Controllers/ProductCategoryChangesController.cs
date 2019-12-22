@@ -6,27 +6,38 @@ using Crm.Apps.Areas.Products.Parameters;
 using Crm.Apps.Areas.Products.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Products.Controllers
 {
     [ApiController]
+    [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
     [Route("Api/Products/Categories/Changes")]
-    public class ProductCategoryChangesController : ControllerBase
+    public class ProductCategoryChangesController : UserContextController
     {
+        private readonly IProductCategoriesService _productCategoriesService;
         private readonly IProductCategoryChangesService _productCategoryChangesService;
 
-        public ProductCategoryChangesController(IProductCategoryChangesService productCategoryChangesService)
+        public ProductCategoryChangesController(
+            IUserContext userContext,
+            IProductCategoriesService productCategoriesService,
+            IProductCategoryChangesService productCategoryChangesService)
+            : base(userContext)
         {
+            _productCategoriesService = productCategoriesService;
             _productCategoryChangesService = productCategoryChangesService;
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport)]
         public async Task<ActionResult<List<ProductCategoryChange>>> GetPagedList(
-            ProductCategoryChangeGetPagedListParameter parameter, CancellationToken ct = default)
+            ProductCategoryChangeGetPagedListParameter parameter,
+            CancellationToken ct = default)
         {
-            return await _productCategoryChangesService.GetPagedListAsync(parameter, ct);
+            var category = await _productCategoriesService.GetAsync(parameter.CategoryId, ct);
+            var changes = await _productCategoryChangesService.GetPagedListAsync(parameter, ct);
+
+            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.ProductsManagement}, category.AccountId);
         }
     }
 }

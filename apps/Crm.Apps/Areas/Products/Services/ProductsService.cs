@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Decimal;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Products.Helpers;
 using Crm.Apps.Areas.Products.Models;
 using Crm.Apps.Areas.Products.Parameters;
 using Crm.Apps.Areas.Products.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Products.Services
@@ -22,19 +26,30 @@ namespace Crm.Apps.Areas.Products.Services
 
         public Task<Product> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks).Include(x => x.CategoryLinks)
+            return _storage.Products
+                .AsNoTracking()
+                .Include(x => x.Status)
+                .Include(x => x.AttributeLinks)
+                .Include(x => x.CategoryLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<Product>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Products.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Products
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(ct);
         }
 
         public async Task<List<Product>> GetPagedListAsync(ProductGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Products.Include(x => x.Status).Include(x => x.AttributeLinks)
-                .Include(x => x.CategoryLinks).Where(x =>
+            var temp = await _storage.Products
+                .AsNoTracking()
+                .Include(x => x.Status)
+                .Include(x => x.AttributeLinks)
+                .Include(x => x.CategoryLinks)
+                .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.ParentProductId.IsEmpty() || x.ParentProductId == parameter.ParentProductId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
@@ -44,11 +59,16 @@ namespace Crm.Apps.Areas.Products.Services
                     (!parameter.IsHidden.HasValue || x.IsHidden == parameter.IsHidden) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
+                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
+                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .ToListAsync(ct);
 
-            return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
+            return temp
+                .Where(x => x.FilterByAdditional(parameter))
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToList();
         }
 
@@ -107,9 +127,9 @@ namespace Crm.Apps.Areas.Products.Services
         {
             var changes = new List<ProductChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = true)), ct)
-                ;
+            await _storage.Products
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -119,9 +139,9 @@ namespace Crm.Apps.Areas.Products.Services
         {
             var changes = new List<ProductChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = false)), ct)
-                ;
+            await _storage.Products
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = false)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -131,9 +151,9 @@ namespace Crm.Apps.Areas.Products.Services
         {
             var changes = new List<ProductChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = true)), ct)
-                ;
+            await _storage.Products
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -143,9 +163,9 @@ namespace Crm.Apps.Areas.Products.Services
         {
             var changes = new List<ProductChange>();
 
-            await _storage.Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = false)), ct)
-                ;
+            await _storage
+                .Products.Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = false)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

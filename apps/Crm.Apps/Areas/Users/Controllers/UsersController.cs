@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Areas.Users.Controllers
 {
     [ApiController]
+    [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users")]
     public class UsersController : UserContextController
@@ -31,14 +32,12 @@ namespace Crm.Apps.Areas.Users.Controllers
             _usersService = usersService;
         }
 
-        [RequirePrivileged]
         [HttpGet("GetGenders")]
         public ActionResult<Dictionary<string, UserGender>> GetGenders()
         {
             return EnumsExtensions.GetAsDictionary<UserGender>();
         }
 
-        [RequirePrivileged]
         [HttpGet("Get")]
         public async Task<ActionResult<User>> Get([Required] Guid id, CancellationToken ct = default)
         {
@@ -51,7 +50,6 @@ namespace Crm.Apps.Areas.Users.Controllers
             return ReturnIfAllowed(user, Role.AccountOwning, user.AccountId);
         }
 
-        [RequirePrivileged]
         [HttpPost("GetList")]
         public async Task<ActionResult<List<User>>> GetList([Required] List<Guid> ids, CancellationToken ct = default)
         {
@@ -60,27 +58,28 @@ namespace Crm.Apps.Areas.Users.Controllers
             return ReturnIfAllowed(users, Role.AccountOwning, users.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<User>>> GetPagedList(
             UserGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
+            parameter.AccountId = _userContext.AccountId;
+
             var users = await _usersService.GetPagedListAsync(parameter, ct);
 
             return ReturnIfAllowed(users, Role.AccountOwning, users.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged]
         [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create(User user, CancellationToken ct = default)
         {
+            user.AccountId = _userContext.AccountId;
+
             var id = await _usersService.CreateAsync(_userContext.UserId, user, ct);
 
             return Created("Get", id);
         }
 
-        [RequirePrivileged]
         [HttpPost("Update")]
         public async Task<ActionResult> Update(User user, CancellationToken ct = default)
         {
@@ -96,7 +95,6 @@ namespace Crm.Apps.Areas.Users.Controllers
                 user.AccountId, oldUser.AccountId);
         }
 
-        [RequirePrivileged]
         [HttpPost("Lock")]
         public async Task<ActionResult> Lock([Required] List<Guid> ids, CancellationToken ct = default)
         {
@@ -108,7 +106,6 @@ namespace Crm.Apps.Areas.Users.Controllers
                 users.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged]
         [HttpPost("Unlock")]
         public async Task<ActionResult> Unlock([Required] List<Guid> ids, CancellationToken ct = default)
         {
@@ -120,7 +117,6 @@ namespace Crm.Apps.Areas.Users.Controllers
                 users.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged]
         [HttpPost("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
@@ -132,7 +128,6 @@ namespace Crm.Apps.Areas.Users.Controllers
                 users.Select(x => x.AccountId));
         }
 
-        [RequirePrivileged]
         [HttpPost("Restore")]
         public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {

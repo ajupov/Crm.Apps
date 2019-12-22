@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Products.Helpers;
 using Crm.Apps.Areas.Products.Models;
 using Crm.Apps.Areas.Products.Parameters;
 using Crm.Apps.Areas.Products.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Products.Services
@@ -22,24 +25,34 @@ namespace Crm.Apps.Areas.Products.Services
 
         public Task<ProductStatus> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.ProductStatuses.FirstOrDefaultAsync(x => x.Id == id, ct);
+            return _storage.ProductStatuses
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<ProductStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.ProductStatuses.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.ProductStatuses
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(ct);
         }
 
-        public Task<List<ProductStatus>> GetPagedListAsync(ProductStatusGetPagedListParameter parameter,
+        public Task<List<ProductStatus>> GetPagedListAsync(
+            ProductStatusGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.ProductStatuses.Where(x =>
+            return _storage.ProductStatuses
+                .AsNoTracking()
+                .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
+                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
+                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
                 .ToListAsync(ct);
@@ -64,7 +77,10 @@ namespace Crm.Apps.Areas.Products.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, ProductStatus oldStatus, ProductStatus newStatus,
+        public async Task UpdateAsync(
+            Guid userId,
+            ProductStatus oldStatus,
+            ProductStatus newStatus,
             CancellationToken ct)
         {
             var change = oldStatus.WithUpdateLog(userId, x =>
@@ -82,9 +98,9 @@ namespace Crm.Apps.Areas.Products.Services
         {
             var changes = new List<ProductStatusChange>();
 
-            await _storage.ProductStatuses.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct)
-                ;
+            await _storage.ProductStatuses
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -94,9 +110,9 @@ namespace Crm.Apps.Areas.Products.Services
         {
             var changes = new List<ProductStatusChange>();
 
-            await _storage.ProductStatuses.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct)
-                ;
+            await _storage.ProductStatuses
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

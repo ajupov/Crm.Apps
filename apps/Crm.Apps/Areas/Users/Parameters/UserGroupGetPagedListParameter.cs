@@ -1,11 +1,9 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Users.Parameters
 {
     public class UserGroupGetPagedListParameter
     {
-        [Required]
         public Guid AccountId { get; set; }
 
         public string Name { get; set; }
@@ -15,7 +13,7 @@ namespace Crm.Apps.Areas.Users.Parameters
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
-        
+
         public DateTime? MinModifyDate { get; set; }
 
         public DateTime? MaxModifyDate { get; set; }

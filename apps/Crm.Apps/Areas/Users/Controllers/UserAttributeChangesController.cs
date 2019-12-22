@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Areas.Users.Controllers
 {
     [ApiController]
+    [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Users/Attributes/Changes")]
     public class UserAttributeChangesController : UserContextController
@@ -30,7 +31,6 @@ namespace Crm.Apps.Areas.Users.Controllers
             _userAttributesService = userAttributesService;
         }
 
-        [RequirePrivileged]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<UserAttributeChange>>> GetPagedList(
             UserAttributeChangeGetPagedListParameter parameter,

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Crm.Apps.Areas.Users.Models;
 using Crm.Common.UserContext;
 
@@ -8,7 +7,6 @@ namespace Crm.Apps.Areas.Users.Parameters
 {
     public class UserGetPagedListParameter
     {
-        [Required]
         public Guid AccountId { get; set; }
         
         public string Surname { get; set; }

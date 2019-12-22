@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Areas.Accounts.Controllers
 {
     [ApiController]
+    [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts/Changes")]
     public class AccountChangesApiController : ControllerBase
@@ -22,7 +23,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             _accountChangesService = accountChangesService;
         }
 
-        [RequirePrivileged]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<AccountChange>>> GetPagedList(
             AccountChangeGetPagedListParameter parameter,

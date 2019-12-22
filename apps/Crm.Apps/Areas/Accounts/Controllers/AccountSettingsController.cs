@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Areas.Accounts.Controllers
 {
     [ApiController]
+    [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts/Settings")]
     public class AccountSettingsApiController : ControllerBase
     {
-        [RequirePrivileged]
         [HttpGet("GetTypes")]
         public ActionResult<Dictionary<string, AccountSettingType>> GetTypes()
         {

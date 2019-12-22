@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Areas.Accounts.Controllers
 {
     [ApiController]
+    [RequirePrivileged]
     [IgnoreApiDocumentation]
     [Route("Api/Accounts")]
     public class AccountsApiController : ControllerBase
@@ -28,14 +29,12 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             _accountsService = accountsService;
         }
 
-        [RequirePrivileged]
         [HttpGet("GetTypes")]
         public ActionResult<Dictionary<string, AccountType>> GetTypes()
         {
             return EnumsExtensions.GetAsDictionary<AccountType>();
         }
 
-        [RequirePrivileged]
         [HttpGet("Get")]
         public async Task<ActionResult<Account>> Get([Required] Guid id, CancellationToken ct = default)
         {
@@ -48,7 +47,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return account;
         }
 
-        [RequirePrivileged]
         [HttpPost("GetList")]
         public async Task<ActionResult<List<Account>>> GetList(
             [Required] IEnumerable<Guid> ids,
@@ -57,7 +55,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return await _accountsService.GetListAsync(ids, ct);
         }
 
-        [RequirePrivileged]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<Account>>> GetPagedList(
             AccountGetPagedListParameter parameter,
@@ -66,7 +63,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return await _accountsService.GetPagedListAsync(parameter, ct);
         }
 
-        [RequirePrivileged]
         [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create(Account account, CancellationToken ct = default)
         {
@@ -75,7 +71,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return Created("Get", id);
         }
 
-        [RequirePrivileged]
         [HttpPost("Update")]
         public async Task<ActionResult> Update(Account account, CancellationToken ct = default)
         {
@@ -90,7 +85,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return NoContent();
         }
 
-        [RequirePrivileged]
         [HttpPost("Lock")]
         public async Task<ActionResult> Lock([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
@@ -99,7 +93,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return NoContent();
         }
 
-        [RequirePrivileged]
         [HttpPost("Unlock")]
         public async Task<ActionResult> Unlock([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
@@ -108,7 +101,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return NoContent();
         }
 
-        [RequirePrivileged]
         [HttpPost("Delete")]
         public async Task<ActionResult> Delete([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
@@ -117,7 +109,6 @@ namespace Crm.Apps.Areas.Accounts.Controllers
             return NoContent();
         }
 
-        [RequirePrivileged]
         [HttpPost("Restore")]
         public async Task<ActionResult> Restore([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {

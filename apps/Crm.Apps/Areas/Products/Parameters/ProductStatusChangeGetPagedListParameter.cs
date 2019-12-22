@@ -1,12 +1,14 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Products.Parameters
 {
     public class ProductStatusChangeGetPagedListParameter
     {
-        public Guid? ChangerUserId { get; set; }
+        [Required]
+        public Guid StatusId { get; set; }
         
-        public Guid? StatusId { get; set; }
+        public Guid? ChangerUserId { get; set; }
         
         public DateTime? MinCreateDate { get; set; }
         

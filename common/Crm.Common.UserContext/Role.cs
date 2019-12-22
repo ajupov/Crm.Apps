@@ -10,6 +10,5 @@
         ProductsManagement = 6,
         LeadsManagement = 7,
         SalesManagement = 8,
-        DemoViewing = 9
     }
 }

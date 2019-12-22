@@ -8,23 +8,26 @@ namespace Crm.Apps.Areas.Products.Migrations
         public override void Up()
         {
             Create.Table("ProductAttributeChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ProductAttributeChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_ProductAttributeChanges_ChangerUserId_AttributeId_CreateDateTime").OnTable("ProductAttributeChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("AttributeId").Descending()
+            Create.PrimaryKey("PK_ProductAttributeChanges_Id").OnTable("ProductAttributeChanges")
+                .Column("Id");
+
+            Create.Index("IX_ProductAttributeChanges_AttributeId_CreateDateTime").OnTable("ProductAttributeChanges")
+                .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ProductAttributeChanges_ChangerUserId_AttributeId_CreateDateTime").OnTable("ProductAttributeChanges");
+            Delete.Index("IX_ProductAttributeChanges_AttributeId_CreateDateTime").OnTable("ProductAttributeChanges");
+            Delete.PrimaryKey("PK_ProductAttributeChanges_Id").FromTable("ProductAttributeChanges");
             Delete.Table("ProductAttributeChanges");
         }
     }

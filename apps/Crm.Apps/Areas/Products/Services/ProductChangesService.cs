@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Areas.Products.Helpers;
+using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Products.Models;
 using Crm.Apps.Areas.Products.Parameters;
 using Crm.Apps.Areas.Products.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Products.Services
@@ -19,15 +20,18 @@ namespace Crm.Apps.Areas.Products.Services
             _storage = storage;
         }
 
-        public Task<List<ProductChange>> GetPagedListAsync(ProductChangeGetPagedListParameter parameter,
+        public Task<List<ProductChange>> GetPagedListAsync(
+            ProductChangeGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.ProductChanges.Where(x =>
+            return _storage.ProductChanges
+                .AsNoTracking()
+                .Where(x =>
                     (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
                     (parameter.ProductId.IsEmpty() || x.ProductId == parameter.ProductId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
                 .ToListAsync(ct);

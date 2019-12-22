@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Areas.Products.Parameters
 {
     public class ProductAttributeGetPagedListParameter
     {
-        public Guid? AccountId { get; set; }
+        public Guid AccountId { get; set; }
 
         public List<AttributeType> Types { get; set; }
 
@@ -17,6 +18,10 @@ namespace Crm.Apps.Areas.Products.Parameters
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+        
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public int Offset { get; set; }
 

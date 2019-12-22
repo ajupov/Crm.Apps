@@ -8,7 +8,8 @@ namespace Crm.Apps.Areas.Products.Services
 {
     public interface IProductAttributeChangesService
     {
-        Task<List<ProductAttributeChange>> GetPagedListAsync(ProductAttributeChangeGetPagedListParameter parameter,
+        Task<List<ProductAttributeChange>> GetPagedListAsync(
+            ProductAttributeChangeGetPagedListParameter parameter,
             CancellationToken ct);
     }
 }

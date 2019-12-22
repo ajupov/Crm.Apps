@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Crm.Common.Types;
 
 namespace Crm.Apps.Areas.Users.Parameters
 {
     public class UserAttributeGetPagedListParameter
     {
-        [Required]
         public Guid AccountId { get; set; }
 
         public List<AttributeType> Types { get; set; }

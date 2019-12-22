@@ -66,7 +66,7 @@ namespace Crm.Common.UserContext.Extensions
         {
             return ActionIfAllowed(action, new[] {nonPrivilegedRole}, accountIds);
         }
-        
+
         public ActionResult<TResult> ReturnIfAllowed<TResult>(
             TResult result,
             Role[] nonPrivilegedRoles,
@@ -104,6 +104,14 @@ namespace Crm.Common.UserContext.Extensions
             params Guid[] accountIds)
         {
             return ReturnIfAllowed(result, new[] {nonPrivilegedRole}, accountIds);
+        }
+
+        public ActionResult<TResult> ReturnIfAllowed<TResult>(
+            TResult result,
+            Role[] nonPrivilegedRoles,
+            IEnumerable<Guid> accountIds)
+        {
+            return ReturnIfAllowed(result, nonPrivilegedRoles, accountIds.ToArray());
         }
     }
 }

@@ -15,18 +15,20 @@ namespace Crm.Apps.Areas.Products.Migrations
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_ProductCategoryChanges_ChangerUserId_CategoryId_CreateDateTime")
+            Create.PrimaryKey("PK_ProductCategoryChanges_Id").OnTable("ProductCategoryChanges")
+                .Column("Id");
+
+            Create.Index("IX_ProductCategoryChanges_CategoryId_CreateDateTime")
                 .OnTable("ProductCategoryChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("CategoryId").Descending()
+                .OnColumn("CategoryId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ProductCategoryChanges_ChangerUserId_CategoryId_CreateDateTime")
-                .OnTable("ProductCategoryChanges");
+            Delete.Index("IX_ProductCategoryChanges_CategoryId_CreateDateTime").OnTable("ProductCategoryChanges");
+            Delete.PrimaryKey("PK_ProductCategoryChanges_Id").FromTable("ProductCategoryChanges");
             Delete.Table("ProductCategoryChanges");
         }
     }
