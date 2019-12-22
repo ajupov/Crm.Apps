@@ -8,11 +8,15 @@ namespace Crm.Apps.Areas.Contacts.Migrations
         public override void Up()
         {
             Create.Table("ContactAttributeLinks")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ContactAttributeLinks_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ContactId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("Value").AsString().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+
+            Create.PrimaryKey("PK_ContactAttributeLinks_Id").OnTable("ContactAttributeLinks")
+                .Column("Id");
 
             Create.ForeignKey("FK_ContactAttributeLinks_ContactId")
                 .FromTable("ContactAttributeLinks").ForeignColumn("ContactId")
@@ -25,22 +29,20 @@ namespace Crm.Apps.Areas.Contacts.Migrations
             Create.UniqueConstraint("UQ_ContactAttributeLinks_ContactId_AttributeId").OnTable("ContactAttributeLinks")
                 .Columns("ContactId", "AttributeId");
 
-            Create.Index("IX_ContactAttributeLinks_ContactId_AttributeId_CreateDateTime")
-                .OnTable("ContactAttributeLinks")
-                .OnColumn("ContactId").Descending()
-                .OnColumn("AttributeId").Descending()
-                .OnColumn("CreateDateTime").Descending()
+            Create.Index("IX_ContactAttributeLinks_ContactId_AttributeId").OnTable("ContactAttributeLinks")
+                .OnColumn("ContactId").Ascending()
+                .OnColumn("AttributeId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ContactAttributeLinks_ContactId_AttributeId_CreateDateTime")
-                .OnTable("ContactAttributeLinks");
+            Delete.Index("IX_ContactAttributeLinks_ContactId_AttributeId").OnTable("ContactAttributeLinks");
             Delete.UniqueConstraint("UQ_ContactAttributeLinks_ContactId_AttributeId")
                 .FromTable("ContactAttributeLinks");
             Delete.ForeignKey("FK_ContactAttributeLinks_AttributeId").OnTable("ContactAttributeLinks");
             Delete.ForeignKey("FK_ContactAttributeLinks_ContactId").OnTable("ContactAttributeLinks");
+            Delete.PrimaryKey("PK_ContactAttributeLinks_Id").FromTable("ContactAttributeLinks");
             Delete.Table("ContactAttributeLinks");
         }
     }

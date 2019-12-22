@@ -15,18 +15,19 @@ namespace Crm.Apps.Areas.Contacts.Migrations
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_ContactAttributeChanges_ChangerUserId_AttributeId_CreateDateTime")
-                .OnTable("ContactAttributeChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("AttributeId").Descending()
+            Create.PrimaryKey("PK_ContactAttributeChanges_Id").OnTable("ContactAttributeChanges")
+                .Column("Id");
+
+            Create.Index("IX_ContactAttributeChanges_AttributeId_CreateDateTime").OnTable("ContactAttributeChanges")
+                .OnColumn("AttributeId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ContactAttributeChanges_ChangerUserId_AttributeId_CreateDateTime")
-                .OnTable("ContactAttributeChanges");
+            Delete.Index("IX_ContactAttributeChanges_AttributeId_CreateDateTime").OnTable("ContactAttributeChanges");
+            Delete.PrimaryKey("PK_ContactAttributeChanges_Id").FromTable("ContactAttributeChanges");
             Delete.Table("ContactAttributeChanges");
         }
     }

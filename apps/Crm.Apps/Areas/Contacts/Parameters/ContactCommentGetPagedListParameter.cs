@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Contacts.Parameters
 {
     public class ContactCommentGetPagedListParameter
     {
+        [Required]
         public Guid ContactId { get; set; }
 
         public Guid? CommentatorUserId { get; set; }

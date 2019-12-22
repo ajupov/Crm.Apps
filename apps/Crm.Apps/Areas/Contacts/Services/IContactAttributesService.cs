@@ -13,12 +13,16 @@ namespace Crm.Apps.Areas.Contacts.Services
 
         Task<List<ContactAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<ContactAttribute>> GetPagedListAsync(ContactAttributeGetPagedListParameter parameter,
+        Task<List<ContactAttribute>> GetPagedListAsync(
+            ContactAttributeGetPagedListParameter parameter,
             CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, ContactAttribute attribute, CancellationToken ct);
 
-        Task UpdateAsync(Guid userId, ContactAttribute oldAttribute, ContactAttribute newAttribute,
+        Task UpdateAsync(
+            Guid userId,
+            ContactAttribute oldAttribute,
+            ContactAttribute newAttribute,
             CancellationToken ct);
 
         Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Contacts.Helpers;
 using Crm.Apps.Areas.Contacts.Models;
 using Crm.Apps.Areas.Contacts.Parameters;
 using Crm.Apps.Areas.Contacts.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Contacts.Services
@@ -22,18 +25,28 @@ namespace Crm.Apps.Areas.Contacts.Services
 
         public Task<Contact> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Contacts.Include(x => x.BankAccounts).Include(x => x.AttributeLinks)
+            return _storage.Contacts
+                .AsNoTracking()
+                .Include(x => x.BankAccounts)
+                .Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<Contact>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Contacts.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Contacts
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(ct);
         }
 
         public async Task<List<Contact>> GetPagedListAsync(ContactGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Contacts.Include(x => x.BankAccounts).Include(x => x.AttributeLinks).Where(x =>
+            var temp = await _storage.Contacts
+                .AsNoTracking()
+                .Include(x => x.BankAccounts)
+                .Include(x => x.AttributeLinks)
+                .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
@@ -54,11 +67,16 @@ namespace Crm.Apps.Areas.Contacts.Services
                     (parameter.MaxBirthDate == null || x.BirthDate <= parameter.MaxBirthDate) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
+                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
+                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .ToListAsync(ct);
 
-            return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
+            return temp
+                .Where(x => x.FilterByAdditional(parameter))
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToList();
         }
 
@@ -142,9 +160,9 @@ namespace Crm.Apps.Areas.Contacts.Services
         {
             var changes = new List<ContactChange>();
 
-            await _storage.Contacts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x => x.IsDeleted = true)), ct)
-                ;
+            await _storage.Contacts
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x => x.IsDeleted = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -154,9 +172,9 @@ namespace Crm.Apps.Areas.Contacts.Services
         {
             var changes = new List<ContactChange>();
 
-            await _storage.Contacts.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x => x.IsDeleted = false)), ct)
-                ;
+            await _storage.Contacts
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x => x.IsDeleted = false)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

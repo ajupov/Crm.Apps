@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Contacts.Models;
 using Crm.Apps.Areas.Contacts.Parameters;
 using Microsoft.EntityFrameworkCore;
@@ -11,27 +12,27 @@ namespace Crm.Apps.Areas.Contacts.Helpers
     {
         public static bool FilterByAdditional(this Contact contact, ContactGetPagedListParameter parameter)
         {
-            return
-                (parameter.BankAccountNumber.IsEmpty() ||
-                 contact.BankAccounts.Any(x => x.BankNumber == parameter.BankAccountNumber)) &&
-                (parameter.BankAccountBankNumber.IsEmpty() ||
-                 contact.BankAccounts.Any(x => x.BankNumber == parameter.BankAccountBankNumber)) &&
-                (parameter.BankAccountBankCorrespondentNumber.IsEmpty() || contact.BankAccounts.Any(x =>
-                     x.BankCorrespondentNumber == parameter.BankAccountBankCorrespondentNumber)) &&
-                (parameter.BankAccountBankName.IsEmpty() ||
-                 contact.BankAccounts.Any(x => EF.Functions.Like(x.BankName, $"{parameter.BankAccountBankName}%"))) &&
-                (parameter.LeadIds == null || !parameter.LeadIds.Any() ||
-                 parameter.LeadIds.Any(x => LeadIdsPredicate(contact, x))) &&
-                (parameter.CompanyIds == null || !parameter.CompanyIds.Any() ||
-                 parameter.CompanyIds.Any(x => CompanyIdsPredicate(contact, x))) &&
-                (parameter.CreateUserIds == null || !parameter.CreateUserIds.Any() ||
-                 parameter.CreateUserIds.Any(x => CreateUserIdsPredicate(contact, x))) &&
-                (parameter.ResponsibleUserIds == null || !parameter.ResponsibleUserIds.Any() ||
-                 parameter.ResponsibleUserIds.Any(x => ResponsibleUserIdsPredicate(contact, x))) &&
-                (parameter.Attributes == null || !parameter.Attributes.Any() ||
-                 (parameter.AllAttributes is false
-                     ? parameter.Attributes.Any(x => AttributePredicate(contact, x))
-                     : parameter.Attributes.All(x => AttributePredicate(contact, x))));
+            return (parameter.BankAccountNumber.IsEmpty() ||
+                    contact.BankAccounts.Any(x => x.BankNumber == parameter.BankAccountNumber)) &&
+                   (parameter.BankAccountBankNumber.IsEmpty() ||
+                    contact.BankAccounts.Any(x => x.BankNumber == parameter.BankAccountBankNumber)) &&
+                   (parameter.BankAccountBankCorrespondentNumber.IsEmpty() || contact.BankAccounts.Any(x =>
+                        x.BankCorrespondentNumber == parameter.BankAccountBankCorrespondentNumber)) &&
+                   (parameter.BankAccountBankName.IsEmpty() ||
+                    contact.BankAccounts.Any(x =>
+                        EF.Functions.Like(x.BankName, $"{parameter.BankAccountBankName}%"))) &&
+                   (parameter.LeadIds == null || !parameter.LeadIds.Any() ||
+                    parameter.LeadIds.Any(x => LeadIdsPredicate(contact, x))) &&
+                   (parameter.CompanyIds == null || !parameter.CompanyIds.Any() ||
+                    parameter.CompanyIds.Any(x => CompanyIdsPredicate(contact, x))) &&
+                   (parameter.CreateUserIds == null || !parameter.CreateUserIds.Any() ||
+                    parameter.CreateUserIds.Any(x => CreateUserIdsPredicate(contact, x))) &&
+                   (parameter.ResponsibleUserIds == null || !parameter.ResponsibleUserIds.Any() ||
+                    parameter.ResponsibleUserIds.Any(x => ResponsibleUserIdsPredicate(contact, x))) &&
+                   (parameter.Attributes == null || !parameter.Attributes.Any() ||
+                    (parameter.AllAttributes is false
+                        ? parameter.Attributes.Any(x => AttributePredicate(contact, x))
+                        : parameter.Attributes.All(x => AttributePredicate(contact, x))));
         }
 
         private static bool LeadIdsPredicate(Contact contact, Guid id)

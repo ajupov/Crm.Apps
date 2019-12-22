@@ -8,23 +8,26 @@ namespace Crm.Apps.Areas.Contacts.Migrations
         public override void Up()
         {
             Create.Table("ContactChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ContactChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("ContactId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("OldValueJson").AsString().NotNullable()
                 .WithColumn("NewValueJson").AsString().NotNullable();
 
-            Create.Index("IX_ContactChanges_ChangerUserId_ContactId_CreateDateTime").OnTable("ContactChanges")
-                .OnColumn("ChangerUserId").Descending()
-                .OnColumn("ContactId").Descending()
+            Create.PrimaryKey("PK_ContactChanges_Id").OnTable("ContactChanges")
+                .Column("Id");
+
+            Create.Index("IX_ContactChanges_ContactId_CreateDateTime").OnTable("ContactChanges")
+                .OnColumn("ContactId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ContactChanges_ChangerUserId_ContactId_CreateDateTime").OnTable("ContactChanges");
+            Delete.Index("IX_ContactChanges_ContactId_CreateDateTime").OnTable("ContactChanges");
+            Delete.PrimaryKey("PK_ContactChanges_Id").FromTable("ContactChanges");
             Delete.Table("ContactChanges");
         }
     }

@@ -8,31 +8,30 @@ namespace Crm.Apps.Areas.Contacts.Migrations
         public override void Up()
         {
             Create.Table("ContactAttributes")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ContactAttributes_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Key").AsString().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+
+            Create.PrimaryKey("PK_ContactAttributes_Id").OnTable("ContactAttributes")
+                .Column("Id");
 
             Create.UniqueConstraint("UQ_ContactAttributes_AccountId_Key").OnTable("ContactAttributes")
                 .Columns("AccountId", "Key");
 
-            Create.Index("IX_ContactAttributes_AccountId_Type_Key_IsDeleted_CreateDateTime")
-                .OnTable("ContactAttributes")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("Type").Ascending()
-                .OnColumn("Key").Ascending()
-                .OnColumn("IsDeleted").Ascending()
-                .OnColumn("CreateDateTime").Descending()
+            Create.Index("IX_ContactAttributes_AccountId").OnTable("ContactAttributes")
+                .OnColumn("AccountId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_ContactAttributes_AccountId_Type_Key_IsDeleted_CreateDateTime")
-                .OnTable("ContactAttributes");
+            Delete.Index("IX_ContactAttributes_AccountId").OnTable("ContactAttributes");
             Delete.UniqueConstraint("UQ_ContactAttributes_AccountId_Key").FromTable("ContactAttributes");
+            Delete.PrimaryKey("PK_ContactAttributes_Id").FromTable("ContactAttributes");
             Delete.Table("ContactAttributes");
         }
     }

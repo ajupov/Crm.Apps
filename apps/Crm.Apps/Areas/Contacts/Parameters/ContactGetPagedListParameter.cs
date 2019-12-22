@@ -5,7 +5,7 @@ namespace Crm.Apps.Areas.Contacts.Parameters
 {
     public class ContactGetPagedListParameter
     {
-        public Guid? AccountId { get; set; }
+        public Guid AccountId { get; set; }
 
         public string Surname { get; set; }
 
@@ -46,6 +46,10 @@ namespace Crm.Apps.Areas.Contacts.Parameters
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public bool? AllAttributes { get; set; }
 

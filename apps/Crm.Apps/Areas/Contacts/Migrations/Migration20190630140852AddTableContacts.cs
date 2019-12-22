@@ -8,7 +8,7 @@ namespace Crm.Apps.Areas.Contacts.Migrations
         public override void Up()
         {
             Create.Table("Contacts")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_Contacts_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("LeadId").AsGuid().NotNullable()
                 .WithColumn("CompanyId").AsGuid().NotNullable()
@@ -32,47 +32,25 @@ namespace Crm.Apps.Areas.Contacts.Migrations
                 .WithColumn("BirthDate").AsDate().Nullable()
                 .WithColumn("Photo").AsBinary().Nullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
 
-            Create.Index(
-                    "IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId_Surname_Name_Patronymic_" +
-                    "Phone_Email_TaxNumber_Post_Postcode_Country_Region_Province_City_Street_House_Apartment_" +
-                    "BirthDate_IsDeleted_CreateDateTime")
-                .OnTable("Contacts")
-                .OnColumn("AccountId").Descending()
-                .OnColumn("LeadId").Descending()
-                .OnColumn("CompanyId").Descending()
-                .OnColumn("CreateUserId").Descending()
-                .OnColumn("ResponsibleUserId").Descending()
-                .OnColumn("Surname").Ascending()
-                .OnColumn("Name").Ascending()
-                .OnColumn("Patronymic").Ascending()
-                .OnColumn("Phone").Ascending()
-                .OnColumn("Email").Ascending()
-                .OnColumn("TaxNumber").Ascending()
-                .OnColumn("Post").Ascending()
-                .OnColumn("Postcode").Ascending()
-                .OnColumn("Country").Ascending()
-                .OnColumn("Region").Ascending()
-                .OnColumn("Province").Ascending()
-                .OnColumn("City").Ascending()
-                .OnColumn("Street").Ascending()
-                .OnColumn("House").Ascending()
-                .OnColumn("Apartment").Ascending()
-                .OnColumn("BirthDate").Ascending()
-                .OnColumn("IsDeleted").Ascending()
-                .OnColumn("CreateDateTime").Descending()
+            Create.PrimaryKey("PK_Contacts_Id").OnTable("Contacts")
+                .Column("Id");
+            
+            Create.Index("IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId").OnTable("Contacts")
+                .OnColumn("AccountId").Ascending()
+                .OnColumn("LeadId").Ascending()
+                .OnColumn("CompanyId").Ascending()
+                .OnColumn("CreateUserId").Ascending()
+                .OnColumn("ResponsibleUserId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index(
-                    "IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId_Surname_Name_Patronymic_" +
-                    "Phone_Email_TaxNumber_Post_Postcode_Country_Region_Province_City_Street_House_Apartment_" +
-                    "BirthDate_IsDeleted_CreateDateTime")
-                .OnTable("Contacts");
-
+            Delete.Index("IX_Contacts_AccountId_LeadId_CompanyId_CreateUserId_ResponsibleUserId").OnTable("Contacts");
+            Delete.PrimaryKey("PK_Contacts_Id").FromTable("Contacts");
             Delete.Table("Contacts");
         }
     }

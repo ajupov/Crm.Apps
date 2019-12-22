@@ -9,7 +9,8 @@ namespace Crm.Apps.Areas.Contacts.Services
 {
     public interface IContactCommentsService
     {
-        Task<List<ContactComment>> GetPagedListAsync(ContactCommentGetPagedListParameter parameter,
+        Task<List<ContactComment>> GetPagedListAsync(
+            ContactCommentGetPagedListParameter parameter,
             CancellationToken ct);
 
         Task CreateAsync(Guid userId, ContactComment comment, CancellationToken ct);

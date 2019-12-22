@@ -8,7 +8,8 @@ namespace Crm.Apps.Areas.Contacts.Services
 {
     public interface IContactAttributeChangesService
     {
-        Task<List<ContactAttributeChange>> GetPagedListAsync(ContactAttributeChangeGetPagedListParameter parameter,
+        Task<List<ContactAttributeChange>> GetPagedListAsync(
+            ContactAttributeChangeGetPagedListParameter parameter,
             CancellationToken ct);
     }
 }

@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Areas.Contacts.Helpers;
+using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Contacts.Models;
 using Crm.Apps.Areas.Contacts.Parameters;
 using Crm.Apps.Areas.Contacts.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Contacts.Services
@@ -22,12 +23,14 @@ namespace Crm.Apps.Areas.Contacts.Services
         public Task<List<ContactChange>> GetPagedListAsync(ContactChangeGetPagedListParameter parameter,
             CancellationToken ct)
         {
-            return _storage.ContactChanges.Where(x =>
+            return _storage.ContactChanges
+                .AsNoTracking()
+                .Where(x =>
                     (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
                     (parameter.ContactId.IsEmpty() || x.ContactId == parameter.ContactId) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
                     (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .Skip(parameter.Offset)
                 .Take(parameter.Limit)
                 .ToListAsync(ct);
