@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Leads.Parameters
 {
     public class LeadSourceChangeGetPagedListParameter
     {
+        [Required]
         public Guid SourceId { get; set; }
         
         public Guid? ChangerUserId { get; set; }

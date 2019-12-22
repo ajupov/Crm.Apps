@@ -8,7 +8,8 @@ namespace Crm.Apps.Areas.Leads.Services
 {
     public interface ILeadSourceChangesService
     {
-        Task<List<LeadSourceChange>> GetPagedListAsync(LeadSourceChangeGetPagedListParameter parameter,
+        Task<List<LeadSourceChange>> GetPagedListAsync(
+            LeadSourceChangeGetPagedListParameter parameter,
             CancellationToken ct);
     }
 }

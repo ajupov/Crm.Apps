@@ -6,27 +6,38 @@ using Crm.Apps.Areas.Leads.Parameters;
 using Crm.Apps.Areas.Leads.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Leads.Controllers
 {
     [ApiController]
+    [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
     [Route("Api/Leads/Sources/Changes")]
-    public class LeadSourcesChangesController : ControllerBase
+    public class LeadSourcesChangesController : UserContextController
     {
+        private readonly ILeadSourcesService _leadSourcesService;
         private readonly ILeadSourceChangesService _leadSourceChangesService;
 
-        public LeadSourcesChangesController(ILeadSourceChangesService leadSourceChangesService)
+        public LeadSourcesChangesController(
+            IUserContext userContext,
+            ILeadSourcesService leadSourcesService,
+            ILeadSourceChangesService leadSourceChangesService)
+            : base(userContext)
         {
+            _leadSourcesService = leadSourcesService;
             _leadSourceChangesService = leadSourceChangesService;
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport)]
         public async Task<ActionResult<List<LeadSourceChange>>> GetPagedList(
-            LeadSourceChangeGetPagedListParameter parameter, CancellationToken ct = default)
+            LeadSourceChangeGetPagedListParameter parameter,
+            CancellationToken ct = default)
         {
-            return await _leadSourceChangesService.GetPagedListAsync(parameter, ct);
+            var source = await _leadSourcesService.GetAsync(parameter.SourceId, ct);
+            var changes = await _leadSourceChangesService.GetPagedListAsync(parameter, ct);
+
+            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.LeadsManagement}, source.AccountId);
         }
     }
 }

@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Crm.Apps.Areas.Leads.Parameters
 {
     public class LeadCommentGetPagedListParameter
     {
+        [Required]
         public Guid LeadId { get; set; }
 
         public Guid? CommentatorUserId { get; set; }

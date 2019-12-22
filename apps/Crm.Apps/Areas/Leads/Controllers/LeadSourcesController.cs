@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,199 +9,110 @@ using Crm.Apps.Areas.Leads.Parameters;
 using Crm.Apps.Areas.Leads.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Areas.Leads.Controllers
 {
     [ApiController]
+    [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
     [Route("Api/Leads/Sources")]
-    public class LeadSourcesController : ControllerBase
+    public class LeadSourcesController : UserContextController
     {
         private readonly IUserContext _userContext;
         private readonly ILeadSourcesService _leadSourcesService;
 
         public LeadSourcesController(IUserContext userContext, ILeadSourcesService leadSourcesService)
+            : base(userContext)
         {
             _userContext = userContext;
             _leadSourcesService = leadSourcesService;
         }
 
         [HttpGet("Get")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport,
-            Role.AccountOwning, Role.LeadsManagement)]
-        public async Task<ActionResult<LeadSource>> Get(Guid id, CancellationToken ct = default)
+        public async Task<ActionResult<LeadSource>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            if (id.IsEmpty())
+            var source = await _leadSourcesService.GetAsync(id, ct);
+            if (source == null)
             {
-                return BadRequest();
+                return NotFound(id);
             }
 
-            var group = await _leadSourcesService.GetAsync(id, ct);
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            return ReturnIfAllowed(group, new[] {group.AccountId});
+            return ReturnIfAllowed(source, new[] {Role.AccountOwning, Role.LeadsManagement}, source.AccountId);
         }
 
         [HttpPost("GetList")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport,
-            Role.AccountOwning, Role.LeadsManagement)]
-        public async Task<ActionResult<List<LeadSource>>> GetList(List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult<List<LeadSource>>> GetList([Required] List<Guid> ids,
+            CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
+            var sources = await _leadSourcesService.GetListAsync(ids, ct);
 
-            var groups = await _leadSourcesService.GetListAsync(ids, ct);
-
-            return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
+            return ReturnIfAllowed(
+                sources,
+                new[] {Role.AccountOwning, Role.LeadsManagement},
+                sources.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport,
-            Role.AccountOwning, Role.LeadsManagement)]
         public async Task<ActionResult<List<LeadSource>>> GetPagedList(
             LeadSourceGetPagedListParameter parameter,
             CancellationToken ct = default)
         {
-            var groups = await _leadSourcesService.GetPagedListAsync(parameter, ct);
+            parameter.AccountId = _userContext.AccountId;
 
-            return ReturnIfAllowed(groups, groups.Select(x => x.AccountId));
+            var sources = await _leadSourcesService.GetPagedListAsync(parameter, ct);
+
+            return ReturnIfAllowed(
+                sources,
+                new[] {Role.AccountOwning, Role.LeadsManagement},
+                sources.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.AccountOwning,
-            Role.LeadsManagement)]
-        public async Task<ActionResult<Guid>> Create(LeadSource group, CancellationToken ct = default)
+        public async Task<ActionResult<Guid>> Create(LeadSource source, CancellationToken ct = default)
         {
-            if (group == null)
-            {
-                return BadRequest();
-            }
+            source.AccountId = _userContext.AccountId;
 
-            if (!_userContext.HasAny(Role.System, Role.Development, Role.Administration,
-                Role.TechnicalSupport))
-            {
-                group.AccountId = _userContext.AccountId;
-            }
-
-            var id = await _leadSourcesService.CreateAsync(_userContext.UserId, group, ct);
+            var id = await _leadSourcesService.CreateAsync(_userContext.UserId, source, ct);
 
             return Created(nameof(Get), id);
         }
 
         [HttpPost("Update")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport,
-            Role.LeadsManagement)]
         public async Task<ActionResult> Update(LeadSource source, CancellationToken ct = default)
         {
-            if (source.Id.IsEmpty())
-            {
-                return BadRequest();
-            }
-
             var oldSource = await _leadSourcesService.GetAsync(source.Id, ct);
             if (oldSource == null)
             {
-                return NotFound();
+                return NotFound(source.Id);
             }
 
-            return await ActionIfAllowed(() => _leadSourcesService.UpdateAsync(_userContext.UserId, oldSource,
-                    source, ct),
-                new[] {source.AccountId, oldSource.AccountId});
+            return await ActionIfAllowed(
+                () => _leadSourcesService.UpdateAsync(_userContext.UserId, oldSource, source, ct),
+                new[] {Role.AccountOwning, Role.LeadsManagement},
+                source.AccountId, oldSource.AccountId);
         }
 
         [HttpPost("Delete")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport,
-            Role.AccountOwning, Role.LeadsManagement)]
-        public async Task<ActionResult> Delete(List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            var attributes = await _leadSourcesService.GetListAsync(ids, ct);
+            var sources = await _leadSourcesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
-                () => _leadSourcesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
+                () => _leadSourcesService.DeleteAsync(_userContext.UserId, sources.Select(x => x.Id), ct),
+                new[] {Role.AccountOwning, Role.LeadsManagement},
+                sources.Select(x => x.AccountId));
         }
 
         [HttpPost("Restore")]
-        [RequireAny(Role.System, Role.Development, Role.Administration, Role.TechnicalSupport,
-            Role.AccountOwning, Role.LeadsManagement)]
-        public async Task<ActionResult> Restore(List<Guid> ids, CancellationToken ct = default)
+        public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
-            if (ids == null || ids.All(x => x.IsEmpty()))
-            {
-                return BadRequest();
-            }
-
-            var attributes = await _leadSourcesService.GetListAsync(ids, ct);
+            var sources = await _leadSourcesService.GetListAsync(ids, ct);
 
             return await ActionIfAllowed(
-                () => _leadSourcesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                attributes.Select(x => x.AccountId));
-        }
-
-        [NonAction]
-        private ActionResult<TResult> ReturnIfAllowed<TResult>(TResult result, IEnumerable<Guid> accountIds)
-        {
-            if (_userContext.HasAny(Role.System, Role.Development, Role.Administration,
-                Role.TechnicalSupport))
-            {
-                return result;
-            }
-
-            var accountIdsAsArray = accountIds.ToArray();
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.LeadsManagement) &&
-                _userContext.Belongs(accountIdsAsArray))
-            {
-                return result;
-            }
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.LeadsManagement) &&
-                !_userContext.Belongs(accountIdsAsArray))
-            {
-                return Forbid();
-            }
-
-            throw new Exception();
-        }
-
-        [NonAction]
-        private async Task<ActionResult> ActionIfAllowed(Func<Task> action, IEnumerable<Guid> accountIds)
-        {
-            if (_userContext.HasAny(Role.System, Role.Development, Role.Administration,
-                Role.TechnicalSupport))
-            {
-                await action();
-
-                return NoContent();
-            }
-
-            var accountIdsAsArray = accountIds.ToArray();
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.LeadsManagement) &&
-                _userContext.Belongs(accountIdsAsArray))
-            {
-                await action();
-
-                return NoContent();
-            }
-
-            if (_userContext.HasAny(Role.AccountOwning, Role.LeadsManagement) &&
-                !_userContext.Belongs(accountIdsAsArray))
-            {
-                return Forbid();
-            }
-
-            throw new Exception();
+                () => _leadSourcesService.RestoreAsync(_userContext.UserId, sources.Select(x => x.Id), ct),
+                new[] {Role.AccountOwning, Role.LeadsManagement},
+                sources.Select(x => x.AccountId));
         }
     }
 }

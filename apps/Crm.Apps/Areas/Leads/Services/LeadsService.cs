@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Decimal;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Leads.Helpers;
 using Crm.Apps.Areas.Leads.Models;
 using Crm.Apps.Areas.Leads.Parameters;
 using Crm.Apps.Areas.Leads.Storages;
+using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Areas.Leads.Services
@@ -22,18 +26,28 @@ namespace Crm.Apps.Areas.Leads.Services
 
         public Task<Lead> GetAsync(Guid id, CancellationToken ct)
         {
-            return _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks)
+            return _storage.Leads
+                .AsNoTracking()
+                .Include(x => x.Source)
+                .Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<Lead>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _storage.Leads.Where(x => ids.Contains(x.Id)).ToListAsync(ct);
+            return _storage.Leads
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(ct);
         }
 
         public async Task<List<Lead>> GetPagedListAsync(LeadGetPagedListParameter parameter, CancellationToken ct)
         {
-            var temp = await _storage.Leads.Include(x => x.Source).Include(x => x.AttributeLinks).Where(x =>
+            var temp = await _storage.Leads
+                .AsNoTracking()
+                .Include(x => x.Source)
+                .Include(x => x.AttributeLinks)
+                .Where(x =>
                     (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
                     (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
                     (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
@@ -55,11 +69,16 @@ namespace Crm.Apps.Areas.Leads.Services
                     (parameter.MaxOpportunitySum.IsEmpty() || x.OpportunitySum <= parameter.MaxOpportunitySum) &&
                     (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
                     (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .Sort(parameter.SortBy, parameter.OrderBy)
+                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
+                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
+                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
+                .SortBy(parameter.SortBy, parameter.OrderBy)
                 .ToListAsync(ct);
 
-            return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
+            return temp
+                .Where(x => x.FilterByAdditional(parameter))
+                .Skip(parameter.Offset)
+                .Take(parameter.Limit)
                 .ToList();
         }
 
@@ -137,9 +156,9 @@ namespace Crm.Apps.Areas.Leads.Services
         {
             var changes = new List<LeadChange>();
 
-            await _storage.Leads.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = true)), ct)
-                ;
+            await _storage.Leads
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = true)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -149,9 +168,9 @@ namespace Crm.Apps.Areas.Leads.Services
         {
             var changes = new List<LeadChange>();
 
-            await _storage.Leads.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = false)), ct)
-                ;
+            await _storage.Leads
+                .Where(x => ids.Contains(x.Id))
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = false)), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
