@@ -13,11 +13,11 @@ namespace Crm.Common.UserContext
 
         string AvatarUrl { get; }
 
-        List<Permission> Permissions { get; }
+        List<Role> Roles { get; }
 
-        bool HasAny(params Permission[] permissions);
+        bool HasAny(params Role[] permissions);
 
-        bool HasAll(params Permission[] permissions);
+        bool HasAll(params Role[] permissions);
 
         bool Belongs(IEnumerable<Guid> accountIds);
         

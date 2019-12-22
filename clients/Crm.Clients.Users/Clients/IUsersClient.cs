@@ -20,7 +20,7 @@ namespace Crm.Clients.Users.Clients
             DateTime? maxBirthDate = default, UserGender? gender = default, bool? isLocked = default,
             bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
             bool? allAttributes = default, IDictionary<Guid, string> attributes = default,
-            bool? allPermissions = default, List<Permission> permissions = default, bool? allGroupIds = default,
+            bool? allPermissions = default, List<Role> permissions = default, bool? allGroupIds = default,
             List<Guid> groupIds = default, int offset = default, int limit = 10, string sortBy = default,
             string orderBy = default, CancellationToken ct = default);
 

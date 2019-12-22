@@ -6,11 +6,11 @@ namespace Crm.Common.UserContext.Attributes
 {
     public class RequireAnyAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        private readonly Permission[] _permissions;
+        private readonly Role[] _roles;
 
-        public RequireAnyAttribute(params Permission[] permissions)
+        public RequireAnyAttribute(params Role[] roles)
         {
-            _permissions = permissions;
+            _roles = roles;
         }
 
         public Task OnAuthorizationAsync(AuthorizationFilterContext context)

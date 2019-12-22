@@ -1,0 +1,147 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
+using Crm.Apps.Areas.Users.Services;
+using Crm.Apps.Utils;
+using Crm.Common.UserContext;
+using Crm.Common.UserContext.Attributes;
+using Crm.Common.UserContext.Extensions;
+using Crm.Infrastructure.ApiDocumentation.Attributes;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Crm.Apps.Areas.Users.Controllers
+{
+    [ApiController]
+    [IgnoreApiDocumentation]
+    [Route("Api/Users")]
+    public class UsersController : UserContextController
+    {
+        private readonly IUserContext _userContext;
+        private readonly IUsersService _usersService;
+
+        public UsersController(IUserContext userContext, IUsersService usersService)
+            : base(userContext)
+        {
+            _userContext = userContext;
+            _usersService = usersService;
+        }
+
+        [RequirePrivileged]
+        [HttpGet("GetGenders")]
+        public ActionResult<Dictionary<string, UserGender>> GetGenders()
+        {
+            return EnumsExtensions.GetAsDictionary<UserGender>();
+        }
+
+        [RequirePrivileged]
+        [HttpGet("Get")]
+        public async Task<ActionResult<User>> Get([Required] Guid id, CancellationToken ct = default)
+        {
+            var user = await _usersService.GetAsync(id, ct);
+            if (user == null)
+            {
+                return NotFound(id);
+            }
+
+            return ReturnIfAllowed(user, Role.AccountOwning, user.AccountId);
+        }
+
+        [RequirePrivileged]
+        [HttpPost("GetList")]
+        public async Task<ActionResult<List<User>>> GetList([Required] List<Guid> ids, CancellationToken ct = default)
+        {
+            var users = await _usersService.GetListAsync(ids, ct);
+
+            return ReturnIfAllowed(users, Role.AccountOwning, users.Select(x => x.AccountId));
+        }
+
+        [RequirePrivileged]
+        [HttpPost("GetPagedList")]
+        public async Task<ActionResult<List<User>>> GetPagedList(
+            UserGetPagedListParameter parameter,
+            CancellationToken ct = default)
+        {
+            var users = await _usersService.GetPagedListAsync(parameter, ct);
+
+            return ReturnIfAllowed(users, Role.AccountOwning, users.Select(x => x.AccountId));
+        }
+
+        [RequirePrivileged]
+        [HttpPost("Create")]
+        public async Task<ActionResult<Guid>> Create(User user, CancellationToken ct = default)
+        {
+            var id = await _usersService.CreateAsync(_userContext.UserId, user, ct);
+
+            return Created("Get", id);
+        }
+
+        [RequirePrivileged]
+        [HttpPost("Update")]
+        public async Task<ActionResult> Update(User user, CancellationToken ct = default)
+        {
+            var oldUser = await _usersService.GetAsync(user.Id, ct);
+            if (oldUser == null)
+            {
+                return NotFound(user.Id);
+            }
+
+            return await ActionIfAllowed(
+                () => _usersService.UpdateAsync(_userContext.UserId, oldUser, user, ct),
+                Role.AccountOwning,
+                user.AccountId, oldUser.AccountId);
+        }
+
+        [RequirePrivileged]
+        [HttpPost("Lock")]
+        public async Task<ActionResult> Lock([Required] List<Guid> ids, CancellationToken ct = default)
+        {
+            var users = await _usersService.GetListAsync(ids, ct);
+
+            return await ActionIfAllowed(
+                () => _usersService.LockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                Role.AccountOwning,
+                users.Select(x => x.AccountId));
+        }
+
+        [RequirePrivileged]
+        [HttpPost("Unlock")]
+        public async Task<ActionResult> Unlock([Required] List<Guid> ids, CancellationToken ct = default)
+        {
+            var users = await _usersService.GetListAsync(ids, ct);
+
+            return await ActionIfAllowed(
+                () => _usersService.UnlockAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                Role.AccountOwning,
+                users.Select(x => x.AccountId));
+        }
+
+        [RequirePrivileged]
+        [HttpPost("Delete")]
+        public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
+        {
+            var users = await _usersService.GetListAsync(ids, ct);
+
+            return await ActionIfAllowed(
+                () => _usersService.DeleteAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                Role.AccountOwning,
+                users.Select(x => x.AccountId));
+        }
+
+        [RequirePrivileged]
+        [HttpPost("Restore")]
+        public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
+        {
+            var users = await _usersService.GetListAsync(ids, ct);
+
+            return await ActionIfAllowed(
+                () => _usersService.RestoreAsync(_userContext.UserId, users.Select(x => x.Id), ct),
+                Role.AccountOwning,
+                users.Select(x => x.AccountId));
+        }
+    }
+}

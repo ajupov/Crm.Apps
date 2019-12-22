@@ -11,7 +11,7 @@ namespace Crm.Apps.Tests.Builders.Users
 
         UserGroupBuilder WithName(string name);
 
-        UserGroupBuilder WithPermission(Permission permission);
+        UserGroupBuilder WithPermission(Role role);
 
         Task<UserGroup> BuildAsync();
     }

@@ -4,16 +4,16 @@ namespace Crm.Common.UserContext.Attributes
 {
     public class RequirePrivilegedAttribute : RequireAnyAttribute
     {
-        public static readonly Permission[] PrivilegedPermissions =
+        public static readonly Role[] PrivilegedRoles =
         {
-            Permission.System,
-            Permission.Development,
-            Permission.Administration,
-            Permission.TechnicalSupport
+            Role.System,
+            Role.Development,
+            Role.Administration,
+            Role.TechnicalSupport
         };
 
-        public RequirePrivilegedAttribute(params Permission[] additionalPermissions)
-            : base(PrivilegedPermissions.Concat(additionalPermissions).ToArray())
+        public RequirePrivilegedAttribute(params Role[] additionalRoles)
+            : base(PrivilegedRoles.Concat(additionalRoles).ToArray())
         {
         }
     }

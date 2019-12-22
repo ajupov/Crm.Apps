@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Crm.Apps.Areas.Users.Models;
+using Crm.Apps.Areas.Users.Parameters;
+
+namespace Crm.Apps.Areas.Users.Services
+{
+    public interface IUsersService
+    {
+        Task<User> GetAsync(Guid id, CancellationToken ct);
+
+        Task<List<User>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
+
+        Task<List<User>> GetPagedListAsync(UserGetPagedListParameter parameter, CancellationToken ct);
+
+        Task<Guid> CreateAsync(Guid userId, User user, CancellationToken ct);
+
+        Task UpdateAsync(Guid userId, User oldUser, User newUser, CancellationToken ct);
+
+        Task LockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+
+        Task UnlockAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+
+        Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+
+        Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct);
+    }
+}

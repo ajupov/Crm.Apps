@@ -37,7 +37,7 @@ namespace Crm.Apps.Tests.Builders.Users
             return this;
         }
 
-        public UserGroupBuilder WithPermission(Permission permission)
+        public UserGroupBuilder WithPermission(Role role)
         {
             if (_userGroup.Permissions == null)
             {
@@ -46,7 +46,7 @@ namespace Crm.Apps.Tests.Builders.Users
 
             _userGroup.Permissions.Add(new UserGroupPermission
             {
-                Permission = permission
+                Role = role
             });
 
             return this;

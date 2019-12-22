@@ -9,7 +9,7 @@ namespace Crm.Clients.Users.Models
 
         public Guid UserId { get; set; }
 
-        public Permission Permission { get; set; }
+        public Role Role { get; set; }
 
         public DateTime CreateDateTime { get; set; }
     }

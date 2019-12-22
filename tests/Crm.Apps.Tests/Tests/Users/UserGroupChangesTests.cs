@@ -33,7 +33,7 @@ namespace Crm.Apps.Tests.Tests.Users
             var account = await _create.Account.BuildAsync();
             var group = await _create.UserGroup.WithAccountId(account.Id).BuildAsync();
             group.Name = "Test2";
-            group.Permissions = new List<UserGroupPermission> {new UserGroupPermission {Permission = Permission.None}};
+            group.Permissions = new List<UserGroupPermission> {new UserGroupPermission {Role = Role.None}};
             group.IsDeleted = true;
             await _userGroupsClient.UpdateAsync(group);
 
@@ -54,7 +54,7 @@ namespace Crm.Apps.Tests.Tests.Users
             Assert.True(changes.Last().NewValueJson.FromJsonString<UserGroup>().IsDeleted);
             Assert.Equal(changes.Last().NewValueJson.FromJsonString<UserGroup>().Name, group.Name);
             Assert.Equal(changes.Last().NewValueJson.FromJsonString<UserGroup>().Permissions.Single().Permission,
-                group.Permissions.Single().Permission);
+                group.Permissions.Single().Role);
         }
     }
 }

@@ -1,35 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
-        <TargetFramework>netcoreapp3</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>preview</LangVersion>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\clients\Crm.Clients.Identities\Crm.Clients.Identities.csproj" />
-        <ProjectReference Include="..\..\clients\Crm.Clients.Users\Crm.Clients.Users.csproj" />
+        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.2.1" />
+        <PackageReference Include="Ajupov.Utils.All" Version="1.0.3" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\..\common\Crm.Common.Types\Crm.Common.Types.csproj" />
         <ProjectReference Include="..\..\common\Crm.Common.UserContext\Crm.Common.UserContext.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.ApiDocumentation\Crm.Infrastructure.ApiDocumentation.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Configuration\Crm.Infrastructure.Configuration.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Hosting\Crm.Infrastructure.Hosting.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.HotStorage\Crm.Infrastructure.HotStorage.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Logging\Crm.Infrastructure.Logging.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.MessageBroking\Crm.Infrastructure.MessageBroking.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Metrics\Crm.Infrastructure.Metrics.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Migrations\Crm.Infrastructure.Migrations.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Mvc\Crm.Infrastructure.Mvc.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.OAuthClients\Crm.Infrastructure.OAuthClients.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Orm\Crm.Infrastructure.Orm.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.Tracing\Crm.Infrastructure.Tracing.csproj" />
-        <ProjectReference Include="..\..\infrastructure\Crm.Infrastructure.UserContext\Crm.Infrastructure.UserContext.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.ChangesSerializing\Crm.Utils.ChangesSerializing.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.DateTime\Crm.Utils.DateTime.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Decimal\Crm.Utils.Decimal.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Enums\Crm.Utils.Enums.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Generator\Crm.Utils.Generator.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Guid\Crm.Utils.Guid.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Password\Crm.Utils.Password.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.Sorting\Crm.Utils.Sorting.csproj" />
-        <ProjectReference Include="..\..\utils\Crm.Utils.String\Crm.Utils.String.csproj" />
     </ItemGroup>
 </Project>
