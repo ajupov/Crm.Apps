@@ -8,7 +8,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Deals.Helpers;
 using Crm.Apps.Areas.Deals.Models;
-using Crm.Apps.Areas.Deals.Parameters;
+using Crm.Apps.Areas.Deals.RequestParameters;
 using Crm.Apps.Areas.Deals.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +43,7 @@ namespace Crm.Apps.Areas.Deals.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Deal>> GetPagedListAsync(DealGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Deal>> GetPagedListAsync(DealGetPagedListRequestParameter request, CancellationToken ct)
         {
             var temp = await _storage.Deals
                 .AsNoTracking()
@@ -52,34 +52,34 @@ namespace Crm.Apps.Areas.Deals.Services
                 .Include(x => x.Positions)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (!parameter.MinStartDateTime.HasValue || x.StartDateTime >= parameter.MinStartDateTime) &&
-                    (!parameter.MaxStartDateTime.HasValue || x.StartDateTime <= parameter.MaxStartDateTime) &&
-                    (!parameter.MinEndDateTime.HasValue || x.EndDateTime >= parameter.MinEndDateTime) &&
-                    (!parameter.MaxEndDateTime.HasValue || x.EndDateTime <= parameter.MaxEndDateTime) &&
-                    (parameter.MinSum.IsEmpty() || x.Sum >= parameter.MinSum) &&
-                    (parameter.MaxSum.IsEmpty() || x.Sum <= parameter.MaxSum) &&
-                    (parameter.MinSumWithoutDiscount.IsEmpty() ||
-                     x.SumWithoutDiscount >= parameter.MinSumWithoutDiscount) &&
-                    (parameter.MaxSumWithoutDiscount.IsEmpty() ||
-                     x.SumWithoutDiscount <= parameter.MaxSumWithoutDiscount) &&
-                    (parameter.MinFinishProbability == null || parameter.MinFinishProbability.Value == 0 ||
-                     x.FinishProbability >= parameter.MinFinishProbability.Value) &&
-                    (parameter.MaxFinishProbability == null || parameter.MaxFinishProbability.Value == 0 ||
-                     x.FinishProbability <= parameter.MaxFinishProbability) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (!request.MinStartDateTime.HasValue || x.StartDateTime >= request.MinStartDateTime) &&
+                    (!request.MaxStartDateTime.HasValue || x.StartDateTime <= request.MaxStartDateTime) &&
+                    (!request.MinEndDateTime.HasValue || x.EndDateTime >= request.MinEndDateTime) &&
+                    (!request.MaxEndDateTime.HasValue || x.EndDateTime <= request.MaxEndDateTime) &&
+                    (request.MinSum.IsEmpty() || x.Sum >= request.MinSum) &&
+                    (request.MaxSum.IsEmpty() || x.Sum <= request.MaxSum) &&
+                    (request.MinSumWithoutDiscount.IsEmpty() ||
+                     x.SumWithoutDiscount >= request.MinSumWithoutDiscount) &&
+                    (request.MaxSumWithoutDiscount.IsEmpty() ||
+                     x.SumWithoutDiscount <= request.MaxSumWithoutDiscount) &&
+                    (request.MinFinishProbability == null || request.MinFinishProbability.Value == 0 ||
+                     x.FinishProbability >= request.MinFinishProbability.Value) &&
+                    (request.MaxFinishProbability == null || request.MaxFinishProbability.Value == 0 ||
+                     x.FinishProbability <= request.MaxFinishProbability) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
             return temp
-                .Where(x => x.FilterByAdditional(parameter))
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                .Where(x => x.FilterByAdditional(request))
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToList();
         }
 

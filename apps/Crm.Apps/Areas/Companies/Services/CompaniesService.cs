@@ -7,7 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Companies.Helpers;
 using Crm.Apps.Areas.Companies.Models;
-using Crm.Apps.Areas.Companies.Parameters;
+using Crm.Apps.Areas.Companies.RequestParameters;
 using Crm.Apps.Areas.Companies.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -40,65 +40,65 @@ namespace Crm.Apps.Areas.Companies.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Company>> GetPagedListAsync(CompanyGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Company>> GetPagedListAsync(CompanyGetPagedListRequestParameter request, CancellationToken ct)
         {
             var temp = await _storage.Companies
                 .AsNoTracking()
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.LeadId.IsEmpty() || x.LeadId == parameter.LeadId) &&
-                    (parameter.FullName.IsEmpty() || EF.Functions.Like(x.FullName, $"{parameter.FullName}%")) &&
-                    (parameter.ShortName.IsEmpty() || EF.Functions.Like(x.ShortName, $"{parameter.ShortName}%")) &&
-                    (parameter.Phone.IsEmpty() || x.Phone == parameter.Phone) &&
-                    (parameter.Email.IsEmpty() || x.Email == parameter.Email) &&
-                    (parameter.TaxNumber.IsEmpty() || x.TaxNumber == parameter.TaxNumber) &&
-                    (parameter.RegistrationNumber.IsEmpty() || x.RegistrationNumber == parameter.RegistrationNumber) &&
-                    (!parameter.MinRegistrationDate.HasValue || x.RegistrationDate >= parameter.MinRegistrationDate) &&
-                    (!parameter.MaxRegistrationDate.HasValue || x.RegistrationDate <= parameter.MaxRegistrationDate) &&
-                    (!parameter.MinEmployeesCount.HasValue || x.EmployeesCount >= parameter.MinEmployeesCount) &&
-                    (!parameter.MaxEmployeesCount.HasValue || x.EmployeesCount <= parameter.MaxEmployeesCount) &&
-                    (!parameter.MinYearlyTurnover.HasValue || x.YearlyTurnover >= parameter.MinYearlyTurnover) &&
-                    (!parameter.MaxYearlyTurnover.HasValue || x.YearlyTurnover <= parameter.MaxYearlyTurnover) &&
-                    (parameter.JuridicalPostcode.IsEmpty() || x.JuridicalPostcode == parameter.JuridicalPostcode) &&
-                    (parameter.JuridicalCountry.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalCountry, $"{parameter.JuridicalCountry}%")) &&
-                    (parameter.JuridicalRegion.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalRegion, $"{parameter.JuridicalRegion}%")) &&
-                    (parameter.JuridicalProvince.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalProvince, $"{parameter.JuridicalProvince}%")) &&
-                    (parameter.JuridicalCity.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalCity, $"{parameter.JuridicalCity}%")) &&
-                    (parameter.JuridicalStreet.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalStreet, $"{parameter.JuridicalStreet}%")) &&
-                    (parameter.JuridicalHouse.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalHouse, $"{parameter.JuridicalHouse}%")) &&
-                    (parameter.JuridicalApartment.IsEmpty() || x.JuridicalApartment == parameter.JuridicalApartment) &&
-                    (parameter.LegalPostcode.IsEmpty() || x.LegalPostcode == parameter.LegalPostcode) &&
-                    (parameter.LegalCountry.IsEmpty() ||
-                     EF.Functions.Like(x.LegalCountry, $"{parameter.LegalCountry}%")) &&
-                    (parameter.LegalRegion.IsEmpty() ||
-                     EF.Functions.Like(x.LegalRegion, $"{parameter.LegalRegion}%")) &&
-                    (parameter.LegalProvince.IsEmpty() ||
-                     EF.Functions.Like(x.LegalProvince, $"{parameter.LegalProvince}%")) &&
-                    (parameter.LegalCity.IsEmpty() || EF.Functions.Like(x.LegalCity, $"{parameter.LegalCity}%")) &&
-                    (parameter.LegalStreet.IsEmpty() ||
-                     EF.Functions.Like(x.LegalStreet, $"{parameter.LegalStreet}%")) &&
-                    (parameter.LegalHouse.IsEmpty() || EF.Functions.Like(x.LegalHouse, $"{parameter.LegalHouse}%")) &&
-                    (parameter.LegalApartment.IsEmpty() || x.LegalApartment == parameter.LegalApartment) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.LeadId.IsEmpty() || x.LeadId == request.LeadId) &&
+                    (request.FullName.IsEmpty() || EF.Functions.Like(x.FullName, $"{request.FullName}%")) &&
+                    (request.ShortName.IsEmpty() || EF.Functions.Like(x.ShortName, $"{request.ShortName}%")) &&
+                    (request.Phone.IsEmpty() || x.Phone == request.Phone) &&
+                    (request.Email.IsEmpty() || x.Email == request.Email) &&
+                    (request.TaxNumber.IsEmpty() || x.TaxNumber == request.TaxNumber) &&
+                    (request.RegistrationNumber.IsEmpty() || x.RegistrationNumber == request.RegistrationNumber) &&
+                    (!request.MinRegistrationDate.HasValue || x.RegistrationDate >= request.MinRegistrationDate) &&
+                    (!request.MaxRegistrationDate.HasValue || x.RegistrationDate <= request.MaxRegistrationDate) &&
+                    (!request.MinEmployeesCount.HasValue || x.EmployeesCount >= request.MinEmployeesCount) &&
+                    (!request.MaxEmployeesCount.HasValue || x.EmployeesCount <= request.MaxEmployeesCount) &&
+                    (!request.MinYearlyTurnover.HasValue || x.YearlyTurnover >= request.MinYearlyTurnover) &&
+                    (!request.MaxYearlyTurnover.HasValue || x.YearlyTurnover <= request.MaxYearlyTurnover) &&
+                    (request.JuridicalPostcode.IsEmpty() || x.JuridicalPostcode == request.JuridicalPostcode) &&
+                    (request.JuridicalCountry.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalCountry, $"{request.JuridicalCountry}%")) &&
+                    (request.JuridicalRegion.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalRegion, $"{request.JuridicalRegion}%")) &&
+                    (request.JuridicalProvince.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalProvince, $"{request.JuridicalProvince}%")) &&
+                    (request.JuridicalCity.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalCity, $"{request.JuridicalCity}%")) &&
+                    (request.JuridicalStreet.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalStreet, $"{request.JuridicalStreet}%")) &&
+                    (request.JuridicalHouse.IsEmpty() ||
+                     EF.Functions.Like(x.JuridicalHouse, $"{request.JuridicalHouse}%")) &&
+                    (request.JuridicalApartment.IsEmpty() || x.JuridicalApartment == request.JuridicalApartment) &&
+                    (request.LegalPostcode.IsEmpty() || x.LegalPostcode == request.LegalPostcode) &&
+                    (request.LegalCountry.IsEmpty() ||
+                     EF.Functions.Like(x.LegalCountry, $"{request.LegalCountry}%")) &&
+                    (request.LegalRegion.IsEmpty() ||
+                     EF.Functions.Like(x.LegalRegion, $"{request.LegalRegion}%")) &&
+                    (request.LegalProvince.IsEmpty() ||
+                     EF.Functions.Like(x.LegalProvince, $"{request.LegalProvince}%")) &&
+                    (request.LegalCity.IsEmpty() || EF.Functions.Like(x.LegalCity, $"{request.LegalCity}%")) &&
+                    (request.LegalStreet.IsEmpty() ||
+                     EF.Functions.Like(x.LegalStreet, $"{request.LegalStreet}%")) &&
+                    (request.LegalHouse.IsEmpty() || EF.Functions.Like(x.LegalHouse, $"{request.LegalHouse}%")) &&
+                    (request.LegalApartment.IsEmpty() || x.LegalApartment == request.LegalApartment) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
             return temp
-                .Where(x => x.FilterByAdditional(parameter))
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                .Where(x => x.FilterByAdditional(request))
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToList();
         }
 

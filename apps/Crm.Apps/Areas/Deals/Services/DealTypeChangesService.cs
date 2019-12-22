@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Deals.Models;
-using Crm.Apps.Areas.Deals.Parameters;
+using Crm.Apps.Areas.Deals.RequestParameters;
 using Crm.Apps.Areas.Deals.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -21,19 +21,19 @@ namespace Crm.Apps.Areas.Deals.Services
         }
 
         public Task<List<DealTypeChange>> GetPagedListAsync(
-            DealTypeChangeGetPagedListParameter parameter,
+            DealTypeChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.DealTypeChanges
                 .AsNoTracking()
                 .Where(x =>
-                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.TypeId.IsEmpty() || x.TypeId == parameter.TypeId) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
+                    (request.TypeId.IsEmpty() || x.TypeId == request.TypeId) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
     }

@@ -8,7 +8,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Leads.Helpers;
 using Crm.Apps.Areas.Leads.Models;
-using Crm.Apps.Areas.Leads.Parameters;
+using Crm.Apps.Areas.Leads.RequestParameters;
 using Crm.Apps.Areas.Leads.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -41,44 +41,44 @@ namespace Crm.Apps.Areas.Leads.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Lead>> GetPagedListAsync(LeadGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Lead>> GetPagedListAsync(LeadGetPagedListRequestParameter request, CancellationToken ct)
         {
             var temp = await _storage.Leads
                 .AsNoTracking()
                 .Include(x => x.Source)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
-                    (parameter.Phone.IsEmpty() || x.Phone == parameter.Phone) &&
-                    (parameter.Email.IsEmpty() || x.Email == parameter.Email) &&
-                    (parameter.CompanyName.IsEmpty() ||
-                     EF.Functions.Like(x.CompanyName, $"{parameter.CompanyName}%")) &&
-                    (parameter.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{parameter.Post}%")) &&
-                    (parameter.Postcode.IsEmpty() || x.Postcode == parameter.Postcode) &&
-                    (parameter.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{parameter.Country}%")) &&
-                    (parameter.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{parameter.Region}%")) &&
-                    (parameter.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{parameter.Province}%")) &&
-                    (parameter.City.IsEmpty() || EF.Functions.Like(x.City, $"{parameter.City}%")) &&
-                    (parameter.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{parameter.Street}%")) &&
-                    (parameter.House.IsEmpty() || EF.Functions.Like(x.House, $"{parameter.House}%")) &&
-                    (parameter.Apartment.IsEmpty() || x.Apartment == parameter.Apartment) &&
-                    (parameter.MinOpportunitySum.IsEmpty() || x.OpportunitySum >= parameter.MinOpportunitySum.Value) &&
-                    (parameter.MaxOpportunitySum.IsEmpty() || x.OpportunitySum <= parameter.MaxOpportunitySum) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{request.Surname}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{request.Patronymic}%")) &&
+                    (request.Phone.IsEmpty() || x.Phone == request.Phone) &&
+                    (request.Email.IsEmpty() || x.Email == request.Email) &&
+                    (request.CompanyName.IsEmpty() ||
+                     EF.Functions.Like(x.CompanyName, $"{request.CompanyName}%")) &&
+                    (request.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{request.Post}%")) &&
+                    (request.Postcode.IsEmpty() || x.Postcode == request.Postcode) &&
+                    (request.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{request.Country}%")) &&
+                    (request.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{request.Region}%")) &&
+                    (request.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{request.Province}%")) &&
+                    (request.City.IsEmpty() || EF.Functions.Like(x.City, $"{request.City}%")) &&
+                    (request.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{request.Street}%")) &&
+                    (request.House.IsEmpty() || EF.Functions.Like(x.House, $"{request.House}%")) &&
+                    (request.Apartment.IsEmpty() || x.Apartment == request.Apartment) &&
+                    (request.MinOpportunitySum.IsEmpty() || x.OpportunitySum >= request.MinOpportunitySum.Value) &&
+                    (request.MaxOpportunitySum.IsEmpty() || x.OpportunitySum <= request.MaxOpportunitySum) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
             return temp
-                .Where(x => x.FilterByAdditional(parameter))
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                .Where(x => x.FilterByAdditional(request))
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToList();
         }
 

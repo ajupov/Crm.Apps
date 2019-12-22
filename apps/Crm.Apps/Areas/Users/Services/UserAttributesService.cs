@@ -7,7 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Users.Helpers;
 using Crm.Apps.Areas.Users.Models;
-using Crm.Apps.Areas.Users.Parameters;
+using Crm.Apps.Areas.Users.RequestParameters;
 using Crm.Apps.Areas.Users.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -37,23 +37,23 @@ namespace Crm.Apps.Areas.Users.Services
                 .Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
-        public Task<List<UserAttribute>> GetPagedListAsync(UserAttributeGetPagedListParameter parameter,
+        public Task<List<UserAttribute>> GetPagedListAsync(UserAttributeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.UserAttributes
                 .AsNoTracking()
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Types == null || !parameter.Types.Any() || parameter.Types.Contains(x.Type)) &&
-                    (parameter.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{parameter.Key}%")) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
+                    (request.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{request.Key}%")) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
 

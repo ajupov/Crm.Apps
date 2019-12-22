@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Products.Models;
-using Crm.Apps.Areas.Products.Parameters;
+using Crm.Apps.Areas.Products.RequestParameters;
 
 namespace Crm.Apps.Areas.Products.Helpers
 {
     public static class ProductsFiltersHelper
     {
-        public static bool FilterByAdditional(this Product product, ProductGetPagedListParameter parameter)
+        public static bool FilterByAdditional(this Product product, ProductGetPagedListRequestParameter request)
         {
-            return (parameter.Types == null || !parameter.Types.Any() ||
-                    parameter.Types.Any(x => TypePredicate(product, x))) &&
-                   (parameter.StatusIds == null || !parameter.StatusIds.Any() ||
-                    parameter.StatusIds.Any(x => StatusIdsPredicate(product, x))) &&
-                   (parameter.Attributes == null || !parameter.Attributes.Any() ||
-                    (parameter.AllAttributes is false
-                        ? parameter.Attributes.Any(x => AttributePredicate(product, x))
-                        : parameter.Attributes.All(x => AttributePredicate(product, x)))) &&
-                   (parameter.CategoryIds == null || !parameter.CategoryIds.Any() ||
-                    (parameter.AllCategoryIds is false
-                        ? parameter.CategoryIds.Any(x => CategoryPredicate(product, x))
-                        : parameter.CategoryIds.All(x => CategoryPredicate(product, x))));
+            return (request.Types == null || !request.Types.Any() ||
+                    request.Types.Any(x => TypePredicate(product, x))) &&
+                   (request.StatusIds == null || !request.StatusIds.Any() ||
+                    request.StatusIds.Any(x => StatusIdsPredicate(product, x))) &&
+                   (request.Attributes == null || !request.Attributes.Any() ||
+                    (request.AllAttributes is false
+                        ? request.Attributes.Any(x => AttributePredicate(product, x))
+                        : request.Attributes.All(x => AttributePredicate(product, x)))) &&
+                   (request.CategoryIds == null || !request.CategoryIds.Any() ||
+                    (request.AllCategoryIds is false
+                        ? request.CategoryIds.Any(x => CategoryPredicate(product, x))
+                        : request.CategoryIds.All(x => CategoryPredicate(product, x))));
         }
 
         private static bool TypePredicate(Product product, ProductType type)

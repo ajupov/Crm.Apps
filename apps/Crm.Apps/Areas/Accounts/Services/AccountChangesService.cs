@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Accounts.Models;
-using Crm.Apps.Areas.Accounts.Parameters;
+using Crm.Apps.Areas.Accounts.RequestParameters;
 using Crm.Apps.Areas.Accounts.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -20,19 +20,19 @@ namespace Crm.Apps.Areas.Accounts.Services
             _storage = storage;
         }
 
-        public Task<List<AccountChange>> GetPagedListAsync(AccountChangeGetPagedListParameter parameter,
+        public Task<List<AccountChange>> GetPagedListAsync(AccountChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.AccountChanges
                 .AsNoTracking()
                 .Where(x =>
-                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
     }

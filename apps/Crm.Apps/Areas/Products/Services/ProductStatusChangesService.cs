@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Products.Models;
-using Crm.Apps.Areas.Products.Parameters;
+using Crm.Apps.Areas.Products.RequestParameters;
 using Crm.Apps.Areas.Products.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -21,19 +21,19 @@ namespace Crm.Apps.Areas.Products.Services
         }
 
         public Task<List<ProductStatusChange>> GetPagedListAsync(
-            ProductStatusChangeGetPagedListParameter parameter,
+            ProductStatusChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.ProductStatusChanges
                 .AsNoTracking()
                 .Where(x =>
-                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.StatusId.IsEmpty() || x.StatusId == parameter.StatusId) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
+                    (request.StatusId.IsEmpty() || x.StatusId == request.StatusId) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
     }

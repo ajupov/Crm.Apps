@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Leads.Models;
-using Crm.Apps.Areas.Leads.Parameters;
+using Crm.Apps.Areas.Leads.RequestParameters;
 using Crm.Apps.Areas.Leads.Services;
 using Crm.Apps.Utils;
 using Crm.Common.Types;
@@ -64,12 +64,12 @@ namespace Crm.Apps.Areas.Leads.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<LeadAttribute>>> GetPagedList(
-            LeadAttributeGetPagedListParameter parameter,
+            LeadAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            parameter.AccountId = _userContext.AccountId;
+            request.AccountId = _userContext.AccountId;
 
-            var attributes = await _leadAttributesService.GetPagedListAsync(parameter, ct);
+            var attributes = await _leadAttributesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(
                 attributes,

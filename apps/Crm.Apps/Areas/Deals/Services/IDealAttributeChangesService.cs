@@ -2,14 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Deals.Models;
-using Crm.Apps.Areas.Deals.Parameters;
+using Crm.Apps.Areas.Deals.RequestParameters;
 
 namespace Crm.Apps.Areas.Deals.Services
 {
     public interface IDealAttributeChangesService
     {
         Task<List<DealAttributeChange>> GetPagedListAsync(
-            DealAttributeChangeGetPagedListParameter parameter,
+            DealAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct);
     }
 }

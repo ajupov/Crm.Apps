@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Companies.Models;
-using Crm.Apps.Areas.Companies.Parameters;
+using Crm.Apps.Areas.Companies.RequestParameters;
 using Crm.Apps.Areas.Companies.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -21,19 +21,19 @@ namespace Crm.Apps.Areas.Companies.Services
         }
 
         public Task<List<CompanyChange>> GetPagedListAsync(
-            CompanyChangeGetPagedListParameter parameter,
+            CompanyChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.CompanyChanges
                 .AsNoTracking()
                 .Where(x =>
-                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.CompanyId.IsEmpty() || x.CompanyId == parameter.CompanyId) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
+                    (request.CompanyId.IsEmpty() || x.CompanyId == request.CompanyId) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
     }

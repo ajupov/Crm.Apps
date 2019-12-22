@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Users.Models;
-using Crm.Apps.Areas.Users.Parameters;
+using Crm.Apps.Areas.Users.RequestParameters;
 using Crm.Apps.Areas.Users.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
@@ -33,11 +33,11 @@ namespace Crm.Apps.Areas.Users.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<UserAttributeChange>>> GetPagedList(
-            UserAttributeChangeGetPagedListParameter parameter,
+            UserAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var attribute = await _userAttributesService.GetAsync(parameter.AttributeId, ct);
-            var changes = await _userAttributeChangesService.GetPagedListAsync(parameter, ct);
+            var attribute = await _userAttributesService.GetAsync(request.AttributeId, ct);
+            var changes = await _userAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(changes, Role.AccountOwning, attribute.AccountId);
         }

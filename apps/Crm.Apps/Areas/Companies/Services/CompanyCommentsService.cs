@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Companies.Models;
-using Crm.Apps.Areas.Companies.Parameters;
+using Crm.Apps.Areas.Companies.RequestParameters;
 using Crm.Apps.Areas.Companies.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -23,20 +23,20 @@ namespace Crm.Apps.Areas.Companies.Services
         }
 
         public Task<List<CompanyComment>> GetPagedListAsync(
-            CompanyCommentGetPagedListParameter parameter,
+            CompanyCommentGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.CompanyComments
                 .AsNoTracking()
                 .Where(x =>
-                    x.CompanyId == parameter.CompanyId &&
-                    (parameter.CommentatorUserId.IsEmpty() || x.CommentatorUserId == parameter.CommentatorUserId) &&
-                    (parameter.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{parameter.Value}%")) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    x.CompanyId == request.CompanyId &&
+                    (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&
+                    (request.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{request.Value}%")) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
 

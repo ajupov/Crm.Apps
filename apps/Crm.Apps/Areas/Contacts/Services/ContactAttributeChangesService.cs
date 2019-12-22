@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Areas.Contacts.Models;
-using Crm.Apps.Areas.Contacts.Parameters;
+using Crm.Apps.Areas.Contacts.RequestParameters;
 using Crm.Apps.Areas.Contacts.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -21,18 +21,18 @@ namespace Crm.Apps.Areas.Contacts.Services
         }
 
         public Task<List<ContactAttributeChange>> GetPagedListAsync(
-            ContactAttributeChangeGetPagedListParameter parameter, CancellationToken ct)
+            ContactAttributeChangeGetPagedListRequestParameter request, CancellationToken ct)
         {
             return _storage.ContactAttributeChanges
                 .AsNoTracking()
                 .Where(x =>
-                    (parameter.ChangerUserId.IsEmpty() || x.ChangerUserId == parameter.ChangerUserId) &&
-                    (parameter.AttributeId.IsEmpty() || x.AttributeId == parameter.AttributeId) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
+                    (request.AttributeId.IsEmpty() || x.AttributeId == request.AttributeId) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
     }

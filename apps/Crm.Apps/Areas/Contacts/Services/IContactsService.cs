@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Contacts.Models;
-using Crm.Apps.Areas.Contacts.Parameters;
+using Crm.Apps.Areas.Contacts.RequestParameters;
 
 namespace Crm.Apps.Areas.Contacts.Services
 {
@@ -13,7 +13,7 @@ namespace Crm.Apps.Areas.Contacts.Services
 
         Task<List<Contact>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<Contact>> GetPagedListAsync(ContactGetPagedListParameter parameter, CancellationToken ct);
+        Task<List<Contact>> GetPagedListAsync(ContactGetPagedListRequestParameter request, CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, Contact contact, CancellationToken ct);
 

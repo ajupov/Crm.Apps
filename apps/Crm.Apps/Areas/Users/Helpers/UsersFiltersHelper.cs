@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Users.Models;
-using Crm.Apps.Areas.Users.Parameters;
+using Crm.Apps.Areas.Users.RequestParameters;
 using Crm.Common.UserContext;
 
 namespace Crm.Apps.Areas.Users.Helpers
 {
     public static class UsersFiltersHelper
     {
-        public static bool FilterByAdditional(this User user, UserGetPagedListParameter parameter)
+        public static bool FilterByAdditional(this User user, UserGetPagedListRequestParameter request)
         {
-            return (parameter.Attributes == null || !parameter.Attributes.Any() ||
-                    (parameter.AllAttributes is false
-                        ? parameter.Attributes.Any(x => AttributePredicate(user, x))
-                        : parameter.Attributes.All(x => AttributePredicate(user, x)))) &&
-                   (parameter.Permissions == null || !parameter.Permissions.Any() ||
-                    (parameter.AllPermissions is false
-                        ? parameter.Permissions.Any(x => PermissionPredicate(user, x))
-                        : parameter.Permissions.All(x => PermissionPredicate(user, x)))) &&
-                   (parameter.GroupIds == null || !parameter.GroupIds.Any() ||
-                    (parameter.AllGroupIds is false
-                        ? parameter.GroupIds.Any(x => GroupIdPredicate(user, x))
-                        : parameter.GroupIds.All(x => GroupIdPredicate(user, x))));
+            return (request.Attributes == null || !request.Attributes.Any() ||
+                    (request.AllAttributes is false
+                        ? request.Attributes.Any(x => AttributePredicate(user, x))
+                        : request.Attributes.All(x => AttributePredicate(user, x)))) &&
+                   (request.Permissions == null || !request.Permissions.Any() ||
+                    (request.AllPermissions is false
+                        ? request.Permissions.Any(x => PermissionPredicate(user, x))
+                        : request.Permissions.All(x => PermissionPredicate(user, x)))) &&
+                   (request.GroupIds == null || !request.GroupIds.Any() ||
+                    (request.AllGroupIds is false
+                        ? request.GroupIds.Any(x => GroupIdPredicate(user, x))
+                        : request.GroupIds.All(x => GroupIdPredicate(user, x))));
         }
 
         private static bool AttributePredicate(User user, KeyValuePair<Guid, string> pair)

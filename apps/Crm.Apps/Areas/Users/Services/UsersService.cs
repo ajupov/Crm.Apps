@@ -7,7 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Users.Helpers;
 using Crm.Apps.Areas.Users.Models;
-using Crm.Apps.Areas.Users.Parameters;
+using Crm.Apps.Areas.Users.RequestParameters;
 using Crm.Apps.Areas.Users.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +42,7 @@ namespace Crm.Apps.Areas.Users.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<User>> GetPagedListAsync(UserGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<User>> GetPagedListAsync(UserGetPagedListRequestParameter request, CancellationToken ct)
         {
             var temp = await _storage.Users
                 .AsNoTracking()
@@ -51,23 +51,23 @@ namespace Crm.Apps.Areas.Users.Services
                 .Include(x => x.GroupLinks)
                 .Include(x => x.Settings)
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
-                    (!parameter.MinBirthDate.HasValue || x.BirthDate >= parameter.MinBirthDate) &&
-                    (!parameter.MaxBirthDate.HasValue || x.BirthDate <= parameter.MaxBirthDate) &&
-                    (!parameter.Gender.HasValue || x.Gender == parameter.Gender) &&
-                    (!parameter.IsLocked.HasValue || x.IsLocked == parameter.IsLocked) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{request.Surname}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{request.Patronymic}%")) &&
+                    (!request.MinBirthDate.HasValue || x.BirthDate >= request.MinBirthDate) &&
+                    (!request.MaxBirthDate.HasValue || x.BirthDate <= request.MaxBirthDate) &&
+                    (!request.Gender.HasValue || x.Gender == request.Gender) &&
+                    (!request.IsLocked.HasValue || x.IsLocked == request.IsLocked) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
-            return temp.Where(x => x.FilterByAdditional(parameter)).Skip(parameter.Offset).Take(parameter.Limit)
+            return temp.Where(x => x.FilterByAdditional(request)).Skip(request.Offset).Take(request.Limit)
                 .ToList();
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Deals.Models;
-using Crm.Apps.Areas.Deals.Parameters;
+using Crm.Apps.Areas.Deals.RequestParameters;
 using Crm.Apps.Areas.Deals.Services;
 using Crm.Apps.Utils;
 using Crm.Common.Types;
@@ -64,12 +64,12 @@ namespace Crm.Apps.Areas.Deals.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<DealAttribute>>> GetPagedList(
-            DealAttributeGetPagedListParameter parameter,
+            DealAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            parameter.AccountId = _userContext.AccountId;
+            request.AccountId = _userContext.AccountId;
 
-            var attributes = await _dealAttributesService.GetPagedListAsync(parameter, ct);
+            var attributes = await _dealAttributesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(
                 attributes,

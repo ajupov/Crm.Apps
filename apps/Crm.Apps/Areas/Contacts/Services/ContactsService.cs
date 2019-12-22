@@ -7,7 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Contacts.Helpers;
 using Crm.Apps.Areas.Contacts.Models;
-using Crm.Apps.Areas.Contacts.Parameters;
+using Crm.Apps.Areas.Contacts.RequestParameters;
 using Crm.Apps.Areas.Contacts.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -40,43 +40,43 @@ namespace Crm.Apps.Areas.Contacts.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Contact>> GetPagedListAsync(ContactGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Contact>> GetPagedListAsync(ContactGetPagedListRequestParameter request, CancellationToken ct)
         {
             var temp = await _storage.Contacts
                 .AsNoTracking()
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{parameter.Surname}%")) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{parameter.Patronymic}%")) &&
-                    (parameter.Phone.IsEmpty() || x.Phone == parameter.Phone) &&
-                    (parameter.Email.IsEmpty() || x.Email == parameter.Email) &&
-                    (parameter.TaxNumber.IsEmpty() || x.TaxNumber == parameter.TaxNumber) &&
-                    (parameter.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{parameter.Post}%")) &&
-                    (parameter.Postcode.IsEmpty() || x.Postcode == parameter.Postcode) &&
-                    (parameter.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{parameter.Country}%")) &&
-                    (parameter.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{parameter.Region}%")) &&
-                    (parameter.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{parameter.Province}%")) &&
-                    (parameter.City.IsEmpty() || EF.Functions.Like(x.City, $"{parameter.City}%")) &&
-                    (parameter.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{parameter.Street}%")) &&
-                    (parameter.House.IsEmpty() || EF.Functions.Like(x.House, $"{parameter.House}%")) &&
-                    (parameter.Apartment.IsEmpty() || x.Apartment == parameter.Apartment) &&
-                    (parameter.MinBirthDate == null || x.BirthDate >= parameter.MinBirthDate.Value) &&
-                    (parameter.MaxBirthDate == null || x.BirthDate <= parameter.MaxBirthDate) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{request.Surname}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{request.Patronymic}%")) &&
+                    (request.Phone.IsEmpty() || x.Phone == request.Phone) &&
+                    (request.Email.IsEmpty() || x.Email == request.Email) &&
+                    (request.TaxNumber.IsEmpty() || x.TaxNumber == request.TaxNumber) &&
+                    (request.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{request.Post}%")) &&
+                    (request.Postcode.IsEmpty() || x.Postcode == request.Postcode) &&
+                    (request.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{request.Country}%")) &&
+                    (request.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{request.Region}%")) &&
+                    (request.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{request.Province}%")) &&
+                    (request.City.IsEmpty() || EF.Functions.Like(x.City, $"{request.City}%")) &&
+                    (request.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{request.Street}%")) &&
+                    (request.House.IsEmpty() || EF.Functions.Like(x.House, $"{request.House}%")) &&
+                    (request.Apartment.IsEmpty() || x.Apartment == request.Apartment) &&
+                    (request.MinBirthDate == null || x.BirthDate >= request.MinBirthDate.Value) &&
+                    (request.MaxBirthDate == null || x.BirthDate <= request.MaxBirthDate) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
             return temp
-                .Where(x => x.FilterByAdditional(parameter))
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                .Where(x => x.FilterByAdditional(request))
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToList();
         }
 

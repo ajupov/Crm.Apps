@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Contacts.Models;
-using Crm.Apps.Areas.Contacts.Parameters;
+using Crm.Apps.Areas.Contacts.RequestParameters;
 using Crm.Apps.Areas.Contacts.Services;
 using Crm.Common.UserContext;
 using Crm.Common.UserContext.Attributes;
@@ -33,11 +33,11 @@ namespace Crm.Apps.Areas.Contacts.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<ContactComment>>> GetPagedList(
-            ContactCommentGetPagedListParameter parameter, 
+            ContactCommentGetPagedListRequestParameter request, 
             CancellationToken ct = default)
         {
-            var contact = await _contactsService.GetAsync(parameter.ContactId, ct);
-            var comments = await _contactCommentsService.GetPagedListAsync(parameter, ct);
+            var contact = await _contactsService.GetAsync(request.ContactId, ct);
+            var comments = await _contactCommentsService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(comments, new[] {Role.AccountOwning, Role.SalesManagement}, contact.AccountId);
         }

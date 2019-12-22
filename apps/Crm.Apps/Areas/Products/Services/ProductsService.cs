@@ -8,7 +8,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Areas.Products.Helpers;
 using Crm.Apps.Areas.Products.Models;
-using Crm.Apps.Areas.Products.Parameters;
+using Crm.Apps.Areas.Products.RequestParameters;
 using Crm.Apps.Areas.Products.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +42,7 @@ namespace Crm.Apps.Areas.Products.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Product>> GetPagedListAsync(ProductGetPagedListParameter parameter, CancellationToken ct)
+        public async Task<List<Product>> GetPagedListAsync(ProductGetPagedListRequestParameter request, CancellationToken ct)
         {
             var temp = await _storage.Products
                 .AsNoTracking()
@@ -50,25 +50,25 @@ namespace Crm.Apps.Areas.Products.Services
                 .Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks)
                 .Where(x =>
-                    (parameter.AccountId.IsEmpty() || x.AccountId == parameter.AccountId) &&
-                    (parameter.ParentProductId.IsEmpty() || x.ParentProductId == parameter.ParentProductId) &&
-                    (parameter.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{parameter.Name}%")) &&
-                    (parameter.VendorCode.IsEmpty() || x.VendorCode == parameter.VendorCode) &&
-                    (parameter.MinPrice.IsEmpty() || x.Price >= parameter.MinPrice.Value) &&
-                    (parameter.MaxPrice.IsEmpty() || x.Price <= parameter.MaxPrice) &&
-                    (!parameter.IsHidden.HasValue || x.IsHidden == parameter.IsHidden) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
+                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (request.ParentProductId.IsEmpty() || x.ParentProductId == request.ParentProductId) &&
+                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.VendorCode.IsEmpty() || x.VendorCode == request.VendorCode) &&
+                    (request.MinPrice.IsEmpty() || x.Price >= request.MinPrice.Value) &&
+                    (request.MaxPrice.IsEmpty() || x.Price <= request.MaxPrice) &&
+                    (!request.IsHidden.HasValue || x.IsHidden == request.IsHidden) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
                 .ToListAsync(ct);
 
             return temp
-                .Where(x => x.FilterByAdditional(parameter))
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                .Where(x => x.FilterByAdditional(request))
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToList();
         }
 

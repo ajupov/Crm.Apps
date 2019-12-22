@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Helpers;
 using Crm.Apps.Areas.Accounts.Models;
-using Crm.Apps.Areas.Accounts.Parameters;
+using Crm.Apps.Areas.Accounts.RequestParameters;
 using Crm.Apps.Areas.Accounts.Storages;
 using Crm.Apps.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -37,20 +37,20 @@ namespace Crm.Apps.Areas.Accounts.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<Account>> GetPagedListAsync(AccountGetPagedListParameter parameter, CancellationToken ct)
+        public Task<List<Account>> GetPagedListAsync(AccountGetPagedListRequestParameter request, CancellationToken ct)
         {
             return _storage.Accounts
                 .AsNoTracking()
                 .Where(x =>
-                    (!parameter.IsLocked.HasValue || x.IsLocked == parameter.IsLocked) &&
-                    (!parameter.IsDeleted.HasValue || x.IsDeleted == parameter.IsDeleted) &&
-                    (!parameter.MinCreateDate.HasValue || x.CreateDateTime >= parameter.MinCreateDate) &&
-                    (!parameter.MaxCreateDate.HasValue || x.CreateDateTime <= parameter.MaxCreateDate) &&
-                    (!parameter.MinModifyDate.HasValue || x.ModifyDateTime >= parameter.MinModifyDate) &&
-                    (!parameter.MaxModifyDate.HasValue || x.ModifyDateTime <= parameter.MaxModifyDate))
-                .SortBy(parameter.SortBy, parameter.OrderBy)
-                .Skip(parameter.Offset)
-                .Take(parameter.Limit)
+                    (!request.IsLocked.HasValue || x.IsLocked == request.IsLocked) &&
+                    (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
+                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
+                    (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .SortBy(request.SortBy, request.OrderBy)
+                .Skip(request.Offset)
+                .Take(request.Limit)
                 .ToListAsync(ct);
         }
 

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Areas.Accounts.Models;
-using Crm.Apps.Areas.Accounts.Parameters;
+using Crm.Apps.Areas.Accounts.RequestParameters;
 using Crm.Apps.Areas.Accounts.Services;
 using Crm.Apps.Utils;
 using Crm.Common.UserContext;
@@ -57,10 +57,10 @@ namespace Crm.Apps.Areas.Accounts.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<Account>>> GetPagedList(
-            AccountGetPagedListParameter parameter,
+            AccountGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return await _accountsService.GetPagedListAsync(parameter, ct);
+            return await _accountsService.GetPagedListAsync(request, ct);
         }
 
         [HttpPost("Create")]
