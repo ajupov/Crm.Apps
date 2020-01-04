@@ -1,9 +1,9 @@
-﻿using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Settings;
+﻿using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Clients.Deals
+namespace Crm.Apps.Clients.Deals
 {
     public static class DealsClientExtensions
     {

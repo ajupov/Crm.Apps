@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Products.Models;
+using Crm.Apps.Clients.Products.Models;
 
-namespace Crm.Clients.Products.Clients
+namespace Crm.Apps.Clients.Products.Clients
 {
     public interface IProductStatusChangesClient
     {

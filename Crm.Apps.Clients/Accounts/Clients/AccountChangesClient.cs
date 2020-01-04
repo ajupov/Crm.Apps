@@ -1,14 +1,12 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
-using Crm.Clients.Accounts.RequestParameters;
-using Crm.Clients.Accounts.Settings;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Accounts.Models;
+using Crm.Apps.Clients.Accounts.RequestParameters;
+using Crm.Apps.Clients.Accounts.Settings;
 using Microsoft.Extensions.Options;
-using UriBuilder = Crm.Utils.Http.UriBuilder;
 
-namespace Crm.Clients.Accounts.Clients
+namespace Crm.Apps.Clients.Accounts.Clients
 {
     public class AccountChangesClient : IAccountChangesClient
     {

@@ -1,7 +1,6 @@
 ﻿using System;
-using Crm.Common.Types;
 
-namespace Crm.Clients.Products.Models
+namespace Crm.Apps.Clients.Products.Models
 {
     public class ProductAttribute
     {

@@ -1,4 +1,4 @@
-namespace Crm.Clients.Contacts.Settings
+namespace Crm.Apps.Clients.Contacts.Settings
 {
     public class ContactsClientSettings
     {

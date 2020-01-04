@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crm.Clients.Products.Models
+namespace Crm.Apps.Clients.Products.Models
 {
     public class Product
     {

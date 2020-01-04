@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Contacts.Models;
-using Crm.Clients.Contacts.Settings;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.Clients.Contacts.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Clients.Contacts.Clients
+namespace Crm.Apps.Clients.Contacts.Clients
 {
     public class ContactCommentsClient : IContactCommentsClient
     {

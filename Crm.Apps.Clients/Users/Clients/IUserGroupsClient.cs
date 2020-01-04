@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Models;
+using Crm.Apps.Clients.Users.Models;
 
-namespace Crm.Clients.Users.Clients
+namespace Crm.Apps.Clients.Users.Clients
 {
     public interface IUserGroupsClient
     {

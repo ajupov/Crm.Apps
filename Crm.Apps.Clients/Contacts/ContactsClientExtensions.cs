@@ -1,9 +1,9 @@
-﻿using Crm.Clients.Contacts.Clients;
-using Crm.Clients.Contacts.Settings;
+﻿using Crm.Apps.Clients.Contacts.Clients;
+using Crm.Apps.Clients.Contacts.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Clients.Contacts
+namespace Crm.Apps.Clients.Contacts
 {
     public static class ContactsClientExtensions
     {

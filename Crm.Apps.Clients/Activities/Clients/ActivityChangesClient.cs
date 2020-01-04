@@ -1,14 +1,12 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Models;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Clients.Activities.Settings;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.RequestParameters;
+using Crm.Apps.Clients.Activities.Settings;
 using Microsoft.Extensions.Options;
-using UriBuilder = Crm.Utils.Http.UriBuilder;
 
-namespace Crm.Clients.Activities.Clients
+namespace Crm.Apps.Clients.Activities.Clients
 {
     public class ActivityChangesClient : IActivityChangesClient
     {

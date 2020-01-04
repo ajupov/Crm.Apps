@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Contacts.Models;
+using Crm.Apps.Clients.Contacts.Models;
 
-namespace Crm.Clients.Contacts.Clients
+namespace Crm.Apps.Clients.Contacts.Clients
 {
     public interface IContactChangesClient
     {

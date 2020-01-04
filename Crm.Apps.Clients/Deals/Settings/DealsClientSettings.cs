@@ -1,4 +1,4 @@
-namespace Crm.Clients.Deals.Settings
+namespace Crm.Apps.Clients.Deals.Settings
 {
     public class DealsClientSettings
     {

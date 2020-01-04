@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Crm.Clients.Users.Models
+namespace Crm.Apps.Clients.Users.Models
 {
     public class UserGroup
     {

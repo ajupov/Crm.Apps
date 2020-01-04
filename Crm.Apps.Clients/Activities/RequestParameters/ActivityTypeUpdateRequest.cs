@@ -1,6 +1,6 @@
 using System;
 
-namespace Crm.Clients.Activities.RequestParameters
+namespace Crm.Apps.Clients.Activities.RequestParameters
 {
     public class ActivityTypeUpdateRequest
     {

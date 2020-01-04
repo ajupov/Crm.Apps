@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
+using Crm.Apps.Clients.Accounts.Models;
 
-namespace Crm.Clients.Accounts.Clients
+namespace Crm.Apps.Clients.Accounts.Clients
 {
     public interface IAccountSettingsClient
     {

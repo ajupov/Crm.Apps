@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Models;
-using Crm.Clients.Deals.Settings;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Clients.Deals.Clients
+namespace Crm.Apps.Clients.Deals.Clients
 {
     public class DealChangesClient : IDealChangesClient
     {

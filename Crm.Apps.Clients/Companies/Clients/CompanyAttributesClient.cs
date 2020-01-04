@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Companies.Models;
-using Crm.Clients.Companies.Settings;
-using Crm.Common.Types;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Companies.Models;
+using Crm.Apps.Clients.Companies.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Clients.Companies.Clients
+namespace Crm.Apps.Clients.Companies.Clients
 {
     public class CompanyAttributesClient : ICompanyAttributesClient
     {

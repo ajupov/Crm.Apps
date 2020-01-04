@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Models;
-using Crm.Clients.Users.Settings;
-using Crm.Common.UserContext;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Users.Models;
+using Crm.Apps.Clients.Users.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Clients.Users.Clients
+namespace Crm.Apps.Clients.Users.Clients
 {
     public class UsersClient : IUsersClient
     {

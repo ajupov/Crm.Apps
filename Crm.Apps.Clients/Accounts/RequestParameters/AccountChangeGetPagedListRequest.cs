@@ -1,6 +1,6 @@
 using System;
 
-namespace Crm.Clients.Accounts.RequestParameters
+namespace Crm.Apps.Clients.Accounts.RequestParameters
 {
     public class AccountChangeGetPagedListRequest
     {

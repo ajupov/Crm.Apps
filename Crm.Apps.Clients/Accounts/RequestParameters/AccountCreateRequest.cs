@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Crm.Clients.Accounts.Models;
+using Crm.Apps.Clients.Accounts.Models;
 
-namespace Crm.Clients.Accounts.RequestParameters
+namespace Crm.Apps.Clients.Accounts.RequestParameters
 {
     public class AccountCreateRequest
     {

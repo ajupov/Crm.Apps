@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Leads.Models;
+using Crm.Apps.Clients.Leads.Models;
 
-namespace Crm.Clients.Leads.Clients
+namespace Crm.Apps.Clients.Leads.Clients
 {
     public interface ILeadChangesClient
     {

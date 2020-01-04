@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.Models;
 
-namespace Crm.Clients.Deals.Clients
+namespace Crm.Apps.Clients.Deals.Clients
 {
     public interface IDealChangesClient
     {

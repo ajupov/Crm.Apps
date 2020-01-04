@@ -1,7 +1,6 @@
 using System;
-using Crm.Common.Types;
 
-namespace Crm.Clients.Activities.RequestParameters
+namespace Crm.Apps.Clients.Activities.RequestParameters
 {
     public class ActivityAttributeCreateRequest
     {

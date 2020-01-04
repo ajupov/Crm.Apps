@@ -1,4 +1,4 @@
-namespace Crm.Clients.Accounts.Settings
+namespace Crm.Apps.Clients.Accounts.Settings
 {
     public class AccountsClientSettings
     {

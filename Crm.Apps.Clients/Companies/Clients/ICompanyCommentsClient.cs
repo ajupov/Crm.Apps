@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Companies.Models;
+using Crm.Apps.Clients.Companies.Models;
 
-namespace Crm.Clients.Companies.Clients
+namespace Crm.Apps.Clients.Companies.Clients
 {
     public interface ICompanyCommentsClient
     {

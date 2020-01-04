@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Clients.Users.Models
+namespace Crm.Apps.Clients.Users.Models
 {
     public class UserSetting
     {

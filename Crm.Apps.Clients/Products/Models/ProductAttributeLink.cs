@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Clients.Products.Models
+namespace Crm.Apps.Clients.Products.Models
 {
     public class ProductAttributeLink
     {

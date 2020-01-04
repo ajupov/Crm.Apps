@@ -1,9 +1,9 @@
-﻿using Crm.Clients.Users.Clients;
-using Crm.Clients.Users.Settings;
+﻿using Crm.Apps.Clients.Users.Clients;
+using Crm.Apps.Clients.Users.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Clients.Users
+namespace Crm.Apps.Clients.Users
 {
     public static class UsersClientExtensions
     {

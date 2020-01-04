@@ -1,4 +1,4 @@
-namespace Crm.Clients.Companies.Models
+namespace Crm.Apps.Clients.Companies.Models
 {
     public enum CompanyType : byte
     {

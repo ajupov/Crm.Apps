@@ -1,4 +1,4 @@
-namespace Crm.Clients.Leads.Settings
+namespace Crm.Apps.Clients.Leads.Settings
 {
     public class LeadsClientSettings
     {

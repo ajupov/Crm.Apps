@@ -1,9 +1,9 @@
-﻿using Crm.Clients.Products.Settings;
-using Crm.Clients.Products.Clients;
+﻿using Crm.Apps.Clients.Products.Clients;
+using Crm.Apps.Clients.Products.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Clients.Products
+namespace Crm.Apps.Clients.Products
 {
     public static class ProductsClientExtensions
     {

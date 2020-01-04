@@ -2,12 +2,11 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
-using Crm.Clients.Accounts.Settings;
-using Crm.Utils.Http;
+using Crm.Apps.Clients.Accounts.Models;
+using Crm.Apps.Clients.Accounts.Settings;
 using Microsoft.Extensions.Options;
 
-namespace Crm.Clients.Accounts.Clients
+namespace Crm.Apps.Clients.Accounts.Clients
 {
     public class AccountSettingsClient : IAccountSettingsClient
     {

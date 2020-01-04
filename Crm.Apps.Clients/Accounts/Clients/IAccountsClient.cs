@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
-using Crm.Clients.Accounts.RequestParameters;
+using Crm.Apps.Clients.Accounts.Models;
+using Crm.Apps.Clients.Accounts.RequestParameters;
 
-namespace Crm.Clients.Accounts.Clients
+namespace Crm.Apps.Clients.Accounts.Clients
 {
     public interface IAccountsClient
     {

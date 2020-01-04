@@ -1,4 +1,4 @@
-namespace Crm.Clients.Activities.Settings
+namespace Crm.Apps.Clients.Activities.Settings
 {
     public class ActivitiesClientSettings
     {

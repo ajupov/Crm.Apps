@@ -1,6 +1,6 @@
 using System;
 
-namespace Crm.Clients.Activities.Models
+namespace Crm.Apps.Clients.Activities.Models
 {
     public class ActivityType
     {

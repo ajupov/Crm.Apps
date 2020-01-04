@@ -1,7 +1,6 @@
 ﻿using System;
-using Crm.Common.Types;
 
-namespace Crm.Clients.Users.Models
+namespace Crm.Apps.Clients.Users.Models
 {
     public class UserAttribute
     {

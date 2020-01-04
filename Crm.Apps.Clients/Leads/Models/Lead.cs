@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crm.Clients.Leads.Models
+namespace Crm.Apps.Clients.Leads.Models
 {
     public class Lead
     {

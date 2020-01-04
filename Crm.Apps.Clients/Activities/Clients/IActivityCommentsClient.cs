@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Models;
-using Crm.Clients.Activities.RequestParameters;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.RequestParameters;
 
-namespace Crm.Clients.Activities.Clients
+namespace Crm.Apps.Clients.Activities.Clients
 {
     public interface IActivityCommentsClient
     {

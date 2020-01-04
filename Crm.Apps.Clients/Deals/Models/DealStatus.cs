@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Clients.Deals.Models
+namespace Crm.Apps.Clients.Deals.Models
 {
     public class DealStatus
     {

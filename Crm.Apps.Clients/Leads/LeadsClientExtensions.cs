@@ -1,9 +1,9 @@
-﻿using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Settings;
+﻿using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.Leads.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Clients.Leads
+namespace Crm.Apps.Clients.Leads
 {
     public static class LeadsClientExtensions
     {
