@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Clients.Deals.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Clients.Deals.Clients
 {

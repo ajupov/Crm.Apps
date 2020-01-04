@@ -10,11 +10,13 @@ namespace Crm.Apps.Clients.Users.Models
         public Guid AccountId { get; set; }
 
         public string Name { get; set; }
-        
+
         public bool IsDeleted { get; set; }
-        
+
         public DateTime CreateDateTime { get; set; }
-        
-        public List<UserGroupPermission> Permissions { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
+
+        public List<UserGroupRoles> Roles { get; set; }
     }
 }

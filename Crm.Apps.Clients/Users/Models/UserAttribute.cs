@@ -1,4 +1,5 @@
 ﻿using System;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Clients.Users.Models
 {
@@ -13,7 +14,9 @@ namespace Crm.Apps.Clients.Users.Models
         public string Key { get; set; }
 
         public bool IsDeleted { get; set; }
-        
+
         public DateTime CreateDateTime { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
     }
 }

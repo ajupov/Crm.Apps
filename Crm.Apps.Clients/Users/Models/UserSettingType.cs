@@ -2,8 +2,5 @@
 {
     public enum UserSettingType : byte
     {
-        None
-
-        // TODO Заполнить
     }
 }

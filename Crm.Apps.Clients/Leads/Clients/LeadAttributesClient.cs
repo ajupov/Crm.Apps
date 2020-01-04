@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Clients.Leads.Models;
 using Crm.Apps.Clients.Leads.Settings;
+using Crm.Common.All.Types.AttributeType;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Clients.Leads.Clients

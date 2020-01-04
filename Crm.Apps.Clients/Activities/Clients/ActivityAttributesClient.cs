@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Crm.Apps.Clients.Activities.Models;
 using Crm.Apps.Clients.Activities.RequestParameters;
 using Crm.Apps.Clients.Activities.Settings;
+using Crm.Common.All.Types.AttributeType;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Clients.Activities.Clients

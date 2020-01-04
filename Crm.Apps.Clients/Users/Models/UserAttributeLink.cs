@@ -13,5 +13,7 @@ namespace Crm.Apps.Clients.Users.Models
         public string Value { get; set; }
 
         public DateTime CreateDateTime { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
     }
 }

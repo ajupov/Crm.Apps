@@ -73,6 +73,8 @@ namespace Crm.Apps.Clients.Companies.Models
 
         public DateTime CreateDateTime { get; set; }
 
+        public DateTime? ModifyDateTime { get; set; }
+
         public List<CompanyBankAccount> BankAccounts { get; set; }
 
         public List<CompanyAttributeLink> AttributeLinks { get; set; }

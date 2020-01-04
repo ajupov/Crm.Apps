@@ -15,7 +15,7 @@ namespace Crm.Apps.Clients.Accounts.Clients
         private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AccountsClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public AccountsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
             _url = UriBuilder.Combine(options.Value.Host, "Api/Accounts");
             _httpClientFactory = httpClientFactory;

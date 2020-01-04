@@ -1,6 +1,6 @@
 ﻿namespace Crm.Apps.Clients.Users.Models
 {
-    public enum UserGender : short
+    public enum UserGender : byte
     {
         Male = 1,
         Female = 2

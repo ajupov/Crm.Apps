@@ -1,0 +1,18 @@
+﻿using System;
+using Crm.Common.All.UserContext;
+
+namespace Crm.Apps.Clients.Users.Models
+{
+    public class UserGroupRoles
+    {
+        public Guid Id { get; set; }
+
+        public Guid UserGroupId { get; set; }
+
+        public Role Role { get; set; }
+
+        public DateTime CreateDateTime { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
+    }
+}

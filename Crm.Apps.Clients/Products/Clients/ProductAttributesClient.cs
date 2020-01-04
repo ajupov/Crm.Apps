@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Clients.Products.Models;
 using Crm.Apps.Clients.Products.Settings;
+using Crm.Common.All.Types.AttributeType;
 using Microsoft.Extensions.Options;
 
 namespace Crm.Apps.Clients.Products.Clients

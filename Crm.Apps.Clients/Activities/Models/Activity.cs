@@ -27,9 +27,9 @@ namespace Crm.Apps.Clients.Activities.Models
 
         public string Name { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        public string? Result { get; set; }
+        public string Result { get; set; }
 
         public ActivityPriority Priority { get; set; }
 
@@ -43,10 +43,12 @@ namespace Crm.Apps.Clients.Activities.Models
 
         public DateTime CreateDateTime { get; set; }
 
+        public DateTime? ModifyDateTime { get; set; }
+
         public ActivityType Type { get; set; }
 
         public ActivityStatus Status { get; set; }
 
-        public List<ActivityAttributeLink>? AttributeLinks { get; set; }
+        public List<ActivityAttributeLink> AttributeLinks { get; set; }
     }
 }
