@@ -1,1 +1,3 @@
-# crm-app
+# Crm.Apps
+
+Backend for http://litecrm.org
