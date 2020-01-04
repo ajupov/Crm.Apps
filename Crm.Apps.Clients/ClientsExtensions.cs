@@ -15,7 +15,7 @@ namespace Crm.Apps.Clients
         public static IServiceCollection ConfigureClients(this IServiceCollection services, string host)
         {
             return services
-                .AddHttpClient()
+                // .AddHttpClient()
                 .Configure<ClientsSettings>(x =>
                 {
                     x.Host = host; // http://api.litecrm.org/v1

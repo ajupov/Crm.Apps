@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Activities.Models;
 using Crm.Apps.Clients.Activities.RequestParameters;
-using Crm.Apps.Clients.Activities.Settings;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Activities.Clients
 {
@@ -15,47 +16,48 @@ namespace Crm.Apps.Clients.Activities.Clients
         private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ActivityTypesClient(IOptions<ActivitiesClientSettings> options, IHttpClientFactory httpClientFactory)
+        public ActivityTypesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Api/Activities/Types");
+            _url = UriBuilder.Combine(options.Value.Host, "Activities/Types");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<ActivityType> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ActivityType>($"{_url}/Get", new {id}, ct);
+            return _httpClientFactory.GetAsync<ActivityType>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
-        public Task<ActivityType[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<ActivityType[]>($"{_url}/GetList", ids, ct);
+            return _httpClientFactory.PostAsync<List<ActivityType>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<ActivityType[]> GetPagedListAsync(
-            ActivityTypeGetPagedListRequest request,
+        public Task<List<ActivityType>> GetPagedListAsync(
+            ActivityTypeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<ActivityType[]>($"{_url}/GetPagedList", request, ct);
+            return _httpClientFactory.PostAsync<List<ActivityType>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
-        public Task<Guid> CreateAsync(ActivityTypeCreateRequest request, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(ActivityType type, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_url}/Create", request, ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), type, ct);
         }
 
-        public Task UpdateAsync(ActivityTypeUpdateRequest request, CancellationToken ct = default)
+        public Task UpdateAsync(ActivityType type, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_url}/Update", request, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), type, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_url}/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_url}/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

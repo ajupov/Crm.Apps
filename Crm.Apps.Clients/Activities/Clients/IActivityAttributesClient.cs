@@ -14,15 +14,15 @@ namespace Crm.Apps.Clients.Activities.Clients
 
         Task<ActivityAttribute> GetAsync(Guid id, CancellationToken ct = default);
 
-        Task<ActivityAttribute[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<ActivityAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task<ActivityAttribute[]> GetPagedListAsync(
-            ActivityAttributeGetPagedListRequest request,
+        Task<List<ActivityAttribute>> GetPagedListAsync(
+            ActivityAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(ActivityAttributeCreateRequest request, CancellationToken ct = default);
+        Task<Guid> CreateAsync(ActivityAttribute attribute, CancellationToken ct = default);
 
-        Task UpdateAsync(ActivityAttributeUpdateRequest request, CancellationToken ct = default);
+        Task UpdateAsync(ActivityAttribute attribute, CancellationToken ct = default);
 
         Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 

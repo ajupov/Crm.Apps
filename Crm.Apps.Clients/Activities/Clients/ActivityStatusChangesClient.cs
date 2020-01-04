@@ -1,11 +1,12 @@
-using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Activities.Models;
 using Crm.Apps.Clients.Activities.RequestParameters;
-using Crm.Apps.Clients.Activities.Settings;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Activities.Clients
 {
@@ -14,19 +15,18 @@ namespace Crm.Apps.Clients.Activities.Clients
         private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ActivityStatusChangesClient(
-            IOptions<ActivitiesClientSettings> options,
-            IHttpClientFactory httpClientFactory)
+        public ActivityStatusChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Api/Activities/Statuses/Changes");
+            _url = UriBuilder.Combine(options.Value.Host, "Activities/Statuses/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<ActivityStatusChange[]> GetPagedListAsync(
-            ActivityStatusChangeGetPagedListRequest request,
+        public Task<List<ActivityStatusChange>> GetPagedListAsync(
+            ActivityStatusChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<ActivityStatusChange[]>($"{_url}/GetPagedList", request, ct);
+            return _httpClientFactory.PostAsync<List<ActivityStatusChange>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }

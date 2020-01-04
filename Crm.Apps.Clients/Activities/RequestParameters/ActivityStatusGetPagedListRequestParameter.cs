@@ -4,8 +4,6 @@ namespace Crm.Apps.Clients.Activities.RequestParameters
 {
     public class ActivityStatusGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public string Name { get; set; }
 
         public bool? IsFinish { get; set; }

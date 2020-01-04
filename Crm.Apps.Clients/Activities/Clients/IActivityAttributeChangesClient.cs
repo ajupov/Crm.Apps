@@ -9,7 +9,7 @@ namespace Crm.Apps.Clients.Activities.Clients
     public interface IActivityAttributeChangesClient
     {
         Task<List<ActivityAttributeChange>> GetPagedListAsync(
-            ActivityAttributeChangeGetPagedListRequest request,
+            ActivityAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default);
     }
 }
