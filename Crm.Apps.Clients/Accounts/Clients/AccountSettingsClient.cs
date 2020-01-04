@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Accounts.Models;
-using Crm.Apps.Clients.Accounts.Settings;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Accounts.Clients
 {
@@ -14,7 +14,7 @@ namespace Crm.Apps.Clients.Accounts.Clients
         private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AccountSettingsClient(IOptions<AccountsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public AccountSettingsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
             _url = UriBuilder.Combine(options.Value.Host, "Api/Accounts/Settings");
             _httpClientFactory = httpClientFactory;
@@ -22,7 +22,8 @@ namespace Crm.Apps.Clients.Accounts.Clients
 
         public Task<Dictionary<AccountSettingType, string>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<Dictionary<AccountSettingType, string>>($"{_url}/GetTypes", ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<AccountSettingType, string>>(
+                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
     }
 }
