@@ -4,8 +4,9 @@
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.2.1" />
-        <PackageReference Include="Ajupov.Utils.All" Version="1.0.3" />
+        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.2.6" />
+        <PackageReference Include="Ajupov.Utils.All" Version="1.0.8" />
+        <PackageReference Include="Crm.Common.All" Version="1.0.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\common\Crm.Common.Types\Crm.Common.Types.csproj" />
