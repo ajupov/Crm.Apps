@@ -5,8 +5,6 @@ namespace Crm.Apps.Clients.Contacts.RequestParameters
 {
     public class ContactGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public string Surname { get; set; }
 
         public string Name { get; set; }

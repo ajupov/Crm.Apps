@@ -1,51 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Contacts.Models;
-using Crm.Apps.Clients.Contacts.Settings;
+using Crm.Apps.Clients.Contacts.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Contacts.Clients
 {
     public class ContactCommentsClient : IContactCommentsClient
     {
-        private readonly ContactsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ContactCommentsClient(IOptions<ContactsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public ContactCommentsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Contacts/Comments");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<ContactComment>> GetPagedListAsync(Guid? contactId = default,
-            Guid? commentatorUserId = default,
-            string value = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<ContactComment>> GetPagedListAsync(
+            ContactCommentGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ContactId = contactId,
-                CommentatorUserId = commentatorUserId,
-                Value = value,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<ContactComment>>(
-                $"{_settings.Host}/Api/Contacts/Comments/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task CreateAsync(ContactComment comment, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Contacts/Comments/Create", comment, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Create"), comment, ct);
         }
     }
 }

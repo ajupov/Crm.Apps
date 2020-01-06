@@ -3,43 +3,31 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Contacts.Models;
-using Crm.Apps.Clients.Contacts.Settings;
+using Crm.Apps.Clients.Contacts.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Contacts.Clients
 {
     public class ContactAttributeChangesClient : IContactAttributeChangesClient
     {
-        private readonly ContactsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ContactAttributeChangesClient(IOptions<ContactsClientSettings> options,
-            IHttpClientFactory httpClientFactory)
+        public ContactAttributeChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Contacts/Attributes/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<ContactAttributeChange>> GetPagedListAsync(Guid? changerUserId = default,
-            Guid? attributeId = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<ContactAttributeChange>> GetPagedListAsync(
+            ContactAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerUserId = changerUserId,
-                AttributeId = attributeId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<ContactAttributeChange>>(
-                $"{_settings.Host}/Api/Contacts/Attributes/Changes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }

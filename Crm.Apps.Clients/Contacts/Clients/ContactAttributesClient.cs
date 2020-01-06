@@ -3,84 +3,68 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Contacts.Models;
-using Crm.Apps.Clients.Contacts.Settings;
+using Crm.Apps.Clients.Contacts.RequestParameters;
 using Crm.Common.All.Types.AttributeType;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Contacts.Clients
 {
     public class ContactAttributesClient : IContactAttributesClient
     {
-        private readonly ContactsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ContactAttributesClient(IOptions<ContactsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public ContactAttributesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Contacts/Attributes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, AttributeType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<AttributeType>>(
-                $"{_settings.Host}/Api/Contacts/Attributes/GetTypes", ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<string, AttributeType>>(
+                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 
         public Task<ContactAttribute> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ContactAttribute>($"{_settings.Host}/Api/Contacts/Attributes/Get",
-                new {id}, ct);
+            return _httpClientFactory.GetAsync<ContactAttribute>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<ContactAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ContactAttribute>>(
-                $"{_settings.Host}/Api/Contacts/Attributes/GetList", ids, ct);
+            return _httpClientFactory.PostAsync<List<ContactAttribute>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<ContactAttribute>> GetPagedListAsync(Guid? accountId = default,
-            List<AttributeType> types = default, string key = default, bool? isDeleted = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<List<ContactAttribute>> GetPagedListAsync(
+            ContactAttributeGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Types = types,
-                Key = key,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<ContactAttribute>>(
-                $"{_settings.Host}/Api/Contacts/Attributes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(ContactAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Contacts/Attributes/Create", attribute,
-                ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, ct);
         }
 
         public Task UpdateAsync(ContactAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Contacts/Attributes/Update", attribute, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), attribute, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Contacts/Attributes/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Contacts/Attributes/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }
