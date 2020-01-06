@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Leads.Models;
+using Crm.Apps.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {

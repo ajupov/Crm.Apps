@@ -1,50 +1,52 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Models;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadSourceBuilder : ILeadSourceBuilder
     {
         private readonly ILeadSourcesClient _leadSourcesClient;
-        private readonly LeadSource _leadSource;
+        private readonly LeadSource _source;
 
         public LeadSourceBuilder(ILeadSourcesClient leadSourcesClient)
         {
             _leadSourcesClient = leadSourcesClient;
-            _leadSource = new LeadSource
+            _source = new LeadSource
             {
                 AccountId = Guid.Empty,
-                Name = "Test"
+                Name = "Test",
+                IsDeleted = false
             };
         }
 
         public LeadSourceBuilder WithAccountId(Guid accountId)
         {
-            _leadSource.AccountId = accountId;
+            _source.AccountId = accountId;
 
             return this;
         }
 
         public LeadSourceBuilder WithName(string name)
         {
-            _leadSource.Name = name;
+            _source.Name = name;
+
+            return this;
+        }
+
+        public LeadSourceBuilder AsDeleted()
+        {
+            _source.IsDeleted = true;
 
             return this;
         }
 
         public async Task<LeadSource> BuildAsync()
         {
-            if (_leadSource.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_leadSource.AccountId));
-            }
+            var id = await _leadSourcesClient.CreateAsync(_source);
 
-            var createdId = await _leadSourcesClient.CreateAsync(_leadSource);
-
-            return await _leadSourcesClient.GetAsync(createdId);
+            return await _leadSourcesClient.GetAsync(id);
         }
     }
 }

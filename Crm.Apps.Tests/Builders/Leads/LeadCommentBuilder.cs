@@ -1,20 +1,20 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadCommentBuilder : ILeadCommentBuilder
     {
         private readonly ILeadCommentsClient _leadCommentsClient;
-        private readonly LeadComment _leadComment;
+        private readonly LeadComment _comment;
 
         public LeadCommentBuilder(ILeadCommentsClient leadCommentsClient)
         {
             _leadCommentsClient = leadCommentsClient;
-            _leadComment = new LeadComment
+            _comment = new LeadComment
             {
                 LeadId = Guid.Empty,
                 Value = "Test"
@@ -23,19 +23,19 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         public LeadCommentBuilder WithLeadId(Guid leadId)
         {
-            _leadComment.LeadId = leadId;
+            _comment.LeadId = leadId;
 
             return this;
         }
 
         public Task BuildAsync()
         {
-            if (_leadComment.LeadId.IsEmpty())
+            if (_comment.LeadId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_leadComment.LeadId));
+                throw new InvalidOperationException(nameof(_comment.LeadId));
             }
 
-            return _leadCommentsClient.CreateAsync(_leadComment);
+            return _leadCommentsClient.CreateAsync(_comment);
         }
     }
 }

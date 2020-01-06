@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Leads.Models;
+using Crm.Apps.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
@@ -9,6 +9,8 @@ namespace Crm.Apps.Tests.Builders.Leads
         LeadSourceBuilder WithAccountId(Guid accountId);
 
         LeadSourceBuilder WithName(string name);
+
+        LeadSourceBuilder AsDeleted();
 
         Task<LeadSource> BuildAsync();
     }

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {
@@ -206,19 +206,14 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         public async Task<Lead> BuildAsync()
         {
-            if (_lead.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_lead.AccountId));
-            }
-
             if (_lead.SourceId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_lead.SourceId));
             }
 
-            var createdId = await _leadsClient.CreateAsync(_lead);
+            var id = await _leadsClient.CreateAsync(_lead);
 
-            return await _leadsClient.GetAsync(createdId);
+            return await _leadsClient.GetAsync(id);
         }
     }
 }
