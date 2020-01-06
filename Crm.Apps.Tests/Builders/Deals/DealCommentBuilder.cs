@@ -1,20 +1,20 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {
     public class DealCommentBuilder : IDealCommentBuilder
     {
         private readonly IDealCommentsClient _dealCommentsClient;
-        private readonly DealComment _dealComment;
+        private readonly DealComment _comment;
 
         public DealCommentBuilder(IDealCommentsClient dealCommentsClient)
         {
             _dealCommentsClient = dealCommentsClient;
-            _dealComment = new DealComment
+            _comment = new DealComment
             {
                 DealId = Guid.Empty,
                 Value = "Test"
@@ -23,19 +23,19 @@ namespace Crm.Apps.Tests.Builders.Deals
 
         public DealCommentBuilder WithDealId(Guid dealId)
         {
-            _dealComment.DealId = dealId;
+            _comment.DealId = dealId;
 
             return this;
         }
 
         public Task BuildAsync()
         {
-            if (_dealComment.DealId.IsEmpty())
+            if (_comment.DealId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_dealComment.DealId));
+                throw new InvalidOperationException(nameof(_comment.DealId));
             }
 
-            return _dealCommentsClient.CreateAsync(_dealComment);
+            return _dealCommentsClient.CreateAsync(_comment);
         }
     }
 }

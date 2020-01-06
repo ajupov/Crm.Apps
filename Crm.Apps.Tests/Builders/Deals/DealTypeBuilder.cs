@@ -1,50 +1,52 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {
     public class DealTypeBuilder : IDealTypeBuilder
     {
         private readonly IDealTypesClient _dealTypesClient;
-        private readonly DealType _dealType;
+        private readonly DealType _type;
 
         public DealTypeBuilder(IDealTypesClient dealTypesClient)
         {
             _dealTypesClient = dealTypesClient;
-            _dealType = new DealType
+            _type = new DealType
             {
                 AccountId = Guid.Empty,
-                Name = "Test"
+                Name = "Test",
+                IsDeleted = false
             };
         }
 
         public DealTypeBuilder WithAccountId(Guid accountId)
         {
-            _dealType.AccountId = accountId;
+            _type.AccountId = accountId;
 
             return this;
         }
 
         public DealTypeBuilder WithName(string name)
         {
-            _dealType.Name = name;
+            _type.Name = name;
+
+            return this;
+        }
+
+        public DealTypeBuilder AsDeleted()
+        {
+            _type.IsDeleted = true;
 
             return this;
         }
 
         public async Task<DealType> BuildAsync()
         {
-            if (_dealType.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_dealType.AccountId));
-            }
+            var id = await _dealTypesClient.CreateAsync(_type);
 
-            var createdId = await _dealTypesClient.CreateAsync(_dealType);
-
-            return await _dealTypesClient.GetAsync(createdId);
+            return await _dealTypesClient.GetAsync(id);
         }
     }
 }

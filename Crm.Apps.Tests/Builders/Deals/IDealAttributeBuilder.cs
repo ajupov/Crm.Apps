@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Models;
-using Crm.Common.Types;
+using Crm.Apps.Clients.Deals.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {
@@ -12,6 +12,8 @@ namespace Crm.Apps.Tests.Builders.Deals
         DealAttributeBuilder WithType(AttributeType type);
 
         DealAttributeBuilder WithKey(string key);
+
+        DealAttributeBuilder AsDeleted();
 
         Task<DealAttribute> BuildAsync();
     }

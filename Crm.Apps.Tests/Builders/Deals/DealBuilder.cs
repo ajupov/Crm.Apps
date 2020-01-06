@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {
@@ -17,7 +17,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             _dealsClient = dealsClient;
             _deal = new Deal
             {
-                AccountId = Guid.Empty,
                 TypeId = Guid.Empty,
                 StatusId = Guid.Empty,
                 CompanyId = Guid.Empty,
@@ -150,11 +149,6 @@ namespace Crm.Apps.Tests.Builders.Deals
 
         public async Task<Deal> BuildAsync()
         {
-            if (_deal.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_deal.AccountId));
-            }
-
             if (_deal.TypeId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_deal.TypeId));
@@ -165,9 +159,9 @@ namespace Crm.Apps.Tests.Builders.Deals
                 throw new InvalidOperationException(nameof(_deal.StatusId));
             }
 
-            var createdId = await _dealsClient.CreateAsync(_deal);
+            var id = await _dealsClient.CreateAsync(_deal);
 
-            return await _dealsClient.GetAsync(createdId);
+            return await _dealsClient.GetAsync(id);
         }
     }
 }

@@ -1,59 +1,61 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Common.Types;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {
     public class DealAttributeBuilder : IDealAttributeBuilder
     {
         private readonly IDealAttributesClient _dealAttributesClient;
-        private readonly DealAttribute _dealAttribute;
+        private readonly DealAttribute _attribute;
 
         public DealAttributeBuilder(IDealAttributesClient dealAttributesClient)
         {
             _dealAttributesClient = dealAttributesClient;
-            _dealAttribute = new DealAttribute
+            _attribute = new DealAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
-                Key = "Test"
+                Key = "Test",
+                IsDeleted = false
             };
         }
 
         public DealAttributeBuilder WithAccountId(Guid accountId)
         {
-            _dealAttribute.AccountId = accountId;
+            _attribute.AccountId = accountId;
 
             return this;
         }
 
         public DealAttributeBuilder WithType(AttributeType type)
         {
-            _dealAttribute.Type = type;
+            _attribute.Type = type;
 
             return this;
         }
 
         public DealAttributeBuilder WithKey(string key)
         {
-            _dealAttribute.Key = key;
+            _attribute.Key = key;
+
+            return this;
+        }
+
+        public DealAttributeBuilder AsDeleted()
+        {
+            _attribute.IsDeleted = true;
 
             return this;
         }
 
         public async Task<DealAttribute> BuildAsync()
         {
-            if (_dealAttribute.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_dealAttribute.AccountId));
-            }
+            var id = await _dealAttributesClient.CreateAsync(_attribute);
 
-            var createdId = await _dealAttributesClient.CreateAsync(_dealAttribute);
-
-            return await _dealAttributesClient.GetAsync(createdId);
+            return await _dealAttributesClient.GetAsync(id);
         }
     }
 }

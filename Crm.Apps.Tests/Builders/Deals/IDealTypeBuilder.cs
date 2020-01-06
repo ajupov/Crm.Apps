@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.Models;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {
@@ -9,6 +9,8 @@ namespace Crm.Apps.Tests.Builders.Deals
         DealTypeBuilder WithAccountId(Guid accountId);
 
         DealTypeBuilder WithName(string name);
+
+        DealTypeBuilder AsDeleted();
 
         Task<DealType> BuildAsync();
     }
