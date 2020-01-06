@@ -105,11 +105,11 @@
 //                        Value = "Test"
 //                    }
 //                },
-//                Permissions = new List<UserPermission>
+//                Roles = new List<UserRole>
 //                {
-//                    new UserPermission
+//                    new UserRole
 //                    {
-//                        Permission = Permission.Administration
+//                        Role = Role.Administration
 //                    }
 //                },
 //                GroupLinks = new List<UserGroupLink>
@@ -146,7 +146,7 @@
 //            Assert.Equal(user.IsDeleted, createdUser.IsDeleted);
 //            Assert.True(createdUser.CreateDateTime.IsMoreThanMinValue());
 //            Assert.NotEmpty(createdUser.AttributeLinks);
-//            Assert.NotEmpty(createdUser.Permissions);
+//            Assert.NotEmpty(createdUser.Roles);
 //            Assert.NotEmpty(createdUser.GroupLinks);
 //            Assert.NotEmpty(createdUser.Settings);
 //        }
@@ -157,7 +157,7 @@
 //            var account = await _create.Account.BuildAsync();
 //            var user = await _create.User.WithAccountId(account.Id).BuildAsync();
 //            var attribute = await _create.UserAttribute.WithAccountId(account.Id).BuildAsync();
-//            var group = await _create.UserGroup.WithAccountId(account.Id).WithPermission(Permission.TechnicalSupport)
+//            var group = await _create.UserGroup.WithAccountId(account.Id).WithRole(Role.TechnicalSupport)
 //                .BuildAsync();
 //
 //            user.Surname = "Test2";
@@ -169,7 +169,7 @@
 //            user.IsLocked = true;
 //            user.IsDeleted = true;
 //            user.Settings.Add(new UserSetting {Type = UserSettingType.None, Value = "Test"});
-//            user.Permissions.Add(new UserPermission {Permission = Permission.Administration});
+//            user.Roles.Add(new UserRole {Role = Role.Administration});
 //            user.AttributeLinks.Add(new UserAttributeLink {UserAttributeId = attribute.Id, Value = "Test"});
 //            user.GroupLinks.Add(new UserGroupLink {UserGroupId = group.Id});
 //            await _usersClient.UpdateAsync(user);
@@ -186,7 +186,7 @@
 //            Assert.Equal(user.IsDeleted, updatedUser.IsDeleted);
 //            Assert.Equal(user.Settings.Single().Type, updatedUser.Settings.Single().Type);
 //            Assert.Equal(user.Settings.Single().Value, updatedUser.Settings.Single().Value);
-//            Assert.Equal(user.Permissions.Single().Permission, updatedUser.Permissions.Single().Permission);
+//            Assert.Equal(user.Roles.Single().Role, updatedUser.Roles.Single().Role);
 //            Assert.Equal(user.AttributeLinks.Single().UserAttributeId, updatedUser.AttributeLinks.Single().UserAttributeId);
 //            Assert.Equal(user.AttributeLinks.Single().Value, updatedUser.AttributeLinks.Single().Value);
 //            Assert.Equal(user.GroupLinks.Single().UserGroupId, updatedUser.GroupLinks.Single().UserGroupId);

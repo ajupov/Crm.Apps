@@ -3,7 +3,7 @@ using Crm.Common.All.UserContext;
 
 namespace Crm.Apps.Clients.Users.Models
 {
-    public class UserGroupRoles
+    public class UserGroupRole
     {
         public Guid Id { get; set; }
 

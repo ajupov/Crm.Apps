@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Clients;
-using Crm.Clients.Users.Models;
-using Crm.Common.UserContext;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Users.Clients;
+using Crm.Apps.Clients.Users.Models;
+using Crm.Common.All.UserContext;
 
 namespace Crm.Apps.Tests.Builders.Users
 {
@@ -24,15 +23,10 @@ namespace Crm.Apps.Tests.Builders.Users
                 Patronymic = "Test",
                 BirthDate = DateTime.Today.AddYears(21),
                 Gender = UserGender.Male,
-                AvatarUrl = ""
+                AvatarUrl = "",
+                IsLocked = false,
+                IsDeleted = false
             };
-        }
-
-        public UserBuilder WithAccountId(Guid accountId)
-        {
-            _user.AccountId = accountId;
-
-            return this;
         }
 
         public UserBuilder WithSurname(string surname)
@@ -100,7 +94,7 @@ namespace Crm.Apps.Tests.Builders.Users
 
             _user.Settings.Add(new UserSetting
             {
-                Type = UserSettingType.None,
+                Type = UserSettingType.IsDarkTheme,
                 Value = value
             });
 
@@ -138,16 +132,16 @@ namespace Crm.Apps.Tests.Builders.Users
             return this;
         }
 
-        public UserBuilder WithPermission(Permission permission)
+        public UserBuilder WithRole(Role role)
         {
-            if (_user.Permissions == null)
+            if (_user.Roles == null)
             {
-                _user.Permissions = new List<UserPermission>();
+                _user.Roles = new List<UserRole>();
             }
 
-            _user.Permissions.Add(new UserPermission
+            _user.Roles.Add(new UserRole
             {
-                Permission = permission
+                Role = role
             });
 
             return this;
@@ -155,14 +149,9 @@ namespace Crm.Apps.Tests.Builders.Users
 
         public async Task<User> BuildAsync()
         {
-            if (_user.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_user.AccountId));
-            }
+            var id = await _usersClient.CreateAsync(_user);
 
-            var createdId = await _usersClient.CreateAsync(_user);
-
-            return await _usersClient.GetAsync(createdId);
+            return await _usersClient.GetAsync(id);
         }
     }
 }

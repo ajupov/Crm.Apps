@@ -21,13 +21,6 @@ namespace Crm.Apps.Tests.Builders.Products
             };
         }
 
-        public ProductCategoryBuilder WithAccountId(Guid accountId)
-        {
-            _category.AccountId = accountId;
-
-            return this;
-        }
-
         public ProductCategoryBuilder WithName(string name)
         {
             _category.Name = name;

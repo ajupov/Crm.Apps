@@ -75,9 +75,9 @@ namespace Crm.Apps.Tests.Tests.Users
                 AccountId = account.Id,
                 Name = "Test",
                 IsDeleted = false,
-                Permissions = new List<UserGroupPermission>
+                Roles = new List<UserGroupRole>
                 {
-                    new UserGroupPermission
+                    new UserGroupRole
                     {
                         Role = Role.None
                     }
@@ -93,7 +93,7 @@ namespace Crm.Apps.Tests.Tests.Users
             Assert.Equal(group.AccountId, createdGroup.AccountId);
             Assert.Equal(group.Name, createdGroup.Name);
             Assert.Equal(group.IsDeleted, createdGroup.IsDeleted);
-            Assert.Equal(group.Permissions.Single().Role, createdGroup.Permissions.Single().Role);
+            Assert.Equal(group.Roles.Single().Role, createdGroup.Roles.Single().Role);
             Assert.True(createdGroup.CreateDateTime.IsMoreThanMinValue());
         }
 
@@ -106,7 +106,7 @@ namespace Crm.Apps.Tests.Tests.Users
 
             group.Name = "Test2";
             group.IsDeleted = true;
-            group.Permissions.Add(new UserGroupPermission {Role = Role.None});
+            group.Roles.Add(new UserGroupRole {Role = Role.None});
 
             await _userGroupsClient.UpdateAsync(group);
 
@@ -114,7 +114,7 @@ namespace Crm.Apps.Tests.Tests.Users
 
             Assert.Equal(group.Name, updatedGroup.Name);
             Assert.Equal(group.IsDeleted, updatedGroup.IsDeleted);
-            Assert.Equal(group.Permissions.Single().Role, updatedGroup.Permissions.Single().Role);
+            Assert.Equal(group.Roles.Single().Role, updatedGroup.Roles.Single().Role);
         }
 
         [Fact]

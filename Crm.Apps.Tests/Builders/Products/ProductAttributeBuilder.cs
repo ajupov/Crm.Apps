@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Crm.Apps.Clients.Products.Clients;
 using Crm.Apps.Clients.Products.Models;
 using Crm.Common.All.Types.AttributeType;
@@ -22,13 +21,6 @@ namespace Crm.Apps.Tests.Builders.Products
                 Key = "Test",
                 IsDeleted = false
             };
-        }
-
-        public ProductAttributeBuilder WithAccountId(Guid accountId)
-        {
-            _attribute.AccountId = accountId;
-
-            return this;
         }
 
         public ProductAttributeBuilder WithType(AttributeType type)

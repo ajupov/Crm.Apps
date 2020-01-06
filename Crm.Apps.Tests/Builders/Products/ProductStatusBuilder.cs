@@ -21,13 +21,6 @@ namespace Crm.Apps.Tests.Builders.Products
             };
         }
 
-        public ProductStatusBuilder WithAccountId(Guid accountId)
-        {
-            _status.AccountId = accountId;
-
-            return this;
-        }
-
         public ProductStatusBuilder WithName(string name)
         {
             _status.Name = name;

@@ -17,6 +17,6 @@ namespace Crm.Apps.Clients.Users.Models
 
         public DateTime? ModifyDateTime { get; set; }
 
-        public List<UserGroupRoles> Roles { get; set; }
+        public List<UserGroupRole> Roles { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Crm.Apps.Users.Storages
 
         public DbSet<UserGroupLink> UserGroupLinks { get; set; }
 
-        public DbSet<UserGroupRoles> UserGroupPermissions { get; set; }
+        public DbSet<UserGroupRole> UserGroupPermissions { get; set; }
 
         public DbSet<UserSetting> UserSettings { get; set; }
 
@@ -44,7 +44,7 @@ namespace Crm.Apps.Users.Storages
                 .Property(x => x.UserGroupId)
                 .HasColumnName("GroupId");
 
-            modelBuilder.Entity<UserGroupRoles>()
+            modelBuilder.Entity<UserGroupRole>()
                 .ToTable("UserGroupPermissions")
                 .Property(x => x.UserGroupId)
                 .HasColumnName("GroupId");

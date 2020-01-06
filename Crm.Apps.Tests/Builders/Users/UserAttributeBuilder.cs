@@ -1,59 +1,54 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Clients;
-using Crm.Clients.Users.Models;
-using Crm.Common.Types;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Users.Clients;
+using Crm.Apps.Clients.Users.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Users
 {
     public class UserAttributeBuilder : IUserAttributeBuilder
     {
         private readonly IUserAttributesClient _userAttributesClient;
-        private readonly UserAttribute _userAttribute;
+        private readonly UserAttribute _attribute;
 
         public UserAttributeBuilder(IUserAttributesClient userAttributesClient)
         {
             _userAttributesClient = userAttributesClient;
-            _userAttribute = new UserAttribute
+            _attribute = new UserAttribute
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
-                Key = "Test"
+                Key = "Test",
+                IsDeleted = false
             };
-        }
-
-        public UserAttributeBuilder WithAccountId(Guid accountId)
-        {
-            _userAttribute.AccountId = accountId;
-
-            return this;
         }
 
         public UserAttributeBuilder WithType(AttributeType type)
         {
-            _userAttribute.Type = type;
+            _attribute.Type = type;
 
             return this;
         }
 
         public UserAttributeBuilder WithKey(string key)
         {
-            _userAttribute.Key = key;
+            _attribute.Key = key;
+
+            return this;
+        }
+
+        public UserAttributeBuilder AsDeleted()
+        {
+            _attribute.IsDeleted = true;
 
             return this;
         }
 
         public async Task<UserAttribute> BuildAsync()
         {
-            if (_userAttribute.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_userAttribute.AccountId));
-            }
+            var id = await _userAttributesClient.CreateAsync(_attribute);
 
-            var createdId = await _userAttributesClient.CreateAsync(_userAttribute);
-
-            return await _userAttributesClient.GetAsync(createdId);
+            return await _userAttributesClient.GetAsync(id);
         }
     }
 }

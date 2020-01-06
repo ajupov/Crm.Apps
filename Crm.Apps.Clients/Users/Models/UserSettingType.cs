@@ -2,5 +2,6 @@
 {
     public enum UserSettingType : byte
     {
+        IsDarkTheme = 1
     }
 }

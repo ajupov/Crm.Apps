@@ -1,14 +1,12 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Users.Models;
-using Crm.Common.UserContext;
+using Crm.Apps.Clients.Users.Models;
+using Crm.Common.All.UserContext;
 
 namespace Crm.Apps.Tests.Builders.Users
 {
     public interface IUserBuilder
     {
-        UserBuilder WithAccountId(Guid accountId);
-
         UserBuilder WithSurname(string surname);
 
         UserBuilder WithName(string name);
@@ -31,7 +29,7 @@ namespace Crm.Apps.Tests.Builders.Users
 
         UserBuilder WithGroupLink(Guid groupId);
 
-        UserBuilder WithPermission(Permission permission);
+        UserBuilder WithRole(Role role);
 
         Task<User> BuildAsync();
     }
