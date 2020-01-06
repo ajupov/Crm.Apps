@@ -37,9 +37,9 @@ namespace Crm.Apps.Users.RequestParameters
         
         public IDictionary<Guid, string> Attributes { get; set; }
         
-        public bool? AllPermissions { get; set; }
+        public bool? AllRoles { get; set; }
         
-        public List<Role> Permissions { get; set; }
+        public List<Role> Roles { get; set; }
         
         public bool? AllGroupIds { get; set; }
         

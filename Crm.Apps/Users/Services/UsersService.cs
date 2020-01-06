@@ -28,7 +28,7 @@ namespace Crm.Apps.Users.Services
             return _storage.Users
                 .AsNoTracking()
                 .Include(x => x.AttributeLinks)
-                .Include(x => x.Permissions)
+                .Include(x => x.Roles)
                 .Include(x => x.GroupLinks)
                 .Include(x => x.Settings)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
@@ -47,7 +47,7 @@ namespace Crm.Apps.Users.Services
             var temp = await _storage.Users
                 .AsNoTracking()
                 .Include(x => x.AttributeLinks)
-                .Include(x => x.Permissions)
+                .Include(x => x.Roles)
                 .Include(x => x.GroupLinks)
                 .Include(x => x.Settings)
                 .Where(x =>
@@ -88,7 +88,7 @@ namespace Crm.Apps.Users.Services
                 x.IsDeleted = user.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
                 x.AttributeLinks = user.AttributeLinks;
-                x.Permissions = user.Permissions;
+                x.Roles = user.Roles;
                 x.GroupLinks = user.GroupLinks;
                 x.Settings = user.Settings;
             });
@@ -113,7 +113,7 @@ namespace Crm.Apps.Users.Services
                 x.IsLocked = newUser.IsLocked;
                 x.IsDeleted = newUser.IsDeleted;
                 x.AttributeLinks = newUser.AttributeLinks;
-                x.Permissions = newUser.Permissions;
+                x.Roles = newUser.Roles;
                 x.GroupLinks = newUser.GroupLinks;
                 x.Settings = newUser.Settings;
             });

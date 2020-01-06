@@ -16,10 +16,10 @@ namespace Crm.Apps.Users.Helpers
                     (request.AllAttributes is false
                         ? request.Attributes.Any(x => AttributePredicate(user, x))
                         : request.Attributes.All(x => AttributePredicate(user, x)))) &&
-                   (request.Permissions == null || !request.Permissions.Any() ||
-                    (request.AllPermissions is false
-                        ? request.Permissions.Any(x => PermissionPredicate(user, x))
-                        : request.Permissions.All(x => PermissionPredicate(user, x)))) &&
+                   (request.Roles == null || !request.Roles.Any() ||
+                    (request.AllRoles is false
+                        ? request.Roles.Any(x => RolePredicate(user, x))
+                        : request.Roles.All(x => RolePredicate(user, x)))) &&
                    (request.GroupIds == null || !request.GroupIds.Any() ||
                     (request.AllGroupIds is false
                         ? request.GroupIds.Any(x => GroupIdPredicate(user, x))
@@ -34,9 +34,9 @@ namespace Crm.Apps.Users.Helpers
                        x.UserAttributeId == key && (value.IsEmpty() || x.Value == value));
         }
 
-        private static bool PermissionPredicate(User user, Role role)
+        private static bool RolePredicate(User user, Role role)
         {
-            return user.Permissions != null && user.Permissions.Any(x => x.Role == role);
+            return user.Roles != null && user.Roles.Any(x => x.Role == role);
         }
 
         private static bool GroupIdPredicate(User user, Guid id)
