@@ -37,9 +37,9 @@ namespace Crm.Apps.Companies.Controllers
         }
 
         [HttpGet("GetIndustryTypes")]
-        public Dictionary<string, CompanyType> GetIndustryTypes()
+        public Dictionary<string, CompanyIndustryType> GetIndustryTypes()
         {
-            return EnumsExtensions.GetAsDictionary<CompanyType>();
+            return EnumsExtensions.GetAsDictionary<CompanyIndustryType>();
         }
 
         [HttpGet("Get")]

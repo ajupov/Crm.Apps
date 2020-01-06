@@ -3,137 +3,72 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Companies.Models;
-using Crm.Apps.Clients.Companies.Settings;
+using Crm.Apps.Clients.Companies.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Companies.Clients
 {
     public class CompaniesClient : ICompaniesClient
     {
-        private readonly CompaniesClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public CompaniesClient(IOptions<CompaniesClientSettings> options, IHttpClientFactory httpClientFactory)
+        public CompaniesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, "Companies");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<CompanyType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, CompanyType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<CompanyType>>($"{_settings.Host}/Api/Companies/GetTypes", ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<string, CompanyType>>(
+                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 
-        public Task<List<CompanyIndustryType>> GetIndustryTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, CompanyIndustryType>> GetIndustryTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<CompanyIndustryType>>(
-                $"{_settings.Host}/Api/Companies/GetIndustryTypes", ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<string, CompanyIndustryType>>(
+                UriBuilder.Combine(_url, "GetIndustryTypes"), ct: ct);
         }
 
         public Task<Company> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<Company>($"{_settings.Host}/Api/Companies/Get", new {id}, ct);
+            return _httpClientFactory.GetAsync<Company>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<Company>>($"{_settings.Host}/Api/Companies/GetList", ids, ct);
+            return _httpClientFactory.PostAsync<List<Company>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<Company>> GetPagedListAsync(Guid? accountId = default, Guid? companyId = default,
-            string fullName = default, string shortName = default, string phone = default, string email = default,
-            string taxNumber = default, string registrationNumber = default, DateTime? minRegistrationDate = default,
-            DateTime? maxRegistrationDate = default, int? minEmployeesCount = default, int? maxEmployeesCount = default,
-            decimal? minYearlyTurnover = default, decimal? maxYearlyTurnover = default,
-            string juridicalPostcode = default, string juridicalCountry = default, string juridicalRegion = default,
-            string juridicalProvince = default, string juridicalCity = default, string juridicalStreet = default,
-            string juridicalHouse = default, string juridicalApartment = default, string legalPostcode = default,
-            string legalCountry = default, string legalRegion = default, string legalProvince = default,
-            string legalCity = default, string legalStreet = default, string legalHouse = default,
-            string legalApartment = default, bool isDeleted = default, DateTime? minCreateDate = default,
-            DateTime? maxCreateDate = default, List<CompanyType> types = default,
-            List<CompanyIndustryType> industryTypes = default, bool? allAttributes = default,
-            IDictionary<Guid, string> attributes = default, string bankAccountNumber = default,
-            string bankAccountBankNumber = default, string bankAccountBankCorrespondentNumber = default,
-            string bankAccountBankName = default, List<Guid> sourceIds = default, List<Guid> createUserIds = default,
-            List<Guid> responsibleUserIds = default, int offset = default, int limit = 10, string sortBy = default,
-            string orderBy = default, CancellationToken ct = default)
+        public Task<List<Company>> GetPagedListAsync(
+            CompanyGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                LeadId = companyId,
-                FullName = fullName,
-                ShortName = shortName,
-                Phone = phone,
-                Email = email,
-                TaxNumber = taxNumber,
-                RegistrationNumber = registrationNumber,
-                MinRegistrationDate = minRegistrationDate,
-                MaxRegistrationDate = maxRegistrationDate,
-                MinEmployeesCount = minEmployeesCount,
-                MaxEmployeesCount = maxEmployeesCount,
-                MinYearlyTurnover = minYearlyTurnover,
-                MaxYearlyTurnover = maxYearlyTurnover,
-                JuridicalPostcode = juridicalPostcode,
-                JuridicalCountry = juridicalCountry,
-                JuridicalRegion = juridicalRegion,
-                JuridicalProvince = juridicalProvince,
-                JuridicalCity = juridicalCity,
-                JuridicalStreet = juridicalStreet,
-                JuridicalHouse = juridicalHouse,
-                JuridicalApartment = juridicalApartment,
-                LegalPostcode = legalPostcode,
-                LegalCountry = legalCountry,
-                LegalRegion = legalRegion,
-                LegalProvince = legalProvince,
-                LegalCity = legalCity,
-                LegalStreet = legalStreet,
-                LegalHouse = legalHouse,
-                LegalApartment = legalApartment,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Types = types,
-                IndustryTypes = industryTypes,
-                AllAttributes = allAttributes,
-                Attributes = attributes,
-                BankAccountNumber = bankAccountNumber,
-                BankAccountBankNumber = bankAccountBankNumber,
-                BankAccountBankCorrespondentNumber = bankAccountBankCorrespondentNumber,
-                BankAccountBankName = bankAccountBankName,
-                SourceIds = sourceIds,
-                CreateUserIds = createUserIds,
-                ResponsibleUserIds = responsibleUserIds,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<Company>>($"{_settings.Host}/Api/Companies/GetPagedList",
-                parameter, ct);
+            return _httpClientFactory.PostAsync<List<Company>>(UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(Company company, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Companies/Create", company, ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), company, ct);
         }
 
         public Task UpdateAsync(Company company, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Companies/Update", company, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), company, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Companies/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Companies/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

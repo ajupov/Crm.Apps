@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Users.Clients
 
         public UsersClient(IOptions<UsersClientSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, );
             _httpClientFactory = httpClientFactory;
         }
 

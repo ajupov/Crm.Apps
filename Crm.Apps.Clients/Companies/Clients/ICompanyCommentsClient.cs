@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Clients.Companies.Models;
+using Crm.Apps.Clients.Companies.RequestParameters;
 
 namespace Crm.Apps.Clients.Companies.Clients
 {
     public interface ICompanyCommentsClient
     {
-        Task<List<CompanyComment>> GetPagedListAsync(Guid? companyId = default, Guid? commentatorUserId = default,
-            string value = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        Task<List<CompanyComment>> GetPagedListAsync(
+            CompanyCommentGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
         Task CreateAsync(CompanyComment comment, CancellationToken ct = default);

@@ -1,43 +1,32 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Companies.Models;
-using Crm.Apps.Clients.Companies.Settings;
+using Crm.Apps.Clients.Companies.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Companies.Clients
 {
     public class CompanyChangesClient : ICompanyChangesClient
     {
-        private readonly CompaniesClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public CompanyChangesClient(IOptions<CompaniesClientSettings> options, IHttpClientFactory httpClientFactory)
+        public CompanyChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _settings = options.Value;
+            _url = UriBuilder.Combine(options.Value.Host, "Companies/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<CompanyChange>> GetPagedListAsync(Guid? changerUserId = default, Guid? companyId = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<List<CompanyChange>> GetPagedListAsync(
+            CompanyChangeGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerUserId = changerUserId,
-                CompanyId = companyId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<CompanyChange>>(
-                $"{_settings.Host}/Api/Companies/Changes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }
