@@ -5,8 +5,6 @@ namespace Crm.Apps.Clients.Leads.RequestParameters
 {
     public class LeadGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public string Surname { get; set; }
 
         public string Name { get; set; }

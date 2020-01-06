@@ -6,8 +6,6 @@ namespace Crm.Apps.Clients.Products.RequestParameters
 {
     public class ProductGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public Guid? ParentProductId { get; set; }
 
         public List<ProductType> Types { get; set; }

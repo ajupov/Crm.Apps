@@ -1,43 +1,32 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Leads.Models;
-using Crm.Apps.Clients.Leads.Settings;
+using Crm.Apps.Clients.Leads.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Leads.Clients
 {
     public class LeadChangesClient : ILeadChangesClient
     {
-        private readonly LeadsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public LeadChangesClient(IOptions<LeadsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public LeadChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Leads/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<LeadChange>> GetPagedListAsync(Guid? changerUserId = default, Guid? leadId = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<List<LeadChange>> GetPagedListAsync(
+            LeadChangeGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerUserId = changerUserId,
-                LeadId = leadId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<LeadChange>>($"{_settings.Host}/Api/Leads/Changes/GetPagedList",
-                parameter, ct);
+            return _httpClientFactory.PostAsync<List<LeadChange>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }

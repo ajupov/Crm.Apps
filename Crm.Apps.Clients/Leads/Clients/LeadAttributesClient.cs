@@ -3,83 +3,68 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Leads.Models;
-using Crm.Apps.Clients.Leads.Settings;
+using Crm.Apps.Clients.Leads.RequestParameters;
 using Crm.Common.All.Types.AttributeType;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Leads.Clients
 {
     public class LeadAttributesClient : ILeadAttributesClient
     {
-        private readonly LeadsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public LeadAttributesClient(IOptions<LeadsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public LeadAttributesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Leads/Attributes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, AttributeType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<AttributeType>>($"{_settings.Host}/Api/Leads/Attributes/GetTypes",
-                ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<string, AttributeType>>(
+                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 
         public Task<LeadAttribute> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<LeadAttribute>($"{_settings.Host}/Api/Leads/Attributes/Get", new {id},
-                ct);
+            return _httpClientFactory.GetAsync<LeadAttribute>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<LeadAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<LeadAttribute>>($"{_settings.Host}/Api/Leads/Attributes/GetList",
-                ids, ct);
+            return _httpClientFactory.GetAsync<List<LeadAttribute>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<LeadAttribute>> GetPagedListAsync(Guid? accountId = default,
-            List<AttributeType> types = default, string key = default, bool? isDeleted = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<List<LeadAttribute>> GetPagedListAsync(
+            LeadAttributeGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Types = types,
-                Key = key,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<LeadAttribute>>(
-                $"{_settings.Host}/Api/Leads/Attributes/GetPagedList", parameter, ct);
+            return _httpClientFactory.GetAsync<List<LeadAttribute>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(LeadAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Leads/Attributes/Create", attribute, ct);
+            return _httpClientFactory.GetAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, ct);
         }
 
         public Task UpdateAsync(LeadAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Attributes/Update", attribute, ct);
+            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Update"), attribute, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Attributes/Delete", ids, ct);
+            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Attributes/Restore", ids, ct);
+            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

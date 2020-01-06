@@ -4,8 +4,6 @@ namespace Crm.Apps.Clients.Deals.RequestParameters
 {
     public class DealStatusGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public string Name { get; set; }
 
         public bool? IsFinish { get; set; }

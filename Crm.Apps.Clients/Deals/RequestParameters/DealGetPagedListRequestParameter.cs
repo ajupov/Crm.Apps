@@ -5,8 +5,6 @@ namespace Crm.Apps.Clients.Deals.RequestParameters
 {
     public class DealGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public string Name { get; set; }
 
         public DateTime? MinStartDateTime { get; set; }

@@ -3,75 +3,60 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Leads.Models;
-using Crm.Apps.Clients.Leads.Settings;
+using Crm.Apps.Clients.Leads.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Leads.Clients
 {
     public class LeadSourcesClient : ILeadSourcesClient
     {
-        private readonly LeadsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public LeadSourcesClient(IOptions<LeadsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public LeadSourcesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Leads/Sources");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<LeadSource> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<LeadSource>($"{_settings.Host}/Api/Leads/Sources/Get",
-                new {id}, ct);
+            return _httpClientFactory.GetAsync<LeadSource>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<LeadSource>>($"{_settings.Host}/Api/Leads/Sources/GetList", ids,
-                ct);
+            return _httpClientFactory.GetAsync<List<LeadSource>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<LeadSource>> GetPagedListAsync(Guid? accountId = default, string name = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<LeadSource>> GetPagedListAsync(
+            LeadSourceGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Name = name,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<LeadSource>>($"{_settings.Host}/Api/Leads/Sources/GetPagedList",
-                parameter, ct);
+            return _httpClientFactory.GetAsync<List<LeadSource>>(UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(LeadSource source, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Leads/Sources/Create", source, ct);
+            return _httpClientFactory.GetAsync<Guid>(UriBuilder.Combine(_url, "Create"), source, ct);
         }
 
         public Task UpdateAsync(LeadSource source, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Sources/Update", source, ct);
+            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Update"), source, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Sources/Delete", ids, ct);
+            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Leads/Sources/Restore", ids, ct);
+            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }
