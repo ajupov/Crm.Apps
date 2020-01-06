@@ -23,13 +23,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             };
         }
 
-        public LeadAttributeBuilder WithAccountId(Guid accountId)
-        {
-            _attribute.AccountId = accountId;
-
-            return this;
-        }
-
         public LeadAttributeBuilder WithType(AttributeType type)
         {
             _attribute.Type = type;

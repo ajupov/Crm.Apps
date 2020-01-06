@@ -21,13 +21,6 @@ namespace Crm.Apps.Tests.Builders.Activities
             };
         }
 
-        public ActivityTypeBuilder WithAccountId(Guid accountId)
-        {
-            _type.AccountId = accountId;
-
-            return this;
-        }
-
         public ActivityTypeBuilder WithName(string name)
         {
             _type.Name = name;

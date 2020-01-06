@@ -8,8 +8,6 @@ namespace Crm.Apps.Tests.Builders.Leads
     {
         LeadBuilder WithSourceId(Guid sourceId);
 
-        LeadBuilder WithAccountId(Guid accountId);
-
         LeadBuilder WithCreateUserId(Guid createUserId);
 
         LeadBuilder WithResponsibleUserId(Guid responsibleUserId);

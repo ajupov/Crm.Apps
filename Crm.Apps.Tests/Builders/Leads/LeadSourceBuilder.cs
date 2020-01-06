@@ -21,13 +21,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             };
         }
 
-        public LeadSourceBuilder WithAccountId(Guid accountId)
-        {
-            _source.AccountId = accountId;
-
-            return this;
-        }
-
         public LeadSourceBuilder WithName(string name)
         {
             _source.Name = name;

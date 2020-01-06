@@ -1,50 +1,52 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Products.Clients;
-using Crm.Clients.Products.Models;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Products.Clients;
+using Crm.Apps.Clients.Products.Models;
 
 namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductStatusBuilder : IProductStatusBuilder
     {
         private readonly IProductStatusesClient _productStatusesClient;
-        private readonly ProductStatus _productStatus;
+        private readonly ProductStatus _status;
 
         public ProductStatusBuilder(IProductStatusesClient productStatusesClient)
         {
             _productStatusesClient = productStatusesClient;
-            _productStatus = new ProductStatus
+            _status = new ProductStatus
             {
                 AccountId = Guid.Empty,
-                Name = "Test"
+                Name = "Test",
+                IsDeleted = false
             };
         }
 
         public ProductStatusBuilder WithAccountId(Guid accountId)
         {
-            _productStatus.AccountId = accountId;
+            _status.AccountId = accountId;
 
             return this;
         }
 
         public ProductStatusBuilder WithName(string name)
         {
-            _productStatus.Name = name;
+            _status.Name = name;
+
+            return this;
+        }
+
+        public ProductStatusBuilder IsDeleted()
+        {
+            _status.IsDeleted = true;
 
             return this;
         }
 
         public async Task<ProductStatus> BuildAsync()
         {
-            if (_productStatus.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_productStatus.AccountId));
-            }
+            var id = await _productStatusesClient.CreateAsync(_status);
 
-            var createdId = await _productStatusesClient.CreateAsync(_productStatus);
-
-            return await _productStatusesClient.GetAsync(createdId);
+            return await _productStatusesClient.GetAsync(id);
         }
     }
 }

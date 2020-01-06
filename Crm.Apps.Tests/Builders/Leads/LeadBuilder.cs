@@ -48,13 +48,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             return this;
         }
 
-        public LeadBuilder WithAccountId(Guid accountId)
-        {
-            _lead.AccountId = accountId;
-
-            return this;
-        }
-
         public LeadBuilder WithCreateUserId(Guid createUserId)
         {
             _lead.CreateUserId = createUserId;

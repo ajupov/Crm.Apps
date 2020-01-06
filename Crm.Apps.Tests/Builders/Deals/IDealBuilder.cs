@@ -6,8 +6,6 @@ namespace Crm.Apps.Tests.Builders.Deals
 {
     public interface IDealBuilder
     {
-        DealBuilder WithAccountId(Guid accountId);
-
         DealBuilder WithTypeId(Guid typeId);
 
         DealBuilder WithStatusId(Guid statusId);

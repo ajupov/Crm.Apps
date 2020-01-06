@@ -23,13 +23,6 @@ namespace Crm.Apps.Tests.Builders.Companies
             };
         }
 
-        public CompanyAttributeBuilder WithAccountId(Guid accountId)
-        {
-            _companyAttribute.AccountId = accountId;
-
-            return this;
-        }
-
         public CompanyAttributeBuilder WithType(AttributeType type)
         {
             _companyAttribute.Type = type;

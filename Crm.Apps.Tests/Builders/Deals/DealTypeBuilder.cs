@@ -21,13 +21,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             };
         }
 
-        public DealTypeBuilder WithAccountId(Guid accountId)
-        {
-            _type.AccountId = accountId;
-
-            return this;
-        }
-
         public DealTypeBuilder WithName(string name)
         {
             _type.Name = name;

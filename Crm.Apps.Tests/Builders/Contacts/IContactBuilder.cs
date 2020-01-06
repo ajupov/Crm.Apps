@@ -6,8 +6,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
 {
     public interface IContactBuilder
     {
-        ContactBuilder WithAccountId(Guid accountId);
-
         ContactBuilder WithLeadId(Guid leadId);
 
         ContactBuilder WithCompanyId(Guid companyId);

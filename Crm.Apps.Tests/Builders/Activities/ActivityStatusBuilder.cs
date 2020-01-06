@@ -22,13 +22,6 @@ namespace Crm.Apps.Tests.Builders.Activities
             };
         }
 
-        public ActivityStatusBuilder WithAccountId(Guid accountId)
-        {
-            _status.AccountId = accountId;
-
-            return this;
-        }
-
         public ActivityStatusBuilder WithName(string name)
         {
             _status.Name = name;

@@ -6,8 +6,6 @@ namespace Crm.Apps.Tests.Builders.Deals
 {
     public interface IDealTypeBuilder
     {
-        DealTypeBuilder WithAccountId(Guid accountId);
-
         DealTypeBuilder WithName(string name);
 
         DealTypeBuilder AsDeleted();

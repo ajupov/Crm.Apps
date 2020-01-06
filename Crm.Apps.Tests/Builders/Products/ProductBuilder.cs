@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Products.Clients;
-using Crm.Clients.Products.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Products.Clients;
+using Crm.Apps.Clients.Products.Models;
 
 namespace Crm.Apps.Tests.Builders.Products
 {
@@ -26,13 +26,6 @@ namespace Crm.Apps.Tests.Builders.Products
                 IsHidden = false,
                 IsDeleted = false
             };
-        }
-
-        public ProductBuilder WithAccountId(Guid accountId)
-        {
-            _product.AccountId = accountId;
-
-            return this;
         }
 
         public ProductBuilder WithParentProductId(Guid productId)
@@ -124,19 +117,14 @@ namespace Crm.Apps.Tests.Builders.Products
 
         public async Task<Product> BuildAsync()
         {
-            if (_product.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_product.AccountId));
-            }
-            
             if (_product.StatusId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_product.StatusId));
             }
 
-            var createdId = await _productsClient.CreateAsync(_product);
+            var id = await _productsClient.CreateAsync(_product);
 
-            return await _productsClient.GetAsync(createdId);
+            return await _productsClient.GetAsync(id);
         }
     }
 }

@@ -42,13 +42,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
             };
         }
 
-        public ContactBuilder WithAccountId(Guid accountId)
-        {
-            _contact.AccountId = accountId;
-
-            return this;
-        }
-
         public ContactBuilder WithLeadId(Guid leadId)
         {
             _contact.LeadId = leadId;

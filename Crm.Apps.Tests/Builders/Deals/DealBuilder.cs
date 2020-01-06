@@ -33,13 +33,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             };
         }
 
-        public DealBuilder WithAccountId(Guid accountId)
-        {
-            _deal.AccountId = accountId;
-
-            return this;
-        }
-
         public DealBuilder WithTypeId(Guid typeId)
         {
             _deal.TypeId = typeId;

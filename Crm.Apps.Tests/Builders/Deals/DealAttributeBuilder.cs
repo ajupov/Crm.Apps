@@ -23,13 +23,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             };
         }
 
-        public DealAttributeBuilder WithAccountId(Guid accountId)
-        {
-            _attribute.AccountId = accountId;
-
-            return this;
-        }
-
         public DealAttributeBuilder WithType(AttributeType type)
         {
             _attribute.Type = type;

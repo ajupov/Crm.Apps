@@ -23,13 +23,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
             };
         }
 
-        public ContactAttributeBuilder WithAccountId(Guid accountId)
-        {
-            _attribute.AccountId = accountId;
-
-            return this;
-        }
-
         public ContactAttributeBuilder WithType(AttributeType type)
         {
             _attribute.Type = type;

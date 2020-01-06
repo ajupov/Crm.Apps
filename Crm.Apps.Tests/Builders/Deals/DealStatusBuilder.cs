@@ -22,13 +22,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             };
         }
 
-        public DealStatusBuilder WithAccountId(Guid accountId)
-        {
-            _status.AccountId = accountId;
-
-            return this;
-        }
-
         public DealStatusBuilder WithName(string name)
         {
             _status.Name = name;

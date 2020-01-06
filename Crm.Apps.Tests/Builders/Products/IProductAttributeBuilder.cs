@@ -1,17 +1,16 @@
-using System;
 using System.Threading.Tasks;
-using Crm.Clients.Products.Models;
-using Crm.Common.Types;
+using Crm.Apps.Clients.Products.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Products
 {
     public interface IProductAttributeBuilder
     {
-        ProductAttributeBuilder WithAccountId(Guid accountId);
-
         ProductAttributeBuilder WithType(AttributeType type);
-        
+
         ProductAttributeBuilder WithKey(string key);
+
+        ProductAttributeBuilder AsDeleted();
 
         Task<ProductAttribute> BuildAsync();
     }
