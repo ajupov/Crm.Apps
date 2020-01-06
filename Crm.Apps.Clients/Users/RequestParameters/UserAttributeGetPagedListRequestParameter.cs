@@ -6,8 +6,6 @@ namespace Crm.Apps.Clients.Users.RequestParameters
 {
     public class UserAttributeGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public List<AttributeType> Types { get; set; }
 
         public string Key { get; set; }

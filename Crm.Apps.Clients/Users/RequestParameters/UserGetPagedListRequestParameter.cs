@@ -7,8 +7,6 @@ namespace Crm.Apps.Clients.Users.RequestParameters
 {
     public class UserGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-        
         public string Surname { get; set; }
         
         public string Name { get; set; }

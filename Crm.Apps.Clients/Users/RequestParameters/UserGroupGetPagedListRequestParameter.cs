@@ -4,8 +4,6 @@ namespace Crm.Apps.Clients.Users.RequestParameters
 {
     public class UserGroupGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
-
         public string Name { get; set; }
 
         public bool? IsDeleted { get; set; }
