@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.Models;
 
 namespace Crm.Apps.Tests.Builders.Activities
 {
@@ -9,6 +9,8 @@ namespace Crm.Apps.Tests.Builders.Activities
         ActivityTypeBuilder WithAccountId(Guid accountId);
 
         ActivityTypeBuilder WithName(string name);
+
+        ActivityTypeBuilder AsDeleted();
 
         Task<ActivityType> BuildAsync();
     }

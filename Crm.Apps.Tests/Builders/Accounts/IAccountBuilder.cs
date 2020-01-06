@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Models;
+using Crm.Apps.Clients.Accounts.Models;
 
 namespace Crm.Apps.Tests.Builders.Accounts
 {
@@ -11,7 +11,7 @@ namespace Crm.Apps.Tests.Builders.Accounts
 
         AccountBuilder AsDeleted();
 
-        AccountBuilder WithSetting(AccountSettingType type, string? value = null);
+        AccountBuilder WithSetting(AccountSettingType type, string value = null);
 
         Task<Account> BuildAsync();
     }

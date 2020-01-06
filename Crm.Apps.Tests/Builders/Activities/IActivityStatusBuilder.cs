@@ -1,16 +1,15 @@
-using System;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.Models;
 
 namespace Crm.Apps.Tests.Builders.Activities
 {
     public interface IActivityStatusBuilder
     {
-        ActivityStatusBuilder WithAccountId(Guid accountId);
-
         ActivityStatusBuilder WithName(string name);
 
         ActivityStatusBuilder AsFinish();
+        
+        ActivityStatusBuilder AsDeleted();
 
         Task<ActivityStatus> BuildAsync();
     }

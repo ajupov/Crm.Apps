@@ -1,54 +1,52 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Accounts.Clients;
-using Crm.Clients.Accounts.Models;
-using Crm.Clients.Accounts.RequestParameters;
+using Crm.Apps.Clients.Accounts.Clients;
+using Crm.Apps.Clients.Accounts.Models;
 
 namespace Crm.Apps.Tests.Builders.Accounts
 {
     public class AccountBuilder : IAccountBuilder
     {
         private readonly IAccountsClient _accountsClient;
-        private readonly AccountCreateRequest _request;
+        private readonly Account _account;
 
         public AccountBuilder(IAccountsClient accountsClient)
         {
             _accountsClient = accountsClient;
-            _request = new AccountCreateRequest
+            _account = new Account
             {
                 Type = AccountType.MlmSystem,
                 IsLocked = false,
-                IsDeleted = false,
-                Settings = null
+                IsDeleted = false
             };
         }
 
         public AccountBuilder WithType(AccountType type)
         {
-            _request.Type = type;
+            _account.Type = type;
 
             return this;
         }
 
         public AccountBuilder AsLocked()
         {
-            _request.IsLocked = true;
+            _account.IsLocked = true;
 
             return this;
         }
 
         public AccountBuilder AsDeleted()
         {
-            _request.IsDeleted = true;
+            _account.IsDeleted = true;
 
             return this;
         }
 
-        public AccountBuilder WithSetting(AccountSettingType type, string? value = null)
+        public AccountBuilder WithSetting(AccountSettingType type, string value = null)
         {
-            if (_request.Settings == null)
+            if (_account.Settings == null)
             {
-                _request.Settings = new List<AccountSetting>();
+                _account.Settings = new List<AccountSetting>();
             }
 
             var setting = new AccountSetting
@@ -57,16 +55,16 @@ namespace Crm.Apps.Tests.Builders.Accounts
                 Value = value
             };
 
-            _request.Settings.Add(setting);
+            _account.Settings.Add(setting);
 
             return this;
         }
 
         public async Task<Account> BuildAsync()
         {
-            var createdId = await _accountsClient.CreateAsync(_request);
+            var id = await _accountsClient.CreateAsync(_account);
 
-            return await _accountsClient.GetAsync(createdId);
+            return await _accountsClient.GetAsync(id);
         }
     }
 }

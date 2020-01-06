@@ -1,17 +1,16 @@
-using System;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Models;
-using Crm.Common.Types;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Activities
 {
     public interface IActivityAttributeBuilder
     {
-        ActivityAttributeBuilder WithAccountId(Guid accountId);
-
         ActivityAttributeBuilder WithType(AttributeType type);
 
         ActivityAttributeBuilder WithKey(string key);
+
+        ActivityAttributeBuilder AsDeleted();
 
         Task<ActivityAttribute> BuildAsync();
     }

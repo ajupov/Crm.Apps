@@ -1,21 +1,20 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.Models;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
 
 namespace Crm.Apps.Tests.Builders.Activities
 {
     public class ActivityCommentBuilder : IActivityCommentBuilder
     {
         private readonly IActivityCommentsClient _activityCommentsClient;
-        private readonly ActivityCommentCreateRequest _request;
+        private readonly ActivityComment _comment;
 
         public ActivityCommentBuilder(IActivityCommentsClient activityCommentsClient)
         {
             _activityCommentsClient = activityCommentsClient;
-            _request = new ActivityCommentCreateRequest
+            _comment = new ActivityComment
             {
                 ActivityId = Guid.Empty,
                 Value = "Test"
@@ -24,19 +23,19 @@ namespace Crm.Apps.Tests.Builders.Activities
 
         public ActivityCommentBuilder WithActivityId(Guid activityId)
         {
-            _request.ActivityId = activityId;
+            _comment.ActivityId = activityId;
 
             return this;
         }
 
         public Task BuildAsync()
         {
-            if (_request.ActivityId.IsEmpty())
+            if (_comment.ActivityId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_request.ActivityId));
+                throw new InvalidOperationException(nameof(_comment.ActivityId));
             }
 
-            return _activityCommentsClient.CreateAsync(_request);
+            return _activityCommentsClient.CreateAsync(_comment);
         }
     }
 }

@@ -1,51 +1,52 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.Models;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
 
 namespace Crm.Apps.Tests.Builders.Activities
 {
     public class ActivityTypeBuilder : IActivityTypeBuilder
     {
         private readonly IActivityTypesClient _activityTypesClient;
-        private readonly ActivityTypeCreateRequest _request;
+        private readonly ActivityType _type;
 
         public ActivityTypeBuilder(IActivityTypesClient activityTypesClient)
         {
             _activityTypesClient = activityTypesClient;
-            _request = new ActivityTypeCreateRequest
+            _type = new ActivityType
             {
                 AccountId = Guid.Empty,
-                Name = "Test"
+                Name = "Test",
+                IsDeleted = false
             };
         }
 
         public ActivityTypeBuilder WithAccountId(Guid accountId)
         {
-            _request.AccountId = accountId;
+            _type.AccountId = accountId;
 
             return this;
         }
 
         public ActivityTypeBuilder WithName(string name)
         {
-            _request.Name = name;
+            _type.Name = name;
+
+            return this;
+        }
+
+        public ActivityTypeBuilder AsDeleted()
+        {
+            _type.IsDeleted = true;
 
             return this;
         }
 
         public async Task<ActivityType> BuildAsync()
         {
-            if (_request.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_request.AccountId));
-            }
+            var id = await _activityTypesClient.CreateAsync(_type);
 
-            var createdId = await _activityTypesClient.CreateAsync(_request);
-
-            return await _activityTypesClient.GetAsync(createdId);
+            return await _activityTypesClient.GetAsync(id);
         }
     }
 }

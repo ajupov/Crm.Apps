@@ -1,58 +1,60 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.Models;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
 
 namespace Crm.Apps.Tests.Builders.Activities
 {
     public class ActivityStatusBuilder : IActivityStatusBuilder
     {
         private readonly IActivityStatusesClient _activityStatusesClient;
-        private readonly ActivityStatusCreateRequest _request;
+        private readonly ActivityStatus _status;
 
         public ActivityStatusBuilder(IActivityStatusesClient activityStatusesClient)
         {
             _activityStatusesClient = activityStatusesClient;
-            _request = new ActivityStatusCreateRequest
+            _status = new ActivityStatus
             {
                 AccountId = Guid.Empty,
-                Name = "Test"
+                Name = "Test",
+                IsFinish = false,
+                IsDeleted = false
             };
         }
 
         public ActivityStatusBuilder WithAccountId(Guid accountId)
         {
-            _request.AccountId = accountId;
+            _status.AccountId = accountId;
 
             return this;
         }
 
         public ActivityStatusBuilder WithName(string name)
         {
-            _request.Name = name;
+            _status.Name = name;
 
             return this;
         }
 
         public ActivityStatusBuilder AsFinish()
         {
-            _request.IsFinish = true;
+            _status.IsFinish = true;
+
+            return this;
+        }
+
+        public ActivityStatusBuilder AsDeleted()
+        {
+            _status.IsDeleted = true;
 
             return this;
         }
 
         public async Task<ActivityStatus> BuildAsync()
         {
-            if (_request.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_request.AccountId));
-            }
+            var id = await _activityStatusesClient.CreateAsync(_status);
 
-            var createdId = await _activityStatusesClient.CreateAsync(_request);
-
-            return await _activityStatusesClient.GetAsync(createdId);
+            return await _activityStatusesClient.GetAsync(id);
         }
     }
 }

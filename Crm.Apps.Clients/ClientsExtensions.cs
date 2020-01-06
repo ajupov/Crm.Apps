@@ -16,10 +16,7 @@ namespace Crm.Apps.Clients
         {
             return services
                 // .AddHttpClient()
-                .Configure<ClientsSettings>(x =>
-                {
-                    x.Host = host; // http://api.litecrm.org/v1
-                })
+                .Configure<ClientsSettings>(x => { x.Host = host; })
                 .AddSingleton<IAccountsClient, AccountsClient>()
                 .AddSingleton<IAccountSettingsClient, AccountSettingsClient>()
                 .AddSingleton<IAccountChangesClient, AccountChangesClient>()

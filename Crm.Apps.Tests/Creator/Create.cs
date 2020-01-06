@@ -4,7 +4,6 @@ using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
-using Crm.Apps.Tests.Builders.Identities;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
 using Crm.Apps.Tests.Builders.Users;
@@ -14,72 +13,67 @@ namespace Crm.Apps.Tests.Creator
 {
     public class Create : ICreate
     {
-        private readonly IServiceProvider _serviceCollection;
+        private readonly IServiceProvider _services;
 
-        public Create(IServiceProvider serviceCollection)
+        public Create(IServiceProvider services)
         {
-            _serviceCollection = serviceCollection;
+            _services = services;
         }
 
-        public IAccountBuilder Account => _serviceCollection.GetService<IAccountBuilder>();
+        public IAccountBuilder Account => _services.GetService<IAccountBuilder>();
 
-//        public IUserBuilder User => _serviceCollection.GetService<IUserBuilder>();
+        public IUserBuilder User => _services.GetService<IUserBuilder>();
 
-        public IUserAttributeBuilder UserAttribute => _serviceCollection.GetService<IUserAttributeBuilder>();
+        public IUserAttributeBuilder UserAttribute => _services.GetService<IUserAttributeBuilder>();
 
-        public IUserGroupBuilder UserGroup => _serviceCollection.GetService<IUserGroupBuilder>();
+        public IUserGroupBuilder UserGroup => _services.GetService<IUserGroupBuilder>();
 
-//        public IIdentityBuilder Identity => _serviceCollection.GetService<IIdentityBuilder>();
+        public IProductBuilder Product => _services.GetService<IProductBuilder>();
 
-        public IIdentityTokenBuilder IdentityToken => _serviceCollection.GetService<IIdentityTokenBuilder>();
+        public IProductCategoryBuilder ProductCategory => _services.GetService<IProductCategoryBuilder>();
 
-        public IProductBuilder Product => _serviceCollection.GetService<IProductBuilder>();
+        public IProductStatusBuilder ProductStatus => _services.GetService<IProductStatusBuilder>();
 
-        public IProductCategoryBuilder ProductCategory => _serviceCollection.GetService<IProductCategoryBuilder>();
+        public IProductAttributeBuilder ProductAttribute => _services.GetService<IProductAttributeBuilder>();
 
-        public IProductStatusBuilder ProductStatus => _serviceCollection.GetService<IProductStatusBuilder>();
+        public ILeadBuilder Lead => _services.GetService<ILeadBuilder>();
 
-        public IProductAttributeBuilder ProductAttribute => _serviceCollection.GetService<IProductAttributeBuilder>();
+        public ILeadSourceBuilder LeadSource => _services.GetService<ILeadSourceBuilder>();
 
-        public ILeadBuilder Lead => _serviceCollection.GetService<ILeadBuilder>();
+        public ILeadAttributeBuilder LeadAttribute => _services.GetService<ILeadAttributeBuilder>();
 
-        public ILeadSourceBuilder LeadSource => _serviceCollection.GetService<ILeadSourceBuilder>();
+        public ILeadCommentBuilder LeadComment => _services.GetService<ILeadCommentBuilder>();
 
-        public ILeadAttributeBuilder LeadAttribute => _serviceCollection.GetService<ILeadAttributeBuilder>();
+        public ICompanyBuilder Company => _services.GetService<ICompanyBuilder>();
 
-        public ILeadCommentBuilder LeadComment => _serviceCollection.GetService<ILeadCommentBuilder>();
+        public ICompanyAttributeBuilder CompanyAttribute => _services.GetService<ICompanyAttributeBuilder>();
 
-        public ICompanyBuilder Company => _serviceCollection.GetService<ICompanyBuilder>();
+        public ICompanyCommentBuilder CompanyComment => _services.GetService<ICompanyCommentBuilder>();
 
-        public ICompanyAttributeBuilder CompanyAttribute => _serviceCollection.GetService<ICompanyAttributeBuilder>();
+        public IContactBuilder Contact => _services.GetService<IContactBuilder>();
 
-        public ICompanyCommentBuilder CompanyComment => _serviceCollection.GetService<ICompanyCommentBuilder>();
+        public IContactAttributeBuilder ContactAttribute => _services.GetService<IContactAttributeBuilder>();
 
-        public IContactBuilder Contact => _serviceCollection.GetService<IContactBuilder>();
+        public IContactCommentBuilder ContactComment => _services.GetService<IContactCommentBuilder>();
 
-        public IContactAttributeBuilder ContactAttribute => _serviceCollection.GetService<IContactAttributeBuilder>();
+        public IDealBuilder Deal => _services.GetService<IDealBuilder>();
 
-        public IContactCommentBuilder ContactComment => _serviceCollection.GetService<IContactCommentBuilder>();
+        public IDealStatusBuilder DealStatus => _services.GetService<IDealStatusBuilder>();
 
-        public IDealBuilder Deal => _serviceCollection.GetService<IDealBuilder>();
+        public IDealTypeBuilder DealType => _services.GetService<IDealTypeBuilder>();
 
-        public IDealStatusBuilder DealStatus => _serviceCollection.GetService<IDealStatusBuilder>();
+        public IDealAttributeBuilder DealAttribute => _services.GetService<IDealAttributeBuilder>();
 
-        public IDealTypeBuilder DealType => _serviceCollection.GetService<IDealTypeBuilder>();
+        public IDealCommentBuilder DealComment => _services.GetService<IDealCommentBuilder>();
 
-        public IDealAttributeBuilder DealAttribute => _serviceCollection.GetService<IDealAttributeBuilder>();
+        public IActivityBuilder Activity => _services.GetService<IActivityBuilder>();
 
-        public IDealCommentBuilder DealComment => _serviceCollection.GetService<IDealCommentBuilder>();
+        public IActivityStatusBuilder ActivityStatus => _services.GetService<IActivityStatusBuilder>();
 
-        public IActivityBuilder Activity => _serviceCollection.GetService<IActivityBuilder>();
+        public IActivityTypeBuilder ActivityType => _services.GetService<IActivityTypeBuilder>();
 
-        public IActivityStatusBuilder ActivityStatus => _serviceCollection.GetService<IActivityStatusBuilder>();
+        public IActivityAttributeBuilder ActivityAttribute => _services.GetService<IActivityAttributeBuilder>();
 
-        public IActivityTypeBuilder ActivityType => _serviceCollection.GetService<IActivityTypeBuilder>();
-
-        public IActivityAttributeBuilder ActivityAttribute =>
-            _serviceCollection.GetService<IActivityAttributeBuilder>();
-
-        public IActivityCommentBuilder ActivityComment => _serviceCollection.GetService<IActivityCommentBuilder>();
+        public IActivityCommentBuilder ActivityComment => _services.GetService<IActivityCommentBuilder>();
     }
 }
