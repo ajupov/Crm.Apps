@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Contacts.Clients;
-using Crm.Clients.Contacts.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Contacts.Clients;
+using Crm.Apps.Clients.Contacts.Models;
 
 namespace Crm.Apps.Tests.Builders.Contacts
 {
@@ -212,7 +212,10 @@ namespace Crm.Apps.Tests.Builders.Contacts
             return this;
         }
 
-        public ContactBuilder WithBankAccount(string number, string bankNumber, string bankName,
+        public ContactBuilder WithBankAccount(
+            string number,
+            string bankNumber,
+            string bankName,
             string bankCorrespondentNumber)
         {
             if (_contact.BankAccounts == null)
@@ -233,19 +236,14 @@ namespace Crm.Apps.Tests.Builders.Contacts
 
         public async Task<Contact> BuildAsync()
         {
-            if (_contact.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_contact.AccountId));
-            }
-
             if (_contact.LeadId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_contact.LeadId));
             }
 
-            var createdId = await _contactsClient.CreateAsync(_contact);
+            var id = await _contactsClient.CreateAsync(_contact);
 
-            return await _contactsClient.GetAsync(createdId);
+            return await _contactsClient.GetAsync(id);
         }
     }
 }

@@ -1,42 +1,41 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Contacts.Clients;
-using Crm.Clients.Contacts.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Contacts.Clients;
+using Crm.Apps.Clients.Contacts.Models;
 
 namespace Crm.Apps.Tests.Builders.Contacts
 {
     public class ContactCommentBuilder : IContactCommentBuilder
     {
         private readonly IContactCommentsClient _contactCommentsClient;
-        private readonly ContactComment _contactComment;
+        private readonly ContactComment _comment;
 
         public ContactCommentBuilder(IContactCommentsClient contactCommentsClient)
         {
             _contactCommentsClient = contactCommentsClient;
-            _contactComment = new ContactComment
+            _comment = new ContactComment
             {
                 ContactId = Guid.Empty,
-                CommentatorUserId = Guid.Empty,
                 Value = "Test"
             };
         }
 
         public ContactCommentBuilder WithContactId(Guid contactId)
         {
-            _contactComment.ContactId = contactId;
+            _comment.ContactId = contactId;
 
             return this;
         }
 
         public Task BuildAsync()
         {
-            if (_contactComment.ContactId.IsEmpty())
+            if (_comment.ContactId.IsEmpty())
             {
-                throw new InvalidOperationException(nameof(_contactComment.ContactId));
+                throw new InvalidOperationException(nameof(_comment.ContactId));
             }
 
-            return _contactCommentsClient.CreateAsync(_contactComment);
+            return _contactCommentsClient.CreateAsync(_comment);
         }
     }
 }

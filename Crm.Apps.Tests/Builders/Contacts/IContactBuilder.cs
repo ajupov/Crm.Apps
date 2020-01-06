@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Contacts.Models;
+using Crm.Apps.Clients.Contacts.Models;
 
 namespace Crm.Apps.Tests.Builders.Contacts
 {
@@ -52,7 +52,10 @@ namespace Crm.Apps.Tests.Builders.Contacts
 
         ContactBuilder WithAttributeLink(Guid attributeId, string value);
 
-        ContactBuilder WithBankAccount(string number, string bankNumber, string bankName,
+        ContactBuilder WithBankAccount(
+            string number,
+            string bankNumber,
+            string bankName,
             string bankCorrespondentNumber);
 
         Task<Contact> BuildAsync();

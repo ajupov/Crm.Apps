@@ -17,7 +17,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             _dealComment = new DealComment
             {
                 DealId = Guid.Empty,
-                CommentatorUserId = Guid.Empty,
                 Value = "Test"
             };
         }

@@ -17,7 +17,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             _leadComment = new LeadComment
             {
                 LeadId = Guid.Empty,
-                CommentatorUserId = Guid.Empty,
                 Value = "Test"
             };
         }

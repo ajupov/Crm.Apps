@@ -17,7 +17,6 @@ namespace Crm.Apps.Tests.Builders.Companies
             _comment = new CompanyComment
             {
                 CompanyId = Guid.Empty,
-                CommentatorUserId = Guid.Empty,
                 Value = "Test"
             };
         }
