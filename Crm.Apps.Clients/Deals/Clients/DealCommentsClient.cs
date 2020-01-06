@@ -1,50 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Deals.Models;
-using Crm.Apps.Clients.Deals.Settings;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Deals.Clients
 {
     public class DealCommentsClient : IDealCommentsClient
     {
-        private readonly DealsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public DealCommentsClient(IOptions<DealsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public DealCommentsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Deals/Comments");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<DealComment>> GetPagedListAsync(Guid? dealId = default, Guid? commentatorUserId = default,
-            string value = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<DealComment>> GetPagedListAsync(
+            DealCommentGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                DealId = dealId,
-                CommentatorUserId = commentatorUserId,
-                Value = value,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<DealComment>>($"{_settings.Host}/Api/Deals/Comments/GetPagedList",
-                parameter, ct);
+            return _httpClientFactory.PostAsync<List<DealComment>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task CreateAsync(DealComment comment, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Deals/Comments/Create", comment, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Create"), comment, ct);
         }
     }
 }

@@ -1,44 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Deals.Models;
-using Crm.Apps.Clients.Deals.Settings;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Deals.Clients
 {
     public class DealAttributeChangesClient : IDealAttributeChangesClient
     {
-        private readonly DealsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public DealAttributeChangesClient(IOptions<DealsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public DealAttributeChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Deals/Attributes/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<DealAttributeChange>> GetPagedListAsync(Guid? changerUserId = default,
-            Guid? attributeId = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<DealAttributeChange>> GetPagedListAsync(
+            DealAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerUserId = changerUserId,
-                AttributeId = attributeId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<DealAttributeChange>>(
-                $"{_settings.Host}/Api/Deals/Attributes/Changes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }

@@ -3,75 +3,61 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Deals.Models;
-using Crm.Apps.Clients.Deals.Settings;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Deals.Clients
 {
     public class DealStatusesClient : IDealStatusesClient
     {
-        private readonly DealsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public DealStatusesClient(IOptions<DealsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public DealStatusesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Deals/Statuses");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<DealStatus> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<DealStatus>($"{_settings.Host}/Api/Deals/Statuses/Get",
-                new {id}, ct);
+            return _httpClientFactory.GetAsync<DealStatus>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<DealStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<DealStatus>>($"{_settings.Host}/Api/Deals/Statuses/GetList", ids,
-                ct);
+            return _httpClientFactory.PostAsync<List<DealStatus>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<DealStatus>> GetPagedListAsync(Guid? accountId = default, string name = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<DealStatus>> GetPagedListAsync(
+            DealStatusGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Name = name,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<DealStatus>>($"{_settings.Host}/Api/Deals/Statuses/GetPagedList",
-                parameter, ct);
+            return _httpClientFactory.PostAsync<List<DealStatus>>(UriBuilder.Combine(_url, "GetPagedList"), request,
+                ct);
         }
 
         public Task<Guid> CreateAsync(DealStatus status, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Deals/Statuses/Create", status, ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), status, ct);
         }
 
         public Task UpdateAsync(DealStatus status, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Deals/Statuses/Update", status, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), status, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Deals/Statuses/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Deals/Statuses/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

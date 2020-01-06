@@ -1,43 +1,32 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Deals.Models;
-using Crm.Apps.Clients.Deals.Settings;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Deals.Clients
 {
     public class DealStatusChangesClient : IDealStatusChangesClient
     {
-        private readonly DealsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public DealStatusChangesClient(IOptions<DealsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public DealStatusChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Deals/Statuses/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<DealStatusChange>> GetPagedListAsync(Guid? changerUserId = default, Guid? statusId = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<List<DealStatusChange>> GetPagedListAsync(
+            DealStatusChangeGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerDealId = changerUserId,
-                StatusId = statusId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<DealStatusChange>>(
-                $"{_settings.Host}/Api/Deals/Statuses/Changes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }
