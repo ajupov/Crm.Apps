@@ -1,45 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Products.Models;
-using Crm.Apps.Clients.Products.Settings;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Products.Clients
 {
     public class ProductAttributeChangesClient : IProductAttributeChangesClient
     {
-        private readonly ProductsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductAttributeChangesClient(IOptions<ProductsClientSettings> options,
+        public ProductAttributeChangesClient(IOptions<ClientsSettings> options,
             IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Products/Attributes/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<ProductAttributeChange>> GetPagedListAsync(Guid? changerUserId = default,
-            Guid? attributeId = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<ProductAttributeChange>> GetPagedListAsync(
+            ProductAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                ChangerUserId = changerUserId,
-                AttributeId = attributeId,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<ProductAttributeChange>>(
-                $"{_settings.Host}/Api/Products/Attributes/Changes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
     }
 }

@@ -3,85 +3,68 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Products.Models;
-using Crm.Apps.Clients.Products.Settings;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Crm.Common.All.Types.AttributeType;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Products.Clients
 {
     public class ProductAttributesClient : IProductAttributesClient
     {
-        private readonly ProductsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductAttributesClient(IOptions<ProductsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public ProductAttributesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Products/Attributes");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, AttributeType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<AttributeType>>(
-                $"{_settings.Host}/Api/Products/Attributes/GetTypes", ct: ct);
+            return _httpClientFactory.GetAsync<Dictionary<string, AttributeType>>(
+                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 
         public Task<ProductAttribute> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ProductAttribute>(
-                $"{_settings.Host}/Api/Products/Attributes/Get", new {id}, ct);
+            return _httpClientFactory.GetAsync<ProductAttribute>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<ProductAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ProductAttribute>>(
-                $"{_settings.Host}/Api/Products/Attributes/GetList",
-                ids, ct);
+            return _httpClientFactory.PostAsync<List<ProductAttribute>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<ProductAttribute>> GetPagedListAsync(Guid? accountId = default,
-            List<AttributeType> types = default, string key = default, bool? isDeleted = default,
-            DateTime? minCreateDate = default, DateTime? maxCreateDate = default, int offset = default, int limit = 10,
-            string sortBy = default, string orderBy = default, CancellationToken ct = default)
+        public Task<List<ProductAttribute>> GetPagedListAsync(
+            ProductAttributeChangeGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Types = types,
-                Key = key,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<ProductAttribute>>(
-                $"{_settings.Host}/Api/Products/Attributes/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(ProductAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Attributes/Create", attribute,
-                ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, ct);
         }
 
         public Task UpdateAsync(ProductAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Attributes/Update", attribute, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), attribute, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Attributes/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Attributes/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

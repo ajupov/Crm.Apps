@@ -23,7 +23,7 @@ namespace Crm.Apps.Clients.Users.Clients
 
         public Task<List<UserGender>> GetGendersAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserGender>>($"{_settings.Host}/Api/Users/GetGenders",
+            return _httpClientFactory.GetAsync<Dictionary<string,UserGender>>($"{_settings.Host}/Api/Users/GetGenders",
                 ct: ct);
         }
 

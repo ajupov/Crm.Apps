@@ -3,103 +3,76 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Products.Models;
-using Crm.Apps.Clients.Products.Settings;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Products.Clients
 {
     public class ProductsClient : IProductsClient
     {
-        private readonly ProductsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductsClient(IOptions<ProductsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public ProductsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Products");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<ProductType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, ProductType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<ProductType>>($"{_settings.Host}/Api/Products/GetTypes", ct: ct);
+            return _httpClientFactory.PostAsync<Dictionary<string, ProductType>>(
+                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 
         public Task<Product> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<Product>($"{_settings.Host}/Api/Products/Get", new {id}, ct);
+            return _httpClientFactory.GetAsync<Product>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<Product>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<Product>>($"{_settings.Host}/Api/Products/GetList", ids, ct);
+            return _httpClientFactory.PostAsync<List<Product>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<Product>> GetPagedListAsync(Guid? accountId = default, Guid? parentProductId = default,
-            List<ProductType> types = default, List<Guid> statusIds = default, string name = default,
-            string vendorCode = default, decimal? minPrice = default, decimal? maxPrice = default,
-            bool? isHidden = default, bool? isDeleted = default, DateTime? minCreateDate = default,
-            DateTime? maxCreateDate = default, bool? allAttributes = default,
-            IDictionary<Guid, string> attributes = default, bool? allCategoryIds = default,
-            List<Guid> categoryIds = default, int offset = default, int limit = 10, string sortBy = default,
-            string orderBy = default, CancellationToken ct = default)
+        public Task<List<Product>> GetPagedListAsync(
+            ProductGetPagedListRequestParameter request,
+            CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                ParentProductId = parentProductId,
-                Types = types,
-                StatusIds = statusIds,
-                Name = name,
-                VendorCode = vendorCode,
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                IsHidden = isHidden,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                AllAttributes = allAttributes,
-                Attributes = attributes,
-                AllCategoryIds = allCategoryIds,
-                CategoryIds = categoryIds,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
-            return _httpClientFactory.PostAsync<List<Product>>($"{_settings.Host}/Api/Products/GetPagedList", parameter,
-                ct);
+            return _httpClientFactory.PostAsync<List<Product>>(UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(Product product, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Create", product, ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), product, ct);
         }
 
         public Task UpdateAsync(Product product, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Update", product, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), product, ct);
         }
 
         public Task HideAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Hide", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Hide"), ids, ct);
         }
 
         public Task ShowAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Show", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Show"), ids, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

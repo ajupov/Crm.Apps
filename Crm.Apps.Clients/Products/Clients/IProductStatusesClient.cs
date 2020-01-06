@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.Clients.Products.RequestParameters;
 
 namespace Crm.Apps.Clients.Products.Clients
 {
@@ -12,9 +13,8 @@ namespace Crm.Apps.Clients.Products.Clients
 
         Task<List<ProductStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task<List<ProductStatus>> GetPagedListAsync(Guid? accountId = default, string name = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        Task<List<ProductStatus>> GetPagedListAsync(
+            ProductStatusGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
         Task<Guid> CreateAsync(ProductStatus group, CancellationToken ct = default);

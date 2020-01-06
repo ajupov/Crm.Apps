@@ -29,14 +29,15 @@ namespace Crm.Apps.Clients.Leads.Clients
 
         public Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<LeadSource>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
+            return _httpClientFactory.PostAsync<List<LeadSource>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
         public Task<List<LeadSource>> GetPagedListAsync(
             LeadSourceGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<LeadSource>>(UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostAsync<List<LeadSource>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(LeadSource source, CancellationToken ct = default)

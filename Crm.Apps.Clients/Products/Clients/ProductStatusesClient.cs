@@ -3,75 +3,61 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Http;
 using Crm.Apps.Clients.Products.Models;
-using Crm.Apps.Clients.Products.Settings;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Microsoft.Extensions.Options;
+using UriBuilder = Ajupov.Utils.All.Http.UriBuilder;
 
 namespace Crm.Apps.Clients.Products.Clients
 {
     public class ProductStatusesClient : IProductStatusesClient
     {
-        private readonly ProductsClientSettings _settings;
+        private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductStatusesClient(IOptions<ProductsClientSettings> options, IHttpClientFactory httpClientFactory)
+        public ProductStatusesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, );
+            _url = UriBuilder.Combine(options.Value.Host, "Products/Statuses");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<ProductStatus> GetAsync(Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ProductStatus>($"{_settings.Host}/Api/Products/Statuses/Get",
-                new {id}, ct);
+            return _httpClientFactory.GetAsync<ProductStatus>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
         }
 
         public Task<List<ProductStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ProductStatus>>(
-                $"{_settings.Host}/Api/Products/Statuses/GetList", ids, ct);
+            return _httpClientFactory.PostAsync<List<ProductStatus>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
-        public Task<List<ProductStatus>> GetPagedListAsync(Guid? accountId = default, string name = default,
-            bool? isDeleted = default, DateTime? minCreateDate = default, DateTime? maxCreateDate = default,
-            int offset = default, int limit = 10, string sortBy = default, string orderBy = default,
+        public Task<List<ProductStatus>> GetPagedListAsync(
+            ProductStatusGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            var parameter = new
-            {
-                AccountId = accountId,
-                Name = name,
-                IsDeleted = isDeleted,
-                MinCreateDate = minCreateDate,
-                MaxCreateDate = maxCreateDate,
-                Offset = offset,
-                Limit = limit,
-                SortBy = sortBy,
-                OrderBy = orderBy
-            };
-
             return _httpClientFactory.PostAsync<List<ProductStatus>>(
-                $"{_settings.Host}/Api/Products/Statuses/GetPagedList", parameter, ct);
+                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 
         public Task<Guid> CreateAsync(ProductStatus status, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>($"{_settings.Host}/Api/Products/Statuses/Create", status, ct);
+            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), status, ct);
         }
 
         public Task UpdateAsync(ProductStatus status, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Statuses/Update", status, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), status, ct);
         }
 
         public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Statuses/Delete", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
         }
 
         public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync($"{_settings.Host}/Api/Products/Statuses/Restore", ids, ct);
+            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
         }
     }
 }

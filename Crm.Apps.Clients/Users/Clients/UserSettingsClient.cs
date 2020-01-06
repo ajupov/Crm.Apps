@@ -21,7 +21,7 @@ namespace Crm.Apps.Clients.Users.Clients
 
         public Task<List<UserSettingType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<UserSettingType>>($"{_settings.Host}/Api/Users/Settings/GetTypes",
+            return _httpClientFactory.GetAsync<Dictionary<string, UserSettingType>>($"{_settings.Host}/Api/Users/Settings/GetTypes",
                 ct: ct);
         }
     }

@@ -25,7 +25,7 @@ namespace Crm.Apps.Clients.Deals.Clients
 
         public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<AttributeType>>(UriBuilder.Combine(_url, "GetTypes"), ct: ct);
+            return _httpClientFactory.PostAsync<List<AttributeType>>(UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 
         public Task<DealAttribute> GetAsync(Guid id, CancellationToken ct = default)

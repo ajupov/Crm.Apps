@@ -36,14 +36,14 @@ namespace Crm.Apps.Clients.Leads.Clients
 
         public Task<List<LeadAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<LeadAttribute>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
+            return _httpClientFactory.PostAsync<List<LeadAttribute>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
         }
 
         public Task<List<LeadAttribute>> GetPagedListAsync(
             LeadAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<LeadAttribute>>(
+            return _httpClientFactory.PostAsync<List<LeadAttribute>>(
                 UriBuilder.Combine(_url, "GetPagedList"), request, ct);
         }
 

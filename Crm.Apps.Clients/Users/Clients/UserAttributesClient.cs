@@ -23,7 +23,7 @@ namespace Crm.Apps.Clients.Users.Clients
 
         public Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<List<AttributeType>>(
+            return _httpClientFactory.GetAsync<Dictionary<string, AttributeType>>(
                 $"{_settings.Host}/Api/Users/Attributes/GetTypes", ct: ct);
         }
 
