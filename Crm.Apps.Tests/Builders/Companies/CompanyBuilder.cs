@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Crm.Clients.Companies.Clients;
-using Crm.Clients.Companies.Models;
-using Crm.Utils.Guid;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Companies.Clients;
+using Crm.Apps.Clients.Companies.Models;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {
@@ -18,8 +18,8 @@ namespace Crm.Apps.Tests.Builders.Companies
             _company = new Company
             {
                 AccountId = Guid.Empty,
-                Type = CompanyType.None,
-                IndustryType = CompanyIndustryType.None,
+                Type = CompanyType.Commercial,
+                IndustryType = CompanyIndustryType.Computer,
                 LeadId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
@@ -50,13 +50,6 @@ namespace Crm.Apps.Tests.Builders.Companies
                 LegalApartment = "1",
                 IsDeleted = false
             };
-        }
-
-        public CompanyBuilder WithAccountId(Guid accountId)
-        {
-            _company.AccountId = accountId;
-
-            return this;
         }
 
         public CompanyBuilder WithType(CompanyType type)
@@ -269,7 +262,10 @@ namespace Crm.Apps.Tests.Builders.Companies
             return this;
         }
 
-        public CompanyBuilder WithBankAccount(string number, string bankNumber, string bankName,
+        public CompanyBuilder WithBankAccount(
+            string number,
+            string bankNumber,
+            string bankName,
             string bankCorrespondentNumber)
         {
             if (_company.BankAccounts == null)
@@ -306,19 +302,14 @@ namespace Crm.Apps.Tests.Builders.Companies
 
         public async Task<Company> BuildAsync()
         {
-            if (_company.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_company.AccountId));
-            }
-
             if (_company.LeadId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_company.LeadId));
             }
 
-            var createdId = await _companiesClient.CreateAsync(_company);
+            var id = await _companiesClient.CreateAsync(_company);
 
-            return await _companiesClient.GetAsync(createdId);
+            return await _companiesClient.GetAsync(id);
         }
     }
 }

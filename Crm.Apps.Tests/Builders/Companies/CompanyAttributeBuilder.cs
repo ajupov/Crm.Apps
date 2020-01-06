@@ -1,9 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Companies.Clients;
-using Crm.Clients.Companies.Models;
-using Crm.Common.Types;
-using Crm.Utils.Guid;
+using Crm.Apps.Clients.Companies.Clients;
+using Crm.Apps.Clients.Companies.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {
@@ -19,7 +18,8 @@ namespace Crm.Apps.Tests.Builders.Companies
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
-                Key = "Test"
+                Key = "Test",
+                IsDeleted = false
             };
         }
 
@@ -44,16 +44,18 @@ namespace Crm.Apps.Tests.Builders.Companies
             return this;
         }
 
+        public CompanyAttributeBuilder AsDeleted()
+        {
+            _companyAttribute.IsDeleted = true;
+
+            return this;
+        }
+
         public async Task<CompanyAttribute> BuildAsync()
         {
-            if (_companyAttribute.AccountId.IsEmpty())
-            {
-                throw new InvalidOperationException(nameof(_companyAttribute.AccountId));
-            }
+            var id = await _companyAttributesClient.CreateAsync(_companyAttribute);
 
-            var createdId = await _companyAttributesClient.CreateAsync(_companyAttribute);
-
-            return await _companyAttributesClient.GetAsync(createdId);
+            return await _companyAttributesClient.GetAsync(id);
         }
     }
 }

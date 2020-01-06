@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Companies.Models;
-using Crm.Common.Types;
+using Crm.Apps.Clients.Companies.Models;
+using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {
@@ -12,6 +12,8 @@ namespace Crm.Apps.Tests.Builders.Companies
         CompanyAttributeBuilder WithType(AttributeType type);
 
         CompanyAttributeBuilder WithKey(string key);
+
+        CompanyAttributeBuilder AsDeleted();
 
         Task<CompanyAttribute> BuildAsync();
     }

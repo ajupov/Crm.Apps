@@ -1,13 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Clients.Companies.Models;
+using Crm.Apps.Clients.Companies.Models;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {
     public interface ICompanyBuilder
     {
-        CompanyBuilder WithAccountId(Guid accountId);
-
         CompanyBuilder WithType(CompanyType type);
 
         CompanyBuilder WithIndustryType(CompanyIndustryType type);
@@ -68,7 +66,10 @@ namespace Crm.Apps.Tests.Builders.Companies
 
         CompanyBuilder AsDeleted();
 
-        CompanyBuilder WithBankAccount(string number, string bankNumber, string bankName,
+        CompanyBuilder WithBankAccount(
+            string number,
+            string bankNumber,
+            string bankName,
             string bankCorrespondentNumber);
 
         CompanyBuilder WithAttributeLink(Guid attributeId, string value);
