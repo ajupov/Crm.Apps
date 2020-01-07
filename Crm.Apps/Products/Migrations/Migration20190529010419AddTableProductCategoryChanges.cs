@@ -8,7 +8,7 @@ namespace Crm.Apps.Products.Migrations
         public override void Up()
         {
             Create.Table("ProductCategoryChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ProductCategoryChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("CategoryId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()

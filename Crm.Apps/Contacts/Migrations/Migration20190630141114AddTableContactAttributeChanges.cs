@@ -8,7 +8,7 @@ namespace Crm.Apps.Contacts.Migrations
         public override void Up()
         {
             Create.Table("ContactAttributeChanges")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_ContactAttributeChanges_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()

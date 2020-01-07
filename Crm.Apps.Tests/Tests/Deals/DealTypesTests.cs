@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.DateTime;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Deals

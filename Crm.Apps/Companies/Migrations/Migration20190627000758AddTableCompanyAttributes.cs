@@ -8,7 +8,7 @@ namespace Crm.Apps.Companies.Migrations
         public override void Up()
         {
             Create.Table("CompanyAttributes")
-                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey("PK_CompanyAttributes_Id")
+                .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("Key").AsString().NotNullable()

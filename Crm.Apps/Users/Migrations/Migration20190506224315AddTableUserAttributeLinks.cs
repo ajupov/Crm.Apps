@@ -18,9 +18,6 @@ namespace Crm.Apps.Users.Migrations
             Create.PrimaryKey("PK_UserAttributeLinks_Id").OnTable("UserAttributeLinks")
                 .Column("Id");
 
-            Create.PrimaryKey("PK_UserAttributeLinks_Id").OnTable("UserAttributeLinks")
-                .Column("Id");
-
             Create.ForeignKey("FK_UserAttributeLinks_UserId")
                 .FromTable("UserAttributeLinks").ForeignColumn("UserId")
                 .ToTable("Users").PrimaryColumn("Id");
