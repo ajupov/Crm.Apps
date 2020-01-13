@@ -25,7 +25,7 @@ namespace Crm.Apps.Accounts.Migrations
 
         public override void Down()
         {
-            Delete.Index("IX_Accounts_CreateDateTime").OnTable("Users");
+            Delete.Index("IX_Accounts_CreateDateTime").OnTable("Accounts");
             Delete.PrimaryKey("PK_Accounts_Id").FromTable("Accounts");
             Delete.Table("Accounts");
         }

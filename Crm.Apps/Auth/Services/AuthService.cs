@@ -1,20 +1,12 @@
-﻿using Crm.Apps.Auth.Settings;
-using Microsoft.Extensions.Options;
+﻿using Ajupov.Utils.All.String;
 
 namespace Crm.Apps.Auth.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AuthSettings _settings;
-
-        public AuthService(IOptions<AuthSettings> options)
+        public string GetCorrectRedirectUri(string redirectUri)
         {
-            _settings = options.Value;
-        }
-
-        public string GetDefaultRedirectUri()
-        {
-            return _settings.DefaultRedirectUri;
+            return !redirectUri.IsEmpty() ? redirectUri : "http://litecrm.org/about";
         }
     }
 }

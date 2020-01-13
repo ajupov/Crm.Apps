@@ -2,6 +2,6 @@
 {
     public interface IAuthService
     {
-        string GetDefaultRedirectUri();
+        string GetCorrectRedirectUri(string redirectUri);
     }
 }

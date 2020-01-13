@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.ApiDocumentation;
 using Ajupov.Infrastructure.All.Hosting;
 using Ajupov.Infrastructure.All.HotStorage;
@@ -18,27 +15,23 @@ using Crm.Apps.Accounts.Storages;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.Storages;
 using Crm.Apps.Auth.Services;
-using Crm.Apps.Auth.Settings;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
 using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
+using Crm.Apps.Extensions;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
-using Crm.Apps.Users.Services;
-using Crm.Apps.Users.Storages;
+using Crm.Apps.RefreshTokens.Services;
+using Crm.Apps.RefreshTokens.Storages;
 using Crm.Common.All.UserContext;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ConfigurationExtensions = Ajupov.Infrastructure.All.Configuration.ConfigurationExtensions;
@@ -57,84 +50,11 @@ namespace Crm.Apps
                 .ConfigureServices((builder, services) =>
                 {
                     services
-                        .ConfigureJwtAuthentication(configuration)
-                        .ConfigureJwtValidator(configuration)
-                        .AddOAuth("LiteCRM Identity", options =>
-                            {
-                                var authSettings = configuration.GetSection("AuthSettings");
-
-                                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                                options.ClientId = authSettings.GetValue<string>("ClientId");
-                                options.ClientSecret = authSettings.GetValue<string>("ClientSecret");
-                                options.AuthorizationEndpoint = authSettings.GetValue<string>("AuthorizationUrl");
-                                options.TokenEndpoint = authSettings.GetValue<string>("TokenUrl");
-                                options.CallbackPath = new PathString(authSettings.GetValue<string>("CallbackPath"));
-                                options.Scope.Add(authSettings.GetValue<string>("Scope"));
-                                options.SaveTokens = true;
-
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "nameidentifier");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.Email, "emailaddress");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.HomePhone, "homephone");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "surname");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, "dateofbirth");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.Gender, "gender");
-                                // options.ClaimActions.MapJsonKey(ClaimTypes.Role, "role");
-
-                                options.Events = new OAuthEvents
-                                {
-                                    OnCreatingTicket = context =>
-                                    {
-                                        // Move to utils
-                                        var userDataPart = context.AccessToken.Split('.')[1];
-                                        var bytes = Base64UrlTextEncoder.Decode(userDataPart);
-                                        var userDataJson = Encoding.UTF8.GetString(bytes);
-                                        var jsonElement = JsonDocument.Parse(userDataJson).RootElement;
-
-                                        // Register if not registered
-                                        // Save refresh token
-
-                                        context.RunClaimActions(jsonElement);
-
-                                        // context.Response.Cookies.Delete("AccessToken");
-                                        var expiresInSeconds = int.Parse(context.TokenResponse.ExpiresIn);
-
-                                        context.Response.Cookies.Append("AccessToken", context.AccessToken,
-                                            new CookieOptions
-                                            {
-                                                // Domain = "http://localhost:9000",
-                                                SameSite = SameSiteMode.None,
-                                                // HttpOnly = true,
-                                                Expires = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds)
-                                            });
-
-                                        context.Response.Cookies.Append("AccessToken", context.AccessToken,
-                                            new CookieOptions
-                                            {
-                                                // Domain = "http://localhost:3000",
-                                                SameSite = SameSiteMode.None,
-                                                // HttpOnly = true,
-                                                Expires = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds)
-                                            });
-
-                                        context.Response.Cookies.Append("AccessToken", context.AccessToken,
-                                            new CookieOptions
-                                            {
-                                                // Domain = "http://litecrm.org",
-                                                SameSite = SameSiteMode.None,
-                                                // HttpOnly = true,
-                                                Expires = DateTimeOffset.UtcNow.AddSeconds(expiresInSeconds)
-                                            });
-
-                                        return Task.CompletedTask;
-                                    }
-                                };
-                            }
-                        );
-                    services.AddAuthorization();
-                    
-                    services
-                        .Configure<AuthSettings>(configuration.GetSection("AuthSettings"));
+                        .AddAuthorization()
+                        .AddJwtAuthentication()
+                        .AddJwtValidator("7BA30F0F-44D9-4340-80F5-AC2717AFDD25", "http://localhost:9000")
+                        .AddLiteCrmOAuth(configuration)
+                        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
                     services
                         .ConfigureMvc()
@@ -143,24 +63,20 @@ namespace Crm.Apps
                         .ConfigureMetrics(builder.Configuration)
                         .ConfigureMigrator(builder.Configuration)
                         .ConfigureOrm<AccountsStorage>(builder.Configuration)
-                        .ConfigureOrm<UsersStorage>(builder.Configuration)
                         .ConfigureOrm<ProductsStorage>(builder.Configuration)
                         .ConfigureOrm<LeadsStorage>(builder.Configuration)
                         .ConfigureOrm<CompaniesStorage>(builder.Configuration)
                         .ConfigureOrm<ContactsStorage>(builder.Configuration)
                         .ConfigureOrm<DealsStorage>(builder.Configuration)
                         .ConfigureOrm<ActivitiesStorage>(builder.Configuration)
+                        .ConfigureOrm<RefreshTokensStorage>(builder.Configuration)
                         .ConfigureHotStorage(builder.Configuration)
-                        .ConfigureUserContext<IUserContext, UserContext>()
+                        .ConfigureUserContext<IUserContext, UserContext>();
+
+                    services
                         .AddTransient<IAuthService, AuthService>()
                         .AddTransient<IAccountsService, AccountsService>()
                         .AddTransient<IAccountChangesService, AccountChangesService>()
-                        .AddTransient<IUsersService, UsersService>()
-                        .AddTransient<IUserChangesService, UserChangesService>()
-                        .AddTransient<IUserAttributesService, UserAttributesService>()
-                        .AddTransient<IUserAttributeChangesService, UserAttributeChangesService>()
-                        .AddTransient<IUserGroupsService, UserGroupsService>()
-                        .AddTransient<IUserGroupChangesService, UserGroupChangesService>()
                         .AddTransient<IProductsService, ProductsService>()
                         .AddTransient<IProductChangesService, ProductChangesService>()
                         .AddTransient<IProductCategoriesService, ProductCategoriesService>()
@@ -203,7 +119,8 @@ namespace Crm.Apps
                         .AddTransient<IActivityTypesService, ActivityTypesService>()
                         .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
                         .AddTransient<IActivityAttributesService, ActivityAttributesService>()
-                        .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>();
+                        .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>()
+                        .AddTransient<IRefreshTokensService, RefreshTokensService>();
                 })
                 .Configure((context, builder) =>
                 {

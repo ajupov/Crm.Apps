@@ -4,9 +4,21 @@
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.3.1" />
+        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.3.5" />
         <PackageReference Include="Ajupov.Utils.All" Version="1.0.8" />
         <PackageReference Include="Crm.Common.All" Version="1.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="Users\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="Users\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="Users\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Remove="Users\**" />
     </ItemGroup>
 </Project>
