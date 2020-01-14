@@ -59,6 +59,16 @@ namespace Crm.Apps.Extensions
                                 var userInfo = JsonDocument.Parse(userInfoJsonString).RootElement;
 
                                 context.RunClaimActions(userInfo);
+                            },
+                            OnAccessDenied = async context =>
+                            {
+                                
+                            },
+                            OnRedirectToAuthorizationEndpoint = async context =>
+                            {
+                                context.Response.StatusCode = 401;
+                                
+                                await context.Response.WriteAsync(context.Options.AuthorizationEndpoint);
                             }
                         };
                     }

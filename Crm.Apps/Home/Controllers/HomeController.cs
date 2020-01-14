@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Ajupov.Infrastructure.All.Mvc;
-using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,7 +20,7 @@ namespace Crm.Apps.Home.Controllers
         [Authorize(Roles = "AccountOwning")]
         public ActionResult Test()
         {
-            return Ok("123");
+            return Ok("Test");
         }
 
         [HttpGet("")]

@@ -9,6 +9,7 @@ using Ajupov.Utils.All.String;
 using Crm.Apps.RefreshTokens.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Auth.Controllers
@@ -18,10 +19,12 @@ namespace Crm.Apps.Auth.Controllers
     public class AuthController : DefaultApiController
     {
         private readonly IRefreshTokensService _refreshTokensService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthController(IRefreshTokensService refreshTokensService)
+        public AuthController(IRefreshTokensService refreshTokensService, IHttpContextAccessor httpContextAccessor)
         {
             _refreshTokensService = refreshTokensService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [AllowAnonymous]
@@ -32,7 +35,7 @@ namespace Crm.Apps.Auth.Controllers
             {
                 RedirectUri = Url.ActionLink("LoginCallback", "Auth", new
                 {
-                    redirectUri = !redirectUri.IsEmpty() ? redirectUri : Url.ActionLink("Index", "Home")
+                    redirectUri = GetCorrectRedirectUri(redirectUri)
                 })
             };
 
@@ -43,7 +46,7 @@ namespace Crm.Apps.Auth.Controllers
         [HttpGet("LoginCallback")]
         public async Task<IActionResult> LoginCallback(string redirectUri, CancellationToken ct)
         {
-            var authenticateResult = await HttpContext.AuthenticateAsync(JwtDefaults.Scheme);
+            var authenticateResult = await _httpContextAccessor.HttpContext.AuthenticateAsync(JwtDefaults.Scheme);
             var userId = authenticateResult.Principal.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
             var tokens = authenticateResult.Properties.GetTokens().ToList();
             var accessToken = tokens.First(x => x.Name == "access_token").Value;
@@ -51,27 +54,34 @@ namespace Crm.Apps.Auth.Controllers
 
             await _refreshTokensService.CreateAsync(Guid.Parse(userId), accessToken, refreshToken, ct);
 
-            HttpContext.Response.Cookies.Append("username", authenticateResult.Principal.Identity.Name);
-            HttpContext.Response.Cookies.Append("access_token", accessToken);
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("username",
+                authenticateResult.Principal.Identity.Name);
+
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("access_token", accessToken,
+                new CookieOptions {HttpOnly = true, SameSite = SameSiteMode.Lax});
 
             return Redirect(redirectUri);
         }
 
         [Authorize]
+        [HttpPost("Logout")]
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout(string redirectUri, CancellationToken ct)
         {
-            var authenticateResult = await HttpContext.AuthenticateAsync(JwtDefaults.Scheme);
-            var tokens = authenticateResult.Properties.GetTokens().ToList();
-            var accessToken = tokens.First(x => x.Name == "access_token").Value;
-            var accessToken2 = await HttpContext.GetTokenAsync("access_token");
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
 
-            HttpContext.Response.Cookies.Delete("username");
-            HttpContext.Response.Cookies.Delete("access_token");
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("access_token");
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("username");
 
-            await _refreshTokensService.SetIsExpiredAsync(accessToken2, ct);
+            await _refreshTokensService.SetIsExpiredAsync(accessToken, ct);
 
-            return Redirect(redirectUri);
+            return Redirect(GetCorrectRedirectUri(redirectUri));
+        }
+
+        [NonAction]
+        private string GetCorrectRedirectUri(string redirectUri)
+        {
+            return !redirectUri.IsEmpty() ? redirectUri : Url.ActionLink("Index", "Home");
         }
     }
 }

@@ -14,6 +14,7 @@ using Crm.Apps.Accounts.Services;
 using Crm.Apps.Accounts.Storages;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.Storages;
+using Crm.Apps.Auth.ExtractAccessToken;
 using Crm.Apps.Auth.Services;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
@@ -32,6 +33,7 @@ using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ConfigurationExtensions = Ajupov.Infrastructure.All.Configuration.ConfigurationExtensions;
@@ -120,7 +122,8 @@ namespace Crm.Apps
                         .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
                         .AddTransient<IActivityAttributesService, ActivityAttributesService>()
                         .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>()
-                        .AddTransient<IRefreshTokensService, RefreshTokensService>();
+                        .AddTransient<IRefreshTokensService, RefreshTokensService>()
+                        .AddTransient<ExtractAccessTokenMiddleware>();
                 })
                 .Configure((context, builder) =>
                 {
@@ -133,6 +136,7 @@ namespace Crm.Apps
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
+                        .UseExtractAccessToken()
                         .UseAuthentication()
                         .UseAuthorization()
                         .UseMvcMiddleware();
