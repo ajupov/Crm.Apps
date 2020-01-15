@@ -26,7 +26,7 @@ namespace Crm.Apps.Auth.ExtractAccessToken
                 return _next(context);
             }
 
-            var authorizationHeaderValue = JwtBearerDefaults.AuthenticationScheme + " " + accessToken;
+            var authorizationHeaderValue = $"{JwtBearerDefaults.AuthenticationScheme} {accessToken}";
             context.Request.Headers.Add(HeaderNames.Authorization, authorizationHeaderValue);
 
             return _next(context);

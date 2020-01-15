@@ -3,16 +3,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
+using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
 using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
+    [RequireProductsRole]
     [Route("Api/Products/Changes")]
     public class ProductChangesController : AllowingCheckControllerBase
     {
@@ -37,7 +37,7 @@ namespace Crm.Apps.Products.Controllers
             var product = await _productsService.GetAsync(request.ProductId, ct);
             var changes = await _productChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.ProductsManagement}, product.AccountId);
+            return ReturnIfAllowed(changes, ProductsRoles.Value, product.AccountId);
         }
     }
 }

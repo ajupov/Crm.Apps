@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
+using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
 using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
+    [RequireProductsRole]
     [Route("Api/Products")]
     public class ProductsController : AllowingCheckControllerBase
     {
@@ -45,7 +45,7 @@ namespace Crm.Apps.Products.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(product, new[] {Role.AccountOwning, Role.ProductsManagement}, product.AccountId);
+            return ReturnIfAllowed(product, ProductsRoles.Value, product.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -57,7 +57,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 products,
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 products.Select(x => x.AccountId));
         }
 
@@ -72,7 +72,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 products,
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 products.Select(x => x.AccountId));
         }
 
@@ -97,7 +97,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.UpdateAsync(_userContext.UserId, oldProduct, product, ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 product.AccountId, oldProduct.AccountId);
         }
 
@@ -108,7 +108,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.HideAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 products.Select(x => x.AccountId));
         }
 
@@ -119,7 +119,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.ShowAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 products.Select(x => x.AccountId));
         }
 
@@ -130,7 +130,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.DeleteAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 products.Select(x => x.AccountId));
         }
 
@@ -141,7 +141,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.RestoreAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 products.Select(x => x.AccountId));
         }
     }

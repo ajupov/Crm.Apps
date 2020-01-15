@@ -1,8 +1,7 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Security.Claims;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Microsoft.AspNetCore.Authentication;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Extensions
 {
@@ -21,7 +21,7 @@ namespace Crm.Apps.Extensions
             this AuthenticationBuilder builder,
             IConfiguration configuration)
         {
-            var liteCrmOAuthOptions = configuration.GetSection(nameof(LiteCrmOAuthOptions));
+            var liteCrmOAuthOptions = configuration.GetSection(nameof(LiteCrmIdentityOAuthOptions));
 
             return builder
                 .AddOAuth(JwtDefaults.Scheme, options =>
@@ -29,47 +29,45 @@ namespace Crm.Apps.Extensions
                         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                         options.ClientId = liteCrmOAuthOptions.GetValue<string>("ClientId");
                         options.ClientSecret = liteCrmOAuthOptions.GetValue<string>("ClientSecret");
-                        options.Scope.Add(liteCrmOAuthOptions.GetValue<string>("Scope") ?? LiteCrmOAuthDefaults.Scope);
+                        options.Scope.Add(liteCrmOAuthOptions.GetValue<string>("Scope") ?? LiteCrmIdentityOAuthDefaults.Scope);
                         options.CallbackPath = new PathString(liteCrmOAuthOptions.GetValue<string>("CallbackPath"));
 
                         options.AuthorizationEndpoint = liteCrmOAuthOptions.GetValue<string>("AuthorizationUrl") ??
-                                                        LiteCrmOAuthDefaults.AuthorizationUrl;
+                                                        LiteCrmIdentityOAuthDefaults.AuthorizationUrl;
 
                         options.UserInformationEndpoint = liteCrmOAuthOptions.GetValue<string>("UserInfoUrl") ??
-                                                          LiteCrmOAuthDefaults.UserInfoUrl;
+                                                          LiteCrmIdentityOAuthDefaults.UserInfoUrl;
 
                         options.TokenEndpoint = liteCrmOAuthOptions.GetValue<string>("TokenUrl") ??
-                                                LiteCrmOAuthDefaults.TokenUrl;
-
-                        options.SaveTokens = true;
-
-                        options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, JwtDefaults.IdentifierClaimType);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.Email, JwtDefaults.EmailClaimType);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.HomePhone, JwtDefaults.PhoneClaimType);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.Surname, JwtDefaults.Scheme);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.Name, JwtDefaults.NameClaimType);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.Gender, JwtDefaults.GenderClaimType);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, JwtDefaults.BirthDate);
+                                                LiteCrmIdentityOAuthDefaults.TokenUrl;
+                        
 
                         options.Events = new OAuthEvents
                         {
                             OnCreatingTicket = async context =>
                             {
-                                var userInfoJsonString = await GetUserInfoJsonString(context);
-                                var userInfo = JsonDocument.Parse(userInfoJsonString).RootElement;
+                                var userInfoJson = await GetUserInfoJsonString(context);
+                                var userInfo = JsonConvert.DeserializeObject<LiteCrmIdentityUserInfo>(userInfoJson);
+                                if (userInfo.HasError)
+                                {
+                                    throw new Exception(userInfo.error);
+                                }
+                                
+                                var response = context.HttpContext.Response;
 
-                                context.RunClaimActions(userInfo);
+                                var httpOnlyCookieOptions = new CookieOptions
+                                {
+                                    HttpOnly = true,
+                                    MaxAge = context.ExpiresIn,
+                                    SameSite = SameSiteMode.Lax
+                                };
+
+                                response.Cookies.Append("username", userInfo.name);
+                                response.Cookies.Append("access_token", context.AccessToken, httpOnlyCookieOptions);
+                                response.Cookies.Append("refresh_token", context.RefreshToken, httpOnlyCookieOptions);
                             },
-                            OnAccessDenied = async context =>
-                            {
-                                
-                            },
-                            OnRedirectToAuthorizationEndpoint = async context =>
-                            {
-                                context.Response.StatusCode = 401;
-                                
-                                await context.Response.WriteAsync(context.Options.AuthorizationEndpoint);
-                            }
+                            
+                            OnAccessDenied = 
                         };
                     }
                 );

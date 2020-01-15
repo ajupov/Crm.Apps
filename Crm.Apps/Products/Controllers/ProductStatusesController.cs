@@ -6,16 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
+using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
 using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.ProductsManagement)]
+    [RequireProductsRole]
     [Route("Api/Products/Statuses")]
     public class ProductStatusesController : AllowingCheckControllerBase
     {
@@ -38,7 +38,7 @@ namespace Crm.Apps.Products.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(status, new[] {Role.AccountOwning, Role.ProductsManagement}, status.AccountId);
+            return ReturnIfAllowed(status, ProductsRoles.Value, status.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -50,7 +50,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 statuses,
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 statuses.Select(x => x.AccountId));
         }
 
@@ -65,7 +65,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 statuses,
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 statuses.Select(x => x.AccountId));
         }
 
@@ -90,7 +90,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productStatusesService.UpdateAsync(_userContext.UserId, oldStatus, status, ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 status.AccountId, oldStatus.AccountId);
         }
 
@@ -101,7 +101,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productStatusesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -112,7 +112,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productStatusesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.ProductsManagement},
+                ProductsRoles.Value,
                 attributes.Select(x => x.AccountId));
         }
     }

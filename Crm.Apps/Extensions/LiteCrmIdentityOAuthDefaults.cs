@@ -1,6 +1,6 @@
 ﻿namespace Crm.Apps.Extensions
 {
-    public static class LiteCrmOAuthDefaults
+    public static class LiteCrmIdentityOAuthDefaults
     {
         public const string Scope = "all";
 

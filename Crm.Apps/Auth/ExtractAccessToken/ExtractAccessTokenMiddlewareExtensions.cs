@@ -6,8 +6,7 @@ namespace Crm.Apps.Auth.ExtractAccessToken
     {
         public static IApplicationBuilder UseExtractAccessToken(this IApplicationBuilder builder)
         {
-            return builder
-                .UseMiddleware<ExtractAccessTokenMiddleware>();
+            return builder.UseMiddleware<ExtractAccessTokenMiddleware>();
         }
     }
 }

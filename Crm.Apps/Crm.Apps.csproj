@@ -11,5 +11,16 @@
     </ItemGroup>
     <ItemGroup>
       <Compile Remove="Users\**" />
+      <Compile Remove="Accounts\**" />
+      <Compile Remove="RefreshTokens\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="RefreshTokens\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="RefreshTokens\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Remove="RefreshTokens\**" />
     </ItemGroup>
 </Project>
