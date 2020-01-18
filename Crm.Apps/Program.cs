@@ -12,17 +12,17 @@ using Ajupov.Infrastructure.All.Tracing;
 using Ajupov.Infrastructure.All.UserContext;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.Storages;
-using Crm.Apps.Auth.ExtractAccessToken;
-using Crm.Apps.Auth.Services;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
 using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Extensions;
+using Crm.Apps.Infrastructure.TokensProtector;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
+using Crm.Apps.LiteCrmIdentityOAuth.Extensions;
+using Crm.Apps.LiteCrmIdentityOAuth.Middlewares;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Common.All.UserContext;
@@ -48,6 +48,7 @@ namespace Crm.Apps
                 {
                     services
                         .AddAuthorization()
+                        .AddTokensProtection()
                         .AddJwtAuthentication()
                         .AddJwtValidator("7BA30F0F-44D9-4340-80F5-AC2717AFDD25", "localhost:9000")
                         .AddLiteCrmOAuth(configuration)
@@ -66,10 +67,10 @@ namespace Crm.Apps
                         .ConfigureOrm<DealsStorage>(builder.Configuration)
                         .ConfigureOrm<ActivitiesStorage>(builder.Configuration)
                         .ConfigureHotStorage(builder.Configuration)
-                        .ConfigureUserContext<IUserContext, UserContext>();
+                        .ConfigureUserContext<IUserContext, UserContext.UserContext>()
+                        .ConfigureJwtReader();
 
                     services
-                        .AddTransient<IAuthService, AuthService>()
                         .AddTransient<IProductsService, ProductsService>()
                         .AddTransient<IProductChangesService, ProductChangesService>()
                         .AddTransient<IProductCategoriesService, ProductCategoriesService>()
@@ -113,7 +114,7 @@ namespace Crm.Apps
                         .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
                         .AddTransient<IActivityAttributesService, ActivityAttributesService>()
                         .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>()
-                        .AddTransient<ExtractAccessTokenMiddleware>();
+                        .AddTransient<AppendAccessTokenToHeadersMiddleware>();
                 })
                 .Configure((context, builder) =>
                 {
@@ -126,8 +127,8 @@ namespace Crm.Apps
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
-                        .UseExtractAccessToken()
                         .UseAuthentication()
+                        .UseAppendAccessTokenToHeaders()
                         .UseAuthorization()
                         .UseMvcMiddleware();
                 })

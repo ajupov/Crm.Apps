@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Activities.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Activities/Types")]
     public class ActivityTypesController : AllowingCheckControllerBase
     {
@@ -38,7 +39,7 @@ namespace Crm.Apps.Activities.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(type, new[] {Role.AccountOwning, Role.SalesManagement}, type.AccountId);
+            return ReturnIfAllowed(type, Roles.Sales, type.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -50,7 +51,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return ReturnIfAllowed(
                 types,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 types.Select(x => x.AccountId));
         }
 
@@ -65,7 +66,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return ReturnIfAllowed(
                 types,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 types.Select(x => x.AccountId));
         }
 
@@ -90,7 +91,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.UpdateAsync(_userContext.UserId, oldType, type, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 oldType.AccountId, oldType.AccountId);
         }
 
@@ -101,7 +102,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -112,7 +113,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
     }

@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Activities.Controllers
@@ -27,7 +27,6 @@ namespace Crm.Apps.Activities.Controllers
             _activityTypesService = activityTypesService;
         }
 
-        [RequirePrivileged]
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<ActivityTypeChange[]>> GetPagedList(
             ActivityTypeChangeGetPagedListRequestParameter request,
@@ -36,7 +35,7 @@ namespace Crm.Apps.Activities.Controllers
             var type = await _activityTypesService.GetAsync(request.TypeId, ct);
             var changes = await _activityTypeChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.SalesManagement}, type.AccountId);
+            return ReturnIfAllowed(changes, Roles.Sales, type.AccountId);
         }
     }
 }

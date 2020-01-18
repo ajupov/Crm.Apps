@@ -4,21 +4,23 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Utils.All.Enums;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
-using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.Types.AttributeType;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.BaseControllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
 {
     [ApiController]
-    [RequireProductsRole]
     [Route("Api/Products/Attributes")]
     public class ProductAttributesController : AllowingCheckControllerBase
     {
@@ -32,6 +34,7 @@ namespace Crm.Apps.Products.Controllers
             _productAttributesService = productAttributesService;
         }
 
+        [Authorize(AuthenticationSchemes = JwtDefaults.Scheme)]
         [HttpGet("GetTypes")]
         public Dictionary<string, AttributeType> GetTypes()
         {
@@ -47,7 +50,7 @@ namespace Crm.Apps.Products.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(attribute, ProductsRoles.Value, attribute.AccountId);
+            return ReturnIfAllowed(attribute, Roles.Products, attribute.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -59,7 +62,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 attributes,
-                ProductsRoles.Value,
+                Roles.Products,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -74,7 +77,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 attributes,
-                ProductsRoles.Value,
+                Roles.Products,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -99,7 +102,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 attribute.AccountId, oldAttribute.AccountId);
         }
 
@@ -115,7 +118,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -126,7 +129,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 attributes.Select(x => x.AccountId));
         }
     }

@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.RequestParameters;
 using Crm.Apps.Deals.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Deals/Statuses")]
     public class DealStatusesController : AllowingCheckControllerBase
     {
@@ -38,7 +39,7 @@ namespace Crm.Apps.Deals.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(status, new[] {Role.AccountOwning, Role.SalesManagement}, status.AccountId);
+            return ReturnIfAllowed(status, Roles.Sales, status.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -50,7 +51,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return ReturnIfAllowed(
                 statuses,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 statuses.Select(x => x.AccountId));
         }
 
@@ -65,7 +66,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return ReturnIfAllowed(
                 statuses,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 statuses.Select(x => x.AccountId));
         }
 
@@ -90,7 +91,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealStatusesService.UpdateAsync(_userContext.UserId, oldStatus, status, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 status.AccountId, oldStatus.AccountId);
         }
 
@@ -101,7 +102,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealStatusesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -112,7 +113,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealStatusesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
     }

@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.RequestParameters;
 using Crm.Apps.Companies.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Companies.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Companies/Changes")]
     public class CompanyChangesController : AllowingCheckControllerBase
     {
@@ -37,7 +38,7 @@ namespace Crm.Apps.Companies.Controllers
             var company = await _companiesService.GetAsync(request.CompanyId, ct);
             var changes = await _companyChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.SalesManagement}, company.AccountId);
+            return ReturnIfAllowed(changes, Roles.Sales, company.AccountId);
         }
     }
 }

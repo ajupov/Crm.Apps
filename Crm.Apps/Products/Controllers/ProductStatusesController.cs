@@ -6,10 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
-using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
@@ -38,7 +39,7 @@ namespace Crm.Apps.Products.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(status, ProductsRoles.Value, status.AccountId);
+            return ReturnIfAllowed(status, Roles.Products, status.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -50,7 +51,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 statuses,
-                ProductsRoles.Value,
+                Roles.Products,
                 statuses.Select(x => x.AccountId));
         }
 
@@ -65,7 +66,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 statuses,
-                ProductsRoles.Value,
+                Roles.Products,
                 statuses.Select(x => x.AccountId));
         }
 
@@ -90,7 +91,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productStatusesService.UpdateAsync(_userContext.UserId, oldStatus, status, ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 status.AccountId, oldStatus.AccountId);
         }
 
@@ -101,7 +102,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productStatusesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -112,7 +113,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productStatusesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 attributes.Select(x => x.AccountId));
         }
     }

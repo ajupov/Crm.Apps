@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.RequestParameters;
 using Crm.Apps.Deals.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Deals/Changes")]
     public class DealChangesController : AllowingCheckControllerBase
     {
@@ -37,7 +38,7 @@ namespace Crm.Apps.Deals.Controllers
             var deal = await _dealsService.GetAsync(request.DealId, ct);
             var changes = await _dealChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.SalesManagement}, deal.AccountId);
+            return ReturnIfAllowed(changes, Roles.Sales, deal.AccountId);
         }
     }
 }

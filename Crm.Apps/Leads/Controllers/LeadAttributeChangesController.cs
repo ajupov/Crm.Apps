@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.RequestParameters;
 using Crm.Apps.Leads.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Leads.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
+    [RequireLeadsRole]
     [Route("Api/Leads/Attributes/Changes")]
     public class LeadAttributeChangesController : AllowingCheckControllerBase
     {
@@ -37,7 +38,7 @@ namespace Crm.Apps.Leads.Controllers
             var attribute = await _leadAttributesService.GetAsync(request.AttributeId, ct);
             var changes = await _leadAttributeChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.LeadsManagement}, attribute.AccountId);
+            return ReturnIfAllowed(changes, Roles.Leads, attribute.AccountId);
         }
     }
 }

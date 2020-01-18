@@ -3,10 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
-using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
@@ -37,7 +38,7 @@ namespace Crm.Apps.Products.Controllers
             var attribute = await _productAttributesService.GetAsync(request.AttributeId, ct);
             var changes = await _productAttributeChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, ProductsRoles.Value, attribute.AccountId);
+            return ReturnIfAllowed(changes, Roles.Products, attribute.AccountId);
         }
     }
 }

@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.RequestParameters;
 using Crm.Apps.Deals.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Deals/Comments")]
     public class DealCommentsController : AllowingCheckControllerBase
     {
@@ -39,7 +40,7 @@ namespace Crm.Apps.Deals.Controllers
             var deal = await _dealsService.GetAsync(request.DealId, ct);
             var comments = await _dealCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(comments, new[] {Role.AccountOwning, Role.SalesManagement}, deal.AccountId);
+            return ReturnIfAllowed(comments, Roles.Sales, deal.AccountId);
         }
 
         [HttpPost("Create")]
@@ -49,7 +50,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealCommentsService.CreateAsync(_userContext.UserId, comment, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 deal.AccountId);
         }
     }

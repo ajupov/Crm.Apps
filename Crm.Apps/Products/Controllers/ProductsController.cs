@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
-using Crm.Apps.Products.Roles;
 using Crm.Apps.Products.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Products.Controllers
@@ -45,7 +46,7 @@ namespace Crm.Apps.Products.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(product, ProductsRoles.Value, product.AccountId);
+            return ReturnIfAllowed(product, Roles.Products, product.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -57,7 +58,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 products,
-                ProductsRoles.Value,
+                Roles.Products,
                 products.Select(x => x.AccountId));
         }
 
@@ -72,7 +73,7 @@ namespace Crm.Apps.Products.Controllers
 
             return ReturnIfAllowed(
                 products,
-                ProductsRoles.Value,
+                Roles.Products,
                 products.Select(x => x.AccountId));
         }
 
@@ -97,7 +98,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.UpdateAsync(_userContext.UserId, oldProduct, product, ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 product.AccountId, oldProduct.AccountId);
         }
 
@@ -108,7 +109,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.HideAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 products.Select(x => x.AccountId));
         }
 
@@ -119,7 +120,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.ShowAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 products.Select(x => x.AccountId));
         }
 
@@ -130,7 +131,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.DeleteAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 products.Select(x => x.AccountId));
         }
 
@@ -141,7 +142,7 @@ namespace Crm.Apps.Products.Controllers
 
             return await ActionIfAllowed(
                 () => _productsService.RestoreAsync(_userContext.UserId, products.Select(x => x.Id), ct),
-                ProductsRoles.Value,
+                Roles.Products,
                 products.Select(x => x.AccountId));
         }
     }

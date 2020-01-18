@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Crm.Apps.Extensions
+namespace Crm.Apps.LiteCrmIdentityOAuth.Models
 {
-    public class LiteCrmIdentityUserInfo
+    public class UserInfoResponse
     {
         public Guid id { get; set; }
 

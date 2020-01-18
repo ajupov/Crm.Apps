@@ -8,16 +8,17 @@ using Ajupov.Utils.All.Enums;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.RequestParameters;
 using Crm.Apps.Leads.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.Types.AttributeType;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Leads.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
+    [RequireLeadsRole]
     [Route("Api/Leads/Attributes")]
     public class LeadAttributesController : AllowingCheckControllerBase
     {
@@ -46,7 +47,7 @@ namespace Crm.Apps.Leads.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(attribute, new[] {Role.AccountOwning, Role.LeadsManagement}, attribute.AccountId);
+            return ReturnIfAllowed(attribute, Roles.Leads, attribute.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -58,7 +59,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return ReturnIfAllowed(
                 attributes,
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -73,7 +74,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return ReturnIfAllowed(
                 attributes,
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -98,7 +99,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 attribute.AccountId, oldAttribute.AccountId);
         }
 
@@ -109,7 +110,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -120,7 +121,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 attributes.Select(x => x.AccountId));
         }
     }

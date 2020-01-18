@@ -8,16 +8,17 @@ using Ajupov.Utils.All.Enums;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.RequestParameters;
 using Crm.Apps.Companies.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.Types.AttributeType;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Companies.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Companies/Attributes")]
     public class CompanyAttributesController : AllowingCheckControllerBase
     {
@@ -46,7 +47,7 @@ namespace Crm.Apps.Companies.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(attribute, new[] {Role.AccountOwning, Role.SalesManagement}, attribute.AccountId);
+            return ReturnIfAllowed(attribute, Roles.Sales, attribute.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -58,7 +59,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return ReturnIfAllowed(
                 attributes,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -71,7 +72,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return ReturnIfAllowed(
                 attributes,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -96,7 +97,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return await ActionIfAllowed(
                 () => _companyAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attribute.AccountId, oldAttribute.AccountId);
         }
 
@@ -107,7 +108,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return await ActionIfAllowed(
                 () => _companyAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -118,7 +119,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return await ActionIfAllowed(
                 () => _companyAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
     }

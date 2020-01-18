@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.RequestParameters;
 using Crm.Apps.Contacts.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Contacts.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Contacts")]
     public class ContactsController : AllowingCheckControllerBase
     {
@@ -38,7 +39,7 @@ namespace Crm.Apps.Contacts.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(contact, new[] {Role.AccountOwning, Role.SalesManagement}, contact.AccountId);
+            return ReturnIfAllowed(contact, Roles.Sales, contact.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -50,7 +51,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return ReturnIfAllowed(
                 contacts,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 contacts.Select(x => x.AccountId));
         }
 
@@ -65,7 +66,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return ReturnIfAllowed(
                 contacts,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 contacts.Select(x => x.AccountId));
         }
 
@@ -90,7 +91,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return await ActionIfAllowed(
                 () => _contactsService.UpdateAsync(_userContext.UserId, oldContact, contact, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 contact.AccountId, oldContact.AccountId);
         }
 
@@ -101,7 +102,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return await ActionIfAllowed(
                 () => _contactsService.DeleteAsync(_userContext.UserId, contacts.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 contacts.Select(x => x.AccountId));
         }
 
@@ -112,7 +113,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return await ActionIfAllowed(
                 () => _contactsService.RestoreAsync(_userContext.UserId, contacts.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 contacts.Select(x => x.AccountId));
         }
     }

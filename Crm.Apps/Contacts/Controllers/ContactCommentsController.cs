@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.RequestParameters;
 using Crm.Apps.Contacts.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Contacts.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Contacts/Comments")]
     public class ContactCommentsController : AllowingCheckControllerBase
     {
@@ -39,7 +40,7 @@ namespace Crm.Apps.Contacts.Controllers
             var contact = await _contactsService.GetAsync(request.ContactId, ct);
             var comments = await _contactCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(comments, new[] {Role.AccountOwning, Role.SalesManagement}, contact.AccountId);
+            return ReturnIfAllowed(comments, Roles.Sales, contact.AccountId);
         }
 
         [HttpPost("Create")]
@@ -49,7 +50,7 @@ namespace Crm.Apps.Contacts.Controllers
 
             return await ActionIfAllowed(
                 () => _contactCommentsService.CreateAsync(_userContext.UserId, comment, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 contact.AccountId);
         }
     }

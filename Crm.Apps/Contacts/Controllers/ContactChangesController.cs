@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.RequestParameters;
 using Crm.Apps.Contacts.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Contacts.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Contacts/Changes")]
     public class ContactChangesController : AllowingCheckControllerBase
     {
@@ -37,7 +38,7 @@ namespace Crm.Apps.Contacts.Controllers
             var contact = await _contactsService.GetAsync(request.ContactId, ct);
             var changes = await _contactChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, new[] {Role.AccountOwning, Role.SalesManagement}, contact.AccountId);
+            return ReturnIfAllowed(changes, Roles.Sales, contact.AccountId);
         }
     }
 }

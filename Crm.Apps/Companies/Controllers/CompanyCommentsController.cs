@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.RequestParameters;
 using Crm.Apps.Companies.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Companies.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Companies/Comments")]
     public class CompanyCommentsController : AllowingCheckControllerBase
     {
@@ -39,7 +40,7 @@ namespace Crm.Apps.Companies.Controllers
             var company = await _companiesService.GetAsync(request.CompanyId, ct);
             var comments = await _companyCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(comments, new[] {Role.AccountOwning, Role.SalesManagement}, company.AccountId);
+            return ReturnIfAllowed(comments, Roles.Sales, company.AccountId);
         }
 
         [HttpPost("Create")]
@@ -49,7 +50,7 @@ namespace Crm.Apps.Companies.Controllers
 
             return await ActionIfAllowed(
                 () => _companyCommentsService.CreateAsync(_userContext.UserId, comment, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 company.AccountId);
         }
     }

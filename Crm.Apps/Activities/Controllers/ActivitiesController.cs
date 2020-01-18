@@ -8,15 +8,16 @@ using Ajupov.Utils.All.Enums;
 using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Activities.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Activities")]
     public class ActivitiesController : AllowingCheckControllerBase
     {
@@ -45,7 +46,7 @@ namespace Crm.Apps.Activities.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(activity, new[] {Role.AccountOwning, Role.SalesManagement}, activity.AccountId);
+            return ReturnIfAllowed(activity, Roles.Sales, activity.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -57,7 +58,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return ReturnIfAllowed(
                 activities,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 activities.Select(x => x.AccountId));
         }
 
@@ -72,7 +73,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return ReturnIfAllowed(
                 activities,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 activities.Select(x => x.AccountId));
         }
 
@@ -97,7 +98,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activitiesService.UpdateAsync(_userContext.UserId, oldActivity, activity, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 activity.AccountId, oldActivity.AccountId);
         }
 
@@ -108,7 +109,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activitiesService.DeleteAsync(_userContext.UserId, activities.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 activities.Select(x => x.AccountId));
         }
 
@@ -119,7 +120,7 @@ namespace Crm.Apps.Activities.Controllers
 
             return await ActionIfAllowed(
                 () => _activitiesService.RestoreAsync(_userContext.UserId, activities.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 activities.Select(x => x.AccountId));
         }
     }

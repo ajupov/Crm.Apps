@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.RequestParameters;
 using Crm.Apps.Deals.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.SalesManagement)]
+    [RequireSalesRole]
     [Route("Api/Deals/Types")]
     public class DealTypesController : AllowingCheckControllerBase
     {
@@ -38,7 +39,7 @@ namespace Crm.Apps.Deals.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(type, new[] {Role.AccountOwning, Role.SalesManagement}, type.AccountId);
+            return ReturnIfAllowed(type, Roles.Sales, type.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -50,7 +51,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return ReturnIfAllowed(
                 types,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 types.Select(x => x.AccountId));
         }
 
@@ -65,7 +66,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return ReturnIfAllowed(
                 types,
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 types.Select(x => x.AccountId));
         }
 
@@ -90,7 +91,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealTypesService.UpdateAsync(_userContext.UserId, oldType, type, ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 type.AccountId, oldType.AccountId);
         }
 
@@ -101,7 +102,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealTypesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -112,7 +113,7 @@ namespace Crm.Apps.Deals.Controllers
 
             return await ActionIfAllowed(
                 () => _dealTypesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.SalesManagement},
+                Roles.Sales,
                 attributes.Select(x => x.AccountId));
         }
     }

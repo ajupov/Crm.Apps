@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.RequestParameters;
 using Crm.Apps.Leads.Services;
+using Crm.Apps.UserContext.Attributes.Roles;
+using Crm.Common.All.BaseControllers;
+using Crm.Common.All.Roles;
 using Crm.Common.All.UserContext;
-using Crm.Common.All.UserContext.Attributes;
-using Crm.Common.All.UserContext.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Leads.Controllers
 {
     [ApiController]
-    [RequirePrivileged(Role.AccountOwning, Role.LeadsManagement)]
+    [RequireLeadsRole]
     [Route("Api/Leads/Sources")]
     public class LeadSourcesController : AllowingCheckControllerBase
     {
@@ -38,7 +39,7 @@ namespace Crm.Apps.Leads.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(source, new[] {Role.AccountOwning, Role.LeadsManagement}, source.AccountId);
+            return ReturnIfAllowed(source, Roles.Leads, source.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -49,7 +50,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return ReturnIfAllowed(
                 sources,
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 sources.Select(x => x.AccountId));
         }
 
@@ -64,7 +65,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return ReturnIfAllowed(
                 sources,
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 sources.Select(x => x.AccountId));
         }
 
@@ -89,7 +90,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadSourcesService.UpdateAsync(_userContext.UserId, oldSource, source, ct),
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 source.AccountId, oldSource.AccountId);
         }
 
@@ -100,7 +101,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadSourcesService.DeleteAsync(_userContext.UserId, sources.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 sources.Select(x => x.AccountId));
         }
 
@@ -111,7 +112,7 @@ namespace Crm.Apps.Leads.Controllers
 
             return await ActionIfAllowed(
                 () => _leadSourcesService.RestoreAsync(_userContext.UserId, sources.Select(x => x.Id), ct),
-                new[] {Role.AccountOwning, Role.LeadsManagement},
+                Roles.Leads,
                 sources.Select(x => x.AccountId));
         }
     }
