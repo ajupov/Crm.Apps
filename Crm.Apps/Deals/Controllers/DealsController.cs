@@ -4,20 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.RequestParameters;
 using Crm.Apps.Deals.Services;
-using Crm.Apps.UserContext.Attributes.Roles;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
+using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Deals.Controllers
 {
     [ApiController]
-    [RequireSalesRole]
+    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Api/Deals")]
     public class DealsController : AllowingCheckControllerBase
     {

@@ -4,19 +4,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Jwt;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.RequestParameters;
 using Crm.Apps.Leads.Services;
-using Crm.Apps.UserContext.Attributes.Roles;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
+using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Leads.Controllers
 {
     [ApiController]
-    [RequireLeadsRole]
+    [RequireLeadsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Api/Leads/Sources")]
     public class LeadSourcesController : AllowingCheckControllerBase
     {

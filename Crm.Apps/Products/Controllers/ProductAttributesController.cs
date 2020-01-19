@@ -4,14 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Utils.All.Enums;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.RequestParameters;
 using Crm.Apps.Products.Services;
-using Crm.Apps.UserContext.Attributes.Roles;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
+using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.Types.AttributeType;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Products.Controllers
 {
     [ApiController]
-    [RequireProductsRole]
+    [RequireProductsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Api/Products/Attributes")]
     public class ProductAttributesController : AllowingCheckControllerBase
     {

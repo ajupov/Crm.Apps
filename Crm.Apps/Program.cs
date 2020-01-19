@@ -64,7 +64,7 @@ namespace Crm.Apps
                         .ConfigureOrm<DealsStorage>(builder.Configuration)
                         .ConfigureOrm<ActivitiesStorage>(builder.Configuration)
                         .ConfigureHotStorage(builder.Configuration)
-                        .ConfigureUserContext<IUserContext, UserContext.UserContext>();
+                        .ConfigureUserContext<IUserContext, UserContext>();
 
                     services
                         .AddTransient<IProductsService, ProductsService>()
