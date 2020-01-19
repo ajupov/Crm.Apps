@@ -18,11 +18,9 @@ using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Infrastructure.TokensProtector;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.LiteCrmIdentityOAuth.Extensions;
-using Crm.Apps.LiteCrmIdentityOAuth.Middlewares;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Common.All.UserContext;
@@ -48,13 +46,11 @@ namespace Crm.Apps
                 .ConfigureServices((builder, services) =>
                 {
                     services
-                        .AddTokensProtection()
+                        .AddAuthorization()
                         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         .AddJwtValidator("7BA30F0F-44D9-4340-80F5-AC2717AFDD25", "localhost:9000")
-                        .AddLiteCrmOAuth(configuration)
+                        .AddLiteCrmIdentityOAuth(configuration)
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    services.AddAuthorization();
 
                     services
                         .ConfigureMvc()
@@ -115,8 +111,7 @@ namespace Crm.Apps
                         .AddTransient<IActivityTypesService, ActivityTypesService>()
                         .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
                         .AddTransient<IActivityAttributesService, ActivityAttributesService>()
-                        .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>()
-                        .AddTransient<AppendAccessTokenToHeadersMiddleware>();
+                        .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>();
                 })
                 .Configure((context, builder) =>
                 {
@@ -130,7 +125,6 @@ namespace Crm.Apps
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
                         .UseAuthentication()
-                        .UseAppendAccessTokenToHeaders()
                         .UseAuthorization()
                         .UseMvcMiddleware();
                 })

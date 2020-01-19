@@ -6,7 +6,6 @@ using Crm.Apps.LiteCrmIdentityOAuth.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,21 +14,16 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
 {
     public static class LiteCrmIdentityOAuthClientExtensions
     {
-        public static AuthenticationBuilder AddLiteCrmOAuth(
+        public static AuthenticationBuilder AddLiteCrmIdentityOAuth(
             this AuthenticationBuilder builder,
             IConfiguration configuration)
         {
-            var dataProtectionProvider = builder.Services
-                .BuildServiceProvider()
-                .GetService<IDataProtectionProvider>();
-
             var liteCrmOAuthOptions = configuration.GetSection(nameof(LiteCrmIdentityOAuthOptions));
 
             return builder
                 .AddOAuth(JwtDefaults.Scheme, options =>
                     {
                         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        options.DataProtectionProvider = dataProtectionProvider;
 
                         options.ClientId =
                             liteCrmOAuthOptions.GetValue<string>(nameof(LiteCrmIdentityOAuthOptions.ClientId));
@@ -80,7 +74,6 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
 
                                 context.AppendRolesToClaims(userInfoJson);
                                 context.AppendUserInfoToCookies(userInfoJson);
-                                context.AppendTokensToCookiesAsync(options.DataProtectionProvider);
                             }
                         };
                     }
