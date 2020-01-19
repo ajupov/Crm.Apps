@@ -27,6 +27,7 @@ using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,12 +48,24 @@ namespace Crm.Apps
                 .ConfigureServices((builder, services) =>
                 {
                     services
-                        .AddAuthorization()
                         .AddTokensProtection()
-                        .AddJwtAuthentication()
+                        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         .AddJwtValidator("7BA30F0F-44D9-4340-80F5-AC2717AFDD25", "localhost:9000")
                         .AddLiteCrmOAuth(configuration)
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    services.AddAuthorization(options =>
+                    {
+                        options.AddPolicy("Products", policy =>
+                        {
+                            policy.RequireAuthenticatedUser();
+
+                             policy.RequireRole("Products");
+
+                            policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                            policy.AddAuthenticationSchemes(JwtDefaults.Scheme);
+                        });
+                    });
 
                     services
                         .ConfigureMvc()

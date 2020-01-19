@@ -15,6 +15,8 @@ using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Types.AttributeType;
 using Crm.Common.All.UserContext;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +36,7 @@ namespace Crm.Apps.Products.Controllers
             _productAttributesService = productAttributesService;
         }
 
-        [Authorize(AuthenticationSchemes = JwtDefaults.Scheme)]
+        [Authorize(Policy = "Products")]
         [HttpGet("GetTypes")]
         public Dictionary<string, AttributeType> GetTypes()
         {
