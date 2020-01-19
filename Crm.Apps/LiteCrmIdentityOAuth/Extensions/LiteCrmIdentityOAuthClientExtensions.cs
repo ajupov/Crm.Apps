@@ -1,8 +1,5 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
-using System.Text.Json;
 using Ajupov.Infrastructure.All.Jwt;
 using Crm.Apps.LiteCrmIdentityOAuth.Helpers;
 using Crm.Apps.LiteCrmIdentityOAuth.Options;
@@ -65,6 +62,8 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
                             liteCrmOAuthOptions.GetValue<string>(nameof(LiteCrmIdentityOAuthOptions.TokenUrl)) ??
                             LiteCrmIdentityOAuthDefaults.TokenUrl;
 
+                        options.SaveTokens = true;
+
                         options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, JwtDefaults.IdentifierClaimType);
                         options.ClaimActions.MapJsonKey(ClaimTypes.Email, JwtDefaults.EmailClaimType);
                         options.ClaimActions.MapJsonKey(ClaimTypes.HomePhone, JwtDefaults.PhoneClaimType);
@@ -72,38 +71,16 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
                         options.ClaimActions.MapJsonKey(ClaimTypes.Name, JwtDefaults.NameClaimType);
                         options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, JwtDefaults.BirthDate);
                         options.ClaimActions.MapJsonKey(ClaimTypes.Gender, JwtDefaults.GenderClaimType);
-                        
-                        options.SaveTokens = true;
-                        
+
                         options.Events = new OAuthEvents
                         {
                             OnCreatingTicket = async context =>
                             {
                                 var userInfoJson = await UserInfoHelper.GetUserInfoJsonAsync(context);
 
-                                var userData = JsonDocument.Parse(userInfoJson).RootElement;
-                                context.RunClaimActions(userData);
-
-                                var token = new JwtSecurityTokenHandler().ReadToken(context.AccessToken) as JwtSecurityToken;
-                                if (token?.Claims != null)
-                                {
-                                    foreach (var claim in token.Claims)
-                                    {
-                                        if (claim.Type == ClaimTypes.Role)
-                                        {
-                                            context.Identity.AddClaim(claim);
-                                        }
-                                    }
-                                }
-
-                                await context.HttpContext.AuthenticateAsync(JwtDefaults.Scheme);
-                                
+                                context.AppendRolesToClaims(userInfoJson);
                                 context.AppendUserInfoToCookies(userInfoJson);
                                 context.AppendTokensToCookiesAsync(options.DataProtectionProvider);
-
-                                Console.WriteLine();
-                                Console.WriteLine("ACCESS TOKEN: " + context.AccessToken);
-                                Console.WriteLine();
                             }
                         };
                     }

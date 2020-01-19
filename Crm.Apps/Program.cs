@@ -54,18 +54,7 @@ namespace Crm.Apps
                         .AddLiteCrmOAuth(configuration)
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    services.AddAuthorization(options =>
-                    {
-                        options.AddPolicy("Products", policy =>
-                        {
-                            policy.RequireAuthenticatedUser();
-
-                             policy.RequireRole("Products");
-
-                            policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
-                            policy.AddAuthenticationSchemes(JwtDefaults.Scheme);
-                        });
-                    });
+                    services.AddAuthorization();
 
                     services
                         .ConfigureMvc()

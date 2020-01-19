@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
 {
-    public static class LiteCrmIdentityOAuthTokensMiddlewareExtensions
+    public static class LiteCrmIdentityOAuthTokensExtensions
     {
         public static IApplicationBuilder UseAppendAccessTokenToHeaders(this IApplicationBuilder builder)
         {

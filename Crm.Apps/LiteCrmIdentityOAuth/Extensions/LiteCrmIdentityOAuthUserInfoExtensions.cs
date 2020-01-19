@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
 {
-    public static class LiteCrmIdentityOAuthUserInfoMiddlewareExtensions
+    public static class LiteCrmIdentityOAuthUserInfoExtensions
     {
         public static void AppendUserInfoToCookies(this OAuthCreatingTicketContext context, string userInfoJson)
         {
