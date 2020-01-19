@@ -21,7 +21,7 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
             var liteCrmOAuthOptions = configuration.GetSection(nameof(LiteCrmIdentityOAuthOptions));
 
             return builder
-                .AddOAuth(JwtDefaults.Scheme, options =>
+                .AddOAuth(JwtDefaults.AuthenticationScheme, options =>
                     {
                         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
@@ -63,7 +63,7 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
                         options.ClaimActions.MapJsonKey(ClaimTypes.HomePhone, JwtDefaults.PhoneClaimType);
                         options.ClaimActions.MapJsonKey(ClaimTypes.Surname, JwtDefaults.SurnameClaimType);
                         options.ClaimActions.MapJsonKey(ClaimTypes.Name, JwtDefaults.NameClaimType);
-                        options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, JwtDefaults.BirthDate);
+                        options.ClaimActions.MapJsonKey(ClaimTypes.DateOfBirth, JwtDefaults.BirthDateClaimType);
                         options.ClaimActions.MapJsonKey(ClaimTypes.Gender, JwtDefaults.GenderClaimType);
 
                         options.Events = new OAuthEvents

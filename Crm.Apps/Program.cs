@@ -25,7 +25,6 @@ using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,8 +46,8 @@ namespace Crm.Apps
                 {
                     services
                         .AddAuthorization()
-                        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                        .AddJwtValidator("7BA30F0F-44D9-4340-80F5-AC2717AFDD25", "localhost:9000")
+                        .AddJwtAuthentication()
+                        .AddJwtValidator(configuration)
                         .AddLiteCrmIdentityOAuth(configuration)
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -65,8 +64,7 @@ namespace Crm.Apps
                         .ConfigureOrm<DealsStorage>(builder.Configuration)
                         .ConfigureOrm<ActivitiesStorage>(builder.Configuration)
                         .ConfigureHotStorage(builder.Configuration)
-                        .ConfigureUserContext<IUserContext, UserContext.UserContext>()
-                        .ConfigureJwtReader();
+                        .ConfigureUserContext<IUserContext, UserContext.UserContext>();
 
                     services
                         .AddTransient<IProductsService, ProductsService>()

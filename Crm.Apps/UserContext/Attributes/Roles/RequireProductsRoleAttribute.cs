@@ -9,7 +9,7 @@ namespace Crm.Apps.UserContext.Attributes.Roles
         public RequireProductsRoleAttribute()
         {
             Roles = Common.All.Roles.Roles.Products;
-            AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{JwtDefaults.Scheme}";
+            AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{JwtDefaults.AuthenticationScheme}";
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using Crm.Apps.Clients.Accounts.Clients;
-using Crm.Apps.Clients.Activities.Clients;
+﻿using Crm.Apps.Clients.Activities.Clients;
 using Crm.Apps.Clients.Companies.Clients;
 using Crm.Apps.Clients.Contacts.Clients;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Leads.Clients;
 using Crm.Apps.Clients.Products.Clients;
-using Crm.Apps.Clients.Users.Clients;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Crm.Apps.Clients
@@ -17,9 +15,6 @@ namespace Crm.Apps.Clients
             return services
                 // .AddHttpClient()
                 .Configure<ClientsSettings>(x => { x.Host = host; })
-                .AddSingleton<IAccountsClient, AccountsClient>()
-                .AddSingleton<IAccountSettingsClient, AccountSettingsClient>()
-                .AddSingleton<IAccountChangesClient, AccountChangesClient>()
                 .AddSingleton<IActivitiesClient, ActivitiesClient>()
                 .AddSingleton<IActivityChangesClient, ActivityChangesClient>()
                 .AddSingleton<IActivityAttributesClient, ActivityAttributesClient>()
@@ -62,14 +57,7 @@ namespace Crm.Apps.Clients
                 .AddSingleton<IProductCategoriesClient, ProductCategoriesClient>()
                 .AddSingleton<IProductCategoryChangesClient, ProductCategoryChangesClient>()
                 .AddSingleton<IProductStatusesClient, ProductStatusesClient>()
-                .AddSingleton<IProductStatusChangesClient, ProductStatusChangesClient>()
-                .AddSingleton<IUsersClient, UsersClient>()
-                .AddSingleton<IUserChangesClient, UserChangesClient>()
-                .AddSingleton<IUserAttributesClient, UserAttributesClient>()
-                .AddSingleton<IUserAttributeChangesClient, UserAttributeChangesClient>()
-                .AddSingleton<IUserGroupsClient, UserGroupsClient>()
-                .AddSingleton<IUserGroupChangesClient, UserGroupChangesClient>()
-                .AddSingleton<IUserSettingsClient, UserSettingsClient>();
+                .AddSingleton<IProductStatusChangesClient, ProductStatusChangesClient>();
         }
     }
 }

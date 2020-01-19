@@ -9,7 +9,7 @@ namespace Crm.Apps.UserContext.Attributes.Roles
         public RequireSalesRoleAttribute()
         {
             Roles = Common.All.Roles.Roles.Sales;
-            AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{JwtDefaults.Scheme}";
+            AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{JwtDefaults.AuthenticationScheme}";
         }
     }
 }
