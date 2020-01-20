@@ -1,12 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Json;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
-using Crm.Utils.Json;
-using Crm.Utils.String;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Deals
@@ -28,8 +26,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
+            
+            var status = await _create.DealStatus.BuildAsync();
             status.Name = "Test2";
             status.IsDeleted = true;
             await _dealStatusesClient.UpdateAsync(status);

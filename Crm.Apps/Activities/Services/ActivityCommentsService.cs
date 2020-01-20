@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Crm.Apps.Activities.Services
             _activitiesStorage = activitiesStorage;
         }
 
-        public Task<ActivityComment[]> GetPagedListAsync(
+        public Task<List<ActivityComment>> GetPagedListAsync(
             ActivityCommentGetPagedListRequestParameter request,
             CancellationToken ct)
         {
@@ -36,7 +37,7 @@ namespace Crm.Apps.Activities.Services
                 .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
-                .ToArrayAsync(ct);
+                .ToListAsync(ct);
         }
 
         public async Task CreateAsync(Guid userId, ActivityComment comment, CancellationToken ct)

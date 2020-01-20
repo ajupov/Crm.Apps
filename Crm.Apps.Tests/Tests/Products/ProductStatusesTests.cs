@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Products.Clients;
+using Crm.Apps.Clients.Products.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Products.Clients;
-using Crm.Clients.Products.Models;
-using Crm.Utils.DateTime;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Products
@@ -22,8 +22,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var statusId = (await _create.ProductStatus.WithAccountId(account.Id).BuildAsync())
+            
+            var statusId = (await _create.ProductStatus.BuildAsync())
                 .Id;
 
             var status = await _productStatusesClient.GetAsync(statusId);
@@ -35,10 +35,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var statusIds = (await Task.WhenAll(
-                    _create.ProductStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ProductStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ProductStatus.WithName("Test1").BuildAsync(),
+                    _create.ProductStatus.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var status = await _productStatusesClient.GetListAsync(statusIds);
@@ -50,8 +50,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.ProductStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync())
+            
+            await Task.WhenAll(_create.ProductStatus.WithName("Test1").BuildAsync())
                 ;
 
             var status = await _productStatusesClient
@@ -68,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var status = new ProductStatus
             {
                 AccountId = account.Id,
@@ -91,8 +91,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var status = await _create.ProductStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync()
+            
+            var status = await _create.ProductStatus.WithName("Test1").BuildAsync()
                 ;
 
             status.Name = "Test2";
@@ -109,10 +109,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var statusIds = (await Task.WhenAll(
-                    _create.ProductStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ProductStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ProductStatus.WithName("Test1").BuildAsync(),
+                    _create.ProductStatus.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _productStatusesClient.DeleteAsync(statusIds);
@@ -125,10 +125,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var statusIds = (await Task.WhenAll(
-                    _create.ProductStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ProductStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ProductStatus.WithName("Test1").BuildAsync(),
+                    _create.ProductStatus.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _productStatusesClient.RestoreAsync(statusIds);

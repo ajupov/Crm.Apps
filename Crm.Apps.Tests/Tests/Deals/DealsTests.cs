@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Deals
@@ -25,10 +25,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
-            var dealId = (await _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
+            var dealId = (await _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
                 .BuildAsync()).Id;
 
             var deal = await _dealsClient.GetAsync(dealId);
@@ -40,12 +40,12 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
+            
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
             var dealIds = (await Task.WhenAll(
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var deals = await _dealsClient.GetListAsync(dealIds);
@@ -57,14 +57,14 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
+            
+            var attribute = await _create.DealAttribute.BuildAsync();
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
             await Task.WhenAll(
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
                         .WithAttributeLink(attribute.Id, "Test").BuildAsync())
                 ;
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
@@ -83,12 +83,12 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var dealStatus = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
-            var productStatus = await _create.ProductStatus.WithAccountId(account.Id).BuildAsync();
-            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(productStatus.Id).BuildAsync()
+            
+            var attribute = await _create.DealAttribute.BuildAsync();
+            var type = await _create.DealType.BuildAsync();
+            var dealStatus = await _create.DealStatus.BuildAsync();
+            var productStatus = await _create.ProductStatus.BuildAsync();
+            var product = await _create.Product.WithStatusId(productStatus.Id).BuildAsync()
                 ;
 
             var deal = new Deal
@@ -101,8 +101,8 @@ namespace Crm.Apps.Tests.Tests.Deals
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
                 Name = "Test",
-                StartDateTime = DateTime.Now,
-                EndDateTime = DateTime.Now.AddDays(1),
+                StartDateTime = DateTime.UtcNow,
+                EndDateTime = DateTime.UtcNow.AddDays(1),
                 Sum = 1,
                 SumWithoutDiscount = 1,
                 FinishProbability = 50,
@@ -154,15 +154,15 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var dealStatus = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
+            
+            var type = await _create.DealType.BuildAsync();
+            var dealStatus = await _create.DealStatus.BuildAsync();
             var productStatus =
-                await _create.ProductStatus.WithAccountId(account.Id).BuildAsync();
-            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(productStatus.Id).BuildAsync()
+                await _create.ProductStatus.BuildAsync();
+            var product = await _create.Product.WithStatusId(productStatus.Id).BuildAsync()
                 ;
-            var attribute = await _create.DealAttribute.WithAccountId(account.Id).BuildAsync();
-            var deal = await _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(dealStatus.Id)
+            var attribute = await _create.DealAttribute.BuildAsync();
+            var deal = await _create.Deal.WithTypeId(type.Id).WithStatusId(dealStatus.Id)
                 .BuildAsync();
 
             deal.TypeId = type.Id;
@@ -171,8 +171,8 @@ namespace Crm.Apps.Tests.Tests.Deals
             deal.ContactId = Guid.Empty;
             deal.ResponsibleUserId = Guid.Empty;
             deal.Name = "Test";
-            deal.StartDateTime = DateTime.Now;
-            deal.EndDateTime = DateTime.Now.AddDays(1);
+            deal.StartDateTime = DateTime.UtcNow;
+            deal.EndDateTime = DateTime.UtcNow.AddDays(1);
             deal.Sum = 1;
             deal.SumWithoutDiscount = 1;
             deal.FinishProbability = 50;
@@ -208,12 +208,12 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
+            
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
             var dealIds = (await Task.WhenAll(
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _dealsClient.DeleteAsync(dealIds);
@@ -226,12 +226,12 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
+            
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
             var dealIds = (await Task.WhenAll(
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
-                    _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync(),
+                    _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id).BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _dealsClient.RestoreAsync(dealIds);

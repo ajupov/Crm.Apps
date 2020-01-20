@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
@@ -19,7 +20,7 @@ namespace Crm.Apps.Activities.Services
             _activitiesStorage = activitiesStorage;
         }
 
-        public Task<ActivityAttributeChange[]> GetPagedListAsync(
+        public Task<List<ActivityAttributeChange>> GetPagedListAsync(
             ActivityAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
@@ -33,7 +34,7 @@ namespace Crm.Apps.Activities.Services
                 .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
-                .ToArrayAsync(ct);
+                .ToListAsync(ct);
         }
     }
 }

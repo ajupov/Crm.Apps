@@ -1,9 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.RequestParameters;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.DateTime;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Activities
@@ -22,8 +23,7 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var typeId = (await _create.ActivityType.WithAccountId(account.Id).BuildAsync()).Id;
+            var typeId = (await _create.ActivityType.BuildAsync()).Id;
 
             var type = await _activityTypesClient.GetAsync(typeId);
 
@@ -34,31 +34,33 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var typeIds = (await Task.WhenAll(
-                    _create.ActivityType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ActivityType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+            var typeIds = (
+                    await Task.WhenAll(
+                        _create.ActivityType
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ActivityType
+                            .WithName("Test2")
+                            .BuildAsync())
                 )
                 .Select(x => x.Id)
-                .ToArray();
+                .ToList();
 
             var types = await _activityTypesClient.GetListAsync(typeIds);
 
             Assert.NotEmpty(types);
-            Assert.Equal(typeIds.Length, types.Length);
+            Assert.Equal(typeIds.Count, types.Count);
         }
 
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.ActivityType.WithAccountId(account.Id).WithName("Test1").BuildAsync());
+            await Task.WhenAll(_create.ActivityType.WithName("Test1").BuildAsync());
 
-            var request = new ActivityTypeGetPagedListRequest
+            var request = new ActivityTypeGetPagedListRequestParameter
             {
-                AccountId = account.Id, 
-                Name = "Test1", 
-                SortBy = "CreateDateTime", 
+                Name = "Test1",
+                SortBy = "CreateDateTime",
                 OrderBy = "asc"
             };
 
@@ -67,7 +69,7 @@ namespace Crm.Apps.Tests.Tests.Activities
             var results = types
                 .Skip(1)
                 .Zip(types,
-                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+                    (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(types);
             Assert.All(results, Assert.True);
@@ -76,57 +78,49 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var request = new ActivityTypeCreateRequest
+            var type = new ActivityType
             {
-                AccountId = account.Id,
                 Name = "Test",
                 IsDeleted = false
             };
 
-            var createdTypeId = await _activityTypesClient.CreateAsync(request);
+            var createdTypeId = await _activityTypesClient.CreateAsync(type);
 
             var createdType = await _activityTypesClient.GetAsync(createdTypeId);
 
             Assert.NotNull(createdType);
             Assert.Equal(createdTypeId, createdType.Id);
-            Assert.Equal(request.AccountId, createdType.AccountId);
-            Assert.Equal(request.Name, createdType.Name);
-            Assert.Equal(request.IsDeleted, createdType.IsDeleted);
+            Assert.Equal(type.AccountId, createdType.AccountId);
+            Assert.Equal(type.Name, createdType.Name);
+            Assert.Equal(type.IsDeleted, createdType.IsDeleted);
             Assert.True(createdType.CreateDateTime.IsMoreThanMinValue());
         }
 
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.ActivityType.WithAccountId(account.Id).WithName("Test1").BuildAsync();
+            var type = await _create.ActivityType.WithName("Test1").BuildAsync();
 
-            var request = new ActivityTypeUpdateRequest
-            {
-                Id = type.Id,
-                Name = "Test2",
-                IsDeleted = true
-            };
+            type.Name = "Test2";
+            type.IsDeleted = true;
 
-            await _activityTypesClient.UpdateAsync(request);
+            await _activityTypesClient.UpdateAsync(type);
 
             var updatedType = await _activityTypesClient.GetAsync(type.Id);
 
-            Assert.Equal(request.Name, updatedType.Name);
-            Assert.Equal(request.IsDeleted, updatedType.IsDeleted);
+            Assert.Equal(type.Name, updatedType.Name);
+            Assert.Equal(type.IsDeleted, updatedType.IsDeleted);
         }
 
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
             var typeIds = (await Task.WhenAll(
-                    _create.ActivityType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ActivityType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ActivityType.WithName("Test1").BuildAsync(),
+                    _create.ActivityType.WithName("Test2").BuildAsync())
                 )
                 .Select(x => x.Id)
-                .ToArray();
+                .ToList();
 
             await _activityTypesClient.DeleteAsync(typeIds);
 
@@ -138,13 +132,17 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var typeIds = (await Task.WhenAll(
-                    _create.ActivityType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ActivityType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+            var typeIds = (
+                    await Task.WhenAll(
+                        _create.ActivityType
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ActivityType
+                            .WithName("Test2")
+                            .BuildAsync())
                 )
                 .Select(x => x.Id)
-                .ToArray();
+                .ToList();
 
             await _activityTypesClient.RestoreAsync(typeIds);
 

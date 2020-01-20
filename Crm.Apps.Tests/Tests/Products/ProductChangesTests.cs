@@ -1,12 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Json;
+using Crm.Apps.Clients.Products.Clients;
+using Crm.Apps.Clients.Products.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Products.Clients;
-using Crm.Clients.Products.Models;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
-using Crm.Utils.Json;
-using Crm.Utils.String;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Products
@@ -28,9 +26,9 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var status = await _create.ProductStatus.WithAccountId(account.Id).BuildAsync();
-            var product = await _create.Product.WithAccountId(account.Id).WithStatusId(status.Id).BuildAsync()
+            
+            var status = await _create.ProductStatus.BuildAsync();
+            var product = await _create.Product.WithStatusId(status.Id).BuildAsync()
                 ;
             product.IsHidden = true;
             await _productsClient.UpdateAsync(product);

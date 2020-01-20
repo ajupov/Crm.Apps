@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Contacts.Clients;
+using Crm.Apps.Clients.Contacts.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Contacts.Clients;
-using Crm.Clients.Contacts.Models;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Contacts
@@ -23,11 +23,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
-            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+            
+            var leadSource = await _create.LeadSource.BuildAsync();
+            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
                 ;
-            var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
+            var contact = await _create.Contact.WithLeadId(lead.Id).BuildAsync()
                 ;
             await Task.WhenAll(
                     _create.ContactComment.WithContactId(contact.Id).BuildAsync(),
@@ -47,11 +47,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var leadSource = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
-            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(leadSource.Id).BuildAsync()
+            
+            var leadSource = await _create.LeadSource.BuildAsync();
+            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
                 ;
-            var contact = await _create.Contact.WithAccountId(account.Id).WithLeadId(lead.Id).BuildAsync()
+            var contact = await _create.Contact.WithLeadId(lead.Id).BuildAsync()
                 ;
 
             var comment = new ContactComment

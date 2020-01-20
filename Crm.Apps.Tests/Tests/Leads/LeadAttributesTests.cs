@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.Leads.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Models;
-using Crm.Common.Types;
-using Crm.Utils.DateTime;
+using Crm.Common.All.Types.AttributeType;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Leads
@@ -32,8 +32,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attributeId = (await _create.LeadAttribute.WithAccountId(account.Id).BuildAsync())
+            
+            var attributeId = (await _create.LeadAttribute.BuildAsync())
                 .Id;
 
             var attribute = await _leadAttributesClient.GetAsync(attributeId);
@@ -45,10 +45,10 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.LeadAttribute.WithKey("Test1").BuildAsync(),
+                    _create.LeadAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var attributes = await _leadAttributesClient.GetListAsync(attributeIds);
@@ -60,8 +60,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.LeadAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            
+            await Task.WhenAll(_create.LeadAttribute.WithType(AttributeType.Text)
                 .WithKey("Test1").BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
@@ -79,7 +79,7 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attribute = new LeadAttribute
             {
                 AccountId = account.Id,
@@ -104,8 +104,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attribute = await _create.LeadAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            
+            var attribute = await _create.LeadAttribute.WithType(AttributeType.Text)
                 .WithKey("Test").BuildAsync();
 
             attribute.Type = AttributeType.Link;
@@ -124,10 +124,10 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.LeadAttribute.WithKey("Test1").BuildAsync(),
+                    _create.LeadAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _leadAttributesClient.DeleteAsync(attributeIds);
@@ -140,10 +140,10 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.LeadAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.LeadAttribute.WithKey("Test1").BuildAsync(),
+                    _create.LeadAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _leadAttributesClient.RestoreAsync(attributeIds);

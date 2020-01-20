@@ -1,13 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Json;
+using Crm.Apps.Clients.Contacts.Clients;
+using Crm.Apps.Clients.Contacts.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Contacts.Clients;
-using Crm.Clients.Contacts.Models;
-using Crm.Common.Types;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
-using Crm.Utils.Json;
-using Crm.Utils.String;
+using Crm.Common.All.Types.AttributeType;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Contacts
@@ -29,8 +27,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attribute = await _create.ContactAttribute.WithAccountId(account.Id).BuildAsync();
+            
+            var attribute = await _create.ContactAttribute.BuildAsync();
             attribute.Type = AttributeType.Link;
             attribute.Key = "TestLink";
             attribute.IsDeleted = true;

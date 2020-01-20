@@ -11,9 +11,11 @@ namespace Crm.Apps.Activities.Services
     {
         Task<ActivityType> GetAsync(Guid id, CancellationToken ct);
 
-        Task<ActivityType[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
+        Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<ActivityType[]> GetPagedListAsync(ActivityTypeGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<ActivityType>> GetPagedListAsync(
+            ActivityTypeGetPagedListRequestParameter request,
+            CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, ActivityType type, CancellationToken ct);
 

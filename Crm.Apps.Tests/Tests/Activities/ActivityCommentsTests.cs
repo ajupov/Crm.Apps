@@ -1,10 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.RequestParameters;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Activities
@@ -23,26 +24,28 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
+            var type = await _create.ActivityType.BuildAsync();
+            var status = await _create.ActivityStatus.BuildAsync();
             var activity = await _create.Activity
-                .WithAccountId(account.Id)
                 .WithTypeId(type.Id)
                 .WithStatusId(status.Id)
                 .BuildAsync();
 
             await Task.WhenAll(
-                _create.ActivityComment.WithActivityId(activity.Id).BuildAsync(),
-                _create.ActivityComment.WithActivityId(activity.Id).BuildAsync());
+                _create.ActivityComment
+                    .WithActivityId(activity.Id)
+                    .BuildAsync(),
+                _create.ActivityComment
+                    .WithActivityId(activity.Id)
+                    .BuildAsync());
 
-            var request = new ActivityCommentGetPagedListRequest
+            var request = new ActivityCommentGetPagedListRequestParameter
             {
                 ActivityId = activity.Id,
                 SortBy = "CreateDateTime",
                 OrderBy = "desc"
             };
-            
+
             var comments = await _activityCommentsClient.GetPagedListAsync(request);
 
             var results = comments
@@ -56,33 +59,34 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync();
-            var activity = await _create.Activity.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            var type = await _create.ActivityType.BuildAsync();
+            var status = await _create.ActivityStatus.BuildAsync();
+            var activity = await _create.Activity
+                .WithTypeId(type.Id)
+                .WithStatusId(status.Id)
                 .BuildAsync();
 
-            var createRequest = new ActivityCommentCreateRequest
+            var comment = new ActivityComment
             {
                 ActivityId = activity.Id,
                 Value = "Test"
             };
 
-            await _activityCommentsClient.CreateAsync(createRequest);
+            await _activityCommentsClient.CreateAsync(comment);
 
-            var getPagedListRequest = new ActivityCommentGetPagedListRequest
+            var request = new ActivityCommentGetPagedListRequestParameter
             {
                 ActivityId = activity.Id,
                 SortBy = "CreateDateTime",
                 OrderBy = "asc"
             };
 
-            var createdComment = (await _activityCommentsClient.GetPagedListAsync(getPagedListRequest)).First();
+            var createdComment = (await _activityCommentsClient.GetPagedListAsync(request)).First();
 
             Assert.NotNull(createdComment);
-            Assert.Equal(createRequest.ActivityId, createdComment.ActivityId);
+            Assert.Equal(comment.ActivityId, createdComment.ActivityId);
             Assert.True(!createdComment.CommentatorUserId.IsEmpty());
-            Assert.Equal(createRequest.Value, createdComment.Value);
+            Assert.Equal(comment.Value, createdComment.Value);
             Assert.True(createdComment.CreateDateTime.IsMoreThanMinValue());
         }
     }

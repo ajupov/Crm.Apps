@@ -51,7 +51,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("GetList")]
-        public async Task<ActionResult<Activity[]>> GetList(
+        public async Task<ActionResult<List<Activity>>> GetList(
             [Required] IEnumerable<Guid> ids,
             CancellationToken ct = default)
         {
@@ -64,7 +64,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<Activity[]>> GetPagedList(
+        public async Task<ActionResult<List<Activity>>> GetPagedList(
             ActivityGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {

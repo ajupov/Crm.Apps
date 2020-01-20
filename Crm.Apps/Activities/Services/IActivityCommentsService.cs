@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Activities.Models;
@@ -8,7 +9,7 @@ namespace Crm.Apps.Activities.Services
 {
     public interface IActivityCommentsService
     {
-        Task<ActivityComment[]> GetPagedListAsync(
+        Task<List<ActivityComment>> GetPagedListAsync(
             ActivityCommentGetPagedListRequestParameter request,
             CancellationToken ct);
 

@@ -1,9 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.RequestParameters;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.DateTime;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Activities
@@ -22,9 +23,7 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var statusId = (await _create.ActivityStatus.WithAccountId(account.Id).BuildAsync())
-                .Id;
+            var statusId = (await _create.ActivityStatus.BuildAsync()).Id;
 
             var status = await _activityStatusesClient.GetAsync(statusId);
 
@@ -35,29 +34,31 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var statusIds = (await Task.WhenAll(
-                    _create.ActivityStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ActivityStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+            var statusIds = (
+                    await Task.WhenAll(
+                        _create.ActivityStatus
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ActivityStatus
+                            .WithName("Test2")
+                            .BuildAsync())
                 )
                 .Select(x => x.Id)
-                .ToArray();
+                .ToList();
 
             var statuses = await _activityStatusesClient.GetListAsync(statusIds);
 
             Assert.NotEmpty(statuses);
-            Assert.Equal(statusIds.Length, statuses.Length);
+            Assert.Equal(statusIds.Count, statuses.Count);
         }
 
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.ActivityStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync());
+            await Task.WhenAll(_create.ActivityStatus.WithName("Test1").BuildAsync());
 
-            var request = new ActivityStatusGetPagedListRequest
+            var request = new ActivityStatusGetPagedListRequestParameter
             {
-                AccountId = account.Id,
                 Name = "Test1",
                 SortBy = "CreateDateTime",
                 OrderBy = "desc"
@@ -77,10 +78,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var status = new ActivityStatusCreateRequest
+            var status = new ActivityStatus
             {
-                AccountId = account.Id,
                 Name = "Test",
                 IsDeleted = false
             };
@@ -100,34 +99,33 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var status = await _create.ActivityStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync();
+            var status = await _create.ActivityStatus.WithName("Test1").BuildAsync();
 
-            var request = new ActivityStatusUpdateRequest
-            {
-                Id = status.Id,
-                Name = "Test2",
-                IsDeleted = true
-            };
+            status.Name = "Test2";
+            status.IsDeleted = true;
 
-            await _activityStatusesClient.UpdateAsync(request);
+            await _activityStatusesClient.UpdateAsync(status);
 
             var updatedStatus = await _activityStatusesClient.GetAsync(status.Id);
 
-            Assert.Equal(request.Name, updatedStatus.Name);
-            Assert.Equal(request.IsDeleted, updatedStatus.IsDeleted);
+            Assert.Equal(status.Name, updatedStatus.Name);
+            Assert.Equal(status.IsDeleted, updatedStatus.IsDeleted);
         }
 
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var statusIds = (await Task.WhenAll(
-                    _create.ActivityStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ActivityStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+            var statusIds = (
+                    await Task.WhenAll(
+                        _create.ActivityStatus
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ActivityStatus
+                            .WithName("Test2")
+                            .BuildAsync())
                 )
                 .Select(x => x.Id)
-                .ToArray();
+                .ToList();
 
             await _activityStatusesClient.DeleteAsync(statusIds);
 
@@ -139,13 +137,17 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var statusIds = (await Task.WhenAll(
-                    _create.ActivityStatus.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ActivityStatus.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+            var statusIds = (
+                    await Task.WhenAll(
+                        _create.ActivityStatus
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ActivityStatus
+                            .WithName("Test2")
+                            .BuildAsync())
                 )
                 .Select(x => x.Id)
-                .ToArray();
+                .ToList();
 
             await _activityStatusesClient.RestoreAsync(statusIds);
 

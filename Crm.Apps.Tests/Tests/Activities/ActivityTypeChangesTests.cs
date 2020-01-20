@@ -1,13 +1,13 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
+using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
+using Crm.Apps.Clients.Activities.Clients;
+using Crm.Apps.Clients.Activities.Models;
+using Crm.Apps.Clients.Activities.RequestParameters;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Activities.Clients;
-using Crm.Clients.Activities.Models;
-using Crm.Clients.Activities.RequestParameters;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
-using Crm.Utils.Json;
-using Crm.Utils.String;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Activities
@@ -31,25 +31,21 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.ActivityType.WithAccountId(account.Id).BuildAsync();
+            var type = await _create.ActivityType.BuildAsync();
 
-            var updateRequest = new ActivityTypeUpdateRequest
-            {
-                Name = "Test2",
-                IsDeleted = true
-            };
+            type.Name = "Test2";
+            type.IsDeleted = true;
 
-            await _activityTypesClient.UpdateAsync(updateRequest);
+            await _activityTypesClient.UpdateAsync(type);
 
-            var getPagedListRequest = new ActivityTypeChangeGetPagedListRequest
+            var request = new ActivityTypeChangeGetPagedListRequestParameter
             {
                 TypeId = type.Id,
                 SortBy = "CreateDateTime",
                 OrderBy = "asc"
             };
 
-            var changes = await _typeChangesClient.GetPagedListAsync(getPagedListRequest);
+            var changes = await _typeChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

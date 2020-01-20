@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
@@ -31,7 +32,7 @@ namespace Crm.Apps.Activities.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<ActivityStatusChange[]>> GetPagedList(
+        public async Task<ActionResult<List<ActivityStatusChange>>> GetPagedList(
             ActivityStatusChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {

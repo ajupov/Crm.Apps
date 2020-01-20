@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Products.Clients;
+using Crm.Apps.Clients.Products.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Products.Clients;
-using Crm.Clients.Products.Models;
-using Crm.Utils.DateTime;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Products
@@ -22,9 +22,9 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var categoriesId =
-                (await _create.ProductCategory.WithAccountId(account.Id).BuildAsync()).Id;
+                (await _create.ProductCategory.BuildAsync()).Id;
 
             var categories = await _productCategoriesClient.GetAsync(categoriesId);
 
@@ -35,10 +35,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var categoriesIds = (await Task.WhenAll(
-                    _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ProductCategory.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ProductCategory.WithName("Test1").BuildAsync(),
+                    _create.ProductCategory.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var categories = await _productCategoriesClient.GetListAsync(categoriesIds);
@@ -50,8 +50,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync())
+            
+            await Task.WhenAll(_create.ProductCategory.WithName("Test1").BuildAsync())
                 ;
 
             var categories = await _productCategoriesClient
@@ -68,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var categories = new ProductCategory
             {
                 AccountId = account.Id,
@@ -91,8 +91,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var categories = await _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync()
+            
+            var categories = await _create.ProductCategory.WithName("Test1").BuildAsync()
                 ;
 
             categories.Name = "Test2";
@@ -109,10 +109,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var categoriesIds = (await Task.WhenAll(
-                    _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ProductCategory.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ProductCategory.WithName("Test1").BuildAsync(),
+                    _create.ProductCategory.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _productCategoriesClient.DeleteAsync(categoriesIds);
@@ -125,10 +125,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var categoriesIds = (await Task.WhenAll(
-                    _create.ProductCategory.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.ProductCategory.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.ProductCategory.WithName("Test1").BuildAsync(),
+                    _create.ProductCategory.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _productCategoriesClient.RestoreAsync(categoriesIds);

@@ -1,12 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Json;
+using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.Leads.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Leads.Clients;
-using Crm.Clients.Leads.Models;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
-using Crm.Utils.Json;
-using Crm.Utils.String;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Leads
@@ -28,9 +26,9 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var source = await _create.LeadSource.WithAccountId(account.Id).BuildAsync();
-            var lead = await _create.Lead.WithAccountId(account.Id).WithSourceId(source.Id).BuildAsync()
+            
+            var source = await _create.LeadSource.BuildAsync();
+            var lead = await _create.Lead.WithSourceId(source.Id).BuildAsync()
                 ;
             lead.IsDeleted = true;
             await _leadsClient.UpdateAsync(lead);

@@ -30,15 +30,15 @@ namespace Crm.Apps.Activities.Services
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
-        public Task<ActivityType[]> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
+        public Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _activitiesStorage.ActivityTypes
                 .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
-                .ToArrayAsync(ct);
+                .ToListAsync(ct);
         }
 
-        public Task<ActivityType[]> GetPagedListAsync(
+        public Task<List<ActivityType>> GetPagedListAsync(
             ActivityTypeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
@@ -55,7 +55,7 @@ namespace Crm.Apps.Activities.Services
                 .SortBy(request.SortBy, request.OrderBy)
                 .Skip(request.Offset)
                 .Take(request.Limit)
-                .ToArrayAsync(ct);
+                .ToListAsync(ct);
         }
 
         public async Task<Guid> CreateAsync(Guid userId, ActivityType type, CancellationToken ct)

@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Utils.DateTime;
-using Crm.Utils.Guid;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Deals
@@ -23,10 +23,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
-            var deal = await _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
+            var deal = await _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
                 .BuildAsync();
             await Task.WhenAll(
                     _create.DealComment.WithDealId(deal.Id).BuildAsync(),
@@ -46,10 +46,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).BuildAsync();
-            var status = await _create.DealStatus.WithAccountId(account.Id).BuildAsync();
-            var deal = await _create.Deal.WithAccountId(account.Id).WithTypeId(type.Id).WithStatusId(status.Id)
+            
+            var type = await _create.DealType.BuildAsync();
+            var status = await _create.DealStatus.BuildAsync();
+            var deal = await _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
                 .BuildAsync();
 
             var comment = new DealComment

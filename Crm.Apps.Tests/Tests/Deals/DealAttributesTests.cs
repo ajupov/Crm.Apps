@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Deals.Clients;
+using Crm.Apps.Clients.Deals.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Deals.Clients;
-using Crm.Clients.Deals.Models;
-using Crm.Common.Types;
-using Crm.Utils.DateTime;
+using Crm.Common.All.Types.AttributeType;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Deals
@@ -32,8 +32,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attributeId = (await _create.DealAttribute.WithAccountId(account.Id).BuildAsync())
+            
+            var attributeId = (await _create.DealAttribute.BuildAsync())
                 .Id;
 
             var attribute = await _dealAttributesClient.GetAsync(attributeId);
@@ -45,10 +45,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.DealAttribute.WithKey("Test1").BuildAsync(),
+                    _create.DealAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var attributes = await _dealAttributesClient.GetListAsync(attributeIds);
@@ -60,8 +60,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.DealAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            
+            await Task.WhenAll(_create.DealAttribute.WithType(AttributeType.Text)
                 .WithKey("Test1").BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
@@ -79,7 +79,7 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attribute = new DealAttribute
             {
                 AccountId = account.Id,
@@ -104,8 +104,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attribute = await _create.DealAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            
+            var attribute = await _create.DealAttribute.WithType(AttributeType.Text)
                 .WithKey("Test").BuildAsync();
 
             attribute.Type = AttributeType.Link;
@@ -124,10 +124,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.DealAttribute.WithKey("Test1").BuildAsync(),
+                    _create.DealAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _dealAttributesClient.DeleteAsync(attributeIds);
@@ -140,10 +140,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.DealAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.DealAttribute.WithKey("Test1").BuildAsync(),
+                    _create.DealAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _dealAttributesClient.RestoreAsync(attributeIds);

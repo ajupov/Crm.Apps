@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Clients.Contacts.Clients;
+using Crm.Apps.Clients.Contacts.Models;
 using Crm.Apps.Tests.Creator;
-using Crm.Clients.Contacts.Clients;
-using Crm.Clients.Contacts.Models;
-using Crm.Common.Types;
-using Crm.Utils.DateTime;
+using Crm.Common.All.Types.AttributeType;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Contacts
@@ -32,9 +32,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeId =
-                (await _create.ContactAttribute.WithAccountId(account.Id).BuildAsync())
+                (await _create.ContactAttribute.BuildAsync())
                 .Id;
 
             var attribute = await _contactAttributesClient.GetAsync(attributeId);
@@ -46,10 +46,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.ContactAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.ContactAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.ContactAttribute.WithKey("Test1").BuildAsync(),
+                    _create.ContactAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var attributes = await _contactAttributesClient.GetListAsync(attributeIds);
@@ -61,8 +61,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.ContactAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            
+            await Task.WhenAll(_create.ContactAttribute.WithType(AttributeType.Text)
                 .WithKey("Test1").BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
@@ -80,7 +80,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attribute = new ContactAttribute
             {
                 AccountId = account.Id,
@@ -105,8 +105,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var attribute = await _create.ContactAttribute.WithAccountId(account.Id).WithType(AttributeType.Text)
+            
+            var attribute = await _create.ContactAttribute.WithType(AttributeType.Text)
                 .WithKey("Test").BuildAsync();
 
             attribute.Type = AttributeType.Link;
@@ -125,10 +125,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.ContactAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.ContactAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.ContactAttribute.WithKey("Test1").BuildAsync(),
+                    _create.ContactAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _contactAttributesClient.DeleteAsync(attributeIds);
@@ -141,10 +141,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var attributeIds = (await Task.WhenAll(
-                    _create.ContactAttribute.WithAccountId(account.Id).WithKey("Test1").BuildAsync(),
-                    _create.ContactAttribute.WithAccountId(account.Id).WithKey("Test2").BuildAsync())
+                    _create.ContactAttribute.WithKey("Test1").BuildAsync(),
+                    _create.ContactAttribute.WithKey("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _contactAttributesClient.RestoreAsync(attributeIds);

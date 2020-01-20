@@ -22,8 +22,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var typeId = (await _create.DealType.WithAccountId(account.Id).BuildAsync()).Id;
+            
+            var typeId = (await _create.DealType.BuildAsync()).Id;
 
             var type = await _dealTypesClient.GetAsync(typeId);
 
@@ -34,10 +34,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var typeIds = (await Task.WhenAll(
-                    _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.DealType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.DealType.WithName("Test1").BuildAsync(),
+                    _create.DealType.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             var types = await _dealTypesClient.GetListAsync(typeIds);
@@ -49,8 +49,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            await Task.WhenAll(_create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync())
+            
+            await Task.WhenAll(_create.DealType.WithName("Test1").BuildAsync())
                 ;
 
             var types = await _dealTypesClient
@@ -67,7 +67,7 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var type = new DealType
             {
                 AccountId = account.Id,
@@ -90,8 +90,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
-            var type = await _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync()
+            
+            var type = await _create.DealType.WithName("Test1").BuildAsync()
                 ;
 
             type.Name = "Test2";
@@ -108,10 +108,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var typeIds = (await Task.WhenAll(
-                    _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.DealType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.DealType.WithName("Test1").BuildAsync(),
+                    _create.DealType.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _dealTypesClient.DeleteAsync(typeIds);
@@ -124,10 +124,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            var account = await _create.Account.BuildAsync();
+            
             var typeIds = (await Task.WhenAll(
-                    _create.DealType.WithAccountId(account.Id).WithName("Test1").BuildAsync(),
-                    _create.DealType.WithAccountId(account.Id).WithName("Test2").BuildAsync())
+                    _create.DealType.WithName("Test1").BuildAsync(),
+                    _create.DealType.WithName("Test2").BuildAsync())
                 ).Select(x => x.Id).ToList();
 
             await _dealTypesClient.RestoreAsync(typeIds);

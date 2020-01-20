@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Crm.Apps.Clients.Deals.Models;
 
