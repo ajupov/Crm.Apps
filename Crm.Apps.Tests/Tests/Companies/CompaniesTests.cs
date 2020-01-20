@@ -6,6 +6,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Clients.Companies.Clients;
 using Crm.Apps.Clients.Companies.Models;
+using Crm.Apps.Clients.Companies.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -41,12 +42,15 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var companyId = (await _create.Company.WithLeadId(lead.Id).BuildAsync()
-                ).Id;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var companyId = (
+                    await _create.Company
+                        .WithLeadId(lead.Id)
+                        .BuildAsync())
+                .Id;
 
             var company = await _companiesClient.GetAsync(companyId);
 
@@ -57,18 +61,26 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var companyIds = (await Task.WhenAll(
-                    _create.Company.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .BuildAsync(),
-                    _create.Company.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var companyIds = (
+                    await Task.WhenAll(
+                        _create.Company
+                            .WithLeadId(lead1.Id)
+                            .WithTaxNumber("999999999990")
+                            .BuildAsync(),
+                        _create.Company
+                            .WithLeadId(lead2.Id)
+                            .WithTaxNumber("999999999991")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var companies = await _companiesClient.GetListAsync(companyIds);
 
@@ -79,26 +91,38 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
             var attribute = await _create.CompanyAttribute.BuildAsync();
 
             await Task.WhenAll(
-                    _create.Company.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
-                    _create.Company.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .WithAttributeLink(attribute.Id, "Test").BuildAsync())
-                ;
+                _create.Company
+                    .WithLeadId(lead1.Id)
+                    .WithTaxNumber("999999999990")
+                    .WithAttributeLink(attribute.Id, "Test")
+                    .BuildAsync(),
+                _create.Company
+                    .WithLeadId(lead2.Id)
+                    .WithTaxNumber("999999999991")
+                    .WithAttributeLink(attribute.Id, "Test")
+                    .BuildAsync());
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
 
-            var companies = await _companiesClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime",
-                orderBy: "desc", allAttributes: false, attributes: filterAttributes);
+            var request = new CompanyGetPagedListRequestParameter
+            {
+                AllAttributes = false,
+                Attributes = filterAttributes,
+            };
 
-            var results = companies.Skip(1)
+            var companies = await _companiesClient.GetPagedListAsync(request);
+
+            var results = companies
+                .Skip(1)
                 .Zip(companies, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(companies);
@@ -108,20 +132,19 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
             var attribute = await _create.CompanyAttribute.BuildAsync();
 
             var company = new Company
             {
-                AccountId = account.Id,
                 LeadId = lead.Id,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Type = CompanyType.None,
-                IndustryType = CompanyIndustryType.None,
+                Type = CompanyType.SelfEmployed,
+                IndustryType = CompanyIndustryType.Transport,
                 FullName = "Test",
                 ShortName = "Test",
                 Phone = "9999999999",
@@ -216,16 +239,17 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
             var attribute = await _create.CompanyAttribute.BuildAsync();
-            var company = await _create.Company.WithLeadId(lead.Id).BuildAsync()
-                ;
+            var company = await _create.Company
+                .WithLeadId(lead.Id)
+                .BuildAsync();
 
-            company.Type = CompanyType.None;
-            company.IndustryType = CompanyIndustryType.None;
+            company.Type = CompanyType.Commercial;
+            company.IndustryType = CompanyIndustryType.Computer;
             company.LeadId = Guid.Empty;
             company.ResponsibleUserId = Guid.Empty;
             company.FullName = "Test";
@@ -311,18 +335,25 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var companyIds = (await Task.WhenAll(
-                    _create.Company.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .BuildAsync(),
-                    _create.Company.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var companyIds = (
+                    await Task.WhenAll(
+                        _create.Company
+                            .WithLeadId(lead1.Id)
+                            .WithTaxNumber("999999999990")
+                            .BuildAsync(),
+                        _create.Company
+                            .WithLeadId(lead2.Id)
+                            .WithTaxNumber("999999999991")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id).ToList();
 
             await _companiesClient.DeleteAsync(companyIds);
 
@@ -334,18 +365,26 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var companyIds = (await Task.WhenAll(
-                    _create.Company.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .BuildAsync(),
-                    _create.Company.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var companyIds = (
+                    await Task.WhenAll(
+                        _create.Company
+                            .WithLeadId(lead1.Id)
+                            .WithTaxNumber("999999999990")
+                            .BuildAsync(),
+                        _create.Company
+                            .WithLeadId(lead2.Id)
+                            .WithTaxNumber("999999999991")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _companiesClient.RestoreAsync(companyIds);
 
