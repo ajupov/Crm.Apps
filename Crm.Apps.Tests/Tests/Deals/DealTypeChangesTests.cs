@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -26,15 +29,21 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var type = await _create.DealType.BuildAsync();
+
             type.Name = "Test2";
             type.IsDeleted = true;
+
             await _dealTypesClient.UpdateAsync(type);
 
-            var changes = await _typeChangesClient
-                .GetPagedListAsync(typeId: type.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var request = new DealTypeChangeGetPagedListRequestParameter
+            {
+                TypeId = type.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _typeChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

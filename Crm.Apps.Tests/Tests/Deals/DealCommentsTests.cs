@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -23,20 +24,29 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
-            var deal = await _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
+            var deal = await _create.Deal
+                .WithTypeId(type.Id)
+                .WithStatusId(status.Id)
                 .BuildAsync();
             await Task.WhenAll(
-                    _create.DealComment.WithDealId(deal.Id).BuildAsync(),
-                    _create.DealComment.WithDealId(deal.Id).BuildAsync())
-                ;
+                _create.DealComment
+                    .WithDealId(deal.Id)
+                    .BuildAsync(),
+                _create.DealComment
+                    .WithDealId(deal.Id)
+                    .BuildAsync());
 
-            var comments = await _dealCommentsClient
-                .GetPagedListAsync(deal.Id, sortBy: "CreateDateTime", orderBy: "desc");
+            var request = new DealCommentGetPagedListRequestParameter
+            {
+                DealId = deal.Id,
+            };
 
-            var results = comments.Skip(1)
+            var comments = await _dealCommentsClient.GetPagedListAsync(request);
+
+            var results = comments
+                .Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(comments);
@@ -46,10 +56,11 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
-            var deal = await _create.Deal.WithTypeId(type.Id).WithStatusId(status.Id)
+            var deal = await _create.Deal
+                .WithTypeId(type.Id)
+                .WithStatusId(status.Id)
                 .BuildAsync();
 
             var comment = new DealComment
@@ -60,8 +71,14 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             await _dealCommentsClient.CreateAsync(comment);
 
-            var createdComment = (await _dealCommentsClient.GetPagedListAsync(deal.Id, sortBy: "CreateDateTime",
-                orderBy: "asc")).First();
+            var request = new DealCommentGetPagedListRequestParameter
+            {
+                DealId = deal.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var createdComment = (await _dealCommentsClient.GetPagedListAsync(request)).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.DealId, createdComment.DealId);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Crm.Common.All.Types.AttributeType;
 using Xunit;
@@ -32,9 +33,7 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
-            var attributeId = (await _create.DealAttribute.BuildAsync())
-                .Id;
+            var attributeId = (await _create.DealAttribute.BuildAsync()).Id;
 
             var attribute = await _dealAttributesClient.GetAsync(attributeId);
 
@@ -45,11 +44,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
-            var attributeIds = (await Task.WhenAll(
-                    _create.DealAttribute.WithKey("Test1").BuildAsync(),
-                    _create.DealAttribute.WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var attributeIds = (
+                    await Task.WhenAll(
+                        _create.DealAttribute
+                            .WithKey("Test1")
+                            .BuildAsync(),
+                        _create.DealAttribute
+                            .WithKey("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var attributes = await _dealAttributesClient.GetListAsync(attributeIds);
 
@@ -60,17 +65,24 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
-            await Task.WhenAll(_create.DealAttribute.WithType(AttributeType.Text)
-                .WithKey("Test1").BuildAsync());
+            await Task.WhenAll(
+                _create.DealAttribute
+                    .WithType(AttributeType.Text)
+                    .WithKey("Test1")
+                    .BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
-            var attributes = await _dealAttributesClient.GetPagedListAsync(account.Id, key: "Test1",
-                types: filterTypes,
-                sortBy: "CreateDateTime", orderBy: "desc");
+            var request = new DealAttributeGetPagedListRequestParameter
+            {
+                Key = "Test1",
+                Types = filterTypes,
+            };
 
-            var results = attributes.Skip(1).Zip(attributes,
-                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+            var attributes = await _dealAttributesClient.GetPagedListAsync(request);
+
+            var results = attributes
+                .Skip(1)
+                .Zip(attributes, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(attributes);
             Assert.All(results, Assert.True);
@@ -79,10 +91,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var attribute = new DealAttribute
             {
-                AccountId = account.Id,
                 Type = AttributeType.Text,
                 Key = "Test",
                 IsDeleted = false
@@ -104,9 +114,10 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
-            var attribute = await _create.DealAttribute.WithType(AttributeType.Text)
-                .WithKey("Test").BuildAsync();
+            var attribute = await _create.DealAttribute
+                .WithType(AttributeType.Text)
+                .WithKey("Test")
+                .BuildAsync();
 
             attribute.Type = AttributeType.Link;
             attribute.Key = "test.com";
@@ -124,11 +135,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
-            var attributeIds = (await Task.WhenAll(
-                    _create.DealAttribute.WithKey("Test1").BuildAsync(),
-                    _create.DealAttribute.WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var attributeIds = (
+                    await Task.WhenAll(
+                        _create.DealAttribute
+                            .WithKey("Test1")
+                            .BuildAsync(),
+                        _create.DealAttribute
+                            .WithKey("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _dealAttributesClient.DeleteAsync(attributeIds);
 
@@ -140,11 +157,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
-            var attributeIds = (await Task.WhenAll(
-                    _create.DealAttribute.WithKey("Test1").BuildAsync(),
-                    _create.DealAttribute.WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var attributeIds = (
+                    await Task.WhenAll(
+                        _create.DealAttribute
+                            .WithKey("Test1")
+                            .BuildAsync(),
+                        _create.DealAttribute
+                            .WithKey("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _dealAttributesClient.RestoreAsync(attributeIds);
 

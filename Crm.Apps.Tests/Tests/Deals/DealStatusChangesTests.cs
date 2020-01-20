@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -15,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Deals
         private readonly IDealStatusesClient _dealStatusesClient;
         private readonly IDealStatusChangesClient _statusChangesClient;
 
-        public DealStatusChangesTests(ICreate create, IDealStatusesClient dealStatusesClient,
+        public DealStatusChangesTests(
+            ICreate create,
+            IDealStatusesClient dealStatusesClient,
             IDealStatusChangesClient statusChangesClient)
         {
             _create = create;
@@ -26,15 +31,21 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var status = await _create.DealStatus.BuildAsync();
+
             status.Name = "Test2";
             status.IsDeleted = true;
+
             await _dealStatusesClient.UpdateAsync(status);
 
-            var changes = await _statusChangesClient
-                .GetPagedListAsync(statusId: status.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var request = new DealStatusChangeGetPagedListRequestParameter
+            {
+                StatusId = status.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _statusChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

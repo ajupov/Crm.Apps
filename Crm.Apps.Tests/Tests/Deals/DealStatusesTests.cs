@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.Clients.Deals.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -22,7 +23,6 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
             var statusId = (await _create.DealStatus.BuildAsync()).Id;
 
             var status = await _dealStatusesClient.GetAsync(statusId);
@@ -34,11 +34,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
-            var statusIds = (await Task.WhenAll(
-                    _create.DealStatus.WithName("Test1").BuildAsync(),
-                    _create.DealStatus.WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var statusIds = (
+                    await Task.WhenAll(
+                        _create.DealStatus
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.DealStatus
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var statuses = await _dealStatusesClient.GetListAsync(statusIds);
 
@@ -49,16 +55,21 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
-            await Task.WhenAll(_create.DealStatus.WithName("Test1").BuildAsync())
-                ;
+            await Task.WhenAll(
+                _create.DealStatus
+                    .WithName("Test1")
+                    .BuildAsync());
 
-            var statuses = await _dealStatusesClient
-                .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
-                ;
+            var request = new DealStatusGetPagedListRequestParameter
+            {
+                Name = "Test1"
+            };
 
-            var results = statuses.Skip(1).Zip(statuses,
-                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+            var statuses = await _dealStatusesClient.GetPagedListAsync(request);
+
+            var results = statuses
+                .Skip(1)
+                .Zip(statuses, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(statuses);
             Assert.All(results, Assert.True);
@@ -67,10 +78,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var status = new DealStatus
             {
-                AccountId = account.Id,
                 Name = "Test",
                 IsDeleted = false
             };
@@ -90,9 +99,9 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
-            var status = await _create.DealStatus.WithName("Test1").BuildAsync()
-                ;
+            var status = await _create.DealStatus
+                .WithName("Test1")
+                .BuildAsync();
 
             status.Name = "Test2";
             status.IsDeleted = true;
@@ -108,11 +117,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
-            var statusIds = (await Task.WhenAll(
-                    _create.DealStatus.WithName("Test1").BuildAsync(),
-                    _create.DealStatus.WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var statusIds = (
+                    await Task.WhenAll(
+                        _create.DealStatus
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.DealStatus
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _dealStatusesClient.DeleteAsync(statusIds);
 
@@ -124,11 +139,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
-            var statusIds = (await Task.WhenAll(
-                    _create.DealStatus.WithName("Test1").BuildAsync(),
-                    _create.DealStatus.WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var statusIds = (
+                    await Task.WhenAll(
+                        _create.DealStatus
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.DealStatus
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _dealStatusesClient.RestoreAsync(statusIds);
 
