@@ -19,7 +19,9 @@ namespace Crm.Apps.Tests.Tests.Companies
         private readonly ICompanyAttributesClient _companyAttributesClient;
         private readonly ICompanyAttributeChangesClient _attributeChangesClient;
 
-        public CompanyAttributeChangesTests(ICreate create, ICompanyAttributesClient companyAttributesClient,
+        public CompanyAttributeChangesTests(
+            ICreate create,
+            ICompanyAttributesClient companyAttributesClient,
             ICompanyAttributeChangesClient attributeChangesClient)
         {
             _create = create;

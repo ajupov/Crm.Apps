@@ -18,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
         private readonly IContactsClient _contactsClient;
         private readonly IContactChangesClient _contactChangesClient;
 
-        public ContactChangesTests(ICreate create, IContactsClient contactsClient,
+        public ContactChangesTests(
+            ICreate create,
+            IContactsClient contactsClient,
             IContactChangesClient contactChangesClient)
         {
             _create = create;

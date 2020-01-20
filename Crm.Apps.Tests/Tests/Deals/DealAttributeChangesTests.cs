@@ -19,7 +19,9 @@ namespace Crm.Apps.Tests.Tests.Deals
         private readonly IDealAttributesClient _dealAttributesClient;
         private readonly IDealAttributeChangesClient _attributeChangesClient;
 
-        public DealAttributeChangesTests(ICreate create, IDealAttributesClient dealAttributesClient,
+        public DealAttributeChangesTests(
+            ICreate create,
+            IDealAttributesClient dealAttributesClient,
             IDealAttributeChangesClient attributeChangesClient)
         {
             _create = create;

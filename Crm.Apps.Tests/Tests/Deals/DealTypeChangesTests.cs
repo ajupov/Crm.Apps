@@ -18,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Deals
         private readonly IDealTypesClient _dealTypesClient;
         private readonly IDealTypeChangesClient _typeChangesClient;
 
-        public DealTypeChangesTests(ICreate create, IDealTypesClient dealTypesClient,
+        public DealTypeChangesTests(
+            ICreate create,
+            IDealTypesClient dealTypesClient,
             IDealTypeChangesClient typeChangesClient)
         {
             _create = create;

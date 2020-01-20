@@ -19,7 +19,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
         private readonly IContactAttributesClient _contactAttributesClient;
         private readonly IContactAttributeChangesClient _attributeChangesClient;
 
-        public ContactAttributeChangesTests(ICreate create, IContactAttributesClient contactAttributesClient,
+        public ContactAttributeChangesTests(
+            ICreate create,
+            IContactAttributesClient contactAttributesClient,
             IContactAttributeChangesClient attributeChangesClient)
         {
             _create = create;

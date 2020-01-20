@@ -18,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Companies
         private readonly ICompaniesClient _companiesClient;
         private readonly ICompanyChangesClient _companyChangesClient;
 
-        public CompanyChangesTests(ICreate create, ICompaniesClient companiesClient,
+        public CompanyChangesTests(
+            ICreate create,
+            ICompaniesClient companiesClient,
             ICompanyChangesClient companyChangesClient)
         {
             _create = create;

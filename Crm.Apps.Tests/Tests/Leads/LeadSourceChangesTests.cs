@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Clients.Leads.Clients;
 using Crm.Apps.Clients.Leads.Models;
+using Crm.Apps.Clients.Leads.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -15,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Leads
         private readonly ILeadSourcesClient _leadSourcesClient;
         private readonly ILeadSourceChangesClient _sourceChangesClient;
 
-        public LeadSourceChangesTests(ICreate create, ILeadSourcesClient leadSourcesClient,
+        public LeadSourceChangesTests(
+            ICreate create,
+            ILeadSourcesClient leadSourcesClient,
             ILeadSourceChangesClient sourceChangesClient)
         {
             _create = create;
@@ -26,15 +31,21 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var source = await _create.LeadSource.BuildAsync();
+
             source.Name = "Test2";
             source.IsDeleted = true;
+
             await _leadSourcesClient.UpdateAsync(source);
 
-            var changes = await _sourceChangesClient
-                .GetPagedListAsync(sourceId: source.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var request = new LeadSourceChangeGetPagedListRequestParameter
+            {
+                SourceId = source.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _sourceChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));
