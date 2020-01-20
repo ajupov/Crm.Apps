@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Crm.Apps.Clients.Contacts.Clients;
 using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.Clients.Contacts.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Crm.Common.All.Types.AttributeType;
 using Xunit;
@@ -32,10 +33,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
-            var attributeId =
-                (await _create.ContactAttribute.BuildAsync())
-                .Id;
+            var attributeId = (await _create.ContactAttribute.BuildAsync()).Id;
 
             var attribute = await _contactAttributesClient.GetAsync(attributeId);
 
@@ -46,11 +44,17 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
-            var attributeIds = (await Task.WhenAll(
-                    _create.ContactAttribute.WithKey("Test1").BuildAsync(),
-                    _create.ContactAttribute.WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var attributeIds = (
+                    await Task.WhenAll(
+                        _create.ContactAttribute
+                            .WithKey("Test1")
+                            .BuildAsync(),
+                        _create.ContactAttribute
+                            .WithKey("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var attributes = await _contactAttributesClient.GetListAsync(attributeIds);
 
@@ -61,17 +65,25 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
-            await Task.WhenAll(_create.ContactAttribute.WithType(AttributeType.Text)
-                .WithKey("Test1").BuildAsync());
+            await Task.WhenAll(
+                _create.ContactAttribute
+                    .WithType(AttributeType.Text)
+                    .WithKey("Test1")
+                    .BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
-            var attributes = await _contactAttributesClient.GetPagedListAsync(account.Id, key: "Test1",
-                types: filterTypes,
-                sortBy: "CreateDateTime", orderBy: "desc");
+            var request = new ContactAttributeGetPagedListRequestParameter
+            {
+                Key = "Test1",
+                Types = filterTypes,
+            };
 
-            var results = attributes.Skip(1).Zip(attributes,
-                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+            var attributes = await _contactAttributesClient.GetPagedListAsync(request);
+
+            var results = attributes
+                .Skip(1)
+                .Zip(attributes,
+                    (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(attributes);
             Assert.All(results, Assert.True);
@@ -80,10 +92,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var attribute = new ContactAttribute
             {
-                AccountId = account.Id,
                 Type = AttributeType.Text,
                 Key = "Test",
                 IsDeleted = false
@@ -105,9 +115,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
-            var attribute = await _create.ContactAttribute.WithType(AttributeType.Text)
-                .WithKey("Test").BuildAsync();
+            var attribute = await _create.ContactAttribute
+                .WithType(AttributeType.Text)
+                .WithKey("Test")
+                .BuildAsync();
 
             attribute.Type = AttributeType.Link;
             attribute.Key = "test.com";
@@ -125,11 +136,17 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
-            var attributeIds = (await Task.WhenAll(
-                    _create.ContactAttribute.WithKey("Test1").BuildAsync(),
-                    _create.ContactAttribute.WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var attributeIds = (
+                    await Task.WhenAll(
+                        _create.ContactAttribute
+                            .WithKey("Test1")
+                            .BuildAsync(),
+                        _create.ContactAttribute
+                            .WithKey("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _contactAttributesClient.DeleteAsync(attributeIds);
 
@@ -141,11 +158,17 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
-            var attributeIds = (await Task.WhenAll(
-                    _create.ContactAttribute.WithKey("Test1").BuildAsync(),
-                    _create.ContactAttribute.WithKey("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var attributeIds = (
+                    await Task.WhenAll(
+                        _create.ContactAttribute
+                            .WithKey("Test1")
+                            .BuildAsync(),
+                        _create.ContactAttribute
+                            .WithKey("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _contactAttributesClient.RestoreAsync(attributeIds);
 

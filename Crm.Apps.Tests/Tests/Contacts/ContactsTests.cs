@@ -6,6 +6,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Clients.Contacts.Clients;
 using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.Clients.Contacts.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -25,12 +26,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var contactId = (await _create.Contact.WithLeadId(lead.Id).BuildAsync()
-                ).Id;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var contactId = (await _create.Contact.WithLeadId(lead.Id).BuildAsync()).Id;
 
             var contact = await _contactsClient.GetAsync(contactId);
 
@@ -41,18 +41,26 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var contactIds = (await Task.WhenAll(
-                    _create.Contact.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .BuildAsync(),
-                    _create.Contact.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var contactIds = (
+                    await Task.WhenAll(
+                        _create.Contact
+                            .WithLeadId(lead1.Id)
+                            .WithTaxNumber("999999999990")
+                            .BuildAsync(),
+                        _create.Contact
+                            .WithLeadId(lead2.Id)
+                            .WithTaxNumber("999999999991")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var contacts = await _contactsClient.GetListAsync(contactIds);
 
@@ -63,25 +71,36 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
             var attribute = await _create.ContactAttribute.BuildAsync();
             await Task.WhenAll(
-                    _create.Contact.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .WithAttributeLink(attribute.Id, "Test").BuildAsync(),
-                    _create.Contact.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .WithAttributeLink(attribute.Id, "Test").BuildAsync())
-                ;
+                _create.Contact
+                    .WithLeadId(lead1.Id)
+                    .WithTaxNumber("999999999990")
+                    .WithAttributeLink(attribute.Id, "Test")
+                    .BuildAsync(),
+                _create.Contact
+                    .WithLeadId(lead2.Id)
+                    .WithTaxNumber("999999999991")
+                    .WithAttributeLink(attribute.Id, "Test")
+                    .BuildAsync());
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
 
-            var contacts = await _contactsClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime",
-                orderBy: "desc", allAttributes: false, attributes: filterAttributes);
+            var request = new ContactGetPagedListRequestParameter
+            {
+                Attributes = filterAttributes
+            };
 
-            var results = contacts.Skip(1)
+            var contacts = await _contactsClient.GetPagedListAsync(request);
+
+            var results = contacts
+                .Skip(1)
                 .Zip(contacts, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(contacts);
@@ -91,15 +110,14 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
             var attribute = await _create.ContactAttribute.BuildAsync();
 
             var contact = new Contact
             {
-                AccountId = account.Id,
                 LeadId = lead.Id,
                 CompanyId = Guid.Empty,
                 CreateUserId = Guid.Empty,
@@ -176,15 +194,15 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
             var attribute = await _create.ContactAttribute.BuildAsync();
-            var contact = await _create.Contact.WithLeadId(lead.Id).BuildAsync()
-                ;
+            var contact = await _create.Contact
+                .WithLeadId(lead.Id)
+                .BuildAsync();
 
-            contact.ResponsibleUserId = Guid.Empty;
             contact.Surname = "Test";
             contact.Name = "Test";
             contact.Patronymic = "Test";
@@ -202,14 +220,20 @@ namespace Crm.Apps.Tests.Tests.Contacts
             contact.Apartment = "1";
             contact.BirthDate = new DateTime(1990, 1, 1);
             contact.IsDeleted = true;
-            contact.AttributeLinks.Add(new ContactAttributeLink {ContactAttributeId = attribute.Id, Value = "Test"});
-            contact.BankAccounts.Add(new ContactBankAccount
-            {
-                Number = "9999999999999999999999999",
-                BankNumber = "9999999999",
-                BankCorrespondentNumber = "9999999999999999999999999",
-                BankName = "Test"
-            });
+            contact.AttributeLinks.Add(
+                new ContactAttributeLink
+                {
+                    ContactAttributeId = attribute.Id,
+                    Value = "Test"
+                });
+            contact.BankAccounts.Add(
+                new ContactBankAccount
+                {
+                    Number = "9999999999999999999999999",
+                    BankNumber = "9999999999",
+                    BankCorrespondentNumber = "9999999999999999999999999",
+                    BankName = "Test"
+                });
             await _contactsClient.UpdateAsync(contact);
 
             var updatedContact = await _contactsClient.GetAsync(contact.Id);
@@ -245,18 +269,26 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var contactIds = (await Task.WhenAll(
-                    _create.Contact.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .BuildAsync(),
-                    _create.Contact.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var contactIds = (
+                    await Task.WhenAll(
+                        _create.Contact
+                            .WithLeadId(lead1.Id)
+                            .WithTaxNumber("999999999990")
+                            .BuildAsync(),
+                        _create.Contact
+                            .WithLeadId(lead2.Id)
+                            .WithTaxNumber("999999999991")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _contactsClient.DeleteAsync(contactIds);
 
@@ -268,18 +300,25 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead1 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var lead2 = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var contactIds = (await Task.WhenAll(
-                    _create.Contact.WithLeadId(lead1.Id).WithTaxNumber("999999999990")
-                        .BuildAsync(),
-                    _create.Contact.WithLeadId(lead2.Id).WithTaxNumber("999999999991")
-                        .BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var lead1 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var lead2 = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var contactIds = (
+                    await Task.WhenAll(
+                        _create.Contact
+                            .WithLeadId(lead1.Id)
+                            .WithTaxNumber("999999999990")
+                            .BuildAsync(),
+                        _create.Contact
+                            .WithLeadId(lead2.Id)
+                            .WithTaxNumber("999999999991")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id).ToList();
 
             await _contactsClient.RestoreAsync(contactIds);
 

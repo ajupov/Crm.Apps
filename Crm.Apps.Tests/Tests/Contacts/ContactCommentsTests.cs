@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Clients.Contacts.Clients;
 using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.Clients.Contacts.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -23,21 +24,32 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var contact = await _create.Contact.WithLeadId(lead.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var contact = await _create.Contact
+                .WithLeadId(lead.Id)
+                .BuildAsync();
             await Task.WhenAll(
-                    _create.ContactComment.WithContactId(contact.Id).BuildAsync(),
-                    _create.ContactComment.WithContactId(contact.Id).BuildAsync())
-                ;
+                _create.ContactComment
+                    .WithContactId(contact.Id)
+                    .BuildAsync(),
+                _create.ContactComment
+                    .WithContactId(contact.Id)
+                    .BuildAsync());
 
-            var comments = await _contactCommentsClient
-                .GetPagedListAsync(contact.Id, sortBy: "CreateDateTime", orderBy: "desc");
+            var request = new ContactCommentGetPagedListRequestParameter
+            {
+                ContactId = contact.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "desc"
+            };
 
-            var results = comments.Skip(1)
+            var comments = await _contactCommentsClient.GetPagedListAsync(request);
+
+            var results = comments
+                .Skip(1)
                 .Zip(comments, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(comments);
@@ -47,12 +59,13 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var contact = await _create.Contact.WithLeadId(lead.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var contact = await _create.Contact
+                .WithLeadId(lead.Id)
+                .BuildAsync();
 
             var comment = new ContactComment
             {
@@ -62,8 +75,14 @@ namespace Crm.Apps.Tests.Tests.Contacts
 
             await _contactCommentsClient.CreateAsync(comment);
 
-            var createdComment = (await _contactCommentsClient.GetPagedListAsync(contact.Id, sortBy: "CreateDateTime",
-                orderBy: "asc")).First();
+            var request = new ContactCommentGetPagedListRequestParameter
+            {
+                ContactId = contact.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var createdComment = (await _contactCommentsClient.GetPagedListAsync(request)).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.ContactId, createdComment.ContactId);
