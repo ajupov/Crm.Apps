@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Clients.Products.Clients;
 using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Crm.Common.All.Types.AttributeType;
 using Xunit;
@@ -16,7 +19,9 @@ namespace Crm.Apps.Tests.Tests.Products
         private readonly IProductAttributesClient _productAttributesClient;
         private readonly IProductAttributeChangesClient _attributeChangesClient;
 
-        public ProductAttributeChangesTests(ICreate create, IProductAttributesClient productAttributesClient,
+        public ProductAttributeChangesTests(
+            ICreate create,
+            IProductAttributesClient productAttributesClient,
             IProductAttributeChangesClient attributeChangesClient)
         {
             _create = create;
@@ -27,16 +32,22 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var attribute = await _create.ProductAttribute.BuildAsync();
+
             attribute.Type = AttributeType.Link;
             attribute.Key = "TestLink";
             attribute.IsDeleted = true;
+
             await _productAttributesClient.UpdateAsync(attribute);
 
-            var changes = await _attributeChangesClient
-                .GetPagedListAsync(attributeId: attribute.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var request = new ProductAttributeChangeGetPagedListRequestParameter
+            {
+                AttributeId = attribute.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _attributeChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

@@ -40,7 +40,7 @@ namespace Crm.Apps.Clients.Products.Clients
         }
 
         public Task<List<ProductAttribute>> GetPagedListAsync(
-            ProductAttributeChangeGetPagedListRequestParameter request,
+            ProductAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
             return _httpClientFactory.PostAsync<List<ProductAttribute>>(

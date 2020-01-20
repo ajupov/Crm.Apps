@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Crm.Apps.Clients.Products.Clients;
 using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -22,9 +23,7 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
-            var categoriesId =
-                (await _create.ProductCategory.BuildAsync()).Id;
+            var categoriesId = (await _create.ProductCategory.BuildAsync()).Id;
 
             var categories = await _productCategoriesClient.GetAsync(categoriesId);
 
@@ -35,11 +34,17 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
-            var categoriesIds = (await Task.WhenAll(
-                    _create.ProductCategory.WithName("Test1").BuildAsync(),
-                    _create.ProductCategory.WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var categoriesIds = (
+                    await Task.WhenAll(
+                        _create.ProductCategory
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ProductCategory
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var categories = await _productCategoriesClient.GetListAsync(categoriesIds);
 
@@ -50,16 +55,20 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
-            await Task.WhenAll(_create.ProductCategory.WithName("Test1").BuildAsync())
-                ;
+            await Task.WhenAll(_create.ProductCategory
+                .WithName("Test1")
+                .BuildAsync());
 
-            var categories = await _productCategoriesClient
-                .GetPagedListAsync(account.Id, "Test1", sortBy: "CreateDateTime", orderBy: "desc")
-                ;
+            var request = new ProductCategoryGetPagedListRequestParameter
+            {
+                Name = "Test1"
+            };
 
-            var results = categories.Skip(1).Zip(categories,
-                (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+            var categories = await _productCategoriesClient.GetPagedListAsync(request);
+
+            var results = categories
+                .Skip(1)
+                .Zip(categories, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(categories);
             Assert.All(results, Assert.True);
@@ -68,10 +77,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var categories = new ProductCategory
             {
-                AccountId = account.Id,
                 Name = "Test",
                 IsDeleted = false
             };
@@ -91,9 +98,9 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
-            var categories = await _create.ProductCategory.WithName("Test1").BuildAsync()
-                ;
+            var categories = await _create.ProductCategory
+                .WithName("Test1")
+                .BuildAsync();
 
             categories.Name = "Test2";
             categories.IsDeleted = true;
@@ -109,11 +116,17 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
-            var categoriesIds = (await Task.WhenAll(
-                    _create.ProductCategory.WithName("Test1").BuildAsync(),
-                    _create.ProductCategory.WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var categoriesIds = (
+                    await Task.WhenAll(
+                        _create.ProductCategory
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ProductCategory
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _productCategoriesClient.DeleteAsync(categoriesIds);
 
@@ -125,11 +138,17 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
-            var categoriesIds = (await Task.WhenAll(
-                    _create.ProductCategory.WithName("Test1").BuildAsync(),
-                    _create.ProductCategory.WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var categoriesIds = (
+                    await Task.WhenAll(
+                        _create.ProductCategory
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.ProductCategory
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _productCategoriesClient.RestoreAsync(categoriesIds);
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Crm.Apps.Clients.Products.Clients;
 using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -32,10 +33,12 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var productId = (await _create.Product.WithStatusId(status.Id).BuildAsync()
-                ).Id;
+            var productId = (
+                    await _create.Product
+                        .WithStatusId(status.Id)
+                        .BuildAsync())
+                .Id;
 
             var product = await _productsClient.GetAsync(productId);
 
@@ -46,12 +49,20 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var productIds = (await Task.WhenAll(
-                    _create.Product.WithStatusId(status.Id).WithName("Test1").BuildAsync(),
-                    _create.Product.WithStatusId(status.Id).WithName("Test2").BuildAsync()))
-                .Select(x => x.Id).ToList();
+            var productIds = (
+                    await Task.WhenAll(
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             var products = await _productsClient.GetListAsync(productIds);
 
@@ -62,24 +73,36 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var attribute = await _create.ProductAttribute.BuildAsync();
             var category = await _create.ProductCategory.BuildAsync();
             var status = await _create.ProductStatus.BuildAsync();
             await Task.WhenAll(
-                _create.Product.WithStatusId(status.Id).WithName("Test1")
-                    .WithAttributeLink(attribute.Id, "Test").WithCategoryLink(category.Id).BuildAsync(),
-                _create.Product.WithStatusId(status.Id).WithName("Test2")
-                    .WithAttributeLink(attribute.Id, "Test").WithCategoryLink(category.Id).BuildAsync());
+                _create.Product
+                    .WithStatusId(status.Id)
+                    .WithName("Test1")
+                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithCategoryLink(category.Id)
+                    .BuildAsync(),
+                _create.Product
+                    .WithStatusId(status.Id)
+                    .WithName("Test2")
+                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithCategoryLink(category.Id)
+                    .BuildAsync());
 
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
             var filterCategoryIds = new List<Guid> {category.Id};
 
-            var products = await _productsClient.GetPagedListAsync(account.Id, sortBy: "CreateDateTime",
-                orderBy: "desc", allAttributes: false, attributes: filterAttributes, allCategoryIds: false,
-                categoryIds: filterCategoryIds);
+            var request = new ProductGetPagedListRequestParameter
+            {
+                Attributes = filterAttributes,
+                CategoryIds = filterCategoryIds
+            };
 
-            var results = products.Skip(1)
+            var products = await _productsClient.GetPagedListAsync(request);
+
+            var results = products
+                .Skip(1)
                 .Zip(products, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(products);
@@ -89,16 +112,14 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
-            
             var attribute = await _create.ProductAttribute.BuildAsync();
             var category = await _create.ProductCategory.BuildAsync();
             var status = await _create.ProductStatus.BuildAsync();
 
             var product = new Product
             {
-                AccountId = account.Id,
                 ParentProductId = Guid.Empty,
-                Type = ProductType.None,
+                Type = ProductType.Material,
                 StatusId = status.Id,
                 Name = "Test",
                 VendorCode = "Test",
@@ -146,10 +167,10 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var product = await _create.Product.WithStatusId(status.Id).BuildAsync()
-                ;
+            var product = await _create.Product
+                .WithStatusId(status.Id)
+                .BuildAsync();
             var attribute = await _create.ProductAttribute.BuildAsync();
             var category = await _create.ProductCategory.BuildAsync();
 
@@ -160,8 +181,17 @@ namespace Crm.Apps.Tests.Tests.Products
             product.Price = 2;
             product.IsHidden = true;
             product.IsDeleted = true;
-            product.AttributeLinks.Add(new ProductAttributeLink {ProductAttributeId = attribute.Id, Value = "Test"});
-            product.CategoryLinks.Add(new ProductCategoryLink {ProductCategoryId = category.Id});
+            product.AttributeLinks.Add(
+                new ProductAttributeLink
+                {
+                    ProductAttributeId = attribute.Id,
+                    Value = "Test"
+                });
+            product.CategoryLinks.Add(
+                new ProductCategoryLink
+                {
+                    ProductCategoryId = category.Id
+                });
             await _productsClient.UpdateAsync(product);
 
             var updatedProduct = await _productsClient.GetAsync(product.Id);
@@ -183,12 +213,19 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenHide_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var productIds = (await Task.WhenAll(
-                    _create.Product.WithStatusId(status.Id).WithName("Test1").BuildAsync(),
-                    _create.Product.WithStatusId(status.Id).WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var productIds = (
+                    await Task.WhenAll(
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test2").BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _productsClient.HideAsync(productIds);
 
@@ -200,13 +237,21 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenShow_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
 
-            var productIds = (await Task.WhenAll(
-                    _create.Product.WithStatusId(status.Id).WithName("Test1").BuildAsync(),
-                    _create.Product.WithStatusId(status.Id).WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var productIds = (
+                    await Task.WhenAll(
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test2")
+                            .BuildAsync())
+                )
+                .Select(x => x.Id)
+                .ToList();
 
             await _productsClient.ShowAsync(productIds);
 
@@ -218,12 +263,20 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var productIds = (await Task.WhenAll(
-                _create.Product.WithStatusId(status.Id).WithName("Test1").BuildAsync(),
-                _create.Product.WithStatusId(status.Id).WithName("Test2").BuildAsync()
-            )).Select(x => x.Id).ToList();
+            var productIds = (
+                    await Task.WhenAll(
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test2")
+                            .BuildAsync()
+                    ))
+                .Select(x => x.Id)
+                .ToList();
 
             await _productsClient.DeleteAsync(productIds);
 
@@ -235,12 +288,20 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var productIds = (await Task.WhenAll(
-                    _create.Product.WithStatusId(status.Id).WithName("Test1").BuildAsync(),
-                    _create.Product.WithStatusId(status.Id).WithName("Test2").BuildAsync())
-                ).Select(x => x.Id).ToList();
+            var productIds = (
+                    await Task.WhenAll(
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test1")
+                            .BuildAsync(),
+                        _create.Product
+                            .WithStatusId(status.Id)
+                            .WithName("Test2")
+                            .BuildAsync()
+                    ))
+                .Select(x => x.Id)
+                .ToList();
 
             await _productsClient.RestoreAsync(productIds);
 

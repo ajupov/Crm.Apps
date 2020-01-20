@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Products.Clients
         Task<List<ProductAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task<List<ProductAttribute>> GetPagedListAsync(
-            ProductAttributeChangeGetPagedListRequestParameter request,
+            ProductAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
         Task<Guid> CreateAsync(ProductAttribute attribute, CancellationToken ct = default);

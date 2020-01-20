@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Clients.Products.Clients;
 using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.Clients.Products.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -15,7 +18,9 @@ namespace Crm.Apps.Tests.Tests.Products
         private readonly IProductsClient _productsClient;
         private readonly IProductChangesClient _productChangesClient;
 
-        public ProductChangesTests(ICreate create, IProductsClient productsClient,
+        public ProductChangesTests(
+            ICreate create,
+            IProductsClient productsClient,
             IProductChangesClient productChangesClient)
         {
             _create = create;
@@ -26,16 +31,23 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var status = await _create.ProductStatus.BuildAsync();
-            var product = await _create.Product.WithStatusId(status.Id).BuildAsync()
-                ;
+            var product = await _create.Product
+                .WithStatusId(status.Id)
+                .BuildAsync();
+
             product.IsHidden = true;
+
             await _productsClient.UpdateAsync(product);
 
-            var changes = await _productChangesClient
-                .GetPagedListAsync(productId: product.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var request = new ProductChangeGetPagedListRequestParameter
+            {
+                ProductId = product.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _productChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));
