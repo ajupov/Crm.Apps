@@ -68,8 +68,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var results = types
                 .Skip(1)
-                .Zip(types,
-                    (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+                .Zip(types, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(types);
             Assert.All(results, Assert.True);

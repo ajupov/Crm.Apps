@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
+using Ajupov.Utils.All.String;
 using Crm.Apps.Clients.Companies.Clients;
 using Crm.Apps.Clients.Companies.Models;
+using Crm.Apps.Clients.Companies.RequestParameters;
 using Crm.Apps.Tests.Creator;
 using Xunit;
 
@@ -26,18 +29,26 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
-            
             var leadSource = await _create.LeadSource.BuildAsync();
-            var lead = await _create.Lead.WithSourceId(leadSource.Id).BuildAsync()
-                ;
-            var company = await _create.Company.WithLeadId(lead.Id).BuildAsync()
-                ;
+            var lead = await _create.Lead
+                .WithSourceId(leadSource.Id)
+                .BuildAsync();
+            var company = await _create.Company
+                .WithLeadId(lead.Id)
+                .BuildAsync();
+
             company.IsDeleted = true;
+
             await _companiesClient.UpdateAsync(company);
 
-            var changes = await _companyChangesClient
-                .GetPagedListAsync(companyId: company.Id, sortBy: "CreateDateTime", orderBy: "asc")
-                ;
+            var request = new CompanyChangeGetPagedListRequestParameter
+            {
+                CompanyId = company.Id,
+                SortBy = "CreateDateTime",
+                OrderBy = "asc"
+            };
+
+            var changes = await _companyChangesClient.GetPagedListAsync(request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

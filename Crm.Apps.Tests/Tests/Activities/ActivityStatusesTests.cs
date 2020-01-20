@@ -68,8 +68,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var results = statuses
                 .Skip(1)
-                .Zip(statuses,
-                    (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
+                .Zip(statuses, (previous, current) => current.CreateDateTime >= previous.CreateDateTime);
 
             Assert.NotEmpty(statuses);
             Assert.All(results, Assert.True);
