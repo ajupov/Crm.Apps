@@ -1,26 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <LangVersion>preview</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.4.0" />
-        <PackageReference Include="Ajupov.Utils.All" Version="1.0.8" />
-        <PackageReference Include="Crm.Common.All" Version="1.2.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Users\**" />
-      <Compile Remove="Accounts\**" />
-      <Compile Remove="RefreshTokens\**" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Remove="RefreshTokens\**" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Remove="RefreshTokens\**" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Remove="RefreshTokens\**" />
+        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.4.0"/>
+        <PackageReference Include="Ajupov.Utils.All" Version="1.0.8"/>
+        <PackageReference Include="Crm.Common.All" Version="1.2.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1"/>
     </ItemGroup>
 </Project>

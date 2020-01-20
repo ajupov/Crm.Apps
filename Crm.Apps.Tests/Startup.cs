@@ -1,14 +1,12 @@
 using Ajupov.Infrastructure.All.TestsDependencyInjection;
 using Ajupov.Infrastructure.All.TestsDependencyInjection.Attributes;
 using Crm.Apps.Clients;
-using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
-using Crm.Apps.Tests.Builders.Users;
 using Crm.Apps.Tests.Creator;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,10 +21,6 @@ namespace Crm.Apps.Tests
             services
                 .ConfigureClients("http://localhost:9000") //http://api.litecrm.org/v1
                 .AddTransient<ICreate, Create>()
-                .AddTransient<IAccountBuilder, AccountBuilder>()
-                .AddTransient<IUserBuilder, UserBuilder>()
-                .AddTransient<IUserAttributeBuilder, UserAttributeBuilder>()
-                .AddTransient<IUserGroupBuilder, UserGroupBuilder>()
                 .AddTransient<IProductBuilder, ProductBuilder>()
                 .AddTransient<IProductAttributeBuilder, ProductAttributeBuilder>()
                 .AddTransient<IProductCategoryBuilder, ProductCategoryBuilder>()

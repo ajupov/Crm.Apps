@@ -1,12 +1,10 @@
 using System;
-using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
-using Crm.Apps.Tests.Builders.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Crm.Apps.Tests.Creator
@@ -19,14 +17,6 @@ namespace Crm.Apps.Tests.Creator
         {
             _services = services;
         }
-
-        public IAccountBuilder Account => _services.GetService<IAccountBuilder>();
-
-        public IUserBuilder User => _services.GetService<IUserBuilder>();
-
-        public IUserAttributeBuilder UserAttribute => _services.GetService<IUserAttributeBuilder>();
-
-        public IUserGroupBuilder UserGroup => _services.GetService<IUserGroupBuilder>();
 
         public IProductBuilder Product => _services.GetService<IProductBuilder>();
 

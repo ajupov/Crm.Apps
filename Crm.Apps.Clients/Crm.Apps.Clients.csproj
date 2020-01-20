@@ -2,26 +2,10 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
-
     <ItemGroup>
-        <PackageReference Include="Ajupov.Utils.All" Version="1.0.8" />
-        <PackageReference Include="Crm.Common.All" Version="1.2.1" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.1" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Users\**" />
-      <Compile Remove="Accounts\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="Users\**" />
-      <EmbeddedResource Remove="Accounts\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Users\**" />
-      <None Remove="Accounts\**" />
+        <PackageReference Include="Ajupov.Utils.All" Version="1.0.8"/>
+        <PackageReference Include="Crm.Common.All" Version="1.2.1"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.1"/>
     </ItemGroup>
 </Project>

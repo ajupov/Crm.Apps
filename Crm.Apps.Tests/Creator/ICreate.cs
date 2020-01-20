@@ -1,24 +1,14 @@
-using Crm.Apps.Tests.Builders.Accounts;
 using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
-using Crm.Apps.Tests.Builders.Users;
 
 namespace Crm.Apps.Tests.Creator
 {
     public interface ICreate
     {
-        IAccountBuilder Account { get; }
-
-        IUserBuilder User { get; }
-
-        IUserAttributeBuilder UserAttribute { get; }
-
-        IUserGroupBuilder UserGroup { get; }
-
         IProductBuilder Product { get; }
 
         IProductCategoryBuilder ProductCategory { get; }
