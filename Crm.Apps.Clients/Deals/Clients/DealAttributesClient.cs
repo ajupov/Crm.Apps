@@ -19,7 +19,7 @@ namespace Crm.Apps.Clients.Deals.Clients
 
         public DealAttributesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Deals/Attributes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Deals/Attributes");
             _httpClientFactory = httpClientFactory;
         }
 

@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Activities.Clients
 
         public ActivityCommentsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Activities/Comments");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Comments");
             _httpClientFactory = httpClientFactory;
         }
 

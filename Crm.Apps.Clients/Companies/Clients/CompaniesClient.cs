@@ -18,7 +18,7 @@ namespace Crm.Apps.Clients.Companies.Clients
 
         public CompaniesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Companies");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Companies");
             _httpClientFactory = httpClientFactory;
         }
 

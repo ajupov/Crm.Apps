@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Products.Clients
 
         public ProductChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Products/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Products/Changes");
             _httpClientFactory = httpClientFactory;
         }
 

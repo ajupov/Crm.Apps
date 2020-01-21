@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Leads.Clients
 
         public LeadAttributeChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Leads/Attributes/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Leads/Attributes/Changes");
             _httpClientFactory = httpClientFactory;
         }
 

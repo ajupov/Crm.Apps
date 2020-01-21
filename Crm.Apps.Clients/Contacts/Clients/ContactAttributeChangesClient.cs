@@ -18,7 +18,7 @@ namespace Crm.Apps.Clients.Contacts.Clients
 
         public ContactAttributeChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Contacts/Attributes/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Contacts/Attributes/Changes");
             _httpClientFactory = httpClientFactory;
         }
 

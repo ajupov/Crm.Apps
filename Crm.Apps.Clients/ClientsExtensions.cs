@@ -3,6 +3,7 @@ using Crm.Apps.Clients.Companies.Clients;
 using Crm.Apps.Clients.Contacts.Clients;
 using Crm.Apps.Clients.Deals.Clients;
 using Crm.Apps.Clients.Leads.Clients;
+using Crm.Apps.Clients.OAuth.Clients;
 using Crm.Apps.Clients.Products.Clients;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,11 +11,19 @@ namespace Crm.Apps.Clients
 {
     public static class ClientsExtensions
     {
-        public static IServiceCollection ConfigureClients(this IServiceCollection services, string host)
+        public static IServiceCollection ConfigureClients(
+            this IServiceCollection services,
+            string apiHost,
+            string oauthHost)
         {
             return services
                 // .AddHttpClient()
-                .Configure<ClientsSettings>(x => { x.Host = host; })
+                .Configure<ClientsSettings>(settings =>
+                {
+                    settings.ApiHost = apiHost;
+                    settings.OAuthHost = oauthHost;
+                })
+                .AddSingleton<IOAuthClient, OAuthClient>()
                 .AddSingleton<IActivitiesClient, ActivitiesClient>()
                 .AddSingleton<IActivityChangesClient, ActivityChangesClient>()
                 .AddSingleton<IActivityAttributesClient, ActivityAttributesClient>()

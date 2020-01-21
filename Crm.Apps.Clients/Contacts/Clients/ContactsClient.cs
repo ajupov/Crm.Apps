@@ -18,7 +18,7 @@ namespace Crm.Apps.Clients.Contacts.Clients
 
         public ContactsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Contacts");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Contacts");
             _httpClientFactory = httpClientFactory;
         }
 

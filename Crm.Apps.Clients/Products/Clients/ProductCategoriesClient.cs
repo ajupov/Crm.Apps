@@ -18,7 +18,7 @@ namespace Crm.Apps.Clients.Products.Clients
 
         public ProductCategoriesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Products/Categories");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Products/Categories");
             _httpClientFactory = httpClientFactory;
         }
 

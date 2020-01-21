@@ -19,7 +19,7 @@ namespace Crm.Apps.Clients.Activities.Clients
 
         public ActivityAttributesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Activities/Attributes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Attributes");
             _httpClientFactory = httpClientFactory;
         }
 

@@ -2,6 +2,8 @@
 {
     public class ClientsSettings
     {
-        public string Host { get; set; }
+        public string ApiHost { get; set; }
+        
+        public string OAuthHost { get; set; }
     }
 }

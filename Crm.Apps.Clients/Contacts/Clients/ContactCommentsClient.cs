@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Contacts.Clients
 
         public ContactCommentsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Contacts/Comments");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Contacts/Comments");
             _httpClientFactory = httpClientFactory;
         }
 

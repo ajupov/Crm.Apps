@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Activities.Clients
 
         public ActivityChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Activities/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Changes");
             _httpClientFactory = httpClientFactory;
         }
 

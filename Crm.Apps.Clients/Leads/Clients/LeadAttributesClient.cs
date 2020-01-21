@@ -19,7 +19,7 @@ namespace Crm.Apps.Clients.Leads.Clients
 
         public LeadAttributesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Leads/Attributes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Leads/Attributes");
             _httpClientFactory = httpClientFactory;
         }
 

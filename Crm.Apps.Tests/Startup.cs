@@ -19,7 +19,8 @@ namespace Crm.Apps.Tests
         protected override void Configure(IServiceCollection services)
         {
             services
-                .ConfigureClients("http://localhost:9000") //http://api.litecrm.org/v1
+                .ConfigureClients("http://localhost:9000", "http://localhost:3000")
+                // .ConfigureClients("http://api.litecrm.org", "http://identity.litecrm.org")
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IProductBuilder, ProductBuilder>()
                 .AddTransient<IProductAttributeBuilder, ProductAttributeBuilder>()

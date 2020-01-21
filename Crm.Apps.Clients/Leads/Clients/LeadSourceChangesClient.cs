@@ -17,7 +17,7 @@ namespace Crm.Apps.Clients.Leads.Clients
 
         public LeadSourceChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.Host, "Leads/Sources/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Leads/Sources/Changes");
             _httpClientFactory = httpClientFactory;
         }
 
