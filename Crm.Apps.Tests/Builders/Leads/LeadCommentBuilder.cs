@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
-using Crm.Apps.Clients.Leads.Clients;
-using Crm.Apps.Clients.Leads.Models;
+using Crm.Apps.v1.Clients.Leads.Clients;
+using Crm.Apps.v1.Clients.Leads.Models;
 
 namespace Crm.Apps.Tests.Builders.Leads
 {

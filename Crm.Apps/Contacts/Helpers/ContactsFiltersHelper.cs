@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Contacts.Models;
-using Crm.Apps.Contacts.RequestParameters;
+using Crm.Apps.Contacts.v1.Models;
+using Crm.Apps.Contacts.v1.RequestParameters;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Contacts.Helpers

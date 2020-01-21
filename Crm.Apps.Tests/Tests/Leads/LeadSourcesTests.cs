@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
-using Crm.Apps.Clients.Leads.Clients;
-using Crm.Apps.Clients.Leads.Models;
-using Crm.Apps.Clients.Leads.RequestParameters;
 using Crm.Apps.Tests.Creator;
+using Crm.Apps.v1.Clients.Leads.Clients;
+using Crm.Apps.v1.Clients.Leads.Models;
+using Crm.Apps.v1.Clients.Leads.RequestParameters;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Leads

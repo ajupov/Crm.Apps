@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
-using Crm.Apps.Clients.Companies.Clients;
-using Crm.Apps.Clients.Companies.Models;
-using Crm.Apps.Clients.Companies.RequestParameters;
 using Crm.Apps.Tests.Creator;
+using Crm.Apps.v1.Clients.Companies.Clients;
+using Crm.Apps.v1.Clients.Companies.Models;
+using Crm.Apps.v1.Clients.Companies.RequestParameters;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Companies

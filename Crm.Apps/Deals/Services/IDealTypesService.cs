@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Deals.Models;
-using Crm.Apps.Deals.RequestParameters;
+using Crm.Apps.Deals.v1.Models;
+using Crm.Apps.Deals.v1.RequestParameters;
 
 namespace Crm.Apps.Deals.Services
 {

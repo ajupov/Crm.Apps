@@ -3,7 +3,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps", "Crm.Apps\Crm.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.Tests", "Crm.Apps.Tests\Crm.Apps.Tests.csproj", "{C5D27B21-1183-48E8-B0B7-F46395D06C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.Clients", "Crm.Apps.Clients\Crm.Apps.Clients.csproj", "{4F197E15-9188-4327-9FB8-E20CF235EC5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crm.Apps.v1.Clients", "Crm.Apps.v1.Clients\Crm.Apps.v1.Clients.csproj", "{4F197E15-9188-4327-9FB8-E20CF235EC5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

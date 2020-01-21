@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.v1.Clients.Contacts.Models;
 
 namespace Crm.Apps.Tests.Builders.Contacts
 {

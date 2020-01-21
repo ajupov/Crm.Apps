@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
-using Crm.Apps.Clients.Products.Clients;
-using Crm.Apps.Clients.Products.Models;
-using Crm.Apps.Clients.Products.RequestParameters;
 using Crm.Apps.Tests.Creator;
+using Crm.Apps.v1.Clients.Products.Clients;
+using Crm.Apps.v1.Clients.Products.Models;
+using Crm.Apps.v1.Clients.Products.RequestParameters;
 using Xunit;
 
 namespace Crm.Apps.Tests.Tests.Products

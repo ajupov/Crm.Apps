@@ -1,6 +1,6 @@
 ﻿using Ajupov.Infrastructure.All.Orm;
 using Ajupov.Infrastructure.All.Orm.Settings;
-using Crm.Apps.Contacts.Models;
+using Crm.Apps.Contacts.v1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

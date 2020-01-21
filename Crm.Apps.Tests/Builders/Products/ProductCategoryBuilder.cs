@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Apps.Clients.Products.Clients;
-using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.v1.Clients.Products.Clients;
+using Crm.Apps.v1.Clients.Products.Models;
 
 namespace Crm.Apps.Tests.Builders.Products
 {

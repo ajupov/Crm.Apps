@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Companies.Models;
-using Crm.Apps.Companies.RequestParameters;
+using Crm.Apps.Companies.v1.Models;
+using Crm.Apps.Companies.v1.RequestParameters;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Helpers

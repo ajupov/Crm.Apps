@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
-using Crm.Apps.Clients.Activities.Clients;
-using Crm.Apps.Clients.Activities.Models;
-using Crm.Apps.Clients.Activities.RequestParameters;
 using Crm.Apps.Tests.Creator;
+using Crm.Apps.v1.Clients.Activities.Clients;
+using Crm.Apps.v1.Clients.Activities.Models;
+using Crm.Apps.v1.Clients.Activities.RequestParameters;
 using Crm.Common.All.Types.AttributeType;
 using Xunit;
 

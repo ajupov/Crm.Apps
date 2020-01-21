@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Apps.Clients.Companies.Models;
+using Crm.Apps.v1.Clients.Companies.Models;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {

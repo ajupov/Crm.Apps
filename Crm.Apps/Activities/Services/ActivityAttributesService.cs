@@ -7,9 +7,9 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
-using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.RequestParameters;
 using Crm.Apps.Activities.Storages;
+using Crm.Apps.Activities.v1.Models;
+using Crm.Apps.Activities.v1.RequestParameters;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Activities.Services

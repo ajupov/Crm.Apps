@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Leads.Models;
-using Crm.Apps.Leads.RequestParameters;
+using Crm.Apps.Leads.v1.Models;
+using Crm.Apps.Leads.v1.RequestParameters;
 
 namespace Crm.Apps.Leads.Helpers
 {

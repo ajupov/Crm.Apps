@@ -1,6 +1,6 @@
 ﻿using System;
 using Ajupov.Utils.All.Json;
-using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.v1.Models;
 
 namespace Crm.Apps.Deals.Helpers
 {

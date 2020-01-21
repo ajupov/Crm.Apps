@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Crm.Apps.Clients.Contacts.Clients;
-using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.v1.Clients.Contacts.Clients;
+using Crm.Apps.v1.Clients.Contacts.Models;
 using Crm.Common.All.Types.AttributeType;
 
 namespace Crm.Apps.Tests.Builders.Contacts

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Crm.Apps.Clients.Deals.Models;
+using Crm.Apps.v1.Clients.Deals.Models;
 
 namespace Crm.Apps.Tests.Builders.Deals
 {

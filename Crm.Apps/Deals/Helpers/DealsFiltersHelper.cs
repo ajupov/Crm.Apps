@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Deals.Models;
-using Crm.Apps.Deals.RequestParameters;
+using Crm.Apps.Deals.v1.Models;
+using Crm.Apps.Deals.v1.RequestParameters;
 
 namespace Crm.Apps.Deals.Helpers
 {

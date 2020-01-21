@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
-using Crm.Apps.Clients.Companies.Clients;
-using Crm.Apps.Clients.Companies.Models;
+using Crm.Apps.v1.Clients.Companies.Clients;
+using Crm.Apps.v1.Clients.Companies.Models;
 
 namespace Crm.Apps.Tests.Builders.Companies
 {

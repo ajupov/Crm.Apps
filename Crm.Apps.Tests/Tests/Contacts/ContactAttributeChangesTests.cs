@@ -4,10 +4,10 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Clients.Contacts.Clients;
-using Crm.Apps.Clients.Contacts.Models;
-using Crm.Apps.Clients.Contacts.RequestParameters;
 using Crm.Apps.Tests.Creator;
+using Crm.Apps.v1.Clients.Contacts.Clients;
+using Crm.Apps.v1.Clients.Contacts.Models;
+using Crm.Apps.v1.Clients.Contacts.RequestParameters;
 using Crm.Common.All.Types.AttributeType;
 using Xunit;
 

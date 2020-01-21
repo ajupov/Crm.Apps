@@ -1,6 +1,5 @@
 using Ajupov.Infrastructure.All.TestsDependencyInjection;
 using Ajupov.Infrastructure.All.TestsDependencyInjection.Attributes;
-using Crm.Apps.Clients;
 using Crm.Apps.Tests.Builders.Activities;
 using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
@@ -8,6 +7,7 @@ using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
 using Crm.Apps.Tests.Creator;
+using Crm.Apps.v1.Clients;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: DependencyInject("Crm.Apps.Tests.Startup", "Crm.Apps.Tests")]
@@ -20,7 +20,6 @@ namespace Crm.Apps.Tests
         {
             services
                 .ConfigureClients("http://localhost:9000", "http://localhost:3000")
-                // .ConfigureClients("http://api.litecrm.org", "http://identity.litecrm.org")
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IProductBuilder, ProductBuilder>()
                 .AddTransient<IProductAttributeBuilder, ProductAttributeBuilder>()

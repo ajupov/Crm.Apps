@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
-using Crm.Apps.Clients.Products.Clients;
-using Crm.Apps.Clients.Products.Models;
+using Crm.Apps.v1.Clients.Products.Clients;
+using Crm.Apps.v1.Clients.Products.Models;
 
 namespace Crm.Apps.Tests.Builders.Products
 {

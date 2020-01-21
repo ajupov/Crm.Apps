@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
-using Crm.Apps.Clients.Contacts.Clients;
-using Crm.Apps.Clients.Contacts.Models;
+using Crm.Apps.v1.Clients.Contacts.Clients;
+using Crm.Apps.v1.Clients.Contacts.Models;
 
 namespace Crm.Apps.Tests.Builders.Contacts
 {
