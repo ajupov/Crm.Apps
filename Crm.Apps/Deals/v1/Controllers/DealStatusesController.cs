@@ -18,7 +18,7 @@ namespace Crm.Apps.Deals.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Deals/Statuses")]
+    [Route("api/v1/Deals/Statuses")]
     public class DealStatusesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

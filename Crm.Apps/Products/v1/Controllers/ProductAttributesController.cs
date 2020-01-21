@@ -21,7 +21,7 @@ namespace Crm.Apps.Products.v1.Controllers
 {
     [ApiController]
     [RequireProductsRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Products/Attributes")]
+    [Route("api/v1/Products/Attributes")]
     public class ProductAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

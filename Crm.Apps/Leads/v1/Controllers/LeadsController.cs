@@ -18,7 +18,7 @@ namespace Crm.Apps.Leads.v1.Controllers
 {
     [ApiController]
     [RequireLeadsRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Leads")]
+    [Route("api/v1/Leads")]
     public class LeadsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

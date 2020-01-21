@@ -15,7 +15,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Contacts/Changes")]
+    [Route("api/v1/Contacts/Changes")]
     public class ContactChangesController : AllowingCheckControllerBase
     {
         private readonly IContactsService _contactsService;

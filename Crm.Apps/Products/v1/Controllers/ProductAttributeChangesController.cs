@@ -15,7 +15,7 @@ namespace Crm.Apps.Products.v1.Controllers
 {
     [ApiController]
     [RequireProductsRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Products/Attributes/Changes")]
+    [Route("api/v1/Products/Attributes/Changes")]
     public class ProductAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly IProductAttributesService _productAttributesService;

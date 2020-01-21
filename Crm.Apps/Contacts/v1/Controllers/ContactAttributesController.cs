@@ -20,7 +20,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Contacts/Attributes")]
+    [Route("api/v1/Contacts/Attributes")]
     public class ContactAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

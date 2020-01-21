@@ -15,7 +15,7 @@ namespace Crm.Apps.Deals.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("v1/Deals/Attributes/Changes")]
+    [Route("api/v1/Deals/Attributes/Changes")]
     public class DealAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly IDealAttributesService _dealAttributesService;
