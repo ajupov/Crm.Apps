@@ -15,7 +15,7 @@ namespace Crm.Apps.Companies.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Companies/Attributes/Changes")]
+    [Route("Companies/Attributes/Changes/v1")]
     public class CompanyAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly ICompanyAttributesService _companyAttributesService;

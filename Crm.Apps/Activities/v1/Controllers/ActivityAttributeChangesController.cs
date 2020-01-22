@@ -15,7 +15,7 @@ namespace Crm.Apps.Activities.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Activities/Attributes/Changes")]
+    [Route("Activities/Attributes/Changes/v1")]
     public class ActivityAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly IActivityAttributesService _activityAttributesService;

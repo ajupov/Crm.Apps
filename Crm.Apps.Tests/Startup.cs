@@ -19,7 +19,7 @@ namespace Crm.Apps.Tests
         protected override void Configure(IServiceCollection services)
         {
             services
-                .ConfigureClients("http://localhost:9000", "http://localhost:3000")
+                .ConfigureClients(apiHost: "http://localhost:9000/api/v1")
                 .AddTransient<ICreate, Create>()
                 .AddTransient<IProductBuilder, ProductBuilder>()
                 .AddTransient<IProductAttributeBuilder, ProductAttributeBuilder>()

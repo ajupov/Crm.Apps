@@ -24,8 +24,9 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
 
         public OAuthClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.OAuthHost, "Auth");
+            _url = UriBuilder.Combine(options.Value.OAuthHost, "OAuth");
             _httpClientFactory = httpClientFactory;
+            var httpClient = _httpClientFactory.CreateClient();
         }
 
         public async Task<Tokens> GetTokensAsync(string username, string password, CancellationToken ct = default)
@@ -38,8 +39,8 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
                 password = password
             };
 
-            var response = await _httpClientFactory.PostAsync<TokenResponseParameter>(
-                UriBuilder.Combine(_url, "Token"), request, ct);
+            var response = await _httpClientFactory.PostFormDataAsync<TokenResponseParameter>(
+                UriBuilder.Combine(_url, "Token"), request, ct: ct);
 
             if (!response.error.IsEmpty())
             {
@@ -58,8 +59,8 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
                 refresh_token = refreshToken
             };
 
-            var response = await _httpClientFactory.PostAsync<TokenResponseParameter>(
-                UriBuilder.Combine(_url, "Token"), request, ct);
+            var response = await _httpClientFactory.PostFormDataAsync<TokenResponseParameter>(
+                UriBuilder.Combine(_url, "Token"), request, ct: ct);
 
             if (!response.error.IsEmpty())
             {

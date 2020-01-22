@@ -15,7 +15,7 @@ namespace Crm.Apps.Leads.v1.Controllers
 {
     [ApiController]
     [RequireLeadsRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Leads/Attributes/Changes")]
+    [Route("Leads/Attributes/Changes/v1")]
     public class LeadAttributeChangesController : AllowingCheckControllerBase
     {
         private readonly ILeadAttributesService _leadAttributesService;

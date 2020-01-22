@@ -20,7 +20,7 @@ namespace Crm.Apps.Leads.v1.Controllers
 {
     [ApiController]
     [RequireLeadsRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Leads/Attributes")]
+    [Route("Leads/Attributes/v1")]
     public class LeadAttributesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

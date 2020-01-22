@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Utils.All.String;
 using Crm.Apps.LiteCrmIdentityOAuth.Helpers;
 using Crm.Apps.LiteCrmIdentityOAuth.Options;
 using Microsoft.AspNetCore.Authentication;
@@ -74,6 +76,23 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
 
                                 context.AppendRolesToClaims(userInfoJson);
                                 context.AppendUserInfoToCookies(userInfoJson);
+                            },
+                            OnRedirectToAuthorizationEndpoint = context =>
+                            {
+                                var hasUserAgent =
+                                    context.HttpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent) &&
+                                    !userAgent.ToString().IsEmpty();
+
+                                if (hasUserAgent)
+                                {
+                                    context.Response.Redirect(context.RedirectUri);
+                                }
+                                else
+                                {
+                                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                }
+
+                                return Task.CompletedTask;
                             }
                         };
                     }

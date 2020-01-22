@@ -19,7 +19,7 @@ namespace Crm.Apps.Activities.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Activities")]
+    [Route("Activities/v1")]
     public class ActivitiesController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

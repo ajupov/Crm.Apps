@@ -15,7 +15,7 @@ namespace Crm.Apps.Companies.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Companies/Comments")]
+    [Route("Companies/Comments/v1")]
     public class CompanyCommentsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;

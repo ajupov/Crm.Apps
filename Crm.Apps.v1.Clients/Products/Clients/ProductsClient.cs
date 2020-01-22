@@ -24,7 +24,7 @@ namespace Crm.Apps.v1.Clients.Products.Clients
 
         public Task<Dictionary<string, ProductType>> GetTypesAsync(CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Dictionary<string, ProductType>>(
+            return _httpClientFactory.GetAsync<Dictionary<string, ProductType>>(
                 UriBuilder.Combine(_url, "GetTypes"), ct: ct);
         }
 

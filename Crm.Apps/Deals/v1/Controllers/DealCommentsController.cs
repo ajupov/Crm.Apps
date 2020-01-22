@@ -15,7 +15,7 @@ namespace Crm.Apps.Deals.v1.Controllers
 {
     [ApiController]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
-    [Route("api/v1/Deals/Comments")]
+    [Route("Deals/Comments/v1")]
     public class DealCommentsController : AllowingCheckControllerBase
     {
         private readonly IUserContext _userContext;
