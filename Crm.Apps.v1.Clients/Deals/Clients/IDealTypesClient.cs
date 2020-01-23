@@ -9,20 +9,21 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
 {
     public interface IDealTypesClient
     {
-        Task<DealType> GetAsync(Guid id, CancellationToken ct = default);
+        Task<DealType> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<DealType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<DealType>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task<List<DealType>> GetPagedListAsync(
+            string accessToken,
             DealTypeGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(DealType type, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, DealType type, CancellationToken ct = default);
 
-        Task UpdateAsync(DealType type, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, DealType type, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

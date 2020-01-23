@@ -18,45 +18,51 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
 
         public DealTypesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Deals/Types");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Deals/Types/v1");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<DealType> GetAsync(Guid id, CancellationToken ct = default)
+        public Task<DealType> GetAsync(string accessToken, Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<DealType>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
+            return _httpClientFactory.GetAsync<DealType>(UriBuilder.Combine(_url, "Get"), new {id}, accessToken, ct);
         }
 
-        public Task<List<DealType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<List<DealType>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<DealType>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
+            return _httpClientFactory.PostJsonAsync<List<DealType>>(
+                UriBuilder.Combine(_url, "GetList"), ids, accessToken, ct);
         }
 
         public Task<List<DealType>> GetPagedListAsync(
+            string accessToken,
             DealTypeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<DealType>>(UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<DealType>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
 
-        public Task<Guid> CreateAsync(DealType type, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(string accessToken, DealType type, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), type, ct);
+            return _httpClientFactory.PostJsonAsync<Guid>(UriBuilder.Combine(_url, "Create"), type, accessToken, ct);
         }
 
-        public Task UpdateAsync(DealType type, CancellationToken ct = default)
+        public Task UpdateAsync(string accessToken, DealType type, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), type, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Update"), type, accessToken, ct);
         }
 
-        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Delete"), ids, accessToken, ct);
         }
 
-        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Restore"), ids, accessToken, ct);
         }
     }
 }

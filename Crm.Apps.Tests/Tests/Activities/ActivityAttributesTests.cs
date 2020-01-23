@@ -25,7 +25,7 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _activityAttributesClient.GetTypesAsync();
+            var types = await _activityAttributesClient.GetTypesAsync(TODO);
 
             Assert.NotEmpty(types);
         }

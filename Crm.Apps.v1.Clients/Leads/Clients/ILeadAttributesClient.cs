@@ -10,22 +10,23 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
 {
     public interface ILeadAttributesClient
     {
-        Task<Dictionary<string, AttributeType>> GetTypesAsync(CancellationToken ct = default);
+        Task<Dictionary<string, AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default);
 
-        Task<LeadAttribute> GetAsync(Guid id, CancellationToken ct = default);
+        Task<LeadAttribute> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<LeadAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<LeadAttribute>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task<List<LeadAttribute>> GetPagedListAsync(
+            string accessToken,
             LeadAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(LeadAttribute attribute, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, LeadAttribute attribute, CancellationToken ct = default);
 
-        Task UpdateAsync(LeadAttribute attribute, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, LeadAttribute attribute, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

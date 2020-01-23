@@ -18,57 +18,65 @@ namespace Crm.Apps.v1.Clients.Companies.Clients
 
         public CompaniesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Companies");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Companies/v1");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<Dictionary<string, CompanyType>> GetTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, CompanyType>> GetTypesAsync(string accessToken, CancellationToken ct = default)
         {
             return _httpClientFactory.GetAsync<Dictionary<string, CompanyType>>(
-                UriBuilder.Combine(_url, "GetTypes"), ct: ct);
+                UriBuilder.Combine(_url, "GetTypes"), null, accessToken, ct);
         }
 
-        public Task<Dictionary<string, CompanyIndustryType>> GetIndustryTypesAsync(CancellationToken ct = default)
+        public Task<Dictionary<string, CompanyIndustryType>> GetIndustryTypesAsync(
+            string accessToken,
+            CancellationToken ct = default)
         {
             return _httpClientFactory.GetAsync<Dictionary<string, CompanyIndustryType>>(
-                UriBuilder.Combine(_url, "GetIndustryTypes"), ct: ct);
+                UriBuilder.Combine(_url, "GetIndustryTypes"), null, accessToken, ct);
         }
 
-        public Task<Company> GetAsync(Guid id, CancellationToken ct = default)
+        public Task<Company> GetAsync(string accessToken, Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<Company>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
+            return _httpClientFactory.GetAsync<Company>(UriBuilder.Combine(_url, "Get"), new {id}, accessToken, ct);
         }
 
-        public Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<List<Company>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<Company>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
+            return _httpClientFactory.PostJsonAsync<List<Company>>(
+                UriBuilder.Combine(_url, "GetList"), ids, accessToken, ct);
         }
 
         public Task<List<Company>> GetPagedListAsync(
+            string accessToken,
             CompanyGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<Company>>(UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<Company>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
 
-        public Task<Guid> CreateAsync(Company company, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(string accessToken, Company company, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), company, ct);
+            return _httpClientFactory.PostJsonAsync<Guid>(UriBuilder.Combine(_url, "Create"), company, accessToken, ct);
         }
 
-        public Task UpdateAsync(Company company, CancellationToken ct = default)
+        public Task UpdateAsync(string accessToken, Company company, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), company, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Update"), company, accessToken, ct);
         }
 
-        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Delete"), ids, accessToken, ct);
         }
 
-        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Restore"), ids, accessToken, ct);
         }
     }
 }

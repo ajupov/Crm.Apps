@@ -29,7 +29,7 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
             var httpClient = _httpClientFactory.CreateClient();
         }
 
-        public async Task<Tokens> GetTokensAsync(string username, string password, CancellationToken ct = default)
+        public async Task<Tokens> GetTokensAsync(string username, string password, string accessToken, CancellationToken ct = default)
         {
             var request = new TokenRequestParameter
             {
@@ -50,7 +50,7 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
             return response.Map();
         }
 
-        public async Task<Tokens> RefreshTokensAsync(string refreshToken, CancellationToken ct = default)
+        public async Task<Tokens> RefreshTokensAsync(string refreshToken, string accessToken, CancellationToken ct = default)
         {
             var request = new TokenRequestParameter
             {

@@ -9,20 +9,21 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
 {
     public interface ILeadSourcesClient
     {
-        Task<LeadSource> GetAsync(Guid id, CancellationToken ct = default);
+        Task<LeadSource> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<LeadSource>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task<List<LeadSource>> GetPagedListAsync(
+            string accessToken,
             LeadSourceGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(LeadSource source, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, LeadSource source, CancellationToken ct = default);
 
-        Task UpdateAsync(LeadSource source, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, LeadSource source, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

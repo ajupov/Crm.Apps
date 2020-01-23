@@ -17,21 +17,22 @@ namespace Crm.Apps.v1.Clients.Contacts.Clients
 
         public ContactCommentsClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Contacts/Comments");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Contacts/Comments/v1");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<ContactComment>> GetPagedListAsync(
+            string accessToken,
             ContactCommentGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ContactComment>>(
-                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<ContactComment>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
 
-        public Task CreateAsync(ContactComment comment, CancellationToken ct = default)
+        public Task CreateAsync(string accessToken, ContactComment comment, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Create"), comment, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Create"), comment, accessToken, ct);
         }
     }
 }

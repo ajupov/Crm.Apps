@@ -17,16 +17,17 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
 
         public LeadAttributeChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Leads/Attributes/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Leads/Attributes/Changes/v1");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<LeadAttributeChange>> GetPagedListAsync(
+            string accessToken,
             LeadAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<LeadAttributeChange>>(
-                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<LeadAttributeChange>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
     }
 }

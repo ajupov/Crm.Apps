@@ -17,16 +17,17 @@ namespace Crm.Apps.v1.Clients.Activities.Clients
 
         public ActivityChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Changes/v1");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<ActivityChange>> GetPagedListAsync(
+            string accessToken,
             ActivityChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ActivityChange>>(
-                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<ActivityChange>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
     }
 }

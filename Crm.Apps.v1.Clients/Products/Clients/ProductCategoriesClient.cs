@@ -18,46 +18,53 @@ namespace Crm.Apps.v1.Clients.Products.Clients
 
         public ProductCategoriesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Products/Categories");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Products/Categories/v1");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<ProductCategory> GetAsync(Guid id, CancellationToken ct = default)
+        public Task<ProductCategory> GetAsync(string accessToken, Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ProductCategory>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
+            return _httpClientFactory.GetAsync<ProductCategory>(
+                UriBuilder.Combine(_url, "Get"), new {id}, accessToken, ct);
         }
 
-        public Task<List<ProductCategory>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<List<ProductCategory>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ProductCategory>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
+            return _httpClientFactory.PostJsonAsync<List<ProductCategory>>(
+                UriBuilder.Combine(_url, "GetList"), ids, accessToken, ct);
         }
 
         public Task<List<ProductCategory>> GetPagedListAsync(
+            string accessToken,
             ProductCategoryGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ProductCategory>>(
-                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<ProductCategory>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
 
-        public Task<Guid> CreateAsync(ProductCategory category, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(string accessToken, ProductCategory category, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "GetPagedList"), category, ct);
+            return _httpClientFactory.PostJsonAsync<Guid>(
+                UriBuilder.Combine(_url, "GetPagedList"), category, accessToken, ct);
         }
 
-        public Task UpdateAsync(ProductCategory category, CancellationToken ct = default)
+        public Task UpdateAsync(string accessToken, ProductCategory category, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), category, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Update"), category, accessToken, ct);
         }
 
-        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Delete"), ids, accessToken, ct);
         }
 
-        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Restore"), ids, accessToken, ct);
         }
     }
 }

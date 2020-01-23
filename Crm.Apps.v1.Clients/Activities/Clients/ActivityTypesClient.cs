@@ -18,46 +18,50 @@ namespace Crm.Apps.v1.Clients.Activities.Clients
 
         public ActivityTypesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Types");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Activities/Types/v1");
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<ActivityType> GetAsync(Guid id, CancellationToken ct = default)
+        public Task<ActivityType> GetAsync(string accessToken, Guid id, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<ActivityType>(UriBuilder.Combine(_url, "Get"), new {id}, ct);
+            return _httpClientFactory.GetAsync<ActivityType>(
+                UriBuilder.Combine(_url, "Get"), new {id}, accessToken, ct);
         }
 
-        public Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task<List<ActivityType>> GetListAsync(string accessToken, IEnumerable<Guid> ids,
+            CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ActivityType>>(UriBuilder.Combine(_url, "GetList"), ids, ct);
+            return _httpClientFactory.PostJsonAsync<List<ActivityType>>(
+                UriBuilder.Combine(_url, "GetList"), ids, accessToken, ct);
         }
 
         public Task<List<ActivityType>> GetPagedListAsync(
+            string accessToken,
             ActivityTypeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<ActivityType>>(
-                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<ActivityType>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
 
-        public Task<Guid> CreateAsync(ActivityType type, CancellationToken ct = default)
+        public Task<Guid> CreateAsync(string accessToken, ActivityType type, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<Guid>(UriBuilder.Combine(_url, "Create"), type, ct);
+            return _httpClientFactory.PostJsonAsync<Guid>(UriBuilder.Combine(_url, "Create"), type, accessToken, ct);
         }
 
-        public Task UpdateAsync(ActivityType type, CancellationToken ct = default)
+        public Task UpdateAsync(string accessToken, ActivityType type, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Update"), type, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Update"), type, accessToken, ct);
         }
 
-        public Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Delete"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Delete"), ids, accessToken, ct);
         }
 
-        public Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default)
+        public Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync(UriBuilder.Combine(_url, "Restore"), ids, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Restore"), ids, accessToken, ct);
         }
     }
 }

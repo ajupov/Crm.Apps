@@ -17,16 +17,17 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
 
         public DealAttributeChangesClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
-            _url = UriBuilder.Combine(options.Value.ApiHost, "Deals/Attributes/Changes");
+            _url = UriBuilder.Combine(options.Value.ApiHost, "Deals/Attributes/Changes/v1");
             _httpClientFactory = httpClientFactory;
         }
 
         public Task<List<DealAttributeChange>> GetPagedListAsync(
+            string accessToken,
             DealAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
-            return _httpClientFactory.PostAsync<List<DealAttributeChange>>(
-                UriBuilder.Combine(_url, "GetPagedList"), request, ct);
+            return _httpClientFactory.PostJsonAsync<List<DealAttributeChange>>(
+                UriBuilder.Combine(_url, "GetPagedList"), request, accessToken, ct);
         }
     }
 }

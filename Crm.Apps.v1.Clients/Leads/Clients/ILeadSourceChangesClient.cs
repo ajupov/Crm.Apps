@@ -9,6 +9,7 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
     public interface ILeadSourceChangesClient
     {
         Task<List<LeadSourceChange>> GetPagedListAsync(
+            string accessToken,
             LeadSourceChangeGetPagedListRequestParameter request,
             CancellationToken ct = default);
     }

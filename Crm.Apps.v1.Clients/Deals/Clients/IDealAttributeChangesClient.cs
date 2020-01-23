@@ -9,6 +9,7 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
     public interface IDealAttributeChangesClient
     {
         Task<List<DealAttributeChange>> GetPagedListAsync(
+            string accessToken,
             DealAttributeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default);
     }

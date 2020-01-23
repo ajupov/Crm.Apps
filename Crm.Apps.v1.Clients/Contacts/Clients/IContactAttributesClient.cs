@@ -10,22 +10,26 @@ namespace Crm.Apps.v1.Clients.Contacts.Clients
 {
     public interface IContactAttributesClient
     {
-        Task<Dictionary<string, AttributeType>> GetTypesAsync(CancellationToken ct = default);
+        Task<Dictionary<string, AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default);
 
-        Task<ContactAttribute> GetAsync(Guid id, CancellationToken ct = default);
+        Task<ContactAttribute> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<ContactAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<ContactAttribute>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default);
 
         Task<List<ContactAttribute>> GetPagedListAsync(
+            string accessToken,
             ContactAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(ContactAttribute attribute, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, ContactAttribute attribute, CancellationToken ct = default);
 
-        Task UpdateAsync(ContactAttribute attribute, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, ContactAttribute attribute, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

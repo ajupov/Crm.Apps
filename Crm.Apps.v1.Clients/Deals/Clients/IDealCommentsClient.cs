@@ -9,9 +9,10 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
     public interface IDealCommentsClient
     {
         Task<List<DealComment>> GetPagedListAsync(
+            string accessToken,
             DealCommentGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task CreateAsync(DealComment comment, CancellationToken ct = default);
+        Task CreateAsync(string accessToken, DealComment comment, CancellationToken ct = default);
     }
 }

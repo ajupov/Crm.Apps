@@ -93,7 +93,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 StatusIds = filterStatusIds
             };
 
-            var activities = await _activitiesClient.GetPagedListAsync(request);
+            var activities = await _activitiesClient.GetPagedListAsync(request, TODO);
 
             var results = activities
                 .Skip(1)

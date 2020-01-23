@@ -10,22 +10,26 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
 {
     public interface IDealAttributesClient
     {
-        Task<List<AttributeType>> GetTypesAsync(CancellationToken ct = default);
+        Task<List<AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default);
 
-        Task<DealAttribute> GetAsync(Guid id, CancellationToken ct = default);
+        Task<DealAttribute> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<DealAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<DealAttribute>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default);
 
         Task<List<DealAttribute>> GetPagedListAsync(
+            string accessToken,
             DealAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(DealAttribute attribute, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, DealAttribute attribute, CancellationToken ct = default);
 
-        Task UpdateAsync(DealAttribute attribute, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, DealAttribute attribute, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

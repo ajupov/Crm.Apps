@@ -6,8 +6,8 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
 {
     public interface IOAuthClient
     {
-        Task<Tokens> GetTokensAsync(string username, string password, CancellationToken ct = default);
+        Task<Tokens> GetTokensAsync(string username, string password, string accessToken, CancellationToken ct = default);
 
-        Task<Tokens> RefreshTokensAsync(string refreshToken, CancellationToken ct = default);
+        Task<Tokens> RefreshTokensAsync(string refreshToken, string accessToken, CancellationToken ct = default);
     }
 }

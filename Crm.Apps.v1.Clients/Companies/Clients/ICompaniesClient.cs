@@ -9,24 +9,27 @@ namespace Crm.Apps.v1.Clients.Companies.Clients
 {
     public interface ICompaniesClient
     {
-        Task<Dictionary<string, CompanyType>> GetTypesAsync(CancellationToken ct = default);
+        Task<Dictionary<string, CompanyType>> GetTypesAsync(string accessToken, CancellationToken ct = default);
 
-        Task<Dictionary<string, CompanyIndustryType>> GetIndustryTypesAsync(CancellationToken ct = default);
+        Task<Dictionary<string, CompanyIndustryType>> GetIndustryTypesAsync(
+            string accessToken,
+            CancellationToken ct = default);
 
-        Task<Company> GetAsync(Guid id, CancellationToken ct = default);
+        Task<Company> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<Company>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task<List<Company>> GetPagedListAsync(
+            string accessToken,
             CompanyGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(Company company, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, Company company, CancellationToken ct = default);
 
-        Task UpdateAsync(Company company, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, Company company, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }

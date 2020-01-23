@@ -9,6 +9,7 @@ namespace Crm.Apps.v1.Clients.Products.Clients
     public interface IProductCategoryChangesClient
     {
         Task<List<ProductCategoryChange>> GetPagedListAsync(
+            string accessToken,
             ProductCategoryChangeGetPagedListRequestParameter request,
             CancellationToken ct = default);
     }

@@ -9,9 +9,10 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
     public interface ILeadCommentsClient
     {
         Task<List<LeadComment>> GetPagedListAsync(
+            string accessToken,
             LeadCommentGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task CreateAsync(LeadComment comment, CancellationToken ct = default);
+        Task CreateAsync(string accessToken, LeadComment comment, CancellationToken ct = default);
     }
 }

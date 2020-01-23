@@ -9,9 +9,10 @@ namespace Crm.Apps.v1.Clients.Contacts.Clients
     public interface IContactCommentsClient
     {
         Task<List<ContactComment>> GetPagedListAsync(
+            string accessToken,
             ContactCommentGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task CreateAsync(ContactComment comment, CancellationToken ct = default);
+        Task CreateAsync(string accessToken, ContactComment comment, CancellationToken ct = default);
     }
 }

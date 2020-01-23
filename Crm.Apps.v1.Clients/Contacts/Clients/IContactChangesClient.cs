@@ -9,6 +9,7 @@ namespace Crm.Apps.v1.Clients.Contacts.Clients
     public interface IContactChangesClient
     {
         Task<List<ContactChange>> GetPagedListAsync(
+            string accessToken,
             ContactChangeGetPagedListRequestParameter request,
             CancellationToken ct = default);
     }

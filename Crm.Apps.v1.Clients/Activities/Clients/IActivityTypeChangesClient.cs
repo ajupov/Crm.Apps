@@ -9,6 +9,7 @@ namespace Crm.Apps.v1.Clients.Activities.Clients
     public interface IActivityTypeChangesClient
     {
         Task<List<ActivityTypeChange>> GetPagedListAsync(
+            string accessToken,
             ActivityTypeChangeGetPagedListRequestParameter request,
             CancellationToken ct = default);
     }

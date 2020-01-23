@@ -9,20 +9,21 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
 {
     public interface IDealStatusesClient
     {
-        Task<DealStatus> GetAsync(Guid id, CancellationToken ct = default);
+        Task<DealStatus> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<DealStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<DealStatus>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
         Task<List<DealStatus>> GetPagedListAsync(
+            string accessToken,
             DealStatusGetPagedListRequestParameter request,
             CancellationToken ct = default);
 
-        Task<Guid> CreateAsync(DealStatus status, CancellationToken ct = default);
+        Task<Guid> CreateAsync(string accessToken, DealStatus status, CancellationToken ct = default);
 
-        Task UpdateAsync(DealStatus status, CancellationToken ct = default);
+        Task UpdateAsync(string accessToken, DealStatus status, CancellationToken ct = default);
 
-        Task DeleteAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
 
-        Task RestoreAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
     }
 }
