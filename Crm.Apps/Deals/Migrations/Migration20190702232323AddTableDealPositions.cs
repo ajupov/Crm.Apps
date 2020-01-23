@@ -11,8 +11,10 @@ namespace Crm.Apps.Deals.Migrations
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("DealId").AsGuid().NotNullable()
                 .WithColumn("ProductId").AsGuid().NotNullable()
+                .WithColumn("ProductName").AsString(64).NotNullable()
+                .WithColumn("ProductVendorCode").AsString(16).Nullable()
                 .WithColumn("Price").AsDecimal().NotNullable()
-                .WithColumn("Count").AsInt32().NotNullable();
+                .WithColumn("Count").AsDecimal().NotNullable();
 
             Create.PrimaryKey("PK_DealPositions_Id").OnTable("DealPositions")
                 .Column("Id");

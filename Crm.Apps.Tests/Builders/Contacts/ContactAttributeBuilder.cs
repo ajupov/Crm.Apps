@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Contacts.Clients;
 using Crm.Apps.v1.Clients.Contacts.Models;
 using Crm.Common.All.Types.AttributeType;
@@ -8,12 +9,16 @@ namespace Crm.Apps.Tests.Builders.Contacts
 {
     public class ContactAttributeBuilder : IContactAttributeBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly IContactAttributesClient _contactAttributesClient;
         private readonly ContactAttribute _attribute;
 
-        public ContactAttributeBuilder(IContactAttributesClient contactAttributesClient)
+        public ContactAttributeBuilder(
+            IAccessTokenGetter accessTokenGetter,
+            IContactAttributesClient contactAttributesClient)
         {
             _contactAttributesClient = contactAttributesClient;
+            _accessTokenGetter = accessTokenGetter;
             _attribute = new ContactAttribute
             {
                 AccountId = Guid.Empty,
@@ -46,9 +51,11 @@ namespace Crm.Apps.Tests.Builders.Contacts
 
         public async Task<ContactAttribute> BuildAsync()
         {
-            var id = await _contactAttributesClient.CreateAsync(_attribute);
+            var accessToken = await _accessTokenGetter.GetAsync();
 
-            return await _contactAttributesClient.GetAsync(id);
+            var id = await _contactAttributesClient.CreateAsync(accessToken, _attribute);
+
+            return await _contactAttributesClient.GetAsync(accessToken, id);
         }
     }
 }

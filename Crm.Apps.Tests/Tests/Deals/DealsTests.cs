@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
@@ -14,11 +15,13 @@ namespace Crm.Apps.Tests.Tests.Deals
 {
     public class DealTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IDealsClient _dealsClient;
 
-        public DealTests(ICreate create, IDealsClient dealsClient)
+        public DealTests(IAccessTokenGetter accessTokenGetter, ICreate create, IDealsClient dealsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _dealsClient = dealsClient;
         }
@@ -26,6 +29,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
             var dealId = (
@@ -35,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                         .BuildAsync())
                 .Id;
 
-            var deal = await _dealsClient.GetAsync(dealId);
+            var deal = await _dealsClient.GetAsync(accessToken, dealId);
 
             Assert.NotNull(deal);
             Assert.Equal(dealId, deal.Id);
@@ -44,6 +49,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
             var dealIds = (
@@ -60,7 +67,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .Select(x => x.Id)
                 .ToList();
 
-            var deals = await _dealsClient.GetListAsync(dealIds);
+            var deals = await _dealsClient.GetListAsync(accessToken, dealIds);
 
             Assert.NotEmpty(deals);
             Assert.Equal(dealIds.Count, deals.Count);
@@ -69,6 +76,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.DealAttribute.BuildAsync();
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
@@ -92,7 +101,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 StatusIds = filterSourceIds
             };
 
-            var deals = await _dealsClient.GetPagedListAsync(request);
+            var deals = await _dealsClient.GetPagedListAsync(accessToken, request);
 
             var results = deals
                 .Skip(1)
@@ -105,6 +114,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.DealAttribute.BuildAsync();
             var type = await _create.DealType.BuildAsync();
             var dealStatus = await _create.DealStatus.BuildAsync();
@@ -147,9 +158,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 }
             };
 
-            var createdDealId = await _dealsClient.CreateAsync(deal);
+            var createdDealId = await _dealsClient.CreateAsync(accessToken, deal);
 
-            var createdDeal = await _dealsClient.GetAsync(createdDealId);
+            var createdDeal = await _dealsClient.GetAsync(accessToken, createdDealId);
 
             Assert.NotNull(createdDeal);
             Assert.Equal(createdDealId, createdDeal.Id);
@@ -175,6 +186,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var dealStatus = await _create.DealStatus.BuildAsync();
             var productStatus = await _create.ProductStatus.BuildAsync();
@@ -212,9 +225,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                     DealAttributeId = attribute.Id,
                     Value = "Test"
                 });
-            await _dealsClient.UpdateAsync(deal);
+            await _dealsClient.UpdateAsync(accessToken, deal);
 
-            var updatedDeal = await _dealsClient.GetAsync(deal.Id);
+            var updatedDeal = await _dealsClient.GetAsync(accessToken, deal.Id);
 
             Assert.Equal(deal.AccountId, updatedDeal.AccountId);
             Assert.Equal(deal.TypeId, updatedDeal.TypeId);
@@ -241,6 +254,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
             var dealIds = (
@@ -257,9 +272,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .Select(x => x.Id)
                 .ToList();
 
-            await _dealsClient.DeleteAsync(dealIds);
+            await _dealsClient.DeleteAsync(accessToken, dealIds);
 
-            var deals = await _dealsClient.GetListAsync(dealIds);
+            var deals = await _dealsClient.GetListAsync(accessToken, dealIds);
 
             Assert.All(deals, x => Assert.True(x.IsDeleted));
         }
@@ -267,6 +282,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
             var dealIds = (
@@ -283,9 +300,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .Select(x => x.Id)
                 .ToList();
 
-            await _dealsClient.RestoreAsync(dealIds);
+            await _dealsClient.RestoreAsync(accessToken, dealIds);
 
-            var deals = await _dealsClient.GetListAsync(dealIds);
+            var deals = await _dealsClient.GetListAsync(accessToken, dealIds);
 
             Assert.All(deals, x => Assert.False(x.IsDeleted));
         }

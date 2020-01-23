@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Contacts.Clients;
 using Crm.Apps.v1.Clients.Contacts.Models;
@@ -14,11 +15,13 @@ namespace Crm.Apps.Tests.Tests.Contacts
 {
     public class ContactTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IContactsClient _contactsClient;
 
-        public ContactTests(ICreate create, IContactsClient contactsClient)
+        public ContactTests(IAccessTokenGetter accessTokenGetter, ICreate create, IContactsClient contactsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _contactsClient = contactsClient;
         }
@@ -26,13 +29,15 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
                 .BuildAsync();
             var contactId = (await _create.Contact.WithLeadId(lead.Id).BuildAsync()).Id;
 
-            var contact = await _contactsClient.GetAsync(contactId);
+            var contact = await _contactsClient.GetAsync(accessToken, contactId);
 
             Assert.NotNull(contact);
             Assert.Equal(contactId, contact.Id);
@@ -41,6 +46,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -62,7 +69,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 .Select(x => x.Id)
                 .ToList();
 
-            var contacts = await _contactsClient.GetListAsync(contactIds);
+            var contacts = await _contactsClient.GetListAsync(accessToken, contactIds);
 
             Assert.NotEmpty(contacts);
             Assert.Equal(contactIds.Count, contacts.Count);
@@ -71,6 +78,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -97,7 +106,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 Attributes = filterAttributes
             };
 
-            var contacts = await _contactsClient.GetPagedListAsync(request);
+            var contacts = await _contactsClient.GetPagedListAsync(accessToken, request);
 
             var results = contacts
                 .Skip(1)
@@ -110,6 +119,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -159,9 +170,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 }
             };
 
-            var createdContactId = await _contactsClient.CreateAsync(contact);
+            var createdContactId = await _contactsClient.CreateAsync(accessToken, contact);
 
-            var createdContact = await _contactsClient.GetAsync(createdContactId);
+            var createdContact = await _contactsClient.GetAsync(accessToken, createdContactId);
 
             Assert.NotNull(createdContact);
             Assert.Equal(createdContactId, createdContact.Id);
@@ -194,6 +205,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -234,9 +247,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
                     BankCorrespondentNumber = "9999999999999999999999999",
                     BankName = "Test"
                 });
-            await _contactsClient.UpdateAsync(contact);
+            await _contactsClient.UpdateAsync(accessToken, contact);
 
-            var updatedContact = await _contactsClient.GetAsync(contact.Id);
+            var updatedContact = await _contactsClient.GetAsync(accessToken, contact.Id);
 
             Assert.Equal(contact.AccountId, updatedContact.AccountId);
             Assert.Equal(contact.LeadId, updatedContact.LeadId);
@@ -269,6 +282,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -290,9 +305,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 .Select(x => x.Id)
                 .ToList();
 
-            await _contactsClient.DeleteAsync(contactIds);
+            await _contactsClient.DeleteAsync(accessToken, contactIds);
 
-            var contacts = await _contactsClient.GetListAsync(contactIds);
+            var contacts = await _contactsClient.GetListAsync(accessToken, contactIds);
 
             Assert.All(contacts, x => Assert.True(x.IsDeleted));
         }
@@ -300,6 +315,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -320,9 +337,9 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 )
                 .Select(x => x.Id).ToList();
 
-            await _contactsClient.RestoreAsync(contactIds);
+            await _contactsClient.RestoreAsync(accessToken, contactIds);
 
-            var contacts = await _contactsClient.GetListAsync(contactIds);
+            var contacts = await _contactsClient.GetListAsync(accessToken, contactIds);
 
             Assert.All(contacts, x => Assert.False(x.IsDeleted));
         }

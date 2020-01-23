@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
 
@@ -9,12 +10,14 @@ namespace Crm.Apps.Tests.Builders.Deals
 {
     public class DealBuilder : IDealBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly IDealsClient _dealsClient;
         private readonly Deal _deal;
 
-        public DealBuilder(IDealsClient dealsClient)
+        public DealBuilder(IAccessTokenGetter accessTokenGetter, IDealsClient dealsClient)
         {
             _dealsClient = dealsClient;
+            _accessTokenGetter = accessTokenGetter;
             _deal = new Deal
             {
                 TypeId = Guid.Empty,
@@ -124,6 +127,30 @@ namespace Crm.Apps.Tests.Builders.Deals
             return this;
         }
 
+        public DealBuilder WithPosition(
+            Guid productId,
+            string productName,
+            string productVendorCode,
+            decimal price,
+            decimal count)
+        {
+            if (_deal.Positions == null)
+            {
+                _deal.Positions = new List<DealPosition>();
+            }
+
+            _deal.Positions.Add(new DealPosition
+            {
+                ProductId = productId,
+                ProductName = productName,
+                ProductVendorCode = productVendorCode,
+                Price = price,
+                Count = count
+            });
+
+            return this;
+        }
+
         public DealBuilder WithAttributeLink(Guid attributeId, string value)
         {
             if (_deal.AttributeLinks == null)
@@ -142,6 +169,8 @@ namespace Crm.Apps.Tests.Builders.Deals
 
         public async Task<Deal> BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_deal.TypeId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_deal.TypeId));
@@ -152,9 +181,9 @@ namespace Crm.Apps.Tests.Builders.Deals
                 throw new InvalidOperationException(nameof(_deal.StatusId));
             }
 
-            var id = await _dealsClient.CreateAsync(_deal);
+            var id = await _dealsClient.CreateAsync(accessToken, _deal);
 
-            return await _dealsClient.GetAsync(id);
+            return await _dealsClient.GetAsync(accessToken, id);
         }
     }
 }

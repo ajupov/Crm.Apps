@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
 using Crm.Common.All.Types.AttributeType;
@@ -8,12 +9,16 @@ namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyAttributeBuilder : ICompanyAttributeBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICompanyAttributesClient _companyAttributesClient;
         private readonly CompanyAttribute _companyAttribute;
 
-        public CompanyAttributeBuilder(ICompanyAttributesClient companyAttributesClient)
+        public CompanyAttributeBuilder(
+            IAccessTokenGetter accessTokenGetter,
+            ICompanyAttributesClient companyAttributesClient)
         {
             _companyAttributesClient = companyAttributesClient;
+            _accessTokenGetter = accessTokenGetter;
             _companyAttribute = new CompanyAttribute
             {
                 AccountId = Guid.Empty,
@@ -46,9 +51,11 @@ namespace Crm.Apps.Tests.Builders.Companies
 
         public async Task<CompanyAttribute> BuildAsync()
         {
-            var id = await _companyAttributesClient.CreateAsync(_companyAttribute);
+            var accessToken = await _accessTokenGetter.GetAsync();
 
-            return await _companyAttributesClient.GetAsync(id);
+            var id = await _companyAttributesClient.CreateAsync(accessToken, _companyAttribute);
+
+            return await _companyAttributesClient.GetAsync(accessToken, id);
         }
     }
 }

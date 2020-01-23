@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
 
@@ -9,12 +10,14 @@ namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadBuilder : ILeadBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ILeadsClient _leadsClient;
         private readonly Lead _lead;
 
-        public LeadBuilder(ILeadsClient leadsClient)
+        public LeadBuilder(IAccessTokenGetter accessTokenGetter, ILeadsClient leadsClient)
         {
             _leadsClient = leadsClient;
+            _accessTokenGetter = accessTokenGetter;
             _lead = new Lead
             {
                 AccountId = Guid.Empty,
@@ -199,14 +202,16 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         public async Task<Lead> BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_lead.SourceId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_lead.SourceId));
             }
 
-            var id = await _leadsClient.CreateAsync(_lead);
+            var id = await _leadsClient.CreateAsync(accessToken, _lead);
 
-            return await _leadsClient.GetAsync(id);
+            return await _leadsClient.GetAsync(accessToken, id);
         }
     }
 }

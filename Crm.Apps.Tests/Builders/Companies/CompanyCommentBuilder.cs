@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
 
@@ -8,11 +9,13 @@ namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyCommentBuilder : ICompanyCommentBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICompanyCommentsClient _companyCommentsClient;
         private readonly CompanyComment _comment;
 
-        public CompanyCommentBuilder(ICompanyCommentsClient companyCommentsClient)
+        public CompanyCommentBuilder(IAccessTokenGetter accessTokenGetter, ICompanyCommentsClient companyCommentsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _companyCommentsClient = companyCommentsClient;
             _comment = new CompanyComment
             {
@@ -28,14 +31,16 @@ namespace Crm.Apps.Tests.Builders.Companies
             return this;
         }
 
-        public Task BuildAsync()
+        public async Task BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_comment.CompanyId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_comment.CompanyId));
             }
 
-            return _companyCommentsClient.CreateAsync(_comment);
+            await _companyCommentsClient.CreateAsync(accessToken, _comment);
         }
     }
 }

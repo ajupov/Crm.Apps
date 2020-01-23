@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -14,15 +15,18 @@ namespace Crm.Apps.Tests.Tests.Leads
 {
     public class LeadChangesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ILeadsClient _leadsClient;
         private readonly ILeadChangesClient _leadChangesClient;
 
         public LeadChangesTests(
+            IAccessTokenGetter accessTokenGetter,
             ICreate create,
             ILeadsClient leadsClient,
             ILeadChangesClient leadChangesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _leadsClient = leadsClient;
             _leadChangesClient = leadChangesClient;
@@ -31,6 +35,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(source.Id)
@@ -38,7 +44,7 @@ namespace Crm.Apps.Tests.Tests.Leads
 
             lead.IsDeleted = true;
 
-            await _leadsClient.UpdateAsync(lead);
+            await _leadsClient.UpdateAsync(accessToken, lead);
 
             var request = new LeadChangeGetPagedListRequestParameter
             {
@@ -47,7 +53,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 OrderBy = "asc"
             };
 
-            var changes = await _leadChangesClient.GetPagedListAsync(request);
+            var changes = await _leadChangesClient.GetPagedListAsync(accessToken, request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

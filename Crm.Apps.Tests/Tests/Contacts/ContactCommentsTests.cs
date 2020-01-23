@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Contacts.Clients;
 using Crm.Apps.v1.Clients.Contacts.Models;
@@ -12,11 +13,16 @@ namespace Crm.Apps.Tests.Tests.Contacts
 {
     public class ContactCommentsTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IContactCommentsClient _contactCommentsClient;
 
-        public ContactCommentsTests(ICreate create, IContactCommentsClient contactCommentsClient)
+        public ContactCommentsTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            IContactCommentsClient contactCommentsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _contactCommentsClient = contactCommentsClient;
         }
@@ -24,6 +30,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -41,12 +49,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
 
             var request = new ContactCommentGetPagedListRequestParameter
             {
-                ContactId = contact.Id,
-                SortBy = "CreateDateTime",
-                OrderBy = "desc"
+                ContactId = contact.Id
             };
 
-            var comments = await _contactCommentsClient.GetPagedListAsync(request);
+            var comments = await _contactCommentsClient.GetPagedListAsync(accessToken, request);
 
             var results = comments
                 .Skip(1)
@@ -59,6 +65,8 @@ namespace Crm.Apps.Tests.Tests.Contacts
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -73,7 +81,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 Value = "Test"
             };
 
-            await _contactCommentsClient.CreateAsync(comment);
+            await _contactCommentsClient.CreateAsync(accessToken, comment);
 
             var request = new ContactCommentGetPagedListRequestParameter
             {
@@ -82,7 +90,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 OrderBy = "asc"
             };
 
-            var createdComment = (await _contactCommentsClient.GetPagedListAsync(request)).First();
+            var createdComment = (await _contactCommentsClient.GetPagedListAsync(accessToken, request)).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.ContactId, createdComment.ContactId);

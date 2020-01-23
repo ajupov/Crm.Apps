@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
 
@@ -7,12 +8,17 @@ namespace Crm.Apps.Tests.Builders.Activities
 {
     public class ActivityStatusBuilder : IActivityStatusBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
+
         private readonly IActivityStatusesClient _activityStatusesClient;
         private readonly ActivityStatus _status;
 
-        public ActivityStatusBuilder(IActivityStatusesClient activityStatusesClient)
+        public ActivityStatusBuilder(
+            IAccessTokenGetter accessTokenGetter,
+            IActivityStatusesClient activityStatusesClient)
         {
             _activityStatusesClient = activityStatusesClient;
+            _accessTokenGetter = accessTokenGetter;
             _status = new ActivityStatus
             {
                 AccountId = Guid.Empty,
@@ -45,9 +51,11 @@ namespace Crm.Apps.Tests.Builders.Activities
 
         public async Task<ActivityStatus> BuildAsync()
         {
-            var id = await _activityStatusesClient.CreateAsync(_status);
+            var accessToken = await _accessTokenGetter.GetAsync();
 
-            return await _activityStatusesClient.GetAsync(id);
+            var id = await _activityStatusesClient.CreateAsync(accessToken, _status);
+
+            return await _activityStatusesClient.GetAsync(accessToken, id);
         }
     }
 }

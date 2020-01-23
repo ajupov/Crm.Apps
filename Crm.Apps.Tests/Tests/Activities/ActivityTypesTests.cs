@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
@@ -11,11 +12,16 @@ namespace Crm.Apps.Tests.Tests.Activities
 {
     public class ActivityTypesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IActivityTypesClient _activityTypesClient;
 
-        public ActivityTypesTests(ICreate create, IActivityTypesClient activityTypesClient)
+        public ActivityTypesTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            IActivityTypesClient activityTypesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _activityTypesClient = activityTypesClient;
         }
@@ -23,9 +29,11 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeId = (await _create.ActivityType.BuildAsync()).Id;
 
-            var type = await _activityTypesClient.GetAsync(typeId);
+            var type = await _activityTypesClient.GetAsync(accessToken, typeId);
 
             Assert.NotNull(type);
             Assert.Equal(typeId, type.Id);
@@ -34,6 +42,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeIds = (
                     await Task.WhenAll(
                         _create.ActivityType
@@ -46,7 +56,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            var types = await _activityTypesClient.GetListAsync(typeIds);
+            var types = await _activityTypesClient.GetListAsync(accessToken, typeIds);
 
             Assert.NotEmpty(types);
             Assert.Equal(typeIds.Count, types.Count);
@@ -55,6 +65,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             await Task.WhenAll(_create.ActivityType.WithName("Test1").BuildAsync());
 
             var request = new ActivityTypeGetPagedListRequestParameter
@@ -64,7 +76,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 OrderBy = "asc"
             };
 
-            var types = await _activityTypesClient.GetPagedListAsync(request);
+            var types = await _activityTypesClient.GetPagedListAsync(accessToken, request);
 
             var results = types
                 .Skip(1)
@@ -77,15 +89,17 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = new ActivityType
             {
                 Name = "Test",
                 IsDeleted = false
             };
 
-            var createdTypeId = await _activityTypesClient.CreateAsync(type);
+            var createdTypeId = await _activityTypesClient.CreateAsync(accessToken, type);
 
-            var createdType = await _activityTypesClient.GetAsync(createdTypeId);
+            var createdType = await _activityTypesClient.GetAsync(accessToken, createdTypeId);
 
             Assert.NotNull(createdType);
             Assert.Equal(createdTypeId, createdType.Id);
@@ -98,14 +112,16 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.WithName("Test1").BuildAsync();
 
             type.Name = "Test2";
             type.IsDeleted = true;
 
-            await _activityTypesClient.UpdateAsync(type);
+            await _activityTypesClient.UpdateAsync(accessToken, type);
 
-            var updatedType = await _activityTypesClient.GetAsync(type.Id);
+            var updatedType = await _activityTypesClient.GetAsync(accessToken, type.Id);
 
             Assert.Equal(type.Name, updatedType.Name);
             Assert.Equal(type.IsDeleted, updatedType.IsDeleted);
@@ -114,6 +130,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeIds = (await Task.WhenAll(
                     _create.ActivityType.WithName("Test1").BuildAsync(),
                     _create.ActivityType.WithName("Test2").BuildAsync())
@@ -121,9 +139,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            await _activityTypesClient.DeleteAsync(typeIds);
+            await _activityTypesClient.DeleteAsync(accessToken, typeIds);
 
-            var types = await _activityTypesClient.GetListAsync(typeIds);
+            var types = await _activityTypesClient.GetListAsync(accessToken, typeIds);
 
             Assert.All(types, x => Assert.True(x.IsDeleted));
         }
@@ -131,6 +149,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeIds = (
                     await Task.WhenAll(
                         _create.ActivityType
@@ -143,9 +163,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            await _activityTypesClient.RestoreAsync(typeIds);
+            await _activityTypesClient.RestoreAsync(accessToken, typeIds);
 
-            var types = await _activityTypesClient.GetListAsync(typeIds);
+            var types = await _activityTypesClient.GetListAsync(accessToken, typeIds);
 
             Assert.All(types, x => Assert.False(x.IsDeleted));
         }

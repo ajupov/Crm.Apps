@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Products.Clients;
 using Crm.Apps.v1.Clients.Products.Models;
 
@@ -9,12 +10,14 @@ namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductBuilder : IProductBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly IProductsClient _productsClient;
         private readonly Product _product;
 
-        public ProductBuilder(IProductsClient productsClient)
+        public ProductBuilder(IAccessTokenGetter accessTokenGetter, IProductsClient productsClient)
         {
             _productsClient = productsClient;
+            _accessTokenGetter = accessTokenGetter;
             _product = new Product
             {
                 AccountId = Guid.Empty,
@@ -117,14 +120,16 @@ namespace Crm.Apps.Tests.Builders.Products
 
         public async Task<Product> BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_product.StatusId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_product.StatusId));
             }
 
-            var id = await _productsClient.CreateAsync(_product);
+            var id = await _productsClient.CreateAsync(accessToken, _product);
 
-            return await _productsClient.GetAsync(id);
+            return await _productsClient.GetAsync(accessToken, id);
         }
     }
 }

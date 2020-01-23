@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -14,15 +15,18 @@ namespace Crm.Apps.Tests.Tests.Leads
 {
     public class LeadSourceChangesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ILeadSourcesClient _leadSourcesClient;
         private readonly ILeadSourceChangesClient _sourceChangesClient;
 
         public LeadSourceChangesTests(
+            IAccessTokenGetter accessTokenGetter,
             ICreate create,
             ILeadSourcesClient leadSourcesClient,
             ILeadSourceChangesClient sourceChangesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _leadSourcesClient = leadSourcesClient;
             _sourceChangesClient = sourceChangesClient;
@@ -31,12 +35,14 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
 
             source.Name = "Test2";
             source.IsDeleted = true;
 
-            await _leadSourcesClient.UpdateAsync(source);
+            await _leadSourcesClient.UpdateAsync(accessToken, source);
 
             var request = new LeadSourceChangeGetPagedListRequestParameter
             {
@@ -45,7 +51,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 OrderBy = "asc"
             };
 
-            var changes = await _sourceChangesClient.GetPagedListAsync(request);
+            var changes = await _sourceChangesClient.GetPagedListAsync(accessToken, request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

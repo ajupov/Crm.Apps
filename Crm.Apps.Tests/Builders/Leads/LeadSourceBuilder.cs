@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
 
@@ -7,12 +8,14 @@ namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadSourceBuilder : ILeadSourceBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ILeadSourcesClient _leadSourcesClient;
         private readonly LeadSource _source;
 
-        public LeadSourceBuilder(ILeadSourcesClient leadSourcesClient)
+        public LeadSourceBuilder(IAccessTokenGetter accessTokenGetter, ILeadSourcesClient leadSourcesClient)
         {
             _leadSourcesClient = leadSourcesClient;
+            _accessTokenGetter = accessTokenGetter;
             _source = new LeadSource
             {
                 AccountId = Guid.Empty,
@@ -37,9 +40,11 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         public async Task<LeadSource> BuildAsync()
         {
-            var id = await _leadSourcesClient.CreateAsync(_source);
+            var accessToken = await _accessTokenGetter.GetAsync();
 
-            return await _leadSourcesClient.GetAsync(id);
+            var id = await _leadSourcesClient.CreateAsync(accessToken, _source);
+
+            return await _leadSourcesClient.GetAsync(accessToken, id);
         }
     }
 }

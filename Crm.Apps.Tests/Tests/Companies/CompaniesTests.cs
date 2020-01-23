@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
@@ -14,11 +15,13 @@ namespace Crm.Apps.Tests.Tests.Companies
 {
     public class CompanyTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ICompaniesClient _companiesClient;
 
-        public CompanyTests(ICreate create, ICompaniesClient companiesClient)
+        public CompanyTests(IAccessTokenGetter accessTokenGetter, ICreate create, ICompaniesClient companiesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _companiesClient = companiesClient;
         }
@@ -26,7 +29,9 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _companiesClient.GetTypesAsync();
+            var accessToken = await _accessTokenGetter.GetAsync();
+
+            var types = await _companiesClient.GetTypesAsync(accessToken);
 
             Assert.NotEmpty(types);
         }
@@ -34,7 +39,9 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetIndustryTypes_ThenSuccess()
         {
-            var types = await _companiesClient.GetIndustryTypesAsync();
+            var accessToken = await _accessTokenGetter.GetAsync();
+
+            var types = await _companiesClient.GetIndustryTypesAsync(accessToken);
 
             Assert.NotEmpty(types);
         }
@@ -42,6 +49,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -52,7 +61,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                         .BuildAsync())
                 .Id;
 
-            var company = await _companiesClient.GetAsync(companyId);
+            var company = await _companiesClient.GetAsync(accessToken, companyId);
 
             Assert.NotNull(company);
             Assert.Equal(companyId, company.Id);
@@ -61,6 +70,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -82,7 +93,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                 .Select(x => x.Id)
                 .ToList();
 
-            var companies = await _companiesClient.GetListAsync(companyIds);
+            var companies = await _companiesClient.GetListAsync(accessToken, companyIds);
 
             Assert.NotEmpty(companies);
             Assert.Equal(companyIds.Count, companies.Count);
@@ -91,6 +102,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -119,7 +132,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                 Attributes = filterAttributes,
             };
 
-            var companies = await _companiesClient.GetPagedListAsync(request);
+            var companies = await _companiesClient.GetPagedListAsync(accessToken, request);
 
             var results = companies
                 .Skip(1)
@@ -132,6 +145,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -191,9 +206,9 @@ namespace Crm.Apps.Tests.Tests.Companies
                 }
             };
 
-            var createdCompanyId = await _companiesClient.CreateAsync(company);
+            var createdCompanyId = await _companiesClient.CreateAsync(accessToken, company);
 
-            var createdCompany = await _companiesClient.GetAsync(createdCompanyId);
+            var createdCompany = await _companiesClient.GetAsync(accessToken, createdCompanyId);
 
             Assert.NotNull(createdCompany);
             Assert.Equal(createdCompanyId, createdCompany.Id);
@@ -239,6 +254,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -286,9 +303,9 @@ namespace Crm.Apps.Tests.Tests.Companies
                 BankCorrespondentNumber = "9999999999999999999999999",
                 BankName = "Test"
             });
-            await _companiesClient.UpdateAsync(company);
+            await _companiesClient.UpdateAsync(accessToken, company);
 
-            var updatedCompany = await _companiesClient.GetAsync(company.Id);
+            var updatedCompany = await _companiesClient.GetAsync(accessToken, company.Id);
 
             Assert.Equal(company.AccountId, updatedCompany.AccountId);
             Assert.Equal(company.Type, updatedCompany.Type);
@@ -335,6 +352,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -355,9 +374,9 @@ namespace Crm.Apps.Tests.Tests.Companies
                 )
                 .Select(x => x.Id).ToList();
 
-            await _companiesClient.DeleteAsync(companyIds);
+            await _companiesClient.DeleteAsync(accessToken, companyIds);
 
-            var companies = await _companiesClient.GetListAsync(companyIds);
+            var companies = await _companiesClient.GetListAsync(accessToken, companyIds);
 
             Assert.All(companies, x => Assert.True(x.IsDeleted));
         }
@@ -365,6 +384,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead1 = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -386,9 +407,9 @@ namespace Crm.Apps.Tests.Tests.Companies
                 .Select(x => x.Id)
                 .ToList();
 
-            await _companiesClient.RestoreAsync(companyIds);
+            await _companiesClient.RestoreAsync(accessToken, companyIds);
 
-            var companies = await _companiesClient.GetListAsync(companyIds);
+            var companies = await _companiesClient.GetListAsync(accessToken, companyIds);
 
             Assert.All(companies, x => Assert.False(x.IsDeleted));
         }

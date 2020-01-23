@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Products.Clients;
 using Crm.Apps.v1.Clients.Products.Models;
@@ -14,15 +15,18 @@ namespace Crm.Apps.Tests.Tests.Products
 {
     public class ProductChangesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IProductsClient _productsClient;
         private readonly IProductChangesClient _productChangesClient;
 
         public ProductChangesTests(
+            IAccessTokenGetter accessTokenGetter,
             ICreate create,
             IProductsClient productsClient,
             IProductChangesClient productChangesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _productsClient = productsClient;
             _productChangesClient = productChangesClient;
@@ -31,6 +35,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var product = await _create.Product
                 .WithStatusId(status.Id)
@@ -38,7 +44,7 @@ namespace Crm.Apps.Tests.Tests.Products
 
             product.IsHidden = true;
 
-            await _productsClient.UpdateAsync(product);
+            await _productsClient.UpdateAsync(accessToken, product);
 
             var request = new ProductChangeGetPagedListRequestParameter
             {
@@ -47,7 +53,7 @@ namespace Crm.Apps.Tests.Tests.Products
                 OrderBy = "asc"
             };
 
-            var changes = await _productChangesClient.GetPagedListAsync(request);
+            var changes = await _productChangesClient.GetPagedListAsync(accessToken, request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
@@ -15,15 +16,18 @@ namespace Crm.Apps.Tests.Tests.Deals
 {
     public class DealAttributeChangesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IDealAttributesClient _dealAttributesClient;
         private readonly IDealAttributeChangesClient _attributeChangesClient;
 
         public DealAttributeChangesTests(
+            IAccessTokenGetter accessTokenGetter,
             ICreate create,
             IDealAttributesClient dealAttributesClient,
             IDealAttributeChangesClient attributeChangesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _dealAttributesClient = dealAttributesClient;
             _attributeChangesClient = attributeChangesClient;
@@ -32,11 +36,13 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.DealAttribute.BuildAsync();
             attribute.Type = AttributeType.Link;
             attribute.Key = "TestLink";
             attribute.IsDeleted = true;
-            await _dealAttributesClient.UpdateAsync(attribute);
+            await _dealAttributesClient.UpdateAsync(accessToken, attribute);
 
             var request = new DealAttributeChangeGetPagedListRequestParameter
             {
@@ -45,7 +51,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 OrderBy = "asc"
             };
 
-            var changes = await _attributeChangesClient.GetPagedListAsync(request);
+            var changes = await _attributeChangesClient.GetPagedListAsync(accessToken, request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
@@ -11,11 +12,16 @@ namespace Crm.Apps.Tests.Tests.Activities
 {
     public class ActivityStatusesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IActivityStatusesClient _activityStatusesClient;
 
-        public ActivityStatusesTests(ICreate create, IActivityStatusesClient activityStatusesClient)
+        public ActivityStatusesTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            IActivityStatusesClient activityStatusesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _activityStatusesClient = activityStatusesClient;
         }
@@ -23,9 +29,11 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var statusId = (await _create.ActivityStatus.BuildAsync()).Id;
 
-            var status = await _activityStatusesClient.GetAsync(statusId);
+            var status = await _activityStatusesClient.GetAsync(accessToken, statusId);
 
             Assert.NotNull(status);
             Assert.Equal(statusId, status.Id);
@@ -34,6 +42,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var statusIds = (
                     await Task.WhenAll(
                         _create.ActivityStatus
@@ -46,7 +56,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            var statuses = await _activityStatusesClient.GetListAsync(statusIds);
+            var statuses = await _activityStatusesClient.GetListAsync(accessToken, statusIds);
 
             Assert.NotEmpty(statuses);
             Assert.Equal(statusIds.Count, statuses.Count);
@@ -55,16 +65,16 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             await Task.WhenAll(_create.ActivityStatus.WithName("Test1").BuildAsync());
 
             var request = new ActivityStatusGetPagedListRequestParameter
             {
-                Name = "Test1",
-                SortBy = "CreateDateTime",
-                OrderBy = "desc"
+                Name = "Test1"
             };
 
-            var statuses = await _activityStatusesClient.GetPagedListAsync(request);
+            var statuses = await _activityStatusesClient.GetPagedListAsync(accessToken, request);
 
             var results = statuses
                 .Skip(1)
@@ -77,15 +87,17 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = new ActivityStatus
             {
                 Name = "Test",
                 IsDeleted = false
             };
 
-            var createdStatusId = await _activityStatusesClient.CreateAsync(status);
+            var createdStatusId = await _activityStatusesClient.CreateAsync(accessToken, status);
 
-            var createdStatus = await _activityStatusesClient.GetAsync(createdStatusId);
+            var createdStatus = await _activityStatusesClient.GetAsync(accessToken, createdStatusId);
 
             Assert.NotNull(createdStatus);
             Assert.Equal(createdStatusId, createdStatus.Id);
@@ -98,14 +110,16 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ActivityStatus.WithName("Test1").BuildAsync();
 
             status.Name = "Test2";
             status.IsDeleted = true;
 
-            await _activityStatusesClient.UpdateAsync(status);
+            await _activityStatusesClient.UpdateAsync(accessToken, status);
 
-            var updatedStatus = await _activityStatusesClient.GetAsync(status.Id);
+            var updatedStatus = await _activityStatusesClient.GetAsync(accessToken, status.Id);
 
             Assert.Equal(status.Name, updatedStatus.Name);
             Assert.Equal(status.IsDeleted, updatedStatus.IsDeleted);
@@ -114,6 +128,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var statusIds = (
                     await Task.WhenAll(
                         _create.ActivityStatus
@@ -126,9 +142,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            await _activityStatusesClient.DeleteAsync(statusIds);
+            await _activityStatusesClient.DeleteAsync(accessToken, statusIds);
 
-            var statuses = await _activityStatusesClient.GetListAsync(statusIds);
+            var statuses = await _activityStatusesClient.GetListAsync(accessToken, statusIds);
 
             Assert.All(statuses, x => Assert.True(x.IsDeleted));
         }
@@ -136,6 +152,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var statusIds = (
                     await Task.WhenAll(
                         _create.ActivityStatus
@@ -148,9 +166,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            await _activityStatusesClient.RestoreAsync(statusIds);
+            await _activityStatusesClient.RestoreAsync(accessToken, statusIds);
 
-            var statuses = await _activityStatusesClient.GetListAsync(statusIds);
+            var statuses = await _activityStatusesClient.GetListAsync(accessToken, statusIds);
 
             Assert.All(statuses, x => Assert.False(x.IsDeleted));
         }

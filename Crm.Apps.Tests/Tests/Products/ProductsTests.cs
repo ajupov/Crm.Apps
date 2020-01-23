@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Products.Clients;
 using Crm.Apps.v1.Clients.Products.Models;
@@ -13,11 +14,13 @@ namespace Crm.Apps.Tests.Tests.Products
 {
     public class ProductsTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IProductsClient _productsClient;
 
-        public ProductsTests(ICreate create, IProductsClient productsClient)
+        public ProductsTests(IAccessTokenGetter accessTokenGetter, ICreate create, IProductsClient productsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _productsClient = productsClient;
         }
@@ -25,7 +28,9 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _productsClient.GetTypesAsync();
+            var accessToken = await _accessTokenGetter.GetAsync();
+
+            var types = await _productsClient.GetTypesAsync(accessToken);
 
             Assert.NotEmpty(types);
         }
@@ -33,6 +38,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var productId = (
                     await _create.Product
@@ -40,7 +47,7 @@ namespace Crm.Apps.Tests.Tests.Products
                         .BuildAsync())
                 .Id;
 
-            var product = await _productsClient.GetAsync(productId);
+            var product = await _productsClient.GetAsync(accessToken, productId);
 
             Assert.NotNull(product);
             Assert.Equal(productId, product.Id);
@@ -49,6 +56,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var productIds = (
                     await Task.WhenAll(
@@ -64,7 +73,7 @@ namespace Crm.Apps.Tests.Tests.Products
                 .Select(x => x.Id)
                 .ToList();
 
-            var products = await _productsClient.GetListAsync(productIds);
+            var products = await _productsClient.GetListAsync(accessToken, productIds);
 
             Assert.NotEmpty(products);
             Assert.Equal(productIds.Count, products.Count);
@@ -73,6 +82,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.ProductAttribute.BuildAsync();
             var category = await _create.ProductCategory.BuildAsync();
             var status = await _create.ProductStatus.BuildAsync();
@@ -99,7 +110,7 @@ namespace Crm.Apps.Tests.Tests.Products
                 CategoryIds = filterCategoryIds
             };
 
-            var products = await _productsClient.GetPagedListAsync(request);
+            var products = await _productsClient.GetPagedListAsync(accessToken, request);
 
             var results = products
                 .Skip(1)
@@ -112,6 +123,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.ProductAttribute.BuildAsync();
             var category = await _create.ProductCategory.BuildAsync();
             var status = await _create.ProductStatus.BuildAsync();
@@ -144,9 +157,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 }
             };
 
-            var createdProductId = await _productsClient.CreateAsync(product);
+            var createdProductId = await _productsClient.CreateAsync(accessToken, product);
 
-            var createdProduct = await _productsClient.GetAsync(createdProductId);
+            var createdProduct = await _productsClient.GetAsync(accessToken, createdProductId);
 
             Assert.NotNull(createdProduct);
             Assert.Equal(createdProductId, createdProduct.Id);
@@ -167,6 +180,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var product = await _create.Product
                 .WithStatusId(status.Id)
@@ -192,9 +207,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 {
                     ProductCategoryId = category.Id
                 });
-            await _productsClient.UpdateAsync(product);
+            await _productsClient.UpdateAsync(accessToken, product);
 
-            var updatedProduct = await _productsClient.GetAsync(product.Id);
+            var updatedProduct = await _productsClient.GetAsync(accessToken, product.Id);
 
             Assert.Equal(product.StatusId, updatedProduct.StatusId);
             Assert.Equal(product.Type, updatedProduct.Type);
@@ -213,6 +228,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenHide_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var productIds = (
                     await Task.WhenAll(
@@ -227,9 +244,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 .Select(x => x.Id)
                 .ToList();
 
-            await _productsClient.HideAsync(productIds);
+            await _productsClient.HideAsync(accessToken, productIds);
 
-            var products = await _productsClient.GetListAsync(productIds);
+            var products = await _productsClient.GetListAsync(accessToken, productIds);
 
             Assert.All(products, x => Assert.True(x.IsHidden));
         }
@@ -237,6 +254,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenShow_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
 
             var productIds = (
@@ -253,9 +272,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 .Select(x => x.Id)
                 .ToList();
 
-            await _productsClient.ShowAsync(productIds);
+            await _productsClient.ShowAsync(accessToken, productIds);
 
-            var products = await _productsClient.GetListAsync(productIds);
+            var products = await _productsClient.GetListAsync(accessToken, productIds);
 
             Assert.All(products, x => Assert.False(x.IsHidden));
         }
@@ -263,6 +282,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var productIds = (
                     await Task.WhenAll(
@@ -278,9 +299,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 .Select(x => x.Id)
                 .ToList();
 
-            await _productsClient.DeleteAsync(productIds);
+            await _productsClient.DeleteAsync(accessToken, productIds);
 
-            var products = await _productsClient.GetListAsync(productIds);
+            var products = await _productsClient.GetListAsync(accessToken, productIds);
 
             Assert.All(products, x => Assert.True(x.IsDeleted));
         }
@@ -288,6 +309,8 @@ namespace Crm.Apps.Tests.Tests.Products
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var status = await _create.ProductStatus.BuildAsync();
             var productIds = (
                     await Task.WhenAll(
@@ -303,9 +326,9 @@ namespace Crm.Apps.Tests.Tests.Products
                 .Select(x => x.Id)
                 .ToList();
 
-            await _productsClient.RestoreAsync(productIds);
+            await _productsClient.RestoreAsync(accessToken, productIds);
 
-            var products = await _productsClient.GetListAsync(productIds);
+            var products = await _productsClient.GetListAsync(accessToken, productIds);
 
             Assert.All(products, x => Assert.False(x.IsDeleted));
         }

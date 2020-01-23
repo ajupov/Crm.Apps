@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Contacts.Clients;
 using Crm.Apps.v1.Clients.Contacts.Models;
 
@@ -9,12 +10,14 @@ namespace Crm.Apps.Tests.Builders.Contacts
 {
     public class ContactBuilder : IContactBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly IContactsClient _contactsClient;
         private readonly Contact _contact;
 
-        public ContactBuilder(IContactsClient contactsClient)
+        public ContactBuilder(IAccessTokenGetter accessTokenGetter, IContactsClient contactsClient)
         {
             _contactsClient = contactsClient;
+            _accessTokenGetter = accessTokenGetter;
             _contact = new Contact
             {
                 AccountId = Guid.Empty,
@@ -229,14 +232,16 @@ namespace Crm.Apps.Tests.Builders.Contacts
 
         public async Task<Contact> BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_contact.LeadId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_contact.LeadId));
             }
 
-            var id = await _contactsClient.CreateAsync(_contact);
+            var id = await _contactsClient.CreateAsync(accessToken, _contact);
 
-            return await _contactsClient.GetAsync(id);
+            return await _contactsClient.GetAsync(accessToken, id);
         }
     }
 }

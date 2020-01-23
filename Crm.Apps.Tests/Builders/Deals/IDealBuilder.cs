@@ -32,6 +32,13 @@ namespace Crm.Apps.Tests.Builders.Deals
 
         DealBuilder AsDeleted();
 
+        DealBuilder WithPosition(
+            Guid productId,
+            string productName,
+            string productVendorCode,
+            decimal price,
+            decimal count);
+
         DealBuilder WithAttributeLink(Guid attributeId, string value);
 
         Task<Deal> BuildAsync();

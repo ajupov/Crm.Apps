@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Products.Clients;
 using Crm.Apps.v1.Clients.Products.Models;
 using Crm.Common.All.Types.AttributeType;
@@ -8,12 +9,16 @@ namespace Crm.Apps.Tests.Builders.Products
 {
     public class ProductAttributeBuilder : IProductAttributeBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly IProductAttributesClient _productAttributesClient;
         private readonly ProductAttribute _attribute;
 
-        public ProductAttributeBuilder(IProductAttributesClient productAttributesClient)
+        public ProductAttributeBuilder(
+            IAccessTokenGetter accessTokenGetter,
+            IProductAttributesClient productAttributesClient)
         {
             _productAttributesClient = productAttributesClient;
+            _accessTokenGetter = accessTokenGetter;
             _attribute = new ProductAttribute
             {
                 AccountId = Guid.Empty,
@@ -46,9 +51,11 @@ namespace Crm.Apps.Tests.Builders.Products
 
         public async Task<ProductAttribute> BuildAsync()
         {
-            var id = await _productAttributesClient.CreateAsync(_attribute);
+            var accessToken = await _accessTokenGetter.GetAsync();
 
-            return await _productAttributesClient.GetAsync(id);
+            var id = await _productAttributesClient.CreateAsync(accessToken, _attribute);
+
+            return await _productAttributesClient.GetAsync(accessToken, id);
         }
     }
 }

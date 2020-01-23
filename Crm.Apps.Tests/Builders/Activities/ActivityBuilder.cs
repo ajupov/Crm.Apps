@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
 
@@ -9,12 +10,14 @@ namespace Crm.Apps.Tests.Builders.Activities
 {
     public class ActivityBuilder : IActivityBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly IActivitiesClient _activitiesClient;
         private readonly Activity _activity;
 
-        public ActivityBuilder(IActivitiesClient activitiesClient)
+        public ActivityBuilder(IAccessTokenGetter accessTokenGetter, IActivitiesClient activitiesClient)
         {
             _activitiesClient = activitiesClient;
+            _accessTokenGetter = accessTokenGetter;
             _activity = new Activity
             {
                 TypeId = Guid.Empty,
@@ -158,6 +161,8 @@ namespace Crm.Apps.Tests.Builders.Activities
 
         public async Task<Activity> BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_activity.TypeId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_activity.TypeId));
@@ -168,9 +173,9 @@ namespace Crm.Apps.Tests.Builders.Activities
                 throw new InvalidOperationException(nameof(_activity.StatusId));
             }
 
-            var id = await _activitiesClient.CreateAsync(_activity);
+            var id = await _activitiesClient.CreateAsync(accessToken, _activity);
 
-            return await _activitiesClient.GetAsync(id);
+            return await _activitiesClient.GetAsync(accessToken, id);
         }
     }
 }

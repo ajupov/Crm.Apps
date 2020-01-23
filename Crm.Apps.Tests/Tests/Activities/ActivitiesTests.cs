@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
@@ -14,11 +15,13 @@ namespace Crm.Apps.Tests.Tests.Activities
 {
     public class ActivityTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IActivitiesClient _activitiesClient;
 
-        public ActivityTests(ICreate create, IActivitiesClient activitiesClient)
+        public ActivityTests(IAccessTokenGetter accessTokenGetter, ICreate create, IActivitiesClient activitiesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _activitiesClient = activitiesClient;
         }
@@ -26,6 +29,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
             var activityId = (
@@ -35,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                         .BuildAsync())
                 .Id;
 
-            var activity = await _activitiesClient.GetAsync(activityId);
+            var activity = await _activitiesClient.GetAsync(accessToken, activityId);
 
             Assert.NotNull(activity);
             Assert.Equal(activityId, activity.Id);
@@ -44,6 +49,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
             var activityIds = (
@@ -60,7 +67,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            var activities = await _activitiesClient.GetListAsync(activityIds);
+            var activities = await _activitiesClient.GetListAsync(accessToken, activityIds);
 
             Assert.NotEmpty(activities);
             Assert.Equal(activityIds.Count, activities.Count);
@@ -69,6 +76,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.ActivityAttribute.BuildAsync();
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
@@ -93,7 +102,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 StatusIds = filterStatusIds
             };
 
-            var activities = await _activitiesClient.GetPagedListAsync(request, TODO);
+            var activities = await _activitiesClient.GetPagedListAsync(accessToken, request);
 
             var results = activities
                 .Skip(1)
@@ -106,6 +115,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.ActivityAttribute.BuildAsync();
             var type = await _create.ActivityType.BuildAsync();
             var activityStatus = await _create.ActivityStatus.BuildAsync();
@@ -137,9 +148,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 }
             };
 
-            var activityId = await _activitiesClient.CreateAsync(activity);
+            var activityId = await _activitiesClient.CreateAsync(accessToken, activity);
 
-            var createdActivity = await _activitiesClient.GetAsync(activityId);
+            var createdActivity = await _activitiesClient.GetAsync(accessToken, activityId);
 
             Assert.NotNull(createdActivity);
             Assert.Equal(activityId, createdActivity.Id);
@@ -167,6 +178,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var activityStatus = await _create.ActivityStatus.BuildAsync();
             var attribute = await _create.ActivityAttribute.BuildAsync();
@@ -188,9 +201,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 new ActivityAttributeLink {ActivityAttributeId = attribute.Id, Value = "Test"}
             };
 
-            await _activitiesClient.UpdateAsync(activity);
+            await _activitiesClient.UpdateAsync(accessToken, activity);
 
-            var updatedActivity = await _activitiesClient.GetAsync(activity.Id);
+            var updatedActivity = await _activitiesClient.GetAsync(accessToken, activity.Id);
 
             Assert.Equal(activity.AccountId, updatedActivity.AccountId);
             Assert.Equal(activity.TypeId, updatedActivity.TypeId);
@@ -216,6 +229,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
             var activityIds = (
@@ -232,9 +247,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            await _activitiesClient.DeleteAsync(activityIds);
+            await _activitiesClient.DeleteAsync(accessToken, activityIds);
 
-            var activities = await _activitiesClient.GetListAsync(activityIds);
+            var activities = await _activitiesClient.GetListAsync(accessToken, activityIds);
 
             Assert.All(activities, x => Assert.True(x.IsDeleted));
         }
@@ -242,6 +257,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
             var activityIds = (
@@ -258,9 +275,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .Select(x => x.Id)
                 .ToList();
 
-            await _activitiesClient.RestoreAsync(activityIds);
+            await _activitiesClient.RestoreAsync(accessToken, activityIds);
 
-            var activities = await _activitiesClient.GetListAsync(activityIds);
+            var activities = await _activitiesClient.GetListAsync(accessToken, activityIds);
 
             Assert.All(activities, x => Assert.False(x.IsDeleted));
         }

@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
@@ -14,15 +15,18 @@ namespace Crm.Apps.Tests.Tests.Companies
 {
     public class CompanyChangesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ICompaniesClient _companiesClient;
         private readonly ICompanyChangesClient _companyChangesClient;
 
         public CompanyChangesTests(
+            IAccessTokenGetter accessTokenGetter,
             ICreate create,
             ICompaniesClient companiesClient,
             ICompanyChangesClient companyChangesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _companiesClient = companiesClient;
             _companyChangesClient = companyChangesClient;
@@ -31,6 +35,8 @@ namespace Crm.Apps.Tests.Tests.Companies
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var leadSource = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(leadSource.Id)
@@ -41,7 +47,7 @@ namespace Crm.Apps.Tests.Tests.Companies
 
             company.IsDeleted = true;
 
-            await _companiesClient.UpdateAsync(company);
+            await _companiesClient.UpdateAsync(accessToken, company);
 
             var request = new CompanyChangeGetPagedListRequestParameter
             {
@@ -50,7 +56,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                 OrderBy = "asc"
             };
 
-            var changes = await _companyChangesClient.GetPagedListAsync(request);
+            var changes = await _companyChangesClient.GetPagedListAsync(accessToken, request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

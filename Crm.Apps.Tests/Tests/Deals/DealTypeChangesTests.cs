@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
@@ -14,15 +15,18 @@ namespace Crm.Apps.Tests.Tests.Deals
 {
     public class DealTypeChangesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IDealTypesClient _dealTypesClient;
         private readonly IDealTypeChangesClient _typeChangesClient;
 
         public DealTypeChangesTests(
+            IAccessTokenGetter accessTokenGetter,
             ICreate create,
             IDealTypesClient dealTypesClient,
             IDealTypeChangesClient typeChangesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _dealTypesClient = dealTypesClient;
             _typeChangesClient = typeChangesClient;
@@ -31,12 +35,14 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
 
             type.Name = "Test2";
             type.IsDeleted = true;
 
-            await _dealTypesClient.UpdateAsync(type);
+            await _dealTypesClient.UpdateAsync(accessToken, type);
 
             var request = new DealTypeChangeGetPagedListRequestParameter
             {
@@ -45,7 +51,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 OrderBy = "asc"
             };
 
-            var changes = await _typeChangesClient.GetPagedListAsync(request);
+            var changes = await _typeChangesClient.GetPagedListAsync(accessToken, request);
 
             Assert.NotEmpty(changes);
             Assert.True(changes.All(x => !x.ChangerUserId.IsEmpty()));

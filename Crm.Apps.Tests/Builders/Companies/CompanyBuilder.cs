@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
 
@@ -9,12 +10,14 @@ namespace Crm.Apps.Tests.Builders.Companies
 {
     public class CompanyBuilder : ICompanyBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICompaniesClient _companiesClient;
         private readonly Company _company;
 
-        public CompanyBuilder(ICompaniesClient companiesClient)
+        public CompanyBuilder(IAccessTokenGetter accessTokenGetter, ICompaniesClient companiesClient)
         {
             _companiesClient = companiesClient;
+            _accessTokenGetter = accessTokenGetter;
             _company = new Company
             {
                 AccountId = Guid.Empty,
@@ -302,14 +305,16 @@ namespace Crm.Apps.Tests.Builders.Companies
 
         public async Task<Company> BuildAsync()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             if (_company.LeadId.IsEmpty())
             {
                 throw new InvalidOperationException(nameof(_company.LeadId));
             }
 
-            var id = await _companiesClient.CreateAsync(_company);
+            var id = await _companiesClient.CreateAsync(accessToken, _company);
 
-            return await _companiesClient.GetAsync(id);
+            return await _companiesClient.GetAsync(accessToken, id);
         }
     }
 }

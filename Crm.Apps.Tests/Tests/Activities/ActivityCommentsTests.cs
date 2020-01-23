@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
@@ -12,11 +13,16 @@ namespace Crm.Apps.Tests.Tests.Activities
 {
     public class ActivityCommentsTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IActivityCommentsClient _activityCommentsClient;
 
-        public ActivityCommentsTests(ICreate create, IActivityCommentsClient activityCommentsClient)
+        public ActivityCommentsTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            IActivityCommentsClient activityCommentsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _activityCommentsClient = activityCommentsClient;
         }
@@ -24,6 +30,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
             var activity = await _create.Activity
@@ -46,7 +54,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 OrderBy = "desc"
             };
 
-            var comments = await _activityCommentsClient.GetPagedListAsync(request);
+            var comments = await _activityCommentsClient.GetPagedListAsync(accessToken, request);
 
             var results = comments
                 .Skip(1)
@@ -59,6 +67,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
             var activity = await _create.Activity
@@ -72,7 +82,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 Value = "Test"
             };
 
-            await _activityCommentsClient.CreateAsync(comment);
+            await _activityCommentsClient.CreateAsync(accessToken, comment);
 
             var request = new ActivityCommentGetPagedListRequestParameter
             {
@@ -81,7 +91,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 OrderBy = "asc"
             };
 
-            var createdComment = (await _activityCommentsClient.GetPagedListAsync(request)).First();
+            var createdComment = (await _activityCommentsClient.GetPagedListAsync(accessToken, request)).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.ActivityId, createdComment.ActivityId);

@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -12,11 +13,16 @@ namespace Crm.Apps.Tests.Tests.Leads
 {
     public class LeadCommentsTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ILeadCommentsClient _leadCommentsClient;
 
-        public LeadCommentsTests(ICreate create, ILeadCommentsClient leadCommentsClient)
+        public LeadCommentsTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            ILeadCommentsClient leadCommentsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _leadCommentsClient = leadCommentsClient;
         }
@@ -24,6 +30,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(source.Id)
@@ -41,7 +49,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 LeadId = lead.Id
             };
 
-            var comments = await _leadCommentsClient.GetPagedListAsync(request);
+            var comments = await _leadCommentsClient.GetPagedListAsync(accessToken, request);
 
             var results = comments
                 .Skip(1)
@@ -54,6 +62,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var lead = await _create.Lead
                 .WithSourceId(source.Id)
@@ -65,7 +75,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 Value = "Test"
             };
 
-            await _leadCommentsClient.CreateAsync(comment);
+            await _leadCommentsClient.CreateAsync(accessToken, comment);
 
             var request = new LeadCommentGetPagedListRequestParameter
             {
@@ -74,7 +84,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 OrderBy = "asc"
             };
 
-            var createdComment = (await _leadCommentsClient.GetPagedListAsync(request)).First();
+            var createdComment = (await _leadCommentsClient.GetPagedListAsync(accessToken, request)).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.LeadId, createdComment.LeadId);

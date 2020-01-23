@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
@@ -12,11 +13,16 @@ namespace Crm.Apps.Tests.Tests.Deals
 {
     public class DealCommentsTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IDealCommentsClient _dealCommentsClient;
 
-        public DealCommentsTests(ICreate create, IDealCommentsClient dealCommentsClient)
+        public DealCommentsTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            IDealCommentsClient dealCommentsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _dealCommentsClient = dealCommentsClient;
         }
@@ -24,6 +30,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
             var deal = await _create.Deal
@@ -43,7 +51,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 DealId = deal.Id,
             };
 
-            var comments = await _dealCommentsClient.GetPagedListAsync(request);
+            var comments = await _dealCommentsClient.GetPagedListAsync(accessToken, request);
 
             var results = comments
                 .Skip(1)
@@ -56,6 +64,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
             var deal = await _create.Deal
@@ -69,7 +79,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 Value = "Test"
             };
 
-            await _dealCommentsClient.CreateAsync(comment);
+            await _dealCommentsClient.CreateAsync(accessToken, comment);
 
             var request = new DealCommentGetPagedListRequestParameter
             {
@@ -78,7 +88,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 OrderBy = "asc"
             };
 
-            var createdComment = (await _dealCommentsClient.GetPagedListAsync(request)).First();
+            var createdComment = (await _dealCommentsClient.GetPagedListAsync(accessToken, request)).First();
 
             Assert.NotNull(createdComment);
             Assert.Equal(comment.DealId, createdComment.DealId);

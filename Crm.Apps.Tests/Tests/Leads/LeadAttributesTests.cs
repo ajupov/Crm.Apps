@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -13,11 +14,16 @@ namespace Crm.Apps.Tests.Tests.Leads
 {
     public class LeadAttributesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ILeadAttributesClient _leadAttributesClient;
 
-        public LeadAttributesTests(ICreate create, ILeadAttributesClient leadAttributesClient)
+        public LeadAttributesTests(
+            IAccessTokenGetter accessTokenGetter,
+            ICreate create,
+            ILeadAttributesClient leadAttributesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _leadAttributesClient = leadAttributesClient;
         }
@@ -25,7 +31,9 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetTypes_ThenSuccess()
         {
-            var types = await _leadAttributesClient.GetTypesAsync();
+            var accessToken = await _accessTokenGetter.GetAsync();
+
+            var types = await _leadAttributesClient.GetTypesAsync(accessToken);
 
             Assert.NotEmpty(types);
         }
@@ -33,9 +41,11 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attributeId = (await _create.LeadAttribute.BuildAsync()).Id;
 
-            var attribute = await _leadAttributesClient.GetAsync(attributeId);
+            var attribute = await _leadAttributesClient.GetAsync(accessToken, attributeId);
 
             Assert.NotNull(attribute);
             Assert.Equal(attributeId, attribute.Id);
@@ -44,6 +54,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attributeIds = (
                     await Task.WhenAll(
                         _create.LeadAttribute
@@ -56,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .Select(x => x.Id)
                 .ToList();
 
-            var attributes = await _leadAttributesClient.GetListAsync(attributeIds);
+            var attributes = await _leadAttributesClient.GetListAsync(accessToken, attributeIds);
 
             Assert.NotEmpty(attributes);
             Assert.Equal(attributeIds.Count, attributes.Count);
@@ -65,6 +77,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             await Task.WhenAll(
                 _create.LeadAttribute
                     .WithType(AttributeType.Text)
@@ -78,7 +92,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 Types = filterTypes
             };
 
-            var attributes = await _leadAttributesClient.GetPagedListAsync(request);
+            var attributes = await _leadAttributesClient.GetPagedListAsync(accessToken, request);
 
             var results = attributes
                 .Skip(1)
@@ -91,6 +105,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = new LeadAttribute
             {
                 Type = AttributeType.Text,
@@ -98,9 +114,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 IsDeleted = false
             };
 
-            var createdAttributeId = await _leadAttributesClient.CreateAsync(attribute);
+            var createdAttributeId = await _leadAttributesClient.CreateAsync(accessToken, attribute);
 
-            var createdAttribute = await _leadAttributesClient.GetAsync(createdAttributeId);
+            var createdAttribute = await _leadAttributesClient.GetAsync(accessToken, createdAttributeId);
 
             Assert.NotNull(createdAttribute);
             Assert.Equal(createdAttributeId, createdAttribute.Id);
@@ -114,6 +130,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.LeadAttribute
                 .WithType(AttributeType.Text)
                 .WithKey("Test")
@@ -123,9 +141,9 @@ namespace Crm.Apps.Tests.Tests.Leads
             attribute.Key = "test.com";
             attribute.IsDeleted = true;
 
-            await _leadAttributesClient.UpdateAsync(attribute);
+            await _leadAttributesClient.UpdateAsync(accessToken, attribute);
 
-            var updatedAttribute = await _leadAttributesClient.GetAsync(attribute.Id);
+            var updatedAttribute = await _leadAttributesClient.GetAsync(accessToken, attribute.Id);
 
             Assert.Equal(attribute.Type, updatedAttribute.Type);
             Assert.Equal(attribute.Key, updatedAttribute.Key);
@@ -135,6 +153,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attributeIds = (
                     await Task.WhenAll(
                         _create.LeadAttribute
@@ -147,9 +167,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .Select(x => x.Id)
                 .ToList();
 
-            await _leadAttributesClient.DeleteAsync(attributeIds);
+            await _leadAttributesClient.DeleteAsync(accessToken, attributeIds);
 
-            var attributes = await _leadAttributesClient.GetListAsync(attributeIds);
+            var attributes = await _leadAttributesClient.GetListAsync(accessToken, attributeIds);
 
             Assert.All(attributes, x => Assert.True(x.IsDeleted));
         }
@@ -157,6 +177,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attributeIds = (
                     await Task.WhenAll(
                         _create.LeadAttribute
@@ -169,9 +191,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .Select(x => x.Id)
                 .ToList();
 
-            await _leadAttributesClient.RestoreAsync(attributeIds);
+            await _leadAttributesClient.RestoreAsync(accessToken, attributeIds);
 
-            var attributes = await _leadAttributesClient.GetListAsync(attributeIds);
+            var attributes = await _leadAttributesClient.GetListAsync(accessToken, attributeIds);
 
             Assert.All(attributes, x => Assert.False(x.IsDeleted));
         }

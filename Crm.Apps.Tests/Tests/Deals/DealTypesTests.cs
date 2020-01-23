@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
@@ -11,11 +12,13 @@ namespace Crm.Apps.Tests.Tests.Deals
 {
     public class DealTypesTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly IDealTypesClient _dealTypesClient;
 
-        public DealTypesTests(ICreate create, IDealTypesClient dealTypesClient)
+        public DealTypesTests(IAccessTokenGetter accessTokenGetter, ICreate create, IDealTypesClient dealTypesClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _dealTypesClient = dealTypesClient;
         }
@@ -23,9 +26,11 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeId = (await _create.DealType.BuildAsync()).Id;
 
-            var type = await _dealTypesClient.GetAsync(typeId);
+            var type = await _dealTypesClient.GetAsync(accessToken, typeId);
 
             Assert.NotNull(type);
             Assert.Equal(typeId, type.Id);
@@ -34,6 +39,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
@@ -46,7 +53,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .Select(x => x.Id)
                 .ToList();
 
-            var types = await _dealTypesClient.GetListAsync(typeIds);
+            var types = await _dealTypesClient.GetListAsync(accessToken, typeIds);
 
             Assert.NotEmpty(types);
             Assert.Equal(typeIds.Count, types.Count);
@@ -55,6 +62,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             await Task.WhenAll(_create.DealType.WithName("Test1").BuildAsync());
 
             var request = new DealTypeGetPagedListRequestParameter
@@ -62,7 +71,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 Name = "Test1"
             };
 
-            var types = await _dealTypesClient.GetPagedListAsync(request);
+            var types = await _dealTypesClient.GetPagedListAsync(accessToken, request);
 
             var results = types
                 .Skip(1)
@@ -75,15 +84,17 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = new DealType
             {
                 Name = "Test",
                 IsDeleted = false
             };
 
-            var createdTypeId = await _dealTypesClient.CreateAsync(type);
+            var createdTypeId = await _dealTypesClient.CreateAsync(accessToken, type);
 
-            var createdType = await _dealTypesClient.GetAsync(createdTypeId);
+            var createdType = await _dealTypesClient.GetAsync(accessToken, createdTypeId);
 
             Assert.NotNull(createdType);
             Assert.Equal(createdTypeId, createdType.Id);
@@ -96,6 +107,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var type = await _create.DealType
                 .WithName("Test1")
                 .BuildAsync();
@@ -103,9 +116,9 @@ namespace Crm.Apps.Tests.Tests.Deals
             type.Name = "Test2";
             type.IsDeleted = true;
 
-            await _dealTypesClient.UpdateAsync(type);
+            await _dealTypesClient.UpdateAsync(accessToken, type);
 
-            var updatedType = await _dealTypesClient.GetAsync(type.Id);
+            var updatedType = await _dealTypesClient.GetAsync(accessToken, type.Id);
 
             Assert.Equal(type.Name, updatedType.Name);
             Assert.Equal(type.IsDeleted, updatedType.IsDeleted);
@@ -114,6 +127,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
@@ -126,9 +141,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .Select(x => x.Id)
                 .ToList();
 
-            await _dealTypesClient.DeleteAsync(typeIds);
+            await _dealTypesClient.DeleteAsync(accessToken, typeIds);
 
-            var types = await _dealTypesClient.GetListAsync(typeIds);
+            var types = await _dealTypesClient.GetListAsync(accessToken, typeIds);
 
             Assert.All(types, x => Assert.True(x.IsDeleted));
         }
@@ -136,6 +151,8 @@ namespace Crm.Apps.Tests.Tests.Deals
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
@@ -148,9 +165,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .Select(x => x.Id)
                 .ToList();
 
-            await _dealTypesClient.RestoreAsync(typeIds);
+            await _dealTypesClient.RestoreAsync(accessToken, typeIds);
 
-            var types = await _dealTypesClient.GetListAsync(typeIds);
+            var types = await _dealTypesClient.GetListAsync(accessToken, typeIds);
 
             Assert.All(types, x => Assert.False(x.IsDeleted));
         }

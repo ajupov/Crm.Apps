@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -14,11 +15,13 @@ namespace Crm.Apps.Tests.Tests.Leads
 {
     public class LeadTests
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ICreate _create;
         private readonly ILeadsClient _leadsClient;
 
-        public LeadTests(ICreate create, ILeadsClient leadsClient)
+        public LeadTests(IAccessTokenGetter accessTokenGetter, ICreate create, ILeadsClient leadsClient)
         {
+            _accessTokenGetter = accessTokenGetter;
             _create = create;
             _leadsClient = leadsClient;
         }
@@ -26,10 +29,12 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGet_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var leadId = (await _create.Lead.WithSourceId(source.Id).BuildAsync()).Id;
 
-            var lead = await _leadsClient.GetAsync(leadId);
+            var lead = await _leadsClient.GetAsync(accessToken, leadId);
 
             Assert.NotNull(lead);
             Assert.Equal(leadId, lead.Id);
@@ -38,6 +43,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var leadIds = (
                     await Task.WhenAll(
@@ -51,7 +58,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .Select(x => x.Id)
                 .ToList();
 
-            var leads = await _leadsClient.GetListAsync(leadIds);
+            var leads = await _leadsClient.GetListAsync(accessToken, leadIds);
 
             Assert.NotEmpty(leads);
             Assert.Equal(leadIds.Count, leads.Count);
@@ -60,6 +67,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenGetPagedList_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.LeadAttribute.BuildAsync();
             var source = await _create.LeadSource
                 .WithName("Test")
@@ -81,7 +90,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                 Attributes = filterAttributes, SourceIds = filterSourceIds
             };
 
-            var leads = await _leadsClient.GetPagedListAsync(request);
+            var leads = await _leadsClient.GetPagedListAsync(accessToken, request);
 
             var results = leads
                 .Skip(1)
@@ -94,6 +103,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenCreate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var attribute = await _create.LeadAttribute.BuildAsync();
             var source = await _create.LeadSource.BuildAsync();
 
@@ -129,9 +140,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 }
             };
 
-            var createdLeadId = await _leadsClient.CreateAsync(lead);
+            var createdLeadId = await _leadsClient.CreateAsync(accessToken, lead);
 
-            var createdLead = await _leadsClient.GetAsync(createdLeadId);
+            var createdLead = await _leadsClient.GetAsync(accessToken, createdLeadId);
 
             Assert.NotNull(createdLead);
             Assert.Equal(createdLeadId, createdLead.Id);
@@ -163,6 +174,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenUpdate_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var attribute = await _create.LeadAttribute.BuildAsync();
             var lead = await _create.Lead
@@ -189,9 +202,9 @@ namespace Crm.Apps.Tests.Tests.Leads
             lead.OpportunitySum = 1;
             lead.IsDeleted = true;
             lead.AttributeLinks.Add(new LeadAttributeLink {LeadAttributeId = attribute.Id, Value = "Test"});
-            await _leadsClient.UpdateAsync(lead);
+            await _leadsClient.UpdateAsync(accessToken, lead);
 
-            var updatedLead = await _leadsClient.GetAsync(lead.Id);
+            var updatedLead = await _leadsClient.GetAsync(accessToken, lead.Id);
 
             Assert.Equal(lead.AccountId, updatedLead.AccountId);
             Assert.Equal(lead.SourceId, updatedLead.SourceId);
@@ -222,6 +235,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenDelete_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var leadIds = (
                     await Task.WhenAll(
@@ -235,9 +250,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .Select(x => x.Id)
                 .ToList();
 
-            await _leadsClient.DeleteAsync(leadIds);
+            await _leadsClient.DeleteAsync(accessToken, leadIds);
 
-            var leads = await _leadsClient.GetListAsync(leadIds);
+            var leads = await _leadsClient.GetListAsync(accessToken, leadIds);
 
             Assert.All(leads, x => Assert.True(x.IsDeleted));
         }
@@ -245,6 +260,8 @@ namespace Crm.Apps.Tests.Tests.Leads
         [Fact]
         public async Task WhenRestore_ThenSuccess()
         {
+            var accessToken = await _accessTokenGetter.GetAsync();
+
             var source = await _create.LeadSource.BuildAsync();
             var leadIds = (
                     await Task.WhenAll(
@@ -258,9 +275,9 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .Select(x => x.Id)
                 .ToList();
 
-            await _leadsClient.RestoreAsync(leadIds);
+            await _leadsClient.RestoreAsync(accessToken, leadIds);
 
-            var leads = await _leadsClient.GetListAsync(leadIds);
+            var leads = await _leadsClient.GetListAsync(accessToken, leadIds);
 
             Assert.All(leads, x => Assert.False(x.IsDeleted));
         }

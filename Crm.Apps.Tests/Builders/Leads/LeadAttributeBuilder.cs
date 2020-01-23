@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
 using Crm.Common.All.Types.AttributeType;
@@ -8,12 +9,14 @@ namespace Crm.Apps.Tests.Builders.Leads
 {
     public class LeadAttributeBuilder : ILeadAttributeBuilder
     {
+        private readonly IAccessTokenGetter _accessTokenGetter;
         private readonly ILeadAttributesClient _leadAttributesClient;
         private readonly LeadAttribute _attribute;
 
-        public LeadAttributeBuilder(ILeadAttributesClient leadAttributesClient)
+        public LeadAttributeBuilder(IAccessTokenGetter accessTokenGetter, ILeadAttributesClient leadAttributesClient)
         {
             _leadAttributesClient = leadAttributesClient;
+            _accessTokenGetter = accessTokenGetter;
             _attribute = new LeadAttribute
             {
                 AccountId = Guid.Empty,
@@ -46,9 +49,11 @@ namespace Crm.Apps.Tests.Builders.Leads
 
         public async Task<LeadAttribute> BuildAsync()
         {
-            var id = await _leadAttributesClient.CreateAsync(_attribute);
+            var accessToken = await _accessTokenGetter.GetAsync();
 
-            return await _leadAttributesClient.GetAsync(id);
+            var id = await _leadAttributesClient.CreateAsync(accessToken, _attribute);
+
+            return await _leadAttributesClient.GetAsync(accessToken, id);
         }
     }
 }
