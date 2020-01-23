@@ -4,6 +4,7 @@ using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
+using Crm.Apps.Tests.Builders.OAuth;
 using Crm.Apps.Tests.Builders.Products;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +18,8 @@ namespace Crm.Apps.Tests.Services.Creator
         {
             _services = services;
         }
+
+        public IOAuthBuilder OAuth => _services.GetService<IOAuthBuilder>();
 
         public IProductBuilder Product => _services.GetService<IProductBuilder>();
 

@@ -5,6 +5,7 @@ using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
+using Crm.Apps.Tests.Builders.OAuth;
 using Crm.Apps.Tests.Builders.Products;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
@@ -36,6 +37,7 @@ namespace Crm.Apps.Tests
                 .AddTransient<ICreate, Create>();
 
             services
+                .AddTransient<IOAuthBuilder, OAuthBuilder>()
                 .AddTransient<IProductBuilder, ProductBuilder>()
                 .AddTransient<IProductAttributeBuilder, ProductAttributeBuilder>()
                 .AddTransient<IProductCategoryBuilder, ProductCategoryBuilder>()

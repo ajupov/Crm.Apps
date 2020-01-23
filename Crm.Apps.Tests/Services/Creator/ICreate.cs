@@ -3,12 +3,15 @@ using Crm.Apps.Tests.Builders.Companies;
 using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
+using Crm.Apps.Tests.Builders.OAuth;
 using Crm.Apps.Tests.Builders.Products;
 
 namespace Crm.Apps.Tests.Services.Creator
 {
     public interface ICreate
     {
+        IOAuthBuilder OAuth { get; }
+
         IProductBuilder Product { get; }
 
         IProductCategoryBuilder ProductCategory { get; }

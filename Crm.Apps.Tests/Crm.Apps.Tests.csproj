@@ -12,4 +12,12 @@
     <ItemGroup>
         <ProjectReference Include="..\Crm.Apps.v1.Clients\Crm.Apps.v1.Clients.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="appsettings.local.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>
