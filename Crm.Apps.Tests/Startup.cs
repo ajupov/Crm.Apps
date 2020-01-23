@@ -6,9 +6,13 @@ using Crm.Apps.Tests.Builders.Contacts;
 using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
-using Crm.Apps.Tests.Creator;
+using Crm.Apps.Tests.Services.AccessTokenGetter;
+using Crm.Apps.Tests.Services.Creator;
+using Crm.Apps.Tests.Settings;
 using Crm.Apps.v1.Clients;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ConfigurationExtensions = Ajupov.Infrastructure.All.Configuration.ConfigurationExtensions;
 
 [assembly: DependencyInject("Crm.Apps.Tests.Startup", "Crm.Apps.Tests")]
 
@@ -18,9 +22,20 @@ namespace Crm.Apps.Tests
     {
         protected override void Configure(IServiceCollection services)
         {
+            var configuration = ConfigurationExtensions.GetConfiguration();
+
+            var hostsSettings = configuration.GetSection(nameof(HostsSettings));
+            var apiHost = hostsSettings.GetValue<string>(nameof(HostsSettings.ApiHost));
+            var oauthHost = hostsSettings.GetValue<string>(nameof(HostsSettings.OAuthHost));
+
             services
-                .ConfigureClients(apiHost: "http://localhost:9000/api/v1")
-                .AddTransient<ICreate, Create>()
+                .ConfigureClients(apiHost, oauthHost)
+                .Configure<OAuthSettings>(configuration.GetSection(nameof(OAuthSettings)));
+
+            services.AddSingleton<IAccessTokenGetter, AccessTokenGetter>()
+                .AddTransient<ICreate, Create>();
+
+            services
                 .AddTransient<IProductBuilder, ProductBuilder>()
                 .AddTransient<IProductAttributeBuilder, ProductAttributeBuilder>()
                 .AddTransient<IProductCategoryBuilder, ProductCategoryBuilder>()

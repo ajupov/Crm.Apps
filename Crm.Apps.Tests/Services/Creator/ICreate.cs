@@ -5,7 +5,7 @@ using Crm.Apps.Tests.Builders.Deals;
 using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
 
-namespace Crm.Apps.Tests.Creator
+namespace Crm.Apps.Tests.Services.Creator
 {
     public interface ICreate
     {

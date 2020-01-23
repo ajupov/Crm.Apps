@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
-using Crm.Apps.Tests.Creator;
+using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
 using Crm.Apps.v1.Clients.Deals.RequestParameters;

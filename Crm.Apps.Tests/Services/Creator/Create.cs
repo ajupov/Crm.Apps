@@ -7,7 +7,7 @@ using Crm.Apps.Tests.Builders.Leads;
 using Crm.Apps.Tests.Builders.Products;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Apps.Tests.Creator
+namespace Crm.Apps.Tests.Services.Creator
 {
     public class Create : ICreate
     {
