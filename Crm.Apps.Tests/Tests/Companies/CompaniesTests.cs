@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Companies.Clients;
@@ -83,11 +84,11 @@ namespace Crm.Apps.Tests.Tests.Companies
                     await Task.WhenAll(
                         _create.Company
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990")
+                            .WithTaxNumber("999999999990".WithGuid())
                             .BuildAsync(),
                         _create.Company
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991")
+                            .WithTaxNumber("999999999991".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -113,18 +114,19 @@ namespace Crm.Apps.Tests.Tests.Companies
                 .BuildAsync();
             var attribute = await _create.CompanyAttribute.BuildAsync();
 
+            var value = "Test".WithGuid();
             await Task.WhenAll(
                 _create.Company
                     .WithLeadId(lead1.Id)
-                    .WithTaxNumber("999999999990")
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithTaxNumber("999999999990".WithGuid())
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Company
                     .WithLeadId(lead2.Id)
-                    .WithTaxNumber("999999999991")
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithTaxNumber("999999999991".WithGuid())
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
 
             var request = new CompanyGetPagedListRequestParameter
             {
@@ -160,29 +162,29 @@ namespace Crm.Apps.Tests.Tests.Companies
                 ResponsibleUserId = Guid.Empty,
                 Type = CompanyType.SelfEmployed,
                 IndustryType = CompanyIndustryType.Transport,
-                FullName = "Test",
-                ShortName = "Test",
+                FullName = "Test".WithGuid(),
+                ShortName = "Test".WithGuid(),
                 Phone = "9999999999",
                 Email = "test@test",
-                TaxNumber = "999999999999",
+                TaxNumber = "999999999999".WithGuid(),
                 RegistrationNumber = "999999999999999",
                 RegistrationDate = new DateTime(2000, 1, 1),
                 EmployeesCount = 1,
                 YearlyTurnover = 1000000,
                 JuridicalPostcode = "000000",
-                JuridicalCountry = "Test",
-                JuridicalRegion = "Test",
-                JuridicalProvince = "Test",
-                JuridicalCity = "Test",
-                JuridicalStreet = "Test",
+                JuridicalCountry = "Test".WithGuid(),
+                JuridicalRegion = "Test".WithGuid(),
+                JuridicalProvince = "Test".WithGuid(),
+                JuridicalCity = "Test".WithGuid(),
+                JuridicalStreet = "Test".WithGuid(),
                 JuridicalHouse = "1",
                 JuridicalApartment = "1",
                 LegalPostcode = "000000",
-                LegalCountry = "Test",
-                LegalRegion = "Test",
-                LegalProvince = "Test",
-                LegalCity = "Test",
-                LegalStreet = "Test",
+                LegalCountry = "Test".WithGuid(),
+                LegalRegion = "Test".WithGuid(),
+                LegalProvince = "Test".WithGuid(),
+                LegalCity = "Test".WithGuid(),
+                LegalStreet = "Test".WithGuid(),
                 LegalHouse = "1",
                 LegalApartment = "1",
                 IsDeleted = true,
@@ -191,7 +193,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                     new CompanyAttributeLink
                     {
                         CompanyAttributeId = attribute.Id,
-                        Value = "Test"
+                        Value = "Test".WithGuid()
                     }
                 },
                 BankAccounts = new List<CompanyBankAccount>
@@ -201,7 +203,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                         Number = "9999999999999999999999999",
                         BankNumber = "9999999999",
                         BankCorrespondentNumber = "9999999999999999999999999",
-                        BankName = "Test"
+                        BankName = "Test".WithGuid()
                     }
                 }
             };
@@ -219,9 +221,6 @@ namespace Crm.Apps.Tests.Tests.Companies
             Assert.Equal(company.ResponsibleUserId, createdCompany.ResponsibleUserId);
             Assert.Equal(company.FullName, createdCompany.FullName);
             Assert.Equal(company.ShortName, createdCompany.ShortName);
-            Assert.Equal(company.AccountId, createdCompany.AccountId);
-            Assert.Equal(company.AccountId, createdCompany.AccountId);
-            Assert.Equal(company.AccountId, createdCompany.AccountId);
             Assert.Equal(company.Phone, createdCompany.Phone);
             Assert.Equal(company.Email, createdCompany.Email);
             Assert.Equal(company.TaxNumber, createdCompany.TaxNumber);
@@ -269,39 +268,39 @@ namespace Crm.Apps.Tests.Tests.Companies
             company.IndustryType = CompanyIndustryType.Computer;
             company.LeadId = Guid.Empty;
             company.ResponsibleUserId = Guid.Empty;
-            company.FullName = "Test";
-            company.ShortName = "Test";
+            company.FullName = "Test".WithGuid();
+            company.ShortName = "Test".WithGuid();
             company.Phone = "9999999999";
             company.Email = "test@test";
-            company.TaxNumber = "999999999999";
+            company.TaxNumber = "999999999999".WithGuid();
             company.RegistrationNumber = "999999999999999";
             company.RegistrationDate = new DateTime(2000, 1, 1);
             company.EmployeesCount = 1;
             company.YearlyTurnover = 1000000;
             company.JuridicalPostcode = "000000";
-            company.JuridicalCountry = "Test";
-            company.JuridicalRegion = "Test";
-            company.JuridicalProvince = "Test";
-            company.JuridicalCity = "Test";
-            company.JuridicalStreet = "Test";
+            company.JuridicalCountry = "Test".WithGuid();
+            company.JuridicalRegion = "Test".WithGuid();
+            company.JuridicalProvince = "Test".WithGuid();
+            company.JuridicalCity = "Test".WithGuid();
+            company.JuridicalStreet = "Test".WithGuid();
             company.JuridicalHouse = "1";
             company.JuridicalApartment = "1";
             company.LegalPostcode = "000000";
-            company.LegalCountry = "Test";
-            company.LegalRegion = "Test";
-            company.LegalProvince = "Test";
-            company.LegalCity = "Test";
-            company.LegalStreet = "Test";
+            company.LegalCountry = "Test".WithGuid();
+            company.LegalRegion = "Test".WithGuid();
+            company.LegalProvince = "Test".WithGuid();
+            company.LegalCity = "Test".WithGuid();
+            company.LegalStreet = "Test".WithGuid();
             company.LegalHouse = "1";
             company.LegalApartment = "1";
             company.IsDeleted = true;
-            company.AttributeLinks.Add(new CompanyAttributeLink {CompanyAttributeId = attribute.Id, Value = "Test"});
+            company.AttributeLinks.Add(new CompanyAttributeLink {CompanyAttributeId = attribute.Id, Value = "Test".WithGuid()});
             company.BankAccounts.Add(new CompanyBankAccount
             {
                 Number = "9999999999999999999999999",
                 BankNumber = "9999999999",
                 BankCorrespondentNumber = "9999999999999999999999999",
-                BankName = "Test"
+                BankName = "Test".WithGuid()
             });
             await _companiesClient.UpdateAsync(accessToken, company);
 
@@ -397,11 +396,11 @@ namespace Crm.Apps.Tests.Tests.Companies
                     await Task.WhenAll(
                         _create.Company
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990")
+                            .WithTaxNumber("999999999990".WithGuid())
                             .BuildAsync(),
                         _create.Company
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991")
+                            .WithTaxNumber("999999999991".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

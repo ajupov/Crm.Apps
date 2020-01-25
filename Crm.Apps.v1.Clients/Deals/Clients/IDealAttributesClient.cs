@@ -10,7 +10,7 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
 {
     public interface IDealAttributesClient
     {
-        Task<List<AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default);
+        Task<Dictionary<string, AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default);
 
         Task<DealAttribute> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 

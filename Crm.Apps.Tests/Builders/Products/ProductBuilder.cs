@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Products.Clients;
 using Crm.Apps.v1.Clients.Products.Models;
@@ -23,7 +24,7 @@ namespace Crm.Apps.Tests.Builders.Products
                 AccountId = Guid.Empty,
                 ParentProductId = Guid.Empty,
                 Type = ProductType.Material,
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 VendorCode = "Test",
                 Price = 1,
                 IsHidden = false,

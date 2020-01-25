@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
@@ -81,18 +82,19 @@ namespace Crm.Apps.Tests.Tests.Deals
             var attribute = await _create.DealAttribute.BuildAsync();
             var type = await _create.DealType.BuildAsync();
             var status = await _create.DealStatus.BuildAsync();
+            var value = "Test".WithGuid();
             await Task.WhenAll(
                 _create.Deal
                     .WithTypeId(type.Id)
                     .WithStatusId(status.Id)
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Deal
                     .WithTypeId(type.Id)
                     .WithStatusId(status.Id)
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
             var filterSourceIds = new List<Guid> {status.Id};
 
             var request = new DealGetPagedListRequestParameter
@@ -132,7 +134,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 ContactId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 StartDateTime = DateTime.UtcNow,
                 EndDateTime = DateTime.UtcNow.AddDays(1),
                 Sum = 1,
@@ -144,6 +146,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                     new DealPosition
                     {
                         ProductId = product.Id,
+                        ProductName = product.Name,
                         Count = 1,
                         Price = product.Price
                     }
@@ -153,7 +156,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                     new DealAttributeLink
                     {
                         DealAttributeId = attribute.Id,
-                        Value = "Test"
+                        Value = "Test".WithGuid()
                     }
                 }
             };
@@ -164,7 +167,6 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             Assert.NotNull(createdDeal);
             Assert.Equal(createdDealId, createdDeal.Id);
-            Assert.Equal(deal.AccountId, createdDeal.AccountId);
             Assert.Equal(deal.TypeId, createdDeal.TypeId);
             Assert.Equal(deal.StatusId, createdDeal.StatusId);
             Assert.Equal(deal.CompanyId, createdDeal.CompanyId);
@@ -205,7 +207,7 @@ namespace Crm.Apps.Tests.Tests.Deals
             deal.CompanyId = Guid.Empty;
             deal.ContactId = Guid.Empty;
             deal.ResponsibleUserId = Guid.Empty;
-            deal.Name = "Test";
+            deal.Name = "Test".WithGuid();
             deal.StartDateTime = DateTime.UtcNow;
             deal.EndDateTime = DateTime.UtcNow.AddDays(1);
             deal.Sum = 1;
@@ -216,6 +218,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 new DealPosition
                 {
                     ProductId = product.Id,
+                    ProductName = product.Name,
                     Count = 1,
                     Price = product.Price
                 });
@@ -223,8 +226,9 @@ namespace Crm.Apps.Tests.Tests.Deals
                 new DealAttributeLink
                 {
                     DealAttributeId = attribute.Id,
-                    Value = "Test"
+                    Value = "Test".WithGuid()
                 });
+            
             await _dealsClient.UpdateAsync(accessToken, deal);
 
             var updatedDeal = await _dealsClient.GetAsync(accessToken, deal.Id);

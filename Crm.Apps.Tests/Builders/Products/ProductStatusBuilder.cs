@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Products.Clients;
 using Crm.Apps.v1.Clients.Products.Models;
@@ -19,7 +20,7 @@ namespace Crm.Apps.Tests.Builders.Products
             _status = new ProductStatus
             {
                 AccountId = Guid.Empty,
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 IsDeleted = false
             };
         }

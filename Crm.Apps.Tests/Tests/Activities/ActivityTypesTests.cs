@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
@@ -47,10 +48,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var typeIds = (
                     await Task.WhenAll(
                         _create.ActivityType
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityType
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -67,11 +68,12 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            await Task.WhenAll(_create.ActivityType.WithName("Test1").BuildAsync());
+            var name = "Test1".WithGuid();
+            await Task.WhenAll(_create.ActivityType.WithName(name).BuildAsync());
 
             var request = new ActivityTypeGetPagedListRequestParameter
             {
-                Name = "Test1",
+                Name = name,
                 SortBy = "CreateDateTime",
                 OrderBy = "asc"
             };
@@ -93,7 +95,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var type = new ActivityType
             {
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 IsDeleted = false
             };
 
@@ -103,7 +105,6 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             Assert.NotNull(createdType);
             Assert.Equal(createdTypeId, createdType.Id);
-            Assert.Equal(type.AccountId, createdType.AccountId);
             Assert.Equal(type.Name, createdType.Name);
             Assert.Equal(type.IsDeleted, createdType.IsDeleted);
             Assert.True(createdType.CreateDateTime.IsMoreThanMinValue());
@@ -114,9 +115,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var type = await _create.ActivityType.WithName("Test1").BuildAsync();
+            var type = await _create.ActivityType.WithName("Test1".WithGuid()).BuildAsync();
 
-            type.Name = "Test2";
+            type.Name = "Test2".WithGuid();
             type.IsDeleted = true;
 
             await _activityTypesClient.UpdateAsync(accessToken, type);
@@ -133,8 +134,8 @@ namespace Crm.Apps.Tests.Tests.Activities
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var typeIds = (await Task.WhenAll(
-                    _create.ActivityType.WithName("Test1").BuildAsync(),
-                    _create.ActivityType.WithName("Test2").BuildAsync())
+                    _create.ActivityType.WithName("Test1".WithGuid()).BuildAsync(),
+                    _create.ActivityType.WithName("Test2".WithGuid()).BuildAsync())
                 )
                 .Select(x => x.Id)
                 .ToList();
@@ -154,10 +155,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var typeIds = (
                     await Task.WhenAll(
                         _create.ActivityType
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityType
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

@@ -12,7 +12,8 @@ namespace Crm.Apps.Leads.Migrations
                 .WithColumn("LeadId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
                 .WithColumn("Value").AsString().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable();
+                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
+                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
 
             Create.PrimaryKey("PK_LeadAttributeLinks_Id").OnTable("LeadAttributeLinks")
                 .Column("Id");

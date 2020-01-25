@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
@@ -47,10 +48,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var statusIds = (
                     await Task.WhenAll(
                         _create.ActivityStatus
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityStatus
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -67,11 +68,16 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            await Task.WhenAll(_create.ActivityStatus.WithName("Test1").BuildAsync());
+            var name = "Test1".WithGuid();
+
+            await Task.WhenAll(
+                _create.ActivityStatus
+                    .WithName(name)
+                    .BuildAsync());
 
             var request = new ActivityStatusGetPagedListRequestParameter
             {
-                Name = "Test1"
+                Name = name
             };
 
             var statuses = await _activityStatusesClient.GetPagedListAsync(accessToken, request);
@@ -91,7 +97,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var status = new ActivityStatus
             {
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 IsDeleted = false
             };
 
@@ -101,7 +107,6 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             Assert.NotNull(createdStatus);
             Assert.Equal(createdStatusId, createdStatus.Id);
-            Assert.Equal(status.AccountId, createdStatus.AccountId);
             Assert.Equal(status.Name, createdStatus.Name);
             Assert.Equal(status.IsDeleted, createdStatus.IsDeleted);
             Assert.True(createdStatus.CreateDateTime.IsMoreThanMinValue());
@@ -112,9 +117,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var status = await _create.ActivityStatus.WithName("Test1").BuildAsync();
+            var status = await _create.ActivityStatus.WithName("Test1".WithGuid()).BuildAsync();
 
-            status.Name = "Test2";
+            status.Name = "Test2".WithGuid();
             status.IsDeleted = true;
 
             await _activityStatusesClient.UpdateAsync(accessToken, status);
@@ -133,10 +138,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var statusIds = (
                     await Task.WhenAll(
                         _create.ActivityStatus
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityStatus
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -157,10 +162,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var statusIds = (
                     await Task.WhenAll(
                         _create.ActivityStatus
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityStatus
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

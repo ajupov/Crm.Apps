@@ -49,7 +49,7 @@ namespace Crm.Apps.v1.Clients.Products.Clients
         public Task<Guid> CreateAsync(string accessToken, ProductCategory category, CancellationToken ct = default)
         {
             return _httpClientFactory.PostJsonAsync<Guid>(
-                UriBuilder.Combine(_url, "GetPagedList"), category, accessToken, ct);
+                UriBuilder.Combine(_url, "Create"), category, accessToken, ct);
         }
 
         public Task UpdateAsync(string accessToken, ProductCategory category, CancellationToken ct = default)

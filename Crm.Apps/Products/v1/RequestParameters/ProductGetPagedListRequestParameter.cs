@@ -36,7 +36,7 @@ namespace Crm.Apps.Products.v1.RequestParameters
 
         public bool? AllAttributes { get; set; }
 
-        public IDictionary<Guid, string> Attributes { get; set; }
+        public Dictionary<Guid, string> Attributes { get; set; }
 
         public bool? AllCategoryIds { get; set; }
 
@@ -46,8 +46,8 @@ namespace Crm.Apps.Products.v1.RequestParameters
 
         public int Limit { get; set; } = 10;
 
-        public string SortBy { get; set; }
+        public string SortBy { get; set; } = "CreateDateTime";
 
-        public string OrderBy { get; set; }
+        public string OrderBy { get; set; } = "desc";
     }
 }

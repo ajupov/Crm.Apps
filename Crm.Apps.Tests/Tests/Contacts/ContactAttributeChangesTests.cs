@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Contacts.Clients;
@@ -41,7 +42,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attribute = await _create.ContactAttribute.BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink";
+            attribute.Key = "TestLink".WithGuid();
             attribute.IsDeleted = true;
 
             await _contactAttributesClient.UpdateAsync(accessToken, attribute);

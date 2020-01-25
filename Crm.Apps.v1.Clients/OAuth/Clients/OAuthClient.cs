@@ -15,7 +15,7 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
 {
     public class OAuthClient : IOAuthClient
     {
-        private const string ClientId = "http-client";
+        private readonly string _clientId;
         private const string PasswordGrandType = "password";
         private const string RefreshTokenGrandType = "refresh_token";
 
@@ -24,9 +24,9 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
 
         public OAuthClient(IOptions<ClientsSettings> options, IHttpClientFactory httpClientFactory)
         {
+            _clientId = options.Value.ClientId;
             _url = UriBuilder.Combine(options.Value.OAuthHost, "OAuth");
             _httpClientFactory = httpClientFactory;
-            var httpClient = _httpClientFactory.CreateClient();
         }
 
         public async Task<Tokens> GetTokensAsync(string username, string password, CancellationToken ct = default)
@@ -34,7 +34,7 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
             var request = new TokenRequestParameter
             {
                 grant_type = PasswordGrandType,
-                client_id = ClientId,
+                client_id = _clientId,
                 username = username,
                 password = password
             };
@@ -55,7 +55,7 @@ namespace Crm.Apps.v1.Clients.OAuth.Clients
             var request = new TokenRequestParameter
             {
                 grant_type = RefreshTokenGrandType,
-                client_id = ClientId,
+                client_id = _clientId,
                 refresh_token = refreshToken
             };
 

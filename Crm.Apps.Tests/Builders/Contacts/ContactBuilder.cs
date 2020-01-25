@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Contacts.Clients;
 using Crm.Apps.v1.Clients.Contacts.Models;
@@ -25,19 +26,19 @@ namespace Crm.Apps.Tests.Builders.Contacts
                 CompanyId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Surname = "Test",
-                Name = "Test",
-                Patronymic = "Test",
+                Surname = "Test".WithGuid(),
+                Name = "Test".WithGuid(),
+                Patronymic = "Test".WithGuid(),
                 Phone = "9999999999",
                 Email = "test@test",
                 TaxNumber = "999999999999",
-                Post = "Test",
+                Post = "Test".WithGuid(),
                 Postcode = "000000",
-                Country = "Test",
-                Region = "Test",
-                Province = "Test",
-                City = "Test",
-                Street = "Test",
+                Country = "Test".WithGuid(),
+                Region = "Test".WithGuid(),
+                Province = "Test".WithGuid(),
+                City = "Test".WithGuid(),
+                Street = "Test".WithGuid(),
                 House = "1",
                 Apartment = "1",
                 BirthDate = new DateTime(1980, 1, 1),

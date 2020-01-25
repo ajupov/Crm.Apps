@@ -70,6 +70,8 @@ namespace Crm.Apps.Activities.v1.Controllers
             ActivityAttributeGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
+            request.AccountId = _userContext.AccountId;
+            
             var attributes = await _activityAttributesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(

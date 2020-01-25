@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
@@ -44,7 +45,8 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .WithStatusId(status.Id)
                 .BuildAsync();
 
-            activity.Name = "Test1";
+            activity.Name = "Test1".WithGuid();
+            activity.IsDeleted = true;
 
             await _activitiesClient.UpdateAsync(accessToken, activity);
 

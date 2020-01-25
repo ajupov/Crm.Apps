@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Deals.Clients;
 using Crm.Apps.v1.Clients.Deals.Models;
@@ -26,7 +27,7 @@ namespace Crm.Apps.Tests.Builders.Deals
                 ContactId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 StartDateTime = DateTime.UtcNow,
                 EndDateTime = DateTime.UtcNow.AddDays(1),
                 Sum = 1,

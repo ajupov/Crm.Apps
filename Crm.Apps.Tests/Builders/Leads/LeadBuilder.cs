@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -24,19 +25,19 @@ namespace Crm.Apps.Tests.Builders.Leads
                 SourceId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Surname = "Test",
-                Name = "Test",
-                Patronymic = "Test",
+                Surname = "Test".WithGuid(),
+                Name = "Test".WithGuid(),
+                Patronymic = "Test".WithGuid(),
                 Phone = "9999999999",
                 Email = "test@test",
-                CompanyName = "Test",
-                Post = "Test",
+                CompanyName = "Test".WithGuid(),
+                Post = "Test".WithGuid(),
                 Postcode = "000000",
-                Country = "Test",
-                Region = "Test",
-                Province = "Test",
-                City = "Test",
-                Street = "Test",
+                Country = "Test".WithGuid(),
+                Region = "Test".WithGuid(),
+                Province = "Test".WithGuid(),
+                City = "Test".WithGuid(),
+                Street = "Test".WithGuid(),
                 House = "1",
                 Apartment = "1",
                 OpportunitySum = 1,

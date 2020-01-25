@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
@@ -26,29 +27,29 @@ namespace Crm.Apps.Tests.Builders.Companies
                 LeadId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                FullName = "Test",
-                ShortName = "Test",
+                FullName = "Test".WithGuid(),
+                ShortName = "Test".WithGuid(),
                 Phone = "9999999999",
                 Email = "test@test",
-                TaxNumber = "999999999999",
+                TaxNumber = "999999999999".WithGuid(),
                 RegistrationNumber = "999999999999999",
                 RegistrationDate = new DateTime(2000, 1, 1),
                 EmployeesCount = 1,
                 YearlyTurnover = 1000000,
                 JuridicalPostcode = "000000",
-                JuridicalCountry = "Test",
-                JuridicalRegion = "Test",
-                JuridicalProvince = "Test",
-                JuridicalCity = "Test",
-                JuridicalStreet = "Test",
+                JuridicalCountry = "Test".WithGuid(),
+                JuridicalRegion = "Test".WithGuid(),
+                JuridicalProvince = "Test".WithGuid(),
+                JuridicalCity = "Test".WithGuid(),
+                JuridicalStreet = "Test".WithGuid(),
                 JuridicalHouse = "1",
                 JuridicalApartment = "1",
                 LegalPostcode = "000000",
-                LegalCountry = "Test",
-                LegalRegion = "Test",
-                LegalProvince = "Test",
-                LegalCity = "Test",
-                LegalStreet = "Test",
+                LegalCountry = "Test".WithGuid(),
+                LegalRegion = "Test".WithGuid(),
+                LegalProvince = "Test".WithGuid(),
+                LegalCity = "Test".WithGuid(),
+                LegalStreet = "Test".WithGuid(),
                 LegalHouse = "1",
                 LegalApartment = "1",
                 IsDeleted = false

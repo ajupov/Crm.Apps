@@ -24,8 +24,8 @@ namespace Crm.Apps.v1.Clients.Deals.RequestParameters
 
         public int Limit { get; set; } = 10;
 
-        public string SortBy { get; set; }
+        public string SortBy { get; set; } = "CreateDateTime";
 
-        public string OrderBy { get; set; }
+        public string OrderBy { get; set; } = "desc";
     }
 }

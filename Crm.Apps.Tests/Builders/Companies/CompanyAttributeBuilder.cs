@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
@@ -23,7 +24,7 @@ namespace Crm.Apps.Tests.Builders.Companies
             {
                 AccountId = Guid.Empty,
                 Type = AttributeType.Text,
-                Key = "Test",
+                Key = "Test".WithGuid(),
                 IsDeleted = false
             };
         }

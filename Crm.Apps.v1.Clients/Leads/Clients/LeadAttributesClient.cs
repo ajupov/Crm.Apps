@@ -55,22 +55,22 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
 
         public Task<Guid> CreateAsync(string accessToken, LeadAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, accessToken, ct);
+            return _httpClientFactory.PostJsonAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, accessToken, ct);
         }
 
         public Task UpdateAsync(string accessToken, LeadAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Update"), attribute, accessToken, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Update"), attribute, accessToken, ct);
         }
 
         public Task DeleteAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Delete"), ids, accessToken, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Delete"), ids, accessToken, ct);
         }
 
         public Task RestoreAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default)
         {
-            return _httpClientFactory.GetAsync(UriBuilder.Combine(_url, "Restore"), ids, accessToken, ct);
+            return _httpClientFactory.PostJsonAsync(UriBuilder.Combine(_url, "Restore"), ids, accessToken, ct);
         }
     }
 }

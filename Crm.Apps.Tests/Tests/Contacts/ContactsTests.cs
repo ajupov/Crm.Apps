@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Contacts.Clients;
@@ -88,18 +89,19 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 .WithSourceId(leadSource.Id)
                 .BuildAsync();
             var attribute = await _create.ContactAttribute.BuildAsync();
+            var value = "Test".WithGuid();
             await Task.WhenAll(
                 _create.Contact
                     .WithLeadId(lead1.Id)
                     .WithTaxNumber("999999999990")
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Contact
                     .WithLeadId(lead2.Id)
                     .WithTaxNumber("999999999991")
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
 
             var request = new ContactGetPagedListRequestParameter
             {
@@ -133,19 +135,19 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 CompanyId = Guid.Empty,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Surname = "Test",
-                Name = "Test",
-                Patronymic = "Test",
+                Surname = "Test".WithGuid(),
+                Name = "Test".WithGuid(),
+                Patronymic = "Test".WithGuid(),
                 Phone = "9999999999",
                 Email = "test@test",
                 TaxNumber = "999999999999",
-                Post = "Test",
+                Post = "Test".WithGuid(),
                 Postcode = "000000",
-                Country = "Test",
-                Region = "Test",
-                Province = "Test",
-                City = "Test",
-                Street = "Test",
+                Country = "Test".WithGuid(),
+                Region = "Test".WithGuid(),
+                Province = "Test".WithGuid(),
+                City = "Test".WithGuid(),
+                Street = "Test".WithGuid(),
                 House = "1",
                 Apartment = "1",
                 BirthDate = new DateTime(1980, 1, 1),
@@ -155,7 +157,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                     new ContactAttributeLink
                     {
                         ContactAttributeId = attribute.Id,
-                        Value = "Test"
+                        Value = "Test".WithGuid()
                     }
                 },
                 BankAccounts = new List<ContactBankAccount>
@@ -165,7 +167,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                         Number = "9999999999999999999999999",
                         BankNumber = "9999999999",
                         BankCorrespondentNumber = "9999999999999999999999999",
-                        BankName = "Test"
+                        BankName = "Test".WithGuid()
                     }
                 }
             };
@@ -176,7 +178,6 @@ namespace Crm.Apps.Tests.Tests.Contacts
 
             Assert.NotNull(createdContact);
             Assert.Equal(createdContactId, createdContact.Id);
-            Assert.Equal(contact.AccountId, createdContact.AccountId);
             Assert.Equal(contact.LeadId, createdContact.LeadId);
             Assert.Equal(contact.CompanyId, createdContact.CompanyId);
             Assert.True(!createdContact.CreateUserId.IsEmpty());
@@ -216,19 +217,19 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 .WithLeadId(lead.Id)
                 .BuildAsync();
 
-            contact.Surname = "Test";
-            contact.Name = "Test";
-            contact.Patronymic = "Test";
+            contact.Surname = "Test".WithGuid();
+            contact.Name = "Test".WithGuid();
+            contact.Patronymic = "Test".WithGuid();
             contact.Phone = "9999999999";
             contact.Email = "test@test";
             contact.TaxNumber = "999999999999";
-            contact.Post = "Test";
+            contact.Post = "Test".WithGuid();
             contact.Postcode = "000000";
-            contact.Country = "Test";
-            contact.Region = "Test";
-            contact.Province = "Test";
-            contact.City = "Test";
-            contact.Street = "Test";
+            contact.Country = "Test".WithGuid();
+            contact.Region = "Test".WithGuid();
+            contact.Province = "Test".WithGuid();
+            contact.City = "Test".WithGuid();
+            contact.Street = "Test".WithGuid();
             contact.House = "1";
             contact.Apartment = "1";
             contact.BirthDate = new DateTime(1990, 1, 1);
@@ -237,7 +238,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 new ContactAttributeLink
                 {
                     ContactAttributeId = attribute.Id,
-                    Value = "Test"
+                    Value = "Test".WithGuid()
                 });
             contact.BankAccounts.Add(
                 new ContactBankAccount
@@ -245,7 +246,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                     Number = "9999999999999999999999999",
                     BankNumber = "9999999999",
                     BankCorrespondentNumber = "9999999999999999999999999",
-                    BankName = "Test"
+                    BankName = "Test".WithGuid()
                 });
             await _contactsClient.UpdateAsync(accessToken, contact);
 

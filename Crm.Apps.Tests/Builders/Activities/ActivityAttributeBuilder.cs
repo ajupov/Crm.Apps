@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
@@ -21,7 +22,7 @@ namespace Crm.Apps.Tests.Builders.Activities
             _attribute = new ActivityAttribute
             {
                 Type = AttributeType.Text,
-                Key = "Test",
+                Key = "Test".WithGuid(),
                 IsDeleted = false
             };
         }

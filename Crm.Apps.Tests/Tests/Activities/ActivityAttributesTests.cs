@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
@@ -59,10 +60,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ActivityAttribute
-                            .WithKey("Test1")
+                            .WithKey("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityAttribute
-                            .WithKey("Test2")
+                            .WithKey("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -79,17 +80,19 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
+            var key = "Test1".WithGuid();
+            
             await Task.WhenAll(
                 _create.ActivityAttribute
                     .WithType(AttributeType.Text)
-                    .WithKey("Test1")
+                    .WithKey(key)
                     .BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
             var request = new ActivityAttributeGetPagedListRequestParameter
             {
-                Key = "Test1",
-                Types = filterTypes,
+                Key = key,
+                Types = filterTypes
             };
 
             var attributes = await _activityAttributesClient.GetPagedListAsync(accessToken, request);
@@ -110,7 +113,7 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attribute = new ActivityAttribute
             {
                 Type = AttributeType.Text,
-                Key = "Test",
+                Key = "Test".WithGuid(),
                 IsDeleted = false
             };
             var createdAttributeId = await _activityAttributesClient.CreateAsync(accessToken, attribute);
@@ -119,7 +122,6 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             Assert.NotNull(createdAttribute);
             Assert.Equal(createdAttributeId, createdAttribute.Id);
-            Assert.Equal(attribute.AccountId, createdAttribute.AccountId);
             Assert.Equal(attribute.Type, createdAttribute.Type);
             Assert.Equal(attribute.Key, createdAttribute.Key);
             Assert.Equal(attribute.IsDeleted, createdAttribute.IsDeleted);
@@ -133,7 +135,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var attribute = await _create.ActivityAttribute
                 .WithType(AttributeType.Text)
-                .WithKey("Test")
+                .WithKey("Test".WithGuid())
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
@@ -157,10 +159,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ActivityAttribute
-                            .WithKey("Test1")
+                            .WithKey("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityAttribute
-                            .WithKey("Test2")
+                            .WithKey("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -181,10 +183,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ActivityAttribute
-                            .WithKey("Test1")
+                            .WithKey("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ActivityAttribute
-                            .WithKey("Test2")
+                            .WithKey("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

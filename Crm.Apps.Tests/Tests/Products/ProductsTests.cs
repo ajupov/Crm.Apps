@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Products.Clients;
@@ -63,11 +64,11 @@ namespace Crm.Apps.Tests.Tests.Products
                     await Task.WhenAll(
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -87,21 +88,22 @@ namespace Crm.Apps.Tests.Tests.Products
             var attribute = await _create.ProductAttribute.BuildAsync();
             var category = await _create.ProductCategory.BuildAsync();
             var status = await _create.ProductStatus.BuildAsync();
+            var value = "Test".WithGuid();
             await Task.WhenAll(
                 _create.Product
                     .WithStatusId(status.Id)
-                    .WithName("Test1")
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithName("Test1".WithGuid())
+                    .WithAttributeLink(attribute.Id, value)
                     .WithCategoryLink(category.Id)
                     .BuildAsync(),
                 _create.Product
                     .WithStatusId(status.Id)
-                    .WithName("Test2")
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithName("Test2".WithGuid())
+                    .WithAttributeLink(attribute.Id, value)
                     .WithCategoryLink(category.Id)
                     .BuildAsync());
 
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
             var filterCategoryIds = new List<Guid> {category.Id};
 
             var request = new ProductGetPagedListRequestParameter
@@ -134,7 +136,7 @@ namespace Crm.Apps.Tests.Tests.Products
                 ParentProductId = Guid.Empty,
                 Type = ProductType.Material,
                 StatusId = status.Id,
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 VendorCode = "Test",
                 Price = 1,
                 Image = null,
@@ -145,7 +147,7 @@ namespace Crm.Apps.Tests.Tests.Products
                     new ProductAttributeLink
                     {
                         ProductAttributeId = attribute.Id,
-                        Value = "Test"
+                        Value = "Test".WithGuid()
                     }
                 },
                 CategoryLinks = new List<ProductCategoryLink>
@@ -163,7 +165,6 @@ namespace Crm.Apps.Tests.Tests.Products
 
             Assert.NotNull(createdProduct);
             Assert.Equal(createdProductId, createdProduct.Id);
-            Assert.Equal(product.AccountId, createdProduct.AccountId);
             Assert.Equal(product.ParentProductId, Guid.Empty);
             Assert.Equal(product.Type, createdProduct.Type);
             Assert.Equal(product.StatusId, createdProduct.StatusId);
@@ -191,7 +192,7 @@ namespace Crm.Apps.Tests.Tests.Products
 
             product.StatusId = status.Id;
             product.Type = ProductType.Material;
-            product.Name = "Test2";
+            product.Name = "Test2".WithGuid();
             product.VendorCode = "Test2";
             product.Price = 2;
             product.IsHidden = true;
@@ -200,13 +201,14 @@ namespace Crm.Apps.Tests.Tests.Products
                 new ProductAttributeLink
                 {
                     ProductAttributeId = attribute.Id,
-                    Value = "Test"
+                    Value = "Test".WithGuid()
                 });
             product.CategoryLinks.Add(
                 new ProductCategoryLink
                 {
                     ProductCategoryId = category.Id
                 });
+            
             await _productsClient.UpdateAsync(accessToken, product);
 
             var updatedProduct = await _productsClient.GetAsync(accessToken, product.Id);
@@ -235,11 +237,11 @@ namespace Crm.Apps.Tests.Tests.Products
                     await Task.WhenAll(
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test2").BuildAsync())
+                            .WithName("Test2".WithGuid()).BuildAsync())
                 )
                 .Select(x => x.Id)
                 .ToList();
@@ -262,11 +264,11 @@ namespace Crm.Apps.Tests.Tests.Products
                     await Task.WhenAll(
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -289,11 +291,11 @@ namespace Crm.Apps.Tests.Tests.Products
                     await Task.WhenAll(
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync()
                     ))
                 .Select(x => x.Id)
@@ -316,11 +318,11 @@ namespace Crm.Apps.Tests.Tests.Products
                     await Task.WhenAll(
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.Product
                             .WithStatusId(status.Id)
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync()
                     ))
                 .Select(x => x.Id)

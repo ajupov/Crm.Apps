@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Products.Clients;
@@ -39,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Products
 
             var category = await _create.ProductCategory.BuildAsync();
 
-            category.Name = "Test2";
+            category.Name = "Test2".WithGuid();
             category.IsDeleted = true;
 
             await _productCategoriesClient.UpdateAsync(accessToken, category);

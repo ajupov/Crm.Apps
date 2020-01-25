@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Companies.Clients;
 using Crm.Apps.v1.Clients.Companies.Models;
@@ -20,7 +21,7 @@ namespace Crm.Apps.Tests.Builders.Companies
             _comment = new CompanyComment
             {
                 CompanyId = Guid.Empty,
-                Value = "Test"
+                Value = "Test".WithGuid()
             };
         }
 

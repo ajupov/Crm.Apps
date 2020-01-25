@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Contacts.Clients;
@@ -59,10 +60,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ContactAttribute
-                            .WithKey("Test1")
+                            .WithKey("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ContactAttribute
-                            .WithKey("Test2")
+                            .WithKey("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -79,16 +80,17 @@ namespace Crm.Apps.Tests.Tests.Contacts
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
+            var key = "Test1".WithGuid();
             await Task.WhenAll(
                 _create.ContactAttribute
                     .WithType(AttributeType.Text)
-                    .WithKey("Test1")
+                    .WithKey(key)
                     .BuildAsync());
             var filterTypes = new List<AttributeType> {AttributeType.Text};
 
             var request = new ContactAttributeGetPagedListRequestParameter
             {
-                Key = "Test1",
+                Key = key,
                 Types = filterTypes,
             };
 
@@ -111,7 +113,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attribute = new ContactAttribute
             {
                 Type = AttributeType.Text,
-                Key = "Test",
+                Key = "Test".WithGuid(),
                 IsDeleted = false
             };
 
@@ -121,7 +123,6 @@ namespace Crm.Apps.Tests.Tests.Contacts
 
             Assert.NotNull(createdAttribute);
             Assert.Equal(createdAttributeId, createdAttribute.Id);
-            Assert.Equal(attribute.AccountId, createdAttribute.AccountId);
             Assert.Equal(attribute.Type, createdAttribute.Type);
             Assert.Equal(attribute.Key, createdAttribute.Key);
             Assert.Equal(attribute.IsDeleted, createdAttribute.IsDeleted);
@@ -135,7 +136,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
 
             var attribute = await _create.ContactAttribute
                 .WithType(AttributeType.Text)
-                .WithKey("Test")
+                .WithKey("Test".WithGuid())
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
@@ -159,10 +160,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ContactAttribute
-                            .WithKey("Test1")
+                            .WithKey("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ContactAttribute
-                            .WithKey("Test2")
+                            .WithKey("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -183,10 +184,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ContactAttribute
-                            .WithKey("Test1")
+                            .WithKey("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ContactAttribute
-                            .WithKey("Test2")
+                            .WithKey("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

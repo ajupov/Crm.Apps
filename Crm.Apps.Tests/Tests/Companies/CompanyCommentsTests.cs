@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Companies.Clients;
@@ -78,7 +79,7 @@ namespace Crm.Apps.Tests.Tests.Companies
             var comment = new CompanyComment
             {
                 CompanyId = company.Id,
-                Value = "Test"
+                Value = "Test".WithGuid()
             };
 
             await _companyCommentsClient.CreateAsync(accessToken, comment);

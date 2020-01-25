@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
@@ -70,19 +71,20 @@ namespace Crm.Apps.Tests.Tests.Leads
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var attribute = await _create.LeadAttribute.BuildAsync();
+            var value = "Test".WithGuid();
             var source = await _create.LeadSource
-                .WithName("Test")
+                .WithName(value)
                 .BuildAsync();
             await Task.WhenAll(
                 _create.Lead
                     .WithSourceId(source.Id)
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Lead
                     .WithSourceId(source.Id)
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
             var filterSourceIds = new List<Guid> {source.Id};
 
             var request = new LeadGetPagedListRequestParameter
@@ -113,19 +115,19 @@ namespace Crm.Apps.Tests.Tests.Leads
                 SourceId = source.Id,
                 CreateUserId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Surname = "Test",
-                Name = "Test",
-                Patronymic = "Test",
+                Surname = "Test".WithGuid(),
+                Name = "Test".WithGuid(),
+                Patronymic = "Test".WithGuid(),
                 Phone = "9999999999",
                 Email = "test@test",
-                CompanyName = "Test",
-                Post = "Test",
+                CompanyName = "Test".WithGuid(),
+                Post = "Test".WithGuid(),
                 Postcode = "000000",
-                Country = "Test",
-                Region = "Test",
-                Province = "Test",
-                City = "Test",
-                Street = "Test",
+                Country = "Test".WithGuid(),
+                Region = "Test".WithGuid(),
+                Province = "Test".WithGuid(),
+                City = "Test".WithGuid(),
+                Street = "Test".WithGuid(),
                 House = "1",
                 Apartment = "1",
                 OpportunitySum = 1,
@@ -135,7 +137,7 @@ namespace Crm.Apps.Tests.Tests.Leads
                     new LeadAttributeLink
                     {
                         LeadAttributeId = attribute.Id,
-                        Value = "Test"
+                        Value = "Test".WithGuid()
                     }
                 }
             };
@@ -146,7 +148,6 @@ namespace Crm.Apps.Tests.Tests.Leads
 
             Assert.NotNull(createdLead);
             Assert.Equal(createdLeadId, createdLead.Id);
-            Assert.Equal(lead.AccountId, createdLead.AccountId);
             Assert.Equal(lead.SourceId, createdLead.SourceId);
             Assert.True(!createdLead.CreateUserId.IsEmpty());
             Assert.Equal(lead.ResponsibleUserId, createdLead.ResponsibleUserId);
@@ -184,24 +185,24 @@ namespace Crm.Apps.Tests.Tests.Leads
 
             lead.SourceId = source.Id;
             lead.ResponsibleUserId = Guid.Empty;
-            lead.Surname = "Test";
-            lead.Name = "Test";
-            lead.Patronymic = "Test";
+            lead.Surname = "Test".WithGuid();
+            lead.Name = "Test".WithGuid();
+            lead.Patronymic = "Test".WithGuid();
             lead.Phone = "9999999999";
             lead.Email = "test@test";
-            lead.CompanyName = "Test";
-            lead.Post = "Test";
+            lead.CompanyName = "Test".WithGuid();
+            lead.Post = "Test".WithGuid();
             lead.Postcode = "000000";
-            lead.Country = "Test";
-            lead.Region = "Test";
-            lead.Province = "Test";
-            lead.City = "Test";
-            lead.Street = "Test";
+            lead.Country = "Test".WithGuid();
+            lead.Region = "Test".WithGuid();
+            lead.Province = "Test".WithGuid();
+            lead.City = "Test".WithGuid();
+            lead.Street = "Test".WithGuid();
             lead.House = "1";
             lead.Apartment = "1";
             lead.OpportunitySum = 1;
             lead.IsDeleted = true;
-            lead.AttributeLinks.Add(new LeadAttributeLink {LeadAttributeId = attribute.Id, Value = "Test"});
+            lead.AttributeLinks.Add(new LeadAttributeLink {LeadAttributeId = attribute.Id, Value = "Test".WithGuid()});
             await _leadsClient.UpdateAsync(accessToken, lead);
 
             var updatedLead = await _leadsClient.GetAsync(accessToken, lead.Id);

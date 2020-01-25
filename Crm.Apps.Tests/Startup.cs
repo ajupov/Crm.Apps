@@ -1,3 +1,4 @@
+using Ajupov.Infrastructure.All.Configuration;
 using Ajupov.Infrastructure.All.TestsDependencyInjection;
 using Ajupov.Infrastructure.All.TestsDependencyInjection.Attributes;
 using Crm.Apps.Tests.Builders.Activities;
@@ -13,7 +14,6 @@ using Crm.Apps.Tests.Settings;
 using Crm.Apps.v1.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ConfigurationExtensions = Ajupov.Infrastructure.All.Configuration.ConfigurationExtensions;
 
 [assembly: DependencyInject("Crm.Apps.Tests.Startup", "Crm.Apps.Tests")]
 
@@ -23,17 +23,20 @@ namespace Crm.Apps.Tests
     {
         protected override void Configure(IServiceCollection services)
         {
-            var configuration = ConfigurationExtensions.GetConfiguration();
+            var configuration = Configuration.GetConfiguration();
 
             var hostsSettings = configuration.GetSection(nameof(HostsSettings));
+            var oauthSettings = configuration.GetSection(nameof(OAuthSettings));
+            var clientId = oauthSettings.GetValue<string>(nameof(OAuthSettings.ClientId));
             var apiHost = hostsSettings.GetValue<string>(nameof(HostsSettings.ApiHost));
             var oauthHost = hostsSettings.GetValue<string>(nameof(HostsSettings.OAuthHost));
 
             services
-                .ConfigureClients(apiHost, oauthHost)
+                .ConfigureClients(clientId, apiHost, oauthHost)
                 .Configure<OAuthSettings>(configuration.GetSection(nameof(OAuthSettings)));
 
-            services.AddSingleton<IAccessTokenGetter, AccessTokenGetter>()
+            services
+                .AddSingleton<IAccessTokenGetter, AccessTokenGetter>()
                 .AddTransient<ICreate, Create>();
 
             services

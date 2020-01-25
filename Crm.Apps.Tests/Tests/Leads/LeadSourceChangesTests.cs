@@ -4,6 +4,7 @@ using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Json;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Leads.Clients;
@@ -39,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Leads
 
             var source = await _create.LeadSource.BuildAsync();
 
-            source.Name = "Test2";
+            source.Name = "Test2".WithGuid();
             source.IsDeleted = true;
 
             await _leadSourcesClient.UpdateAsync(accessToken, source);

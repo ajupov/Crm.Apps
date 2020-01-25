@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
@@ -49,9 +50,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var request = new ActivityCommentGetPagedListRequestParameter
             {
-                ActivityId = activity.Id,
-                SortBy = "CreateDateTime",
-                OrderBy = "desc"
+                ActivityId = activity.Id
             };
 
             var comments = await _activityCommentsClient.GetPagedListAsync(accessToken, request);
@@ -79,7 +78,7 @@ namespace Crm.Apps.Tests.Tests.Activities
             var comment = new ActivityComment
             {
                 ActivityId = activity.Id,
-                Value = "Test"
+                Value = "Test".WithGuid()
             };
 
             await _activityCommentsClient.CreateAsync(accessToken, comment);

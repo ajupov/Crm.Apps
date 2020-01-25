@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.ApiDocumentation;
+using Ajupov.Infrastructure.All.Configuration;
 using Ajupov.Infrastructure.All.Hosting;
 using Ajupov.Infrastructure.All.HotStorage;
 using Ajupov.Infrastructure.All.Jwt;
@@ -7,6 +8,7 @@ using Ajupov.Infrastructure.All.Logging;
 using Ajupov.Infrastructure.All.Metrics;
 using Ajupov.Infrastructure.All.Migrations;
 using Ajupov.Infrastructure.All.Mvc;
+using Ajupov.Infrastructure.All.Mvc.Filters;
 using Ajupov.Infrastructure.All.Orm;
 using Ajupov.Infrastructure.All.Tracing;
 using Ajupov.Infrastructure.All.UserContext;
@@ -29,7 +31,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ConfigurationExtensions = Ajupov.Infrastructure.All.Configuration.ConfigurationExtensions;
 
 namespace Crm.Apps
 {
@@ -37,10 +38,10 @@ namespace Crm.Apps
     {
         public static Task Main()
         {
-            var configuration = ConfigurationExtensions.GetConfiguration();
+            var configuration = Configuration.GetConfiguration();
 
             return configuration
-                .ConfigureHost()
+                .ConfigureHosting()
                 .ConfigureLogging(configuration)
                 .ConfigureServices((builder, services) =>
                 {
@@ -52,19 +53,19 @@ namespace Crm.Apps
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
                     services
-                        .ConfigureMvc()
-                        .ConfigureTracing(configuration)
-                        .ConfigureApiDocumentation()
-                        .ConfigureMetrics(builder.Configuration)
-                        .ConfigureMigrator(builder.Configuration)
-                        .ConfigureOrm<ProductsStorage>(builder.Configuration)
-                        .ConfigureOrm<LeadsStorage>(builder.Configuration)
-                        .ConfigureOrm<CompaniesStorage>(builder.Configuration)
-                        .ConfigureOrm<ContactsStorage>(builder.Configuration)
-                        .ConfigureOrm<DealsStorage>(builder.Configuration)
-                        .ConfigureOrm<ActivitiesStorage>(builder.Configuration)
-                        .ConfigureHotStorage(builder.Configuration)
-                        .ConfigureUserContext<IUserContext, UserContext>();
+                        .AddMvc(typeof(ValidationFilter))
+                        .AddTracing(configuration)
+                        .AddApiDocumentation()
+                        .AddMetrics(builder.Configuration)
+                        .AddMigrator(builder.Configuration)
+                        .AddOrm<ProductsStorage>(builder.Configuration)
+                        .AddOrm<LeadsStorage>(builder.Configuration)
+                        .AddOrm<CompaniesStorage>(builder.Configuration)
+                        .AddOrm<ContactsStorage>(builder.Configuration)
+                        .AddOrm<DealsStorage>(builder.Configuration)
+                        .AddOrm<ActivitiesStorage>(builder.Configuration)
+                        .AddUserContext<IUserContext, UserContext>()
+                        .AddHotStorage(builder.Configuration);
 
                     services
                         .AddTransient<IProductsService, ProductsService>()

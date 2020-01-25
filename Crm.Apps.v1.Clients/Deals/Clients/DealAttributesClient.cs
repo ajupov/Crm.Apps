@@ -23,9 +23,9 @@ namespace Crm.Apps.v1.Clients.Deals.Clients
             _httpClientFactory = httpClientFactory;
         }
 
-        public Task<List<AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default)
+        public Task<Dictionary<string, AttributeType>> GetTypesAsync(string accessToken, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostJsonAsync<List<AttributeType>>(
+            return _httpClientFactory.GetAsync<Dictionary<string, AttributeType>>(
                 UriBuilder.Combine(_url, "GetTypes"), null, accessToken, ct);
         }
 

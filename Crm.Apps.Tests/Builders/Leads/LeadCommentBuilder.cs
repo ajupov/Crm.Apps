@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Leads.Clients;
 using Crm.Apps.v1.Clients.Leads.Models;
@@ -20,7 +21,7 @@ namespace Crm.Apps.Tests.Builders.Leads
             _comment = new LeadComment
             {
                 LeadId = Guid.Empty,
-                Value = "Test"
+                Value = "Test".WithGuid()
             };
         }
 

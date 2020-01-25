@@ -12,8 +12,6 @@ namespace Crm.Apps.Deals.v1.Models
 
         public DateTime CreateDateTime { get; set; }
 
-        public DateTime? ModifyDateTime { get; set; }
-
         public string OldValueJson { get; set; }
 
         public string NewValueJson { get; set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Activities.Clients;
@@ -81,18 +82,19 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attribute = await _create.ActivityAttribute.BuildAsync();
             var type = await _create.ActivityType.BuildAsync();
             var status = await _create.ActivityStatus.BuildAsync();
+            var value = "Test".WithGuid();
             await Task.WhenAll(
                 _create.Activity
                     .WithTypeId(type.Id)
                     .WithStatusId(status.Id)
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Activity
                     .WithTypeId(type.Id)
                     .WithStatusId(status.Id)
-                    .WithAttributeLink(attribute.Id, "Test")
+                    .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
-            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, "Test"}};
+            var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
             var filterStatusIds = new List<Guid> {status.Id};
 
             var request = new ActivityGetPagedListRequestParameter
@@ -130,9 +132,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 ContactId = Guid.Empty,
                 DealId = Guid.Empty,
                 ResponsibleUserId = Guid.Empty,
-                Name = "Test",
-                Description = "Test",
-                Result = "Test",
+                Name = "Test".WithGuid(),
+                Description = "Test".WithGuid(),
+                Result = "Test".WithGuid(),
                 Priority = ActivityPriority.Medium,
                 StartDateTime = DateTime.UtcNow,
                 EndDateTime = DateTime.UtcNow.AddDays(1),
@@ -143,7 +145,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                     new ActivityAttributeLink
                     {
                         ActivityAttributeId = attribute.Id,
-                        Value = "Test"
+                        Value = "Test".WithGuid()
                     }
                 }
             };
@@ -154,7 +156,6 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             Assert.NotNull(createdActivity);
             Assert.Equal(activityId, createdActivity.Id);
-            Assert.Equal(activity.AccountId, createdActivity.AccountId);
             Assert.Equal(activity.TypeId, createdActivity.TypeId);
             Assert.Equal(activity.StatusId, createdActivity.StatusId);
             Assert.Equal(activity.LeadId, createdActivity.LeadId);
@@ -188,9 +189,9 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .WithStatusId(activityStatus.Id)
                 .BuildAsync();
 
-            activity.Name = "Test";
-            activity.Description = "Test";
-            activity.Result = "Test";
+            activity.Name = "Test".WithGuid();
+            activity.Description = "Test".WithGuid();
+            activity.Result = "Test".WithGuid();
             activity.Priority = ActivityPriority.Medium;
             activity.StartDateTime = DateTime.UtcNow;
             activity.EndDateTime = DateTime.UtcNow.AddDays(1);
@@ -198,7 +199,7 @@ namespace Crm.Apps.Tests.Tests.Activities
             activity.IsDeleted = true;
             activity.AttributeLinks = new List<ActivityAttributeLink>
             {
-                new ActivityAttributeLink {ActivityAttributeId = attribute.Id, Value = "Test"}
+                new ActivityAttributeLink {ActivityAttributeId = attribute.Id, Value = "Test".WithGuid()}
             };
 
             await _activitiesClient.UpdateAsync(accessToken, activity);

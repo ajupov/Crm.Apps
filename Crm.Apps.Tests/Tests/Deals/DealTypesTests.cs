@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Deals.Clients;
@@ -44,10 +45,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.DealType
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -64,11 +65,15 @@ namespace Crm.Apps.Tests.Tests.Deals
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            await Task.WhenAll(_create.DealType.WithName("Test1").BuildAsync());
+            var name = "Test1".WithGuid();
+            await Task.WhenAll(
+                _create.DealType
+                    .WithName(name)
+                    .BuildAsync());
 
             var request = new DealTypeGetPagedListRequestParameter
             {
-                Name = "Test1"
+                Name = name
             };
 
             var types = await _dealTypesClient.GetPagedListAsync(accessToken, request);
@@ -88,7 +93,7 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             var type = new DealType
             {
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 IsDeleted = false
             };
 
@@ -98,7 +103,6 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             Assert.NotNull(createdType);
             Assert.Equal(createdTypeId, createdType.Id);
-            Assert.Equal(type.AccountId, createdType.AccountId);
             Assert.Equal(type.Name, createdType.Name);
             Assert.Equal(type.IsDeleted, createdType.IsDeleted);
             Assert.True(createdType.CreateDateTime.IsMoreThanMinValue());
@@ -110,10 +114,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var type = await _create.DealType
-                .WithName("Test1")
+                .WithName("Test1".WithGuid())
                 .BuildAsync();
 
-            type.Name = "Test2";
+            type.Name = "Test2".WithGuid();
             type.IsDeleted = true;
 
             await _dealTypesClient.UpdateAsync(accessToken, type);
@@ -132,10 +136,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.DealType
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -156,10 +160,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.DealType
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

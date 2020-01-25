@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.DateTime;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.Tests.Services.Creator;
 using Crm.Apps.v1.Clients.Products.Clients;
@@ -47,10 +48,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var categoriesIds = (
                     await Task.WhenAll(
                         _create.ProductCategory
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ProductCategory
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -67,13 +68,14 @@ namespace Crm.Apps.Tests.Tests.Products
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
+            var name = "Test1".WithGuid();
             await Task.WhenAll(_create.ProductCategory
-                .WithName("Test1")
+                .WithName(name)
                 .BuildAsync());
 
             var request = new ProductCategoryGetPagedListRequestParameter
             {
-                Name = "Test1"
+                Name = name
             };
 
             var categories = await _productCategoriesClient.GetPagedListAsync(accessToken, request);
@@ -93,7 +95,7 @@ namespace Crm.Apps.Tests.Tests.Products
 
             var categories = new ProductCategory
             {
-                Name = "Test",
+                Name = "Test".WithGuid(),
                 IsDeleted = false
             };
 
@@ -103,7 +105,6 @@ namespace Crm.Apps.Tests.Tests.Products
 
             Assert.NotNull(createdCategory);
             Assert.Equal(createdCategoryId, createdCategory.Id);
-            Assert.Equal(categories.AccountId, createdCategory.AccountId);
             Assert.Equal(categories.Name, createdCategory.Name);
             Assert.Equal(categories.IsDeleted, createdCategory.IsDeleted);
             Assert.True(createdCategory.CreateDateTime.IsMoreThanMinValue());
@@ -115,10 +116,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var categories = await _create.ProductCategory
-                .WithName("Test1")
+                .WithName("Test1".WithGuid())
                 .BuildAsync();
 
-            categories.Name = "Test2";
+            categories.Name = "Test2".WithGuid();
             categories.IsDeleted = true;
 
             await _productCategoriesClient.UpdateAsync(accessToken, categories);
@@ -137,10 +138,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var categoriesIds = (
                     await Task.WhenAll(
                         _create.ProductCategory
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ProductCategory
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -161,10 +162,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var categoriesIds = (
                     await Task.WhenAll(
                         _create.ProductCategory
-                            .WithName("Test1")
+                            .WithName("Test1".WithGuid())
                             .BuildAsync(),
                         _create.ProductCategory
-                            .WithName("Test2")
+                            .WithName("Test2".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
