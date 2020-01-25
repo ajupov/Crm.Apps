@@ -364,11 +364,11 @@ namespace Crm.Apps.Tests.Tests.Companies
                     await Task.WhenAll(
                         _create.Company
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990")
+                            .WithTaxNumber("999999999990".WithGuid())
                             .BuildAsync(),
                         _create.Company
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991")
+                            .WithTaxNumber("999999999991".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id).ToList();

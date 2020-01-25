@@ -139,7 +139,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "test.com";
+            attribute.Key = "test.com".WithGuid();
             attribute.IsDeleted = true;
 
             await _dealAttributesClient.UpdateAsync(accessToken, attribute);

@@ -140,7 +140,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "test.com";
+            attribute.Key = "test.com".WithGuid();
             attribute.IsDeleted = true;
 
             await _contactAttributesClient.UpdateAsync(accessToken, attribute);
