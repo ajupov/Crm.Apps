@@ -6,7 +6,9 @@ namespace Crm.Apps.Deals.Helpers
 {
     public static class DealAttributesChangesHelper
     {
-        public static DealAttributeChange WithCreateLog(this DealAttribute attribute, Guid userId,
+        public static DealAttributeChange WithCreateLog(
+            this DealAttribute attribute,
+            Guid userId,
             Action<DealAttribute> action)
         {
             action(attribute);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Deals.Helpers
             };
         }
 
-        public static DealAttributeChange WithUpdateLog(this DealAttribute attribute, Guid userId,
+        public static DealAttributeChange WithUpdateLog(
+            this DealAttribute attribute,
+            Guid userId,
             Action<DealAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();

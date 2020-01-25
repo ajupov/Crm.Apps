@@ -19,7 +19,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             _accessTokenGetter = accessTokenGetter;
             _source = new LeadSource
             {
-                AccountId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 IsDeleted = false
             };

@@ -60,10 +60,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ContactAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.ContactAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -80,7 +80,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var key = "Test1".WithGuid();
+            var key = "Test".WithGuid();
             await Task.WhenAll(
                 _create.ContactAttribute
                     .WithType(AttributeType.Text)
@@ -140,7 +140,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "test.com".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _contactAttributesClient.UpdateAsync(accessToken, attribute);
@@ -160,10 +160,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ContactAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.ContactAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -184,10 +184,10 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ContactAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.ContactAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
+using Crm.Apps.Tests.Extensions;
 using Crm.Apps.Tests.Services.AccessTokenGetter;
 using Crm.Apps.v1.Clients.Activities.Clients;
 using Crm.Apps.v1.Clients.Activities.Models;
@@ -20,16 +21,9 @@ namespace Crm.Apps.Tests.Builders.Activities
             _accessTokenGetter = accessTokenGetter;
             _activity = new Activity
             {
-                TypeId = Guid.Empty,
-                LeadId = Guid.Empty,
-                StatusId = Guid.Empty,
-                CompanyId = Guid.Empty,
-                ContactId = Guid.Empty,
-                DealId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
-                Name = "Test",
-                Description = "Test",
-                Result = "Test",
+                Name = "Test".WithGuid(),
+                Description = "Test".WithGuid(),
+                Result = "Test".WithGuid(),
                 Priority = ActivityPriority.Medium,
                 StartDateTime = DateTime.UtcNow,
                 EndDateTime = DateTime.UtcNow.AddDays(1),

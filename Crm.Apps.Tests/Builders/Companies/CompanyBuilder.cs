@@ -21,12 +21,8 @@ namespace Crm.Apps.Tests.Builders.Companies
             _accessTokenGetter = accessTokenGetter;
             _company = new Company
             {
-                AccountId = Guid.Empty,
                 Type = CompanyType.Commercial,
                 IndustryType = CompanyIndustryType.Computer,
-                LeadId = Guid.Empty,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 FullName = "Test".WithGuid(),
                 ShortName = "Test".WithGuid(),
                 Phone = "9999999999",

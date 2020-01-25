@@ -13,8 +13,8 @@ namespace Crm.Apps.Companies.v1.Models
 
         public Guid CreateUserId { get; set; }
 
-        public Guid ResponsibleUserId { get; set; }
-        
+        public Guid? ResponsibleUserId { get; set; }
+
         public CompanyType Type { get; set; }
 
         public CompanyIndustryType IndustryType { get; set; }
@@ -22,13 +22,13 @@ namespace Crm.Apps.Companies.v1.Models
         public string FullName { get; set; }
 
         public string ShortName { get; set; }
-        
+
         public string Phone { get; set; }
-        
+
         public string Email { get; set; }
-        
+
         public string TaxNumber { get; set; }
-        
+
         public string RegistrationNumber { get; set; }
 
         public DateTime? RegistrationDate { get; set; }
@@ -52,7 +52,7 @@ namespace Crm.Apps.Companies.v1.Models
         public string JuridicalHouse { get; set; }
 
         public string JuridicalApartment { get; set; }
-        
+
         public string LegalPostcode { get; set; }
 
         public string LegalCountry { get; set; }
@@ -68,7 +68,7 @@ namespace Crm.Apps.Companies.v1.Models
         public string LegalHouse { get; set; }
 
         public string LegalApartment { get; set; }
-        
+
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }

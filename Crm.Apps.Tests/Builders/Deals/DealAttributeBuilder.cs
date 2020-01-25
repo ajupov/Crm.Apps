@@ -20,7 +20,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             _accessTokenGetter = accessTokenGetter;
             _attribute = new DealAttribute
             {
-                AccountId = Guid.Empty,
                 Type = AttributeType.Text,
                 Key = "Test".WithGuid(),
                 IsDeleted = false

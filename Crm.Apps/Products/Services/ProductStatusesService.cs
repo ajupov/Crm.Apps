@@ -87,6 +87,7 @@ namespace Crm.Apps.Products.Services
             {
                 x.Name = newStatus.Name;
                 x.IsDeleted = newStatus.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _storage.Update(oldStatus);
@@ -100,7 +101,11 @@ namespace Crm.Apps.Products.Services
 
             await _storage.ProductStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -112,7 +117,11 @@ namespace Crm.Apps.Products.Services
 
             await _storage.ProductStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

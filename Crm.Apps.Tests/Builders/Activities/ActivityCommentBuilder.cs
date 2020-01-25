@@ -22,7 +22,6 @@ namespace Crm.Apps.Tests.Builders.Activities
             _accessTokenGetter = accessTokenGetter;
             _comment = new ActivityComment
             {
-                ActivityId = Guid.Empty,
                 Value = "Test".WithGuid()
             };
         }

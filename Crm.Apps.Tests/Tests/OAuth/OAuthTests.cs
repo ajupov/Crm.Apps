@@ -36,7 +36,7 @@ namespace Crm.Apps.Tests.Tests.OAuth
         public async Task WhenRefreshTokens_ThenSuccess()
         {
             var tokens = await _create.OAuth.BuildAsync();
-            
+
             var newTokens = await _oauthClient.RefreshTokensAsync(tokens.RefreshToken);
 
             Assert.NotNull(newTokens.AccessToken);

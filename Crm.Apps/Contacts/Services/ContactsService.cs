@@ -40,7 +40,9 @@ namespace Crm.Apps.Contacts.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Contact>> GetPagedListAsync(ContactGetPagedListRequestParameter request, CancellationToken ct)
+        public async Task<List<Contact>> GetPagedListAsync(
+            ContactGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             var temp = await _storage.Contacts
                 .AsNoTracking()
@@ -110,8 +112,27 @@ namespace Crm.Apps.Contacts.Services
                 x.Photo = contact.Photo;
                 x.IsDeleted = contact.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.BankAccounts = contact.BankAccounts;
-                x.AttributeLinks = contact.AttributeLinks;
+                x.BankAccounts = contact.BankAccounts?
+                    .Select(a => new ContactBankAccount
+                    {
+                        ContactId = x.Id,
+                        Number = a.Number,
+                        BankNumber = a.BankNumber,
+                        BankCorrespondentNumber = a.BankCorrespondentNumber,
+                        BankName = a.BankName,
+                        IsDeleted = a.IsDeleted,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
+                x.AttributeLinks = contact.AttributeLinks?
+                    .Select(l => new ContactAttributeLink
+                    {
+                        ContactId = x.Id,
+                        ContactAttributeId = l.ContactAttributeId,
+                        Value = l.Value,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
             });
 
             var entry = await _storage.AddAsync(newContact, ct);
@@ -147,6 +168,7 @@ namespace Crm.Apps.Contacts.Services
                 x.BirthDate = newContact.BirthDate;
                 x.Photo = newContact.Photo;
                 x.IsDeleted = newContact.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
                 x.BankAccounts = newContact.BankAccounts;
                 x.AttributeLinks = newContact.AttributeLinks;
             });
@@ -162,7 +184,11 @@ namespace Crm.Apps.Contacts.Services
 
             await _storage.Contacts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -174,7 +200,11 @@ namespace Crm.Apps.Contacts.Services
 
             await _storage.Contacts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

@@ -127,11 +127,6 @@ namespace Crm.Apps.Tests.Tests.Activities
             {
                 TypeId = type.Id,
                 StatusId = activityStatus.Id,
-                LeadId = Guid.Empty,
-                CompanyId = Guid.Empty,
-                ContactId = Guid.Empty,
-                DealId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 Description = "Test".WithGuid(),
                 Result = "Test".WithGuid(),

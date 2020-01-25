@@ -29,7 +29,7 @@ namespace Crm.Apps.Products.Migrations
         public override void Down()
         {
             Delete.Index("IX_ProductCategories_AccountId").OnTable("ProductCategories");
-            Delete.UniqueConstraint("UQ_ProductCategories_AccountId_Key").FromTable("ProductCategories");
+            Delete.UniqueConstraint("UQ_ProductCategories_AccountId_Name").FromTable("ProductCategories");
             Delete.PrimaryKey("PK_ProductCategories_Id").FromTable("ProductCategories");
             Delete.Table("ProductCategories");
         }

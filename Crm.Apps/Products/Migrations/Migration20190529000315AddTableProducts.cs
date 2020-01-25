@@ -10,7 +10,7 @@ namespace Crm.Apps.Products.Migrations
             Create.Table("Products")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
-                .WithColumn("ParentProductId").AsGuid().NotNullable()
+                .WithColumn("ParentProductId").AsGuid().Nullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("StatusId").AsGuid().NotNullable()
                 .WithColumn("Name").AsString(64).NotNullable()

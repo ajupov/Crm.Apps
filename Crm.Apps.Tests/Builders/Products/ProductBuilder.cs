@@ -21,8 +21,6 @@ namespace Crm.Apps.Tests.Builders.Products
             _accessTokenGetter = accessTokenGetter;
             _product = new Product
             {
-                AccountId = Guid.Empty,
-                ParentProductId = Guid.Empty,
                 Type = ProductType.Material,
                 Name = "Test".WithGuid(),
                 VendorCode = "Test",

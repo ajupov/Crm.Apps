@@ -13,13 +13,13 @@ namespace Crm.Apps.v1.Clients.Deals.Models
 
         public Guid StatusId { get; set; }
 
-        public Guid CompanyId { get; set; }
+        public Guid? CompanyId { get; set; }
 
-        public Guid ContactId { get; set; }
+        public Guid? ContactId { get; set; }
 
         public Guid CreateUserId { get; set; }
 
-        public Guid ResponsibleUserId { get; set; }
+        public Guid? ResponsibleUserId { get; set; }
 
         public string Name { get; set; }
 

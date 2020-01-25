@@ -19,7 +19,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             _accessTokenGetter = accessTokenGetter;
             _status = new DealStatus
             {
-                AccountId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 IsFinish = false,
                 IsDeleted = false

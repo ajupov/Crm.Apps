@@ -22,7 +22,6 @@ namespace Crm.Apps.Tests.Builders.Companies
             _accessTokenGetter = accessTokenGetter;
             _companyAttribute = new CompanyAttribute
             {
-                AccountId = Guid.Empty,
                 Type = AttributeType.Text,
                 Key = "Test".WithGuid(),
                 IsDeleted = false

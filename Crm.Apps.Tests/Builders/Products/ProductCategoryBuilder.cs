@@ -21,7 +21,6 @@ namespace Crm.Apps.Tests.Builders.Products
             _accessTokenGetter = accessTokenGetter;
             _category = new ProductCategory
             {
-                AccountId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 IsDeleted = false
             };

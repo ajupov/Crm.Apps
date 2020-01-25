@@ -48,10 +48,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var typeIds = (
                     await Task.WhenAll(
                         _create.ActivityType
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.ActivityType
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -68,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var name = "Test1".WithGuid();
+            var name = "Test".WithGuid();
             await Task.WhenAll(_create.ActivityType.WithName(name).BuildAsync());
 
             var request = new ActivityTypeGetPagedListRequestParameter
@@ -115,9 +115,9 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var type = await _create.ActivityType.WithName("Test1".WithGuid()).BuildAsync();
+            var type = await _create.ActivityType.WithName("Test".WithGuid()).BuildAsync();
 
-            type.Name = "Test2".WithGuid();
+            type.Name = "Test".WithGuid();
             type.IsDeleted = true;
 
             await _activityTypesClient.UpdateAsync(accessToken, type);
@@ -134,8 +134,8 @@ namespace Crm.Apps.Tests.Tests.Activities
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var typeIds = (await Task.WhenAll(
-                    _create.ActivityType.WithName("Test1".WithGuid()).BuildAsync(),
-                    _create.ActivityType.WithName("Test2".WithGuid()).BuildAsync())
+                    _create.ActivityType.WithName("Test".WithGuid()).BuildAsync(),
+                    _create.ActivityType.WithName("Test".WithGuid()).BuildAsync())
                 )
                 .Select(x => x.Id)
                 .ToList();
@@ -155,10 +155,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var typeIds = (
                     await Task.WhenAll(
                         _create.ActivityType
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.ActivityType
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

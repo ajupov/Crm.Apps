@@ -22,7 +22,6 @@ namespace Crm.Apps.Tests.Builders.Activities
             _accessTokenGetter = accessTokenGetter;
             _status = new ActivityStatus
             {
-                AccountId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 IsFinish = false,
                 IsDeleted = false

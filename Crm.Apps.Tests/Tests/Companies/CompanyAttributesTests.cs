@@ -60,10 +60,10 @@ namespace Crm.Apps.Tests.Tests.Companies
             var attributeIds = (
                     await Task.WhenAll(
                         _create.CompanyAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.CompanyAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -80,7 +80,7 @@ namespace Crm.Apps.Tests.Tests.Companies
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var key = "Test1".WithGuid();
+            var key = "Test".WithGuid();
             await Task.WhenAll(
                 _create.CompanyAttribute
                     .WithType(AttributeType.Text)
@@ -139,7 +139,7 @@ namespace Crm.Apps.Tests.Tests.Companies
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "test.com".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _companyAttributesClient.UpdateAsync(accessToken, attribute);
@@ -159,10 +159,10 @@ namespace Crm.Apps.Tests.Tests.Companies
             var attributeIds = (
                     await Task.WhenAll(
                         _create.CompanyAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.CompanyAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -183,10 +183,10 @@ namespace Crm.Apps.Tests.Tests.Companies
             var attributeIds = (
                     await Task.WhenAll(
                         _create.CompanyAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.CompanyAttribute
-                            .WithKey("Test2".WithGuid()).BuildAsync())
+                            .WithKey("Test".WithGuid()).BuildAsync())
                 )
                 .Select(x => x.Id)
                 .ToList();

@@ -9,7 +9,9 @@ namespace Crm.Apps.Deals.Services
 {
     public interface IDealCommentsService
     {
-        Task<List<DealComment>> GetPagedListAsync(DealCommentGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<DealComment>> GetPagedListAsync(
+            DealCommentGetPagedListRequestParameter request,
+            CancellationToken ct);
 
         Task CreateAsync(Guid userId, DealComment comment, CancellationToken ct);
     }

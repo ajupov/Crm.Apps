@@ -90,6 +90,7 @@ namespace Crm.Apps.Companies.Services
                 x.Type = newAttribute.Type;
                 x.Key = newAttribute.Key;
                 x.IsDeleted = newAttribute.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _storage.Update(oldAttribute);
@@ -103,7 +104,11 @@ namespace Crm.Apps.Companies.Services
 
             await _storage.CompanyAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -115,7 +120,11 @@ namespace Crm.Apps.Companies.Services
 
             await _storage.CompanyAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

@@ -40,7 +40,9 @@ namespace Crm.Apps.Companies.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Company>> GetPagedListAsync(CompanyGetPagedListRequestParameter request, CancellationToken ct)
+        public async Task<List<Company>> GetPagedListAsync(
+            CompanyGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             var temp = await _storage.Companies
                 .AsNoTracking()
@@ -141,8 +143,27 @@ namespace Crm.Apps.Companies.Services
                 x.LegalApartment = company.LegalApartment;
                 x.IsDeleted = company.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.BankAccounts = company.BankAccounts;
-                x.AttributeLinks = company.AttributeLinks;
+                x.BankAccounts = company.BankAccounts?
+                    .Select(a => new CompanyBankAccount
+                    {
+                        CompanyId = x.Id,
+                        Number = a.Number,
+                        BankNumber = a.BankNumber,
+                        BankCorrespondentNumber = a.BankCorrespondentNumber,
+                        BankName = a.BankName,
+                        IsDeleted = a.IsDeleted,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
+                x.AttributeLinks = company.AttributeLinks?
+                    .Select(l => new CompanyAttributeLink
+                    {
+                        CompanyId = x.Id,
+                        CompanyAttributeId = l.CompanyAttributeId,
+                        Value = l.Value,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
             });
 
             var entry = await _storage.AddAsync(newCompany, ct);
@@ -186,6 +207,7 @@ namespace Crm.Apps.Companies.Services
                 x.LegalHouse = newCompany.LegalHouse;
                 x.LegalApartment = newCompany.LegalApartment;
                 x.IsDeleted = newCompany.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
                 x.BankAccounts = newCompany.BankAccounts;
                 x.AttributeLinks = newCompany.AttributeLinks;
             });
@@ -201,7 +223,11 @@ namespace Crm.Apps.Companies.Services
 
             await _storage.Companies
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -213,7 +239,11 @@ namespace Crm.Apps.Companies.Services
 
             await _storage.Companies
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

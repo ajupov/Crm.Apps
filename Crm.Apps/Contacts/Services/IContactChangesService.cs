@@ -8,6 +8,8 @@ namespace Crm.Apps.Contacts.Services
 {
     public interface IContactChangesService
     {
-        Task<List<ContactChange>> GetPagedListAsync(ContactChangeGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<ContactChange>> GetPagedListAsync(
+            ContactChangeGetPagedListRequestParameter request,
+            CancellationToken ct);
     }
 }

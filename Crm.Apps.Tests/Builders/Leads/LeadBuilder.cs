@@ -21,10 +21,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             _accessTokenGetter = accessTokenGetter;
             _lead = new Lead
             {
-                AccountId = Guid.Empty,
-                SourceId = Guid.Empty,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Surname = "Test".WithGuid(),
                 Name = "Test".WithGuid(),
                 Patronymic = "Test".WithGuid(),

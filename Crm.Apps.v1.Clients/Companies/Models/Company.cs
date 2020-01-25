@@ -13,7 +13,7 @@ namespace Crm.Apps.v1.Clients.Companies.Models
 
         public Guid CreateUserId { get; set; }
 
-        public Guid ResponsibleUserId { get; set; }
+        public Guid? ResponsibleUserId { get; set; }
         
         public CompanyType Type { get; set; }
 

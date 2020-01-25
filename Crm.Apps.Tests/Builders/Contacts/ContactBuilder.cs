@@ -21,11 +21,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
             _accessTokenGetter = accessTokenGetter;
             _contact = new Contact
             {
-                AccountId = Guid.Empty,
-                LeadId = Guid.Empty,
-                CompanyId = Guid.Empty,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Surname = "Test".WithGuid(),
                 Name = "Test".WithGuid(),
                 Patronymic = "Test".WithGuid(),

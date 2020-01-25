@@ -11,7 +11,7 @@ namespace Crm.Apps.Products.v1.Models
         public Guid ProductCategoryId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
-        
+
         public DateTime? ModifyDateTime { get; set; }
     }
 }

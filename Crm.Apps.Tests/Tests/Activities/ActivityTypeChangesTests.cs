@@ -40,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Activities
 
             var type = await _create.ActivityType.BuildAsync();
 
-            type.Name = "Test2".WithGuid();
+            type.Name = "Test".WithGuid();
             type.IsDeleted = true;
 
             await _activityTypesClient.UpdateAsync(accessToken, type);

@@ -14,9 +14,9 @@ namespace Crm.Apps.Deals.v1.Models
         public string Key { get; set; }
 
         public bool IsDeleted { get; set; }
-        
+
         public DateTime CreateDateTime { get; set; }
-        
+
         public DateTime? ModifyDateTime { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Products
 
             var category = await _create.ProductCategory.BuildAsync();
 
-            category.Name = "Test2".WithGuid();
+            category.Name = "Test".WithGuid();
             category.IsDeleted = true;
 
             await _productCategoriesClient.UpdateAsync(accessToken, category);

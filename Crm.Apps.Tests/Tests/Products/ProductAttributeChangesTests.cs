@@ -42,7 +42,7 @@ namespace Crm.Apps.Tests.Tests.Products
             var attribute = await _create.ProductAttribute.BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _productAttributesClient.UpdateAsync(accessToken, attribute);

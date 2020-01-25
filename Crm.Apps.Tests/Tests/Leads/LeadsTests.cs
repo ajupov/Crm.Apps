@@ -113,8 +113,6 @@ namespace Crm.Apps.Tests.Tests.Leads
             var lead = new Lead
             {
                 SourceId = source.Id,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Surname = "Test".WithGuid(),
                 Name = "Test".WithGuid(),
                 Patronymic = "Test".WithGuid(),
@@ -184,7 +182,6 @@ namespace Crm.Apps.Tests.Tests.Leads
                 .BuildAsync();
 
             lead.SourceId = source.Id;
-            lead.ResponsibleUserId = Guid.Empty;
             lead.Surname = "Test".WithGuid();
             lead.Name = "Test".WithGuid();
             lead.Patronymic = "Test".WithGuid();

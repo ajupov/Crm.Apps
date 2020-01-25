@@ -6,7 +6,9 @@ namespace Crm.Apps.Products.Helpers
 {
     public static class ProductStatusChangesHelper
     {
-        public static ProductStatusChange WithCreateLog(this ProductStatus status, Guid userId,
+        public static ProductStatusChange WithCreateLog(
+            this ProductStatus status,
+            Guid userId,
             Action<ProductStatus> action)
         {
             action(status);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductStatusChange WithUpdateLog(this ProductStatus status, Guid userId,
+        public static ProductStatusChange WithUpdateLog(
+            this ProductStatus status,
+            Guid userId,
             Action<ProductStatus> action)
         {
             var oldValueJson = status.ToJsonString();

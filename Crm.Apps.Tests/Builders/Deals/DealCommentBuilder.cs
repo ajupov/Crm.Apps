@@ -20,7 +20,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             _accessTokenGetter = accessTokenGetter;
             _comment = new DealComment
             {
-                DealId = Guid.Empty,
                 Value = "Test".WithGuid()
             };
         }

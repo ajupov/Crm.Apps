@@ -5,7 +5,7 @@ namespace Crm.Apps.Activities.v1.RequestParameters
 {
     public class ActivityCommentGetPagedListRequestParameter
     {
-        [Required] 
+        [Required]
         public Guid ActivityId { get; set; }
 
         public Guid? CommentatorUserId { get; set; }

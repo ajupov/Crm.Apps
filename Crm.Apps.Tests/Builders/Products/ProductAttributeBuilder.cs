@@ -22,7 +22,6 @@ namespace Crm.Apps.Tests.Builders.Products
             _accessTokenGetter = accessTokenGetter;
             _attribute = new ProductAttribute
             {
-                AccountId = Guid.Empty,
                 Type = AttributeType.Text,
                 Key = "Test".WithGuid(),
                 IsDeleted = false

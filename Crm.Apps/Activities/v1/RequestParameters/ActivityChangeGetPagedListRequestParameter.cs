@@ -5,7 +5,7 @@ namespace Crm.Apps.Activities.v1.RequestParameters
 {
     public class ActivityChangeGetPagedListRequestParameter
     {
-        [Required] 
+        [Required]
         public Guid ActivityId { get; set; }
 
         public Guid? ChangerUserId { get; set; }

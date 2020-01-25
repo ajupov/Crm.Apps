@@ -44,7 +44,8 @@ namespace Crm.Apps.Leads.v1.Controllers
         }
 
         [HttpPost("GetList")]
-        public async Task<ActionResult<List<LeadSource>>> GetList([Required] List<Guid> ids,
+        public async Task<ActionResult<List<LeadSource>>> GetList(
+            [Required] List<Guid> ids,
             CancellationToken ct = default)
         {
             var sources = await _leadSourcesService.GetListAsync(ids, ct);

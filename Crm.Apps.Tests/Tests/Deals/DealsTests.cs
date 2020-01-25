@@ -130,10 +130,6 @@ namespace Crm.Apps.Tests.Tests.Deals
             {
                 TypeId = type.Id,
                 StatusId = dealStatus.Id,
-                CompanyId = Guid.Empty,
-                ContactId = Guid.Empty,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 StartDateTime = DateTime.UtcNow,
                 EndDateTime = DateTime.UtcNow.AddDays(1),
@@ -204,9 +200,6 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             deal.TypeId = type.Id;
             deal.StatusId = dealStatus.Id;
-            deal.CompanyId = Guid.Empty;
-            deal.ContactId = Guid.Empty;
-            deal.ResponsibleUserId = Guid.Empty;
             deal.Name = "Test".WithGuid();
             deal.StartDateTime = DateTime.UtcNow;
             deal.EndDateTime = DateTime.UtcNow.AddDays(1);
@@ -228,7 +221,7 @@ namespace Crm.Apps.Tests.Tests.Deals
                     DealAttributeId = attribute.Id,
                     Value = "Test".WithGuid()
                 });
-            
+
             await _dealsClient.UpdateAsync(accessToken, deal);
 
             var updatedDeal = await _dealsClient.GetAsync(accessToken, deal.Id);

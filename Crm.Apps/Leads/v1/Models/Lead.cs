@@ -13,7 +13,7 @@ namespace Crm.Apps.Leads.v1.Models
 
         public Guid CreateUserId { get; set; }
 
-        public Guid ResponsibleUserId { get; set; }
+        public Guid? ResponsibleUserId { get; set; }
 
         public string Surname { get; set; }
 

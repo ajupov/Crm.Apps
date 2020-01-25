@@ -42,7 +42,7 @@ namespace Crm.Apps.Tests.Tests.Companies
             var attribute = await _create.CompanyAttribute.BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _companyAttributesClient.UpdateAsync(accessToken, attribute);

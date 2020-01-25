@@ -20,7 +20,6 @@ namespace Crm.Apps.Tests.Builders.Leads
             _accessTokenGetter = accessTokenGetter;
             _comment = new LeadComment
             {
-                LeadId = Guid.Empty,
                 Value = "Test".WithGuid()
             };
         }

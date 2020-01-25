@@ -8,6 +8,8 @@ namespace Crm.Apps.Companies.Services
 {
     public interface ICompanyChangesService
     {
-        Task<List<CompanyChange>> GetPagedListAsync(CompanyChangeGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<CompanyChange>> GetPagedListAsync(
+            CompanyChangeGetPagedListRequestParameter request,
+            CancellationToken ct);
     }
 }

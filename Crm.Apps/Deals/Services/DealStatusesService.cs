@@ -38,13 +38,16 @@ namespace Crm.Apps.Deals.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<DealStatus>> GetPagedListAsync(DealStatusGetPagedListRequestParameter request, CancellationToken ct)
+        public Task<List<DealStatus>> GetPagedListAsync(
+            DealStatusGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             return _storage.DealStatuses
                 .AsNoTracking()
                 .Where(x =>
                     (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (!request.IsFinish.HasValue || x.IsFinish == request.IsFinish) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
@@ -65,6 +68,7 @@ namespace Crm.Apps.Deals.Services
                 x.AccountId = status.AccountId;
                 x.Name = status.Name;
                 x.IsDeleted = status.IsDeleted;
+                x.IsFinish = status.IsFinish;
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
@@ -75,13 +79,18 @@ namespace Crm.Apps.Deals.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, DealStatus oldStatus, DealStatus newStatus,
+        public async Task UpdateAsync(
+            Guid userId,
+            DealStatus oldStatus,
+            DealStatus newStatus,
             CancellationToken ct)
         {
             var change = oldStatus.WithUpdateLog(userId, x =>
             {
                 x.Name = newStatus.Name;
                 x.IsDeleted = newStatus.IsDeleted;
+                x.IsFinish = newStatus.IsFinish;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _storage.Update(oldStatus);
@@ -95,7 +104,11 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -107,7 +120,11 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

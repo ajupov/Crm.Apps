@@ -42,7 +42,9 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Product>> GetPagedListAsync(ProductGetPagedListRequestParameter request, CancellationToken ct)
+        public async Task<List<Product>> GetPagedListAsync(
+            ProductGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             var temp = await _storage.Products
                 .AsNoTracking()
@@ -89,8 +91,23 @@ namespace Crm.Apps.Products.Services
                 x.IsHidden = product.IsHidden;
                 x.IsDeleted = product.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = product.AttributeLinks;
-                x.CategoryLinks = product.CategoryLinks;
+                x.AttributeLinks = product.AttributeLinks?
+                    .Select(l => new ProductAttributeLink
+                    {
+                        ProductId = x.Id,
+                        ProductAttributeId = l.ProductAttributeId,
+                        Value = l.Value,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
+                x.CategoryLinks = product.CategoryLinks?
+                    .Select(l => new ProductCategoryLink
+                    {
+                        ProductId = x.Id,
+                        ProductCategoryId = l.ProductCategoryId,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
             });
 
             var entry = await _storage.AddAsync(newProduct, ct);
@@ -114,6 +131,7 @@ namespace Crm.Apps.Products.Services
                 x.Image = newProduct.Image;
                 x.IsHidden = newProduct.IsHidden;
                 x.IsDeleted = newProduct.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
                 x.AttributeLinks = newProduct.AttributeLinks;
                 x.CategoryLinks = newProduct.CategoryLinks;
             });
@@ -129,7 +147,11 @@ namespace Crm.Apps.Products.Services
 
             await _storage.Products
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                {
+                    x.IsHidden = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -141,7 +163,11 @@ namespace Crm.Apps.Products.Services
 
             await _storage.Products
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsHidden = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                {
+                    x.IsHidden = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -153,7 +179,11 @@ namespace Crm.Apps.Products.Services
 
             await _storage.Products
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -165,7 +195,11 @@ namespace Crm.Apps.Products.Services
 
             await _storage
                 .Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

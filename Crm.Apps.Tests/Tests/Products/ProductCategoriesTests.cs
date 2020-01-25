@@ -48,10 +48,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var categoriesIds = (
                     await Task.WhenAll(
                         _create.ProductCategory
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.ProductCategory
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -68,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Products
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var name = "Test1".WithGuid();
+            var name = "Test".WithGuid();
             await Task.WhenAll(_create.ProductCategory
                 .WithName(name)
                 .BuildAsync());
@@ -116,10 +116,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var categories = await _create.ProductCategory
-                .WithName("Test1".WithGuid())
+                .WithName("Test".WithGuid())
                 .BuildAsync();
 
-            categories.Name = "Test2".WithGuid();
+            categories.Name = "Test".WithGuid();
             categories.IsDeleted = true;
 
             await _productCategoriesClient.UpdateAsync(accessToken, categories);
@@ -138,10 +138,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var categoriesIds = (
                     await Task.WhenAll(
                         _create.ProductCategory
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.ProductCategory
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -162,10 +162,10 @@ namespace Crm.Apps.Tests.Tests.Products
             var categoriesIds = (
                     await Task.WhenAll(
                         _create.ProductCategory
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.ProductCategory
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

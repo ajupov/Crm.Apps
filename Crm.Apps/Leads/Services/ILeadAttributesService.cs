@@ -13,7 +13,9 @@ namespace Crm.Apps.Leads.Services
 
         Task<List<LeadAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<LeadAttribute>> GetPagedListAsync(LeadAttributeGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<LeadAttribute>> GetPagedListAsync(
+            LeadAttributeGetPagedListRequestParameter request,
+            CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, LeadAttribute attribute, CancellationToken ct);
 

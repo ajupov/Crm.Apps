@@ -8,6 +8,8 @@ namespace Crm.Apps.Products.Services
 {
     public interface IProductChangesService
     {
-        Task<List<ProductChange>> GetPagedListAsync(ProductChangeGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<ProductChange>> GetPagedListAsync(
+            ProductChangeGetPagedListRequestParameter request,
+            CancellationToken ct);
     }
 }

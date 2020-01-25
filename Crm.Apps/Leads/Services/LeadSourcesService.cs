@@ -76,13 +76,17 @@ namespace Crm.Apps.Leads.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, LeadSource oldSource, LeadSource newSource,
+        public async Task UpdateAsync(
+            Guid userId,
+            LeadSource oldSource,
+            LeadSource newSource,
             CancellationToken ct)
         {
             var change = oldSource.WithUpdateLog(userId, x =>
             {
                 x.Name = newSource.Name;
                 x.IsDeleted = newSource.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _storage.Update(oldSource);
@@ -96,7 +100,11 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadSources
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -108,7 +116,11 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadSources
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

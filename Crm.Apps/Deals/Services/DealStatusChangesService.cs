@@ -20,7 +20,8 @@ namespace Crm.Apps.Deals.Services
             _storage = storage;
         }
 
-        public Task<List<DealStatusChange>> GetPagedListAsync(DealStatusChangeGetPagedListRequestParameter request,
+        public Task<List<DealStatusChange>> GetPagedListAsync(
+            DealStatusChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.DealStatusChanges

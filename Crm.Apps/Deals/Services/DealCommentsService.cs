@@ -22,7 +22,8 @@ namespace Crm.Apps.Deals.Services
             _storage = storage;
         }
 
-        public Task<List<DealComment>> GetPagedListAsync(DealCommentGetPagedListRequestParameter request,
+        public Task<List<DealComment>> GetPagedListAsync(
+            DealCommentGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.DealComments

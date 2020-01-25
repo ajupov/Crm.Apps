@@ -38,7 +38,9 @@ namespace Crm.Apps.Deals.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<DealType>> GetPagedListAsync(DealTypeGetPagedListRequestParameter request, CancellationToken ct)
+        public Task<List<DealType>> GetPagedListAsync(
+            DealTypeGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             return _storage.DealTypes
                 .AsNoTracking()
@@ -75,13 +77,17 @@ namespace Crm.Apps.Deals.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, DealType oldType, DealType newType,
+        public async Task UpdateAsync(
+            Guid userId,
+            DealType oldType,
+            DealType newType,
             CancellationToken ct)
         {
             var change = oldType.WithUpdateLog(userId, x =>
             {
                 x.Name = newType.Name;
                 x.IsDeleted = newType.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _storage.Update(oldType);
@@ -95,7 +101,11 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -107,7 +117,11 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

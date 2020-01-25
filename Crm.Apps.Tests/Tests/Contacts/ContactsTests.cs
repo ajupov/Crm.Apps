@@ -60,11 +60,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
                     await Task.WhenAll(
                         _create.Contact
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990")
+                            .WithTaxNumber("999999999999")
                             .BuildAsync(),
                         _create.Contact
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991")
+                            .WithTaxNumber("999999999999")
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -93,12 +93,12 @@ namespace Crm.Apps.Tests.Tests.Contacts
             await Task.WhenAll(
                 _create.Contact
                     .WithLeadId(lead1.Id)
-                    .WithTaxNumber("999999999990")
+                    .WithTaxNumber("999999999999")
                     .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Contact
                     .WithLeadId(lead2.Id)
-                    .WithTaxNumber("999999999991")
+                    .WithTaxNumber("999999999999")
                     .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
@@ -132,9 +132,6 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var contact = new Contact
             {
                 LeadId = lead.Id,
-                CompanyId = Guid.Empty,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Surname = "Test".WithGuid(),
                 Name = "Test".WithGuid(),
                 Patronymic = "Test".WithGuid(),
@@ -296,11 +293,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
                     await Task.WhenAll(
                         _create.Contact
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990")
+                            .WithTaxNumber("999999999999")
                             .BuildAsync(),
                         _create.Contact
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991")
+                            .WithTaxNumber("999999999999")
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -329,11 +326,11 @@ namespace Crm.Apps.Tests.Tests.Contacts
                     await Task.WhenAll(
                         _create.Contact
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990")
+                            .WithTaxNumber("999999999999")
                             .BuildAsync(),
                         _create.Contact
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991")
+                            .WithTaxNumber("999999999999")
                             .BuildAsync())
                 )
                 .Select(x => x.Id).ToList();

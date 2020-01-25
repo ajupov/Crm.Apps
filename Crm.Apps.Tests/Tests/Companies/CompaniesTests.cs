@@ -84,11 +84,11 @@ namespace Crm.Apps.Tests.Tests.Companies
                     await Task.WhenAll(
                         _create.Company
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990".WithGuid())
+                            .WithTaxNumber("999999999999".WithGuid())
                             .BuildAsync(),
                         _create.Company
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991".WithGuid())
+                            .WithTaxNumber("999999999999".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -118,12 +118,12 @@ namespace Crm.Apps.Tests.Tests.Companies
             await Task.WhenAll(
                 _create.Company
                     .WithLeadId(lead1.Id)
-                    .WithTaxNumber("999999999990".WithGuid())
+                    .WithTaxNumber("999999999999".WithGuid())
                     .WithAttributeLink(attribute.Id, value)
                     .BuildAsync(),
                 _create.Company
                     .WithLeadId(lead2.Id)
-                    .WithTaxNumber("999999999991".WithGuid())
+                    .WithTaxNumber("999999999999".WithGuid())
                     .WithAttributeLink(attribute.Id, value)
                     .BuildAsync());
             var filterAttributes = new Dictionary<Guid, string> {{attribute.Id, value}};
@@ -158,8 +158,6 @@ namespace Crm.Apps.Tests.Tests.Companies
             var company = new Company
             {
                 LeadId = lead.Id,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Type = CompanyType.SelfEmployed,
                 IndustryType = CompanyIndustryType.Transport,
                 FullName = "Test".WithGuid(),
@@ -266,8 +264,6 @@ namespace Crm.Apps.Tests.Tests.Companies
 
             company.Type = CompanyType.Commercial;
             company.IndustryType = CompanyIndustryType.Computer;
-            company.LeadId = Guid.Empty;
-            company.ResponsibleUserId = Guid.Empty;
             company.FullName = "Test".WithGuid();
             company.ShortName = "Test".WithGuid();
             company.Phone = "9999999999";
@@ -294,7 +290,8 @@ namespace Crm.Apps.Tests.Tests.Companies
             company.LegalHouse = "1";
             company.LegalApartment = "1";
             company.IsDeleted = true;
-            company.AttributeLinks.Add(new CompanyAttributeLink {CompanyAttributeId = attribute.Id, Value = "Test".WithGuid()});
+            company.AttributeLinks.Add(new CompanyAttributeLink
+                {CompanyAttributeId = attribute.Id, Value = "Test".WithGuid()});
             company.BankAccounts.Add(new CompanyBankAccount
             {
                 Number = "9999999999999999999999999",
@@ -364,11 +361,11 @@ namespace Crm.Apps.Tests.Tests.Companies
                     await Task.WhenAll(
                         _create.Company
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990".WithGuid())
+                            .WithTaxNumber("999999999999".WithGuid())
                             .BuildAsync(),
                         _create.Company
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991".WithGuid())
+                            .WithTaxNumber("999999999999".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id).ToList();
@@ -396,11 +393,11 @@ namespace Crm.Apps.Tests.Tests.Companies
                     await Task.WhenAll(
                         _create.Company
                             .WithLeadId(lead1.Id)
-                            .WithTaxNumber("999999999990".WithGuid())
+                            .WithTaxNumber("999999999999".WithGuid())
                             .BuildAsync(),
                         _create.Company
                             .WithLeadId(lead2.Id)
-                            .WithTaxNumber("999999999991".WithGuid())
+                            .WithTaxNumber("999999999999".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

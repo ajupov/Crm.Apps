@@ -22,7 +22,8 @@ namespace Crm.Apps.Leads.Services
             _storage = storage;
         }
 
-        public Task<List<LeadComment>> GetPagedListAsync(LeadCommentGetPagedListRequestParameter request,
+        public Task<List<LeadComment>> GetPagedListAsync(
+            LeadCommentGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.LeadComments

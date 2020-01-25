@@ -12,7 +12,7 @@ namespace Crm.Apps.Leads.Migrations
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("SourceId").AsGuid().NotNullable()
                 .WithColumn("CreateUserId").AsGuid().NotNullable()
-                .WithColumn("ResponsibleUserId").AsGuid().NotNullable()
+                .WithColumn("ResponsibleUserId").AsGuid().Nullable()
                 .WithColumn("Surname").AsString(64).NotNullable()
                 .WithColumn("Name").AsString(64).NotNullable()
                 .WithColumn("Patronymic").AsString(64).NotNullable()
@@ -52,7 +52,6 @@ namespace Crm.Apps.Leads.Migrations
         public override void Down()
         {
             Delete.Index("IX_Leads_AccountId_SourceId_CreateUserId_ResponsibleUserId_CreateDateTime").OnTable("Leads");
-            Delete.UniqueConstraint("UQ_Leads_AccountId_Name").FromTable("Leads");
             Delete.ForeignKey("FK_Leads_SourceId").OnTable("Leads");
             Delete.PrimaryKey("PK_Leads_Id").FromTable("Leads");
             Delete.Table("Leads");

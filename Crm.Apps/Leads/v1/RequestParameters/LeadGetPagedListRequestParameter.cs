@@ -46,7 +46,7 @@ namespace Crm.Apps.Leads.v1.RequestParameters
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
-                
+
         public DateTime? MinModifyDate { get; set; }
 
         public DateTime? MaxModifyDate { get; set; }

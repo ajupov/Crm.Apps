@@ -38,7 +38,8 @@ namespace Crm.Apps.Leads.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<LeadAttribute>> GetPagedListAsync(LeadAttributeGetPagedListRequestParameter request,
+        public Task<List<LeadAttribute>> GetPagedListAsync(
+            LeadAttributeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.LeadAttributes
@@ -78,7 +79,10 @@ namespace Crm.Apps.Leads.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid userId, LeadAttribute oldAttribute, LeadAttribute newAttribute,
+        public async Task UpdateAsync(
+            Guid userId,
+            LeadAttribute oldAttribute,
+            LeadAttribute newAttribute,
             CancellationToken ct)
         {
             var change = oldAttribute.WithUpdateLog(userId, x =>
@@ -86,6 +90,7 @@ namespace Crm.Apps.Leads.Services
                 x.Type = newAttribute.Type;
                 x.Key = newAttribute.Key;
                 x.IsDeleted = newAttribute.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _storage.Update(oldAttribute);
@@ -99,7 +104,11 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -111,7 +120,11 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

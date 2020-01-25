@@ -42,7 +42,7 @@ namespace Crm.Apps.Tests.Tests.Contacts
             var attribute = await _create.ContactAttribute.BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _contactAttributesClient.UpdateAsync(accessToken, attribute);

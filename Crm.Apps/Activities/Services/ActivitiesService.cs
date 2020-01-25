@@ -41,7 +41,8 @@ namespace Crm.Apps.Activities.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Activity>> GetPagedListAsync(ActivityGetPagedListRequestParameter request,
+        public async Task<List<Activity>> GetPagedListAsync(
+            ActivityGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             var temp = await _activitiesStorage.Activities
@@ -107,7 +108,8 @@ namespace Crm.Apps.Activities.Services
                         ActivityAttributeId = l.ActivityAttributeId,
                         Value = l.Value,
                         CreateDateTime = DateTime.UtcNow
-                    }).ToList();
+                    })
+                    .ToList();
             });
 
             var entry = await _activitiesStorage.AddAsync(newActivity, ct);
@@ -140,6 +142,7 @@ namespace Crm.Apps.Activities.Services
                 x.StartDateTime = newActivity.StartDateTime;
                 x.EndDateTime = newActivity.EndDateTime;
                 x.DeadLineDateTime = newActivity.DeadLineDateTime;
+                x.ModifyDateTime = DateTime.UtcNow;
                 x.IsDeleted = newActivity.IsDeleted;
                 x.AttributeLinks = newActivity.AttributeLinks?
                     .Select(l => new ActivityAttributeLink
@@ -148,7 +151,8 @@ namespace Crm.Apps.Activities.Services
                         ActivityAttributeId = l.ActivityAttributeId,
                         Value = l.Value,
                         CreateDateTime = DateTime.UtcNow
-                    }).ToList();
+                    })
+                    .ToList();
             });
 
             _activitiesStorage.Update(oldActivity);
@@ -162,7 +166,11 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.Activities
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
@@ -174,7 +182,11 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.Activities
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
             await _activitiesStorage.SaveChangesAsync(ct);

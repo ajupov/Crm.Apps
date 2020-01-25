@@ -11,11 +11,11 @@ namespace Crm.Apps.v1.Clients.Contacts.Models
 
         public Guid LeadId { get; set; }
 
-        public Guid CompanyId { get; set; } 
+        public Guid? CompanyId { get; set; } 
 
         public Guid CreateUserId { get; set; }
 
-        public Guid ResponsibleUserId { get; set; }
+        public Guid? ResponsibleUserId { get; set; }
 
         public string Surname { get; set; }
 

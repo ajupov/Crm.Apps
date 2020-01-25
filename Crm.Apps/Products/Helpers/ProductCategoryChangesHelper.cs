@@ -6,7 +6,9 @@ namespace Crm.Apps.Products.Helpers
 {
     public static class ProductCategoryChangesHelper
     {
-        public static ProductCategoryChange WithCreateLog(this ProductCategory category, Guid userId,
+        public static ProductCategoryChange WithCreateLog(
+            this ProductCategory category,
+            Guid userId,
             Action<ProductCategory> action)
         {
             action(category);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductCategoryChange WithUpdateLog(this ProductCategory category, Guid userId,
+        public static ProductCategoryChange WithUpdateLog(
+            this ProductCategory category,
+            Guid userId,
             Action<ProductCategory> action)
         {
             var oldValueJson = category.ToJsonString();

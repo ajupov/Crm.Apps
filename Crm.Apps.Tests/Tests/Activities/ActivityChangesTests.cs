@@ -45,7 +45,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .WithStatusId(status.Id)
                 .BuildAsync();
 
-            activity.Name = "Test1".WithGuid();
+            activity.Name = "Test".WithGuid();
             activity.IsDeleted = true;
 
             await _activitiesClient.UpdateAsync(accessToken, activity);

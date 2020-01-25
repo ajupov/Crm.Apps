@@ -20,7 +20,9 @@ namespace Crm.Apps.Leads.Services
             _storage = storage;
         }
 
-        public Task<List<LeadChange>> GetPagedListAsync(LeadChangeGetPagedListRequestParameter request, CancellationToken ct)
+        public Task<List<LeadChange>> GetPagedListAsync(
+            LeadChangeGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             return _storage.LeadChanges
                 .AsNoTracking()

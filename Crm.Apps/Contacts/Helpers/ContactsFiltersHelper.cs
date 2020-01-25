@@ -13,7 +13,7 @@ namespace Crm.Apps.Contacts.Helpers
         public static bool FilterByAdditional(this Contact contact, ContactGetPagedListRequestParameter request)
         {
             return (request.BankAccountNumber.IsEmpty() ||
-                    contact.BankAccounts.Any(x => x.BankNumber == request.BankAccountNumber)) &&
+                    contact.BankAccounts.Any(x => x.Number == request.BankAccountNumber)) &&
                    (request.BankAccountBankNumber.IsEmpty() ||
                     contact.BankAccounts.Any(x => x.BankNumber == request.BankAccountBankNumber)) &&
                    (request.BankAccountBankCorrespondentNumber.IsEmpty() || contact.BankAccounts.Any(x =>

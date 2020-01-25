@@ -21,12 +21,6 @@ namespace Crm.Apps.Tests.Builders.Deals
             _accessTokenGetter = accessTokenGetter;
             _deal = new Deal
             {
-                TypeId = Guid.Empty,
-                StatusId = Guid.Empty,
-                CompanyId = Guid.Empty,
-                ContactId = Guid.Empty,
-                CreateUserId = Guid.Empty,
-                ResponsibleUserId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 StartDateTime = DateTime.UtcNow,
                 EndDateTime = DateTime.UtcNow.AddDays(1),

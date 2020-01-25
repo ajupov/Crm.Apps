@@ -6,7 +6,9 @@ namespace Crm.Apps.Activities.Helpers
 {
     public static class ActivityAttributesChangesHelper
     {
-        public static ActivityAttributeChange WithCreateLog(this ActivityAttribute attribute, Guid userId,
+        public static ActivityAttributeChange WithCreateLog(
+            this ActivityAttribute attribute,
+            Guid userId,
             Action<ActivityAttribute> action)
         {
             action(attribute);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Activities.Helpers
             };
         }
 
-        public static ActivityAttributeChange WithUpdateLog(this ActivityAttribute attribute, Guid userId,
+        public static ActivityAttributeChange WithUpdateLog(
+            this ActivityAttribute attribute,
+            Guid userId,
             Action<ActivityAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();

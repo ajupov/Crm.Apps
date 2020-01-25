@@ -11,11 +11,11 @@ namespace Crm.Apps.Contacts.v1.Models
 
         public Guid LeadId { get; set; }
 
-        public Guid CompanyId { get; set; } 
+        public Guid? CompanyId { get; set; }
 
         public Guid CreateUserId { get; set; }
 
-        public Guid ResponsibleUserId { get; set; }
+        public Guid? ResponsibleUserId { get; set; }
 
         public string Surname { get; set; }
 
@@ -26,7 +26,7 @@ namespace Crm.Apps.Contacts.v1.Models
         public string Phone { get; set; }
 
         public string Email { get; set; }
-        
+
         public string TaxNumber { get; set; }
 
         public string Post { get; set; }
@@ -54,11 +54,11 @@ namespace Crm.Apps.Contacts.v1.Models
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
-        
+
         public DateTime? ModifyDateTime { get; set; }
 
         public List<ContactBankAccount> BankAccounts { get; set; }
-        
+
         public List<ContactAttributeLink> AttributeLinks { get; set; }
     }
 }

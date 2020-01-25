@@ -44,7 +44,8 @@ namespace Crm.Apps.Products.v1.Controllers
         }
 
         [HttpPost("GetList")]
-        public async Task<ActionResult<List<ProductCategory>>> GetList([Required] List<Guid> ids,
+        public async Task<ActionResult<List<ProductCategory>>> GetList(
+            [Required] List<Guid> ids,
             CancellationToken ct = default)
         {
             var categories = await _userCategoriesService.GetListAsync(ids, ct);

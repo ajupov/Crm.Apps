@@ -45,10 +45,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.DealType
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -65,7 +65,7 @@ namespace Crm.Apps.Tests.Tests.Deals
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var name = "Test1".WithGuid();
+            var name = "Test".WithGuid();
             await Task.WhenAll(
                 _create.DealType
                     .WithName(name)
@@ -114,10 +114,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var type = await _create.DealType
-                .WithName("Test1".WithGuid())
+                .WithName("Test".WithGuid())
                 .BuildAsync();
 
-            type.Name = "Test2".WithGuid();
+            type.Name = "Test".WithGuid();
             type.IsDeleted = true;
 
             await _dealTypesClient.UpdateAsync(accessToken, type);
@@ -136,10 +136,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.DealType
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -160,10 +160,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             var typeIds = (
                     await Task.WhenAll(
                         _create.DealType
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.DealType
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

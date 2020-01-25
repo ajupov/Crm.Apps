@@ -26,7 +26,8 @@ namespace Crm.Apps.Activities.v1.Controllers
         private readonly IUserContext _userContext;
         private readonly IActivityAttributesService _activityAttributesService;
 
-        public ActivityAttributesController(IUserContext userContext,
+        public ActivityAttributesController(
+            IUserContext userContext,
             IActivityAttributesService activityAttributesService)
             : base(userContext)
         {
@@ -71,7 +72,7 @@ namespace Crm.Apps.Activities.v1.Controllers
             CancellationToken ct = default)
         {
             request.AccountId = _userContext.AccountId;
-            
+
             var attributes = await _activityAttributesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(

@@ -41,7 +41,7 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             var attribute = await _create.DealAttribute.BuildAsync();
             attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
             await _dealAttributesClient.UpdateAsync(accessToken, attribute);
 

@@ -6,7 +6,9 @@ namespace Crm.Apps.Products.Helpers
 {
     public static class ProductAttributesChangesHelper
     {
-        public static ProductAttributeChange WithCreateLog(this ProductAttribute attribute, Guid userId,
+        public static ProductAttributeChange WithCreateLog(
+            this ProductAttribute attribute,
+            Guid userId,
             Action<ProductAttribute> action)
         {
             action(attribute);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductAttributeChange WithUpdateLog(this ProductAttribute attribute, Guid userId,
+        public static ProductAttributeChange WithUpdateLog(
+            this ProductAttribute attribute,
+            Guid userId,
             Action<ProductAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();

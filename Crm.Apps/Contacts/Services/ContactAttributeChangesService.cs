@@ -21,7 +21,8 @@ namespace Crm.Apps.Contacts.Services
         }
 
         public Task<List<ContactAttributeChange>> GetPagedListAsync(
-            ContactAttributeChangeGetPagedListRequestParameter request, CancellationToken ct)
+            ContactAttributeChangeGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             return _storage.ContactAttributeChanges
                 .AsNoTracking()

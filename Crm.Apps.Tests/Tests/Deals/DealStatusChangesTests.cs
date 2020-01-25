@@ -40,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             var status = await _create.DealStatus.BuildAsync();
 
-            status.Name = "Test2".WithGuid();
+            status.Name = "Test".WithGuid();
             status.IsDeleted = true;
 
             await _dealStatusesClient.UpdateAsync(accessToken, status);

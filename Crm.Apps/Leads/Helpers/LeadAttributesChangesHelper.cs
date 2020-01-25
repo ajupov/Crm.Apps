@@ -6,7 +6,9 @@ namespace Crm.Apps.Leads.Helpers
 {
     public static class LeadAttributesChangesHelper
     {
-        public static LeadAttributeChange WithCreateLog(this LeadAttribute attribute, Guid userId,
+        public static LeadAttributeChange WithCreateLog(
+            this LeadAttribute attribute,
+            Guid userId,
             Action<LeadAttribute> action)
         {
             action(attribute);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Leads.Helpers
             };
         }
 
-        public static LeadAttributeChange WithUpdateLog(this LeadAttribute attribute, Guid userId,
+        public static LeadAttributeChange WithUpdateLog(
+            this LeadAttribute attribute,
+            Guid userId,
             Action<LeadAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();

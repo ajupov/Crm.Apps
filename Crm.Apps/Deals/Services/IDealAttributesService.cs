@@ -13,7 +13,9 @@ namespace Crm.Apps.Deals.Services
 
         Task<List<DealAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<DealAttribute>> GetPagedListAsync(DealAttributeGetPagedListRequestParameter request, CancellationToken ct);
+        Task<List<DealAttribute>> GetPagedListAsync(
+            DealAttributeGetPagedListRequestParameter request,
+            CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, DealAttribute attribute, CancellationToken ct);
 

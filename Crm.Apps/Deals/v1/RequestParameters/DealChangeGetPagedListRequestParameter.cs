@@ -7,7 +7,7 @@ namespace Crm.Apps.Deals.v1.RequestParameters
     {
         [Required]
         public Guid DealId { get; set; }
-        
+
         public Guid? ChangerUserId { get; set; }
 
         public DateTime? MinCreateDate { get; set; }

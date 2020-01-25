@@ -20,7 +20,6 @@ namespace Crm.Apps.Tests.Builders.Companies
             _companyCommentsClient = companyCommentsClient;
             _comment = new CompanyComment
             {
-                CompanyId = Guid.Empty,
                 Value = "Test".WithGuid()
             };
         }

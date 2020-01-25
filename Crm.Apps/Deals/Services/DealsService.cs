@@ -132,8 +132,27 @@ namespace Crm.Apps.Deals.Services
                 x.SumWithoutDiscount = newDeal.SumWithoutDiscount;
                 x.FinishProbability = newDeal.FinishProbability;
                 x.IsDeleted = newDeal.IsDeleted;
-                x.AttributeLinks = newDeal.AttributeLinks;
-                x.Positions = newDeal.Positions;
+                x.ModifyDateTime = DateTime.UtcNow;
+                x.AttributeLinks = newDeal.AttributeLinks?
+                    .Select(l => new DealAttributeLink
+                    {
+                        DealId = x.Id,
+                        DealAttributeId = l.DealAttributeId,
+                        Value = l.Value,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
+                x.Positions = newDeal.Positions?
+                    .Select(p => new DealPosition
+                    {
+                        DealId = x.Id,
+                        ProductId = p.ProductId,
+                        ProductVendorCode = p.ProductVendorCode,
+                        ProductName = p.ProductName,
+                        Price = p.Price,
+                        Count = p.Count
+                    })
+                    .ToList();
             });
 
             _storage.Update(oldDeal);
@@ -147,7 +166,11 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.Deals
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -159,7 +182,11 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.Deals
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

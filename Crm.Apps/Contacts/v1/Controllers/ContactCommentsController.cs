@@ -35,7 +35,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<ContactComment>>> GetPagedList(
-            ContactCommentGetPagedListRequestParameter request, 
+            ContactCommentGetPagedListRequestParameter request,
             CancellationToken ct = default)
         {
             var contact = await _contactsService.GetAsync(request.ContactId, ct);

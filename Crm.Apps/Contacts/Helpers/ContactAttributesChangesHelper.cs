@@ -6,7 +6,9 @@ namespace Crm.Apps.Contacts.Helpers
 {
     public static class ContactAttributesChangesHelper
     {
-        public static ContactAttributeChange WithCreateLog(this ContactAttribute attribute, Guid userId,
+        public static ContactAttributeChange WithCreateLog(
+            this ContactAttribute attribute,
+            Guid userId,
             Action<ContactAttribute> action)
         {
             action(attribute);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Contacts.Helpers
             };
         }
 
-        public static ContactAttributeChange WithUpdateLog(this ContactAttribute attribute, Guid userId,
+        public static ContactAttributeChange WithUpdateLog(
+            this ContactAttribute attribute,
+            Guid userId,
             Action<ContactAttribute> action)
         {
             var oldValueJson = attribute.ToJsonString();

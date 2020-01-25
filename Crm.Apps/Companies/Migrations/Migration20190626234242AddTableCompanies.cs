@@ -12,7 +12,7 @@ namespace Crm.Apps.Companies.Migrations
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("LeadId").AsGuid().NotNullable()
                 .WithColumn("CreateUserId").AsGuid().NotNullable()
-                .WithColumn("ResponsibleUserId").AsGuid().NotNullable()
+                .WithColumn("ResponsibleUserId").AsGuid().Nullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("IndustryType").AsByte().NotNullable()
                 .WithColumn("FullName").AsString(256).NotNullable()
@@ -47,7 +47,7 @@ namespace Crm.Apps.Companies.Migrations
             Create.PrimaryKey("PK_Companies_Id").OnTable("Companies")
                 .Column("Id");
 
-            Create.UniqueConstraint("UQ_Companies_TaxNumber").OnTable("Companies")
+            Create.UniqueConstraint("UQ_Companies_AccountId_TaxNumber").OnTable("Companies")
                 .Columns("AccountId", "TaxNumber");
 
             Create.Index("IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId_CreateDateTime")
@@ -64,7 +64,7 @@ namespace Crm.Apps.Companies.Migrations
         {
             Delete.Index("IX_Companies_AccountId_LeadId_CreateUserId_ResponsibleUserId_CreateDateTime")
                 .OnTable("Companies");
-            Delete.UniqueConstraint("UQ_Companies_TaxNumber").FromTable("Companies");
+            Delete.UniqueConstraint("UQ_Companies_AccountId_TaxNumber").FromTable("Companies");
             Delete.PrimaryKey("PK_Companies_Id").FromTable("Companies");
             Delete.Table("Companies");
         }

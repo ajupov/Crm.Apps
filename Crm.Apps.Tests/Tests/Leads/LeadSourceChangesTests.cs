@@ -40,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Leads
 
             var source = await _create.LeadSource.BuildAsync();
 
-            source.Name = "Test2".WithGuid();
+            source.Name = "Test".WithGuid();
             source.IsDeleted = true;
 
             await _leadSourcesClient.UpdateAsync(accessToken, source);

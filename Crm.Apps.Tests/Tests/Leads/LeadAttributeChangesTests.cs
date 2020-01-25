@@ -42,7 +42,7 @@ namespace Crm.Apps.Tests.Tests.Leads
             var attribute = await _create.LeadAttribute.BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "TestLink".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _leadAttributesClient.UpdateAsync(accessToken, attribute);

@@ -20,7 +20,8 @@ namespace Crm.Apps.Contacts.Services
             _storage = storage;
         }
 
-        public Task<List<ContactChange>> GetPagedListAsync(ContactChangeGetPagedListRequestParameter request,
+        public Task<List<ContactChange>> GetPagedListAsync(
+            ContactChangeGetPagedListRequestParameter request,
             CancellationToken ct)
         {
             return _storage.ContactChanges

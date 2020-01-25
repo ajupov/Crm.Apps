@@ -110,7 +110,15 @@ namespace Crm.Apps.Leads.Services
                 x.OpportunitySum = lead.OpportunitySum;
                 x.IsDeleted = lead.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = lead.AttributeLinks;
+                x.AttributeLinks = lead.AttributeLinks?
+                    .Select(l => new LeadAttributeLink
+                    {
+                        LeadId = x.Id,
+                        LeadAttributeId = l.LeadAttributeId,
+                        Value = l.Value,
+                        CreateDateTime = DateTime.UtcNow
+                    })
+                    .ToList();
             });
 
             var entry = await _storage.AddAsync(newLead, ct);
@@ -144,6 +152,7 @@ namespace Crm.Apps.Leads.Services
                 x.Apartment = newLead.Apartment;
                 x.OpportunitySum = newLead.OpportunitySum;
                 x.IsDeleted = newLead.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
                 x.AttributeLinks = newLead.AttributeLinks;
             });
 
@@ -158,7 +167,11 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.Leads
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
@@ -170,7 +183,11 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.Leads
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);

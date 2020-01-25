@@ -8,7 +8,7 @@ namespace Crm.Apps.Tests.Builders.Activities
         ActivityStatusBuilder WithName(string name);
 
         ActivityStatusBuilder AsFinish();
-        
+
         ActivityStatusBuilder AsDeleted();
 
         Task<ActivityStatus> BuildAsync();

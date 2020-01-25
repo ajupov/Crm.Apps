@@ -22,7 +22,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
             _accessTokenGetter = accessTokenGetter;
             _attribute = new ContactAttribute
             {
-                AccountId = Guid.Empty,
                 Type = AttributeType.Text,
                 Key = "Test".WithGuid(),
                 IsDeleted = false

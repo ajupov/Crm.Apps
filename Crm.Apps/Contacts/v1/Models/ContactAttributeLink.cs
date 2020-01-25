@@ -13,7 +13,7 @@ namespace Crm.Apps.Contacts.v1.Models
         public string Value { get; set; }
 
         public DateTime CreateDateTime { get; set; }
-        
+
         public DateTime? ModifyDateTime { get; set; }
     }
 }

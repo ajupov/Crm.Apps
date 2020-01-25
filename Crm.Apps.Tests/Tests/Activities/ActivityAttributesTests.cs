@@ -60,10 +60,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ActivityAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.ActivityAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -80,8 +80,8 @@ namespace Crm.Apps.Tests.Tests.Activities
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var key = "Test1".WithGuid();
-            
+            var key = "Test".WithGuid();
+
             await Task.WhenAll(
                 _create.ActivityAttribute
                     .WithType(AttributeType.Text)
@@ -139,7 +139,7 @@ namespace Crm.Apps.Tests.Tests.Activities
                 .BuildAsync();
 
             attribute.Type = AttributeType.Link;
-            attribute.Key = "test.com".WithGuid();
+            attribute.Key = "Test".WithGuid();
             attribute.IsDeleted = true;
 
             await _activityAttributesClient.UpdateAsync(accessToken, attribute);
@@ -159,10 +159,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ActivityAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.ActivityAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -183,10 +183,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             var attributeIds = (
                     await Task.WhenAll(
                         _create.ActivityAttribute
-                            .WithKey("Test1".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync(),
                         _create.ActivityAttribute
-                            .WithKey("Test2".WithGuid())
+                            .WithKey("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

@@ -40,7 +40,7 @@ namespace Crm.Apps.Tests.Tests.Deals
 
             var type = await _create.DealType.BuildAsync();
 
-            type.Name = "Test2".WithGuid();
+            type.Name = "Test".WithGuid();
             type.IsDeleted = true;
 
             await _dealTypesClient.UpdateAsync(accessToken, type);

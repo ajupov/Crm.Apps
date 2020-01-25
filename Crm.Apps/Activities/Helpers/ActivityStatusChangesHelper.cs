@@ -6,7 +6,9 @@ namespace Crm.Apps.Activities.Helpers
 {
     public static class ActivityStatusChangesHelper
     {
-        public static ActivityStatusChange WithCreateLog(this ActivityStatus status, Guid userId,
+        public static ActivityStatusChange WithCreateLog(
+            this ActivityStatus status,
+            Guid userId,
             Action<ActivityStatus> action)
         {
             action(status);
@@ -21,7 +23,9 @@ namespace Crm.Apps.Activities.Helpers
             };
         }
 
-        public static ActivityStatusChange WithUpdateLog(this ActivityStatus status, Guid userId,
+        public static ActivityStatusChange WithUpdateLog(
+            this ActivityStatus status,
+            Guid userId,
             Action<ActivityStatus> action)
         {
             var oldValueJson = status.ToJsonString();

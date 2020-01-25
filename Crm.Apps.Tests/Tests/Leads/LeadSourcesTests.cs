@@ -48,10 +48,10 @@ namespace Crm.Apps.Tests.Tests.Leads
             var statusIds = (
                     await Task.WhenAll(
                         _create.LeadSource
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.LeadSource
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -68,7 +68,7 @@ namespace Crm.Apps.Tests.Tests.Leads
         {
             var accessToken = await _accessTokenGetter.GetAsync();
 
-            var name = "Test1".WithGuid();
+            var name = "Test".WithGuid();
             await Task.WhenAll(
                 _create.LeadSource
                     .WithName(name)
@@ -117,10 +117,10 @@ namespace Crm.Apps.Tests.Tests.Leads
             var accessToken = await _accessTokenGetter.GetAsync();
 
             var status = await _create.LeadSource
-                .WithName("Test1".WithGuid())
+                .WithName("Test".WithGuid())
                 .BuildAsync();
 
-            status.Name = "Test2".WithGuid();
+            status.Name = "Test".WithGuid();
             status.IsDeleted = true;
 
             await _leadSourcesClient.UpdateAsync(accessToken, status);
@@ -139,10 +139,10 @@ namespace Crm.Apps.Tests.Tests.Leads
             var statusIds = (
                     await Task.WhenAll(
                         _create.LeadSource
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.LeadSource
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)
@@ -163,10 +163,10 @@ namespace Crm.Apps.Tests.Tests.Leads
             var statusIds = (
                     await Task.WhenAll(
                         _create.LeadSource
-                            .WithName("Test1".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync(),
                         _create.LeadSource
-                            .WithName("Test2".WithGuid())
+                            .WithName("Test".WithGuid())
                             .BuildAsync())
                 )
                 .Select(x => x.Id)

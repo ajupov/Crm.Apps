@@ -47,6 +47,7 @@ namespace Crm.Apps.Activities.Services
                 .Where(x =>
                     (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (!request.IsFinish.HasValue || x.IsFinish == request.IsFinish) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
@@ -66,6 +67,7 @@ namespace Crm.Apps.Activities.Services
                 x.Id = Guid.NewGuid();
                 x.AccountId = status.AccountId;
                 x.Name = status.Name;
+                x.IsFinish = status.IsFinish;
                 x.IsDeleted = status.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
             });
@@ -86,7 +88,9 @@ namespace Crm.Apps.Activities.Services
             var change = oldStatus.WithUpdateLog(userId, x =>
             {
                 x.Name = newStatus.Name;
+                x.IsFinish = newStatus.IsFinish;
                 x.IsDeleted = newStatus.IsDeleted;
+                x.ModifyDateTime = DateTime.UtcNow;
             });
 
             _activitiesStorage.Update(oldStatus);
@@ -100,7 +104,11 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.ActivityStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = true)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = true;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
@@ -112,7 +120,11 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.ActivityStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x => x.IsDeleted = false)), ct);
+                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                {
+                    x.IsDeleted = false;
+                    x.ModifyDateTime = DateTime.UtcNow;
+                })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
             await _activitiesStorage.SaveChangesAsync(ct);

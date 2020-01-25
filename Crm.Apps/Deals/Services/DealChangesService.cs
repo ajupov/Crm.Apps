@@ -20,7 +20,9 @@ namespace Crm.Apps.Deals.Services
             _storage = storage;
         }
 
-        public Task<List<DealChange>> GetPagedListAsync(DealChangeGetPagedListRequestParameter request, CancellationToken ct)
+        public Task<List<DealChange>> GetPagedListAsync(
+            DealChangeGetPagedListRequestParameter request,
+            CancellationToken ct)
         {
             return _storage.DealChanges
                 .AsNoTracking()

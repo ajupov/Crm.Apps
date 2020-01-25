@@ -20,7 +20,6 @@ namespace Crm.Apps.Tests.Builders.Contacts
             _accessTokenGetter = accessTokenGetter;
             _comment = new ContactComment
             {
-                ContactId = Guid.Empty,
                 Value = "Test".WithGuid()
             };
         }

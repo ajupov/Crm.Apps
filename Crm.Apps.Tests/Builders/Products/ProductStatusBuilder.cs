@@ -19,7 +19,6 @@ namespace Crm.Apps.Tests.Builders.Products
             _accessTokenGetter = accessTokenGetter;
             _status = new ProductStatus
             {
-                AccountId = Guid.Empty,
                 Name = "Test".WithGuid(),
                 IsDeleted = false
             };
