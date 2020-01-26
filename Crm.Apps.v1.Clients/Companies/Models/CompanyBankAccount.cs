@@ -1,13 +1,7 @@
-﻿using System;
-
-namespace Crm.Apps.v1.Clients.Companies.Models
+﻿namespace Crm.Apps.v1.Clients.Companies.Models
 {
     public class CompanyBankAccount
     {
-        // public Guid Id { get; set; }
-        //
-        // public Guid CompanyId { get; set; }
-
         public string Number { get; set; }
 
         public string BankNumber { get; set; }

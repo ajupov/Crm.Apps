@@ -1,13 +1,7 @@
-﻿using System;
-
-namespace Crm.Apps.v1.Clients.Contacts.Models
+﻿namespace Crm.Apps.v1.Clients.Contacts.Models
 {
     public class ContactBankAccount
     {
-        // public Guid Id { get; set; }
-        //
-        // public Guid ContactId { get; set; }
-
         public string Number { get; set; }
 
         public string BankNumber { get; set; }
