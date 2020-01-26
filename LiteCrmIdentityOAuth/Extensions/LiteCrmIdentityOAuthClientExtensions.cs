@@ -36,12 +36,14 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
                         options.Scope.Add(LiteCrmIdentityOAuthDefaults.OpenIdScope);
                         options.Scope.Add(LiteCrmIdentityOAuthDefaults.ProfileScope);
 
-                        liteCrmOAuthOptions
-                            .GetSection(nameof(LiteCrmIdentityOAuthOptions.Scopes))?
-                            .GetChildren()?
-                            .Select(x => x.Value)
-                            .ToList()
-                            .ForEach(x => options.Scope.Add(x));
+                        var scopes = liteCrmOAuthOptions.GetValue<string>(nameof(LiteCrmIdentityOAuthOptions.Scopes));
+                        if (!scopes.IsEmpty())
+                        {
+                            scopes
+                                .Split(",")
+                                .ToList()
+                                .ForEach(x => options.Scope.Add(x.Trim()));
+                        }
 
                         options.CallbackPath = new PathString(
                             liteCrmOAuthOptions.GetValue<string>(nameof(LiteCrmIdentityOAuthOptions.CallbackPath)));
