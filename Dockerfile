@@ -28,4 +28,4 @@ WORKDIR /app
 
 COPY --from=build /app/out .
 ENTRYPOINT ["dotnet", "Crm.Apps.dll"]
-EXPOSE 3000 3001
+EXPOSE 9000 9001
