@@ -8,6 +8,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
+using Crm.Apps.Products.Mappers;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.RequestParameters;
@@ -91,23 +92,8 @@ namespace Crm.Apps.Products.Services
                 x.IsHidden = product.IsHidden;
                 x.IsDeleted = product.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = product.AttributeLinks?
-                    .Select(l => new ProductAttributeLink
-                    {
-                        ProductId = x.Id,
-                        ProductAttributeId = l.ProductAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
-                x.CategoryLinks = product.CategoryLinks?
-                    .Select(l => new ProductCategoryLink
-                    {
-                        ProductId = x.Id,
-                        ProductCategoryId = l.ProductCategoryId,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
+                x.AttributeLinks = product.AttributeLinks.Map(x.Id);
+                x.CategoryLinks = product.CategoryLinks.Map(x.Id);
             });
 
             var entry = await _storage.AddAsync(newProduct, ct);
@@ -117,9 +103,9 @@ namespace Crm.Apps.Products.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid productId, Product oldProduct, Product newProduct, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Product oldProduct, Product newProduct, CancellationToken ct)
         {
-            var change = oldProduct.UpdateWithLog(productId, x =>
+            var change = oldProduct.UpdateWithLog(userId, x =>
             {
                 x.AccountId = newProduct.AccountId;
                 x.ParentProductId = newProduct.ParentProductId;
@@ -132,8 +118,8 @@ namespace Crm.Apps.Products.Services
                 x.IsHidden = newProduct.IsHidden;
                 x.IsDeleted = newProduct.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.AttributeLinks = newProduct.AttributeLinks;
-                x.CategoryLinks = newProduct.CategoryLinks;
+                x.AttributeLinks = newProduct.AttributeLinks.Map(x.Id);
+                x.CategoryLinks = newProduct.CategoryLinks.Map(x.Id);
             });
 
             _storage.Update(oldProduct);
@@ -141,64 +127,64 @@ namespace Crm.Apps.Products.Services
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task HideAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task HideAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ProductChange>();
 
             await _storage.Products
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, p =>
                 {
-                    x.IsHidden = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    p.IsHidden = true;
+                    p.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task ShowAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task ShowAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ProductChange>();
 
             await _storage.Products
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, p =>
                 {
-                    x.IsHidden = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    p.IsHidden = false;
+                    p.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ProductChange>();
 
             await _storage.Products
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, p =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    p.IsDeleted = true;
+                    p.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task RestoreAsync(Guid productId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ProductChange>();
 
             await _storage
                 .Products.Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(productId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, p =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    p.IsDeleted = false;
+                    p.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

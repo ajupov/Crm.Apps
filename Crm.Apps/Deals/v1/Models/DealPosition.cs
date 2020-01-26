@@ -10,9 +10,9 @@ namespace Crm.Apps.Deals.v1.Models
 
         public Guid ProductId { get; set; }
 
-        public string ProductVendorCode { get; set; }
-
         public string ProductName { get; set; }
+
+        public string ProductVendorCode { get; set; }
 
         public decimal Price { get; set; }
 

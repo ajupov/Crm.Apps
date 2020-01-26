@@ -19,7 +19,7 @@ namespace Crm.Apps.v1.Clients.Contacts.Models
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
-        
+
         public DateTime? ModifyDateTime { get; set; }
     }
 }

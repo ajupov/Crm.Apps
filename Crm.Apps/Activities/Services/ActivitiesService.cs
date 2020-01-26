@@ -7,6 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
+using Crm.Apps.Activities.Mappers;
 using Crm.Apps.Activities.Storages;
 using Crm.Apps.Activities.v1.Models;
 using Crm.Apps.Activities.v1.RequestParameters;
@@ -101,15 +102,7 @@ namespace Crm.Apps.Activities.Services
                 x.DeadLineDateTime = activity.DeadLineDateTime;
                 x.IsDeleted = activity.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = activity.AttributeLinks?
-                    .Select(l => new ActivityAttributeLink
-                    {
-                        ActivityId = x.Id,
-                        ActivityAttributeId = l.ActivityAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
+                x.AttributeLinks = activity.AttributeLinks.Map(x.Id);
             });
 
             var entry = await _activitiesStorage.AddAsync(newActivity, ct);
@@ -144,15 +137,7 @@ namespace Crm.Apps.Activities.Services
                 x.DeadLineDateTime = newActivity.DeadLineDateTime;
                 x.ModifyDateTime = DateTime.UtcNow;
                 x.IsDeleted = newActivity.IsDeleted;
-                x.AttributeLinks = newActivity.AttributeLinks?
-                    .Select(l => new ActivityAttributeLink
-                    {
-                        ActivityId = x.Id,
-                        ActivityAttributeId = l.ActivityAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
+                x.AttributeLinks = newActivity.AttributeLinks.Map(x.Id);
             });
 
             _activitiesStorage.Update(oldActivity);
@@ -160,32 +145,32 @@ namespace Crm.Apps.Activities.Services
             await _activitiesStorage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid activityId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityChange>();
 
             await _activitiesStorage.Activities
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, a =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    a.IsDeleted = true;
+                    a.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
             await _activitiesStorage.SaveChangesAsync(ct);
         }
 
-        public async Task RestoreAsync(Guid activityId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityChange>();
 
             await _activitiesStorage.Activities
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(activityId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, a =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    a.IsDeleted = false;
+                    a.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);

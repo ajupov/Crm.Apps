@@ -61,13 +61,13 @@ namespace Crm.Apps.Activities.Services
         public async Task<Guid> CreateAsync(Guid userId, ActivityType type, CancellationToken ct)
         {
             var newType = new ActivityType();
-            var change = newType.WithCreateLog(userId, x =>
+            var change = newType.WithCreateLog(userId, t =>
             {
-                x.Id = Guid.NewGuid();
-                x.AccountId = type.AccountId;
-                x.Name = type.Name;
-                x.IsDeleted = type.IsDeleted;
-                x.CreateDateTime = DateTime.UtcNow;
+                t.Id = Guid.NewGuid();
+                t.AccountId = type.AccountId;
+                t.Name = type.Name;
+                t.IsDeleted = type.IsDeleted;
+                t.CreateDateTime = DateTime.UtcNow;
             });
 
             var entry = await _activitiesStorage.AddAsync(newType, ct);
@@ -83,11 +83,11 @@ namespace Crm.Apps.Activities.Services
             ActivityType newType,
             CancellationToken ct)
         {
-            var change = oldType.WithUpdateLog(userId, x =>
+            var change = oldType.WithUpdateLog(userId, t =>
             {
-                x.Name = newType.Name;
-                x.IsDeleted = newType.IsDeleted;
-                x.ModifyDateTime = DateTime.UtcNow;
+                t.Name = newType.Name;
+                t.IsDeleted = newType.IsDeleted;
+                t.ModifyDateTime = DateTime.UtcNow;
             });
 
             _activitiesStorage.Update(oldType);
@@ -101,10 +101,10 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.ActivityTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    t.IsDeleted = true;
+                    t.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
@@ -117,10 +117,10 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.ActivityTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    t.IsDeleted = false;
+                    t.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);

@@ -100,10 +100,10 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadSources
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    s.IsDeleted = true;
+                    s.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
@@ -116,10 +116,10 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadSources
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    s.IsDeleted = false;
+                    s.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

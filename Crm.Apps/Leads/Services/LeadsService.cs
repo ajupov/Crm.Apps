@@ -8,6 +8,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Leads.Helpers;
+using Crm.Apps.Leads.Mappers;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Leads.v1.Models;
 using Crm.Apps.Leads.v1.RequestParameters;
@@ -110,15 +111,7 @@ namespace Crm.Apps.Leads.Services
                 x.OpportunitySum = lead.OpportunitySum;
                 x.IsDeleted = lead.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = lead.AttributeLinks?
-                    .Select(l => new LeadAttributeLink
-                    {
-                        LeadId = x.Id,
-                        LeadAttributeId = l.LeadAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
+                x.AttributeLinks = lead.AttributeLinks.Map(x.Id);
             });
 
             var entry = await _storage.AddAsync(newLead, ct);
@@ -128,9 +121,9 @@ namespace Crm.Apps.Leads.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid leadId, Lead oldLead, Lead newLead, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Lead oldLead, Lead newLead, CancellationToken ct)
         {
-            var change = oldLead.UpdateWithLog(leadId, x =>
+            var change = oldLead.UpdateWithLog(userId, x =>
             {
                 x.AccountId = newLead.AccountId;
                 x.SourceId = newLead.SourceId;
@@ -153,7 +146,7 @@ namespace Crm.Apps.Leads.Services
                 x.OpportunitySum = newLead.OpportunitySum;
                 x.IsDeleted = newLead.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.AttributeLinks = newLead.AttributeLinks;
+                x.AttributeLinks = newLead.AttributeLinks.Map(x.Id);
             });
 
             _storage.Update(oldLead);
@@ -161,32 +154,32 @@ namespace Crm.Apps.Leads.Services
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<LeadChange>();
 
             await _storage.Leads
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, l =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    l.IsDeleted = true;
+                    l.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task RestoreAsync(Guid leadId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<LeadChange>();
 
             await _storage.Leads
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(leadId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, l =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    l.IsDeleted = false;
+                    l.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

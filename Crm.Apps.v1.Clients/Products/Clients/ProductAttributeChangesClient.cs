@@ -15,7 +15,8 @@ namespace Crm.Apps.v1.Clients.Products.Clients
         private readonly string _url;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductAttributeChangesClient(IOptions<ClientsSettings> options,
+        public ProductAttributeChangesClient(
+            IOptions<ClientsSettings> options,
             IHttpClientFactory httpClientFactory)
         {
             _url = UriBuilder.Combine(options.Value.ApiHost, "Products/Attributes/Changes/v1");

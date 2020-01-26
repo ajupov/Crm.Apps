@@ -8,11 +8,11 @@ namespace Crm.Apps.v1.Clients.Products.Models
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }
-        
+
         public Guid? ParentProductId { get; set; }
 
         public ProductType Type { get; set; }
-        
+
         public Guid StatusId { get; set; }
 
         public string Name { get; set; }
@@ -24,17 +24,17 @@ namespace Crm.Apps.v1.Clients.Products.Models
         public byte[] Image { get; set; }
 
         public bool IsHidden { get; set; }
-        
+
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
-        
+
         public DateTime? ModifyDateTime { get; set; }
 
         public ProductStatus Status { get; set; }
-        
+
         public List<ProductAttributeLink> AttributeLinks { get; set; }
-        
+
         public List<ProductCategoryLink> CategoryLinks { get; set; }
     }
 }

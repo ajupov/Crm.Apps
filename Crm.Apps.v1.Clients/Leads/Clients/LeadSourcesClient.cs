@@ -27,7 +27,9 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
             return _httpClientFactory.GetAsync<LeadSource>(UriBuilder.Combine(_url, "Get"), new {id}, accessToken, ct);
         }
 
-        public Task<List<LeadSource>> GetListAsync(string accessToken, IEnumerable<Guid> ids,
+        public Task<List<LeadSource>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
             CancellationToken ct = default)
         {
             return _httpClientFactory.PostJsonAsync<List<LeadSource>>(

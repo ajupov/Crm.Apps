@@ -5,7 +5,7 @@ namespace Crm.Apps.v1.Clients.Deals.RequestParameters
     public class DealAttributeChangeGetPagedListRequestParameter
     {
         public Guid AttributeId { get; set; }
-        
+
         public Guid? ChangerUserId { get; set; }
 
         public DateTime? MinCreateDate { get; set; }

@@ -6,21 +6,21 @@ namespace Crm.Apps.Contacts.Helpers
 {
     public static class ContactsChangesHelper
     {
-        public static ContactChange CreateWithLog(this Contact contact, Guid productId, Action<Contact> action)
+        public static ContactChange CreateWithLog(this Contact contact, Guid userId, Action<Contact> action)
         {
             action(contact);
 
             return new ContactChange
             {
                 ContactId = contact.Id,
-                ChangerUserId = productId,
+                ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
                 NewValueJson = contact.ToJsonString()
             };
         }
 
-        public static ContactChange UpdateWithLog(this Contact contact, Guid productId, Action<Contact> action)
+        public static ContactChange UpdateWithLog(this Contact contact, Guid userId, Action<Contact> action)
         {
             var oldValueJson = contact.ToJsonString();
 
@@ -29,7 +29,7 @@ namespace Crm.Apps.Contacts.Helpers
             return new ContactChange
             {
                 ContactId = contact.Id,
-                ChangerUserId = productId,
+                ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,
                 NewValueJson = contact.ToJsonString()

@@ -101,10 +101,10 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    t.IsDeleted = true;
+                    t.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
@@ -117,10 +117,10 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    t.IsDeleted = false;
+                    t.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

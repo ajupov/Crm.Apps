@@ -14,7 +14,10 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
 
         Task<LeadAttribute> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<LeadAttribute>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<LeadAttribute>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default);
 
         Task<List<LeadAttribute>> GetPagedListAsync(
             string accessToken,

@@ -32,12 +32,14 @@ namespace Crm.Apps.Tests
             var oauthHost = hostsSettings.GetValue<string>(nameof(HostsSettings.OAuthHost));
 
             services
-                .ConfigureClients(clientId, apiHost, oauthHost)
-                .Configure<OAuthSettings>(configuration.GetSection(nameof(OAuthSettings)));
+                .ConfigureClients(clientId, apiHost, oauthHost);
 
             services
                 .AddSingleton<IAccessTokenGetter, AccessTokenGetter>()
                 .AddTransient<ICreate, Create>();
+
+            services
+                .Configure<OAuthSettings>(configuration.GetSection(nameof(OAuthSettings)));
 
             services
                 .AddTransient<IOAuthBuilder, OAuthBuilder>()

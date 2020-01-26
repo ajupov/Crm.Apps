@@ -7,6 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Contacts.Helpers;
+using Crm.Apps.Contacts.Mappers;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Contacts.v1.Models;
 using Crm.Apps.Contacts.v1.RequestParameters;
@@ -112,27 +113,8 @@ namespace Crm.Apps.Contacts.Services
                 x.Photo = contact.Photo;
                 x.IsDeleted = contact.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.BankAccounts = contact.BankAccounts?
-                    .Select(a => new ContactBankAccount
-                    {
-                        ContactId = x.Id,
-                        Number = a.Number,
-                        BankNumber = a.BankNumber,
-                        BankCorrespondentNumber = a.BankCorrespondentNumber,
-                        BankName = a.BankName,
-                        IsDeleted = a.IsDeleted,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
-                x.AttributeLinks = contact.AttributeLinks?
-                    .Select(l => new ContactAttributeLink
-                    {
-                        ContactId = x.Id,
-                        ContactAttributeId = l.ContactAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
+                x.BankAccounts = contact.BankAccounts.Map(x.Id);
+                x.AttributeLinks = contact.AttributeLinks.Map(x.Id);
             });
 
             var entry = await _storage.AddAsync(newContact, ct);
@@ -142,9 +124,9 @@ namespace Crm.Apps.Contacts.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid contactId, Contact oldContact, Contact newContact, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Contact oldContact, Contact newContact, CancellationToken ct)
         {
-            var change = oldContact.UpdateWithLog(contactId, x =>
+            var change = oldContact.UpdateWithLog(userId, x =>
             {
                 x.AccountId = newContact.AccountId;
                 x.LeadId = newContact.LeadId;
@@ -169,8 +151,8 @@ namespace Crm.Apps.Contacts.Services
                 x.Photo = newContact.Photo;
                 x.IsDeleted = newContact.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.BankAccounts = newContact.BankAccounts;
-                x.AttributeLinks = newContact.AttributeLinks;
+                x.BankAccounts = newContact.BankAccounts.Map(x.Id);
+                x.AttributeLinks = newContact.AttributeLinks.Map(x.Id);
             });
 
             _storage.Update(oldContact);
@@ -178,32 +160,32 @@ namespace Crm.Apps.Contacts.Services
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid contactId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ContactChange>();
 
             await _storage.Contacts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, c =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    c.IsDeleted = true;
+                    c.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task RestoreAsync(Guid contactId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ContactChange>();
 
             await _storage.Contacts
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(contactId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, c =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    c.IsDeleted = false;
+                    c.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

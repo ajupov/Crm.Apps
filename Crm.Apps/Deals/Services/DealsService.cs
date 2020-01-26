@@ -8,6 +8,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Deals.Helpers;
+using Crm.Apps.Deals.Mappers;
 using Crm.Apps.Deals.Storages;
 using Crm.Apps.Deals.v1.Models;
 using Crm.Apps.Deals.v1.RequestParameters;
@@ -104,8 +105,8 @@ namespace Crm.Apps.Deals.Services
                 x.FinishProbability = deal.FinishProbability;
                 x.IsDeleted = deal.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.AttributeLinks = deal.AttributeLinks;
-                x.Positions = deal.Positions;
+                x.AttributeLinks = deal.AttributeLinks.Map(x.Id);
+                x.Positions = deal.Positions.Map(x.Id);
             });
 
             var entry = await _storage.AddAsync(newDeal, ct);
@@ -115,9 +116,9 @@ namespace Crm.Apps.Deals.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid dealId, Deal oldDeal, Deal newDeal, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Deal oldDeal, Deal newDeal, CancellationToken ct)
         {
-            var change = oldDeal.UpdateWithLog(dealId, x =>
+            var change = oldDeal.UpdateWithLog(userId, x =>
             {
                 x.AccountId = newDeal.AccountId;
                 x.TypeId = newDeal.TypeId;
@@ -133,26 +134,8 @@ namespace Crm.Apps.Deals.Services
                 x.FinishProbability = newDeal.FinishProbability;
                 x.IsDeleted = newDeal.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.AttributeLinks = newDeal.AttributeLinks?
-                    .Select(l => new DealAttributeLink
-                    {
-                        DealId = x.Id,
-                        DealAttributeId = l.DealAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
-                x.Positions = newDeal.Positions?
-                    .Select(p => new DealPosition
-                    {
-                        DealId = x.Id,
-                        ProductId = p.ProductId,
-                        ProductVendorCode = p.ProductVendorCode,
-                        ProductName = p.ProductName,
-                        Price = p.Price,
-                        Count = p.Count
-                    })
-                    .ToList();
+                x.AttributeLinks = newDeal.AttributeLinks.Map(x.Id);
+                x.Positions = newDeal.Positions.Map(x.Id);
             });
 
             _storage.Update(oldDeal);
@@ -160,32 +143,32 @@ namespace Crm.Apps.Deals.Services
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid dealId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<DealChange>();
 
             await _storage.Deals
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, d =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    d.IsDeleted = true;
+                    d.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task RestoreAsync(Guid dealId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<DealChange>();
 
             await _storage.Deals
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(dealId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, d =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    d.IsDeleted = false;
+                    d.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

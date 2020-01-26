@@ -11,20 +11,22 @@ namespace Crm.Apps.v1.Clients
 {
     public static class ClientsExtensions
     {
-        public static IServiceCollection ConfigureClients(
+        public static void ConfigureClients(
             this IServiceCollection services,
             string clientId,
             string apiHost = ClientsDefaults.ApiHost,
             string oauthHost = ClientsDefaults.IdentityHost)
         {
-            return services
+            services
                 .AddHttpClient()
                 .Configure<ClientsSettings>(settings =>
                 {
                     settings.ApiHost = apiHost;
                     settings.OAuthHost = oauthHost;
                     settings.ClientId = clientId;
-                })
+                });
+
+            services
                 .AddSingleton<IOAuthClient, OAuthClient>()
                 .AddSingleton<IActivitiesClient, ActivitiesClient>()
                 .AddSingleton<IActivityChangesClient, ActivityChangesClient>()

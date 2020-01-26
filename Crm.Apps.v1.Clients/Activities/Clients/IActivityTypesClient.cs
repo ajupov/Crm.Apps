@@ -11,7 +11,10 @@ namespace Crm.Apps.v1.Clients.Activities.Clients
     {
         Task<ActivityType> GetAsync(string accessToken, Guid id, CancellationToken ct = default);
 
-        Task<List<ActivityType>> GetListAsync(string accessToken, IEnumerable<Guid> ids, CancellationToken ct = default);
+        Task<List<ActivityType>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
+            CancellationToken ct = default);
 
         Task<List<ActivityType>> GetPagedListAsync(
             string accessToken,

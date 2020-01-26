@@ -28,7 +28,9 @@ namespace Crm.Apps.v1.Clients.Activities.Clients
                 UriBuilder.Combine(_url, "Get"), new {id}, accessToken, ct);
         }
 
-        public Task<List<ActivityType>> GetListAsync(string accessToken, IEnumerable<Guid> ids,
+        public Task<List<ActivityType>> GetListAsync(
+            string accessToken,
+            IEnumerable<Guid> ids,
             CancellationToken ct = default)
         {
             return _httpClientFactory.PostJsonAsync<List<ActivityType>>(

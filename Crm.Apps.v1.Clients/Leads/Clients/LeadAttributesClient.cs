@@ -55,7 +55,8 @@ namespace Crm.Apps.v1.Clients.Leads.Clients
 
         public Task<Guid> CreateAsync(string accessToken, LeadAttribute attribute, CancellationToken ct = default)
         {
-            return _httpClientFactory.PostJsonAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, accessToken, ct);
+            return _httpClientFactory.PostJsonAsync<Guid>(UriBuilder.Combine(_url, "Create"), attribute, accessToken,
+                ct);
         }
 
         public Task UpdateAsync(string accessToken, LeadAttribute attribute, CancellationToken ct = default)

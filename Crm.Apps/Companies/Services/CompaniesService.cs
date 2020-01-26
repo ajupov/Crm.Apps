@@ -7,6 +7,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Companies.Helpers;
+using Crm.Apps.Companies.Mappers;
 using Crm.Apps.Companies.Storages;
 using Crm.Apps.Companies.v1.Models;
 using Crm.Apps.Companies.v1.RequestParameters;
@@ -143,27 +144,8 @@ namespace Crm.Apps.Companies.Services
                 x.LegalApartment = company.LegalApartment;
                 x.IsDeleted = company.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.BankAccounts = company.BankAccounts?
-                    .Select(a => new CompanyBankAccount
-                    {
-                        CompanyId = x.Id,
-                        Number = a.Number,
-                        BankNumber = a.BankNumber,
-                        BankCorrespondentNumber = a.BankCorrespondentNumber,
-                        BankName = a.BankName,
-                        IsDeleted = a.IsDeleted,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
-                x.AttributeLinks = company.AttributeLinks?
-                    .Select(l => new CompanyAttributeLink
-                    {
-                        CompanyId = x.Id,
-                        CompanyAttributeId = l.CompanyAttributeId,
-                        Value = l.Value,
-                        CreateDateTime = DateTime.UtcNow
-                    })
-                    .ToList();
+                x.BankAccounts = company.BankAccounts.Map(x.Id);
+                x.AttributeLinks = company.AttributeLinks.Map(x.Id);
             });
 
             var entry = await _storage.AddAsync(newCompany, ct);
@@ -173,9 +155,9 @@ namespace Crm.Apps.Companies.Services
             return entry.Entity.Id;
         }
 
-        public async Task UpdateAsync(Guid companyId, Company oldCompany, Company newCompany, CancellationToken ct)
+        public async Task UpdateAsync(Guid userId, Company oldCompany, Company newCompany, CancellationToken ct)
         {
-            var change = oldCompany.UpdateWithLog(companyId, x =>
+            var change = oldCompany.UpdateWithLog(userId, x =>
             {
                 x.Type = newCompany.Type;
                 x.IndustryType = newCompany.IndustryType;
@@ -208,8 +190,8 @@ namespace Crm.Apps.Companies.Services
                 x.LegalApartment = newCompany.LegalApartment;
                 x.IsDeleted = newCompany.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.BankAccounts = newCompany.BankAccounts;
-                x.AttributeLinks = newCompany.AttributeLinks;
+                x.BankAccounts = newCompany.BankAccounts.Map(x.Id);
+                x.AttributeLinks = newCompany.AttributeLinks.Map(x.Id);
             });
 
             _storage.Update(oldCompany);
@@ -217,32 +199,32 @@ namespace Crm.Apps.Companies.Services
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task DeleteAsync(Guid companyId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<CompanyChange>();
 
             await _storage.Companies
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, c =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    c.IsDeleted = true;
+                    c.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);
             await _storage.SaveChangesAsync(ct);
         }
 
-        public async Task RestoreAsync(Guid companyId, IEnumerable<Guid> ids, CancellationToken ct)
+        public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<CompanyChange>();
 
             await _storage.Companies
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.UpdateWithLog(companyId, x =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, c =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    c.IsDeleted = false;
+                    c.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _storage.AddRangeAsync(changes, ct);

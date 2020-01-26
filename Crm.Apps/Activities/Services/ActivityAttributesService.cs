@@ -105,10 +105,10 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.ActivityAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, a =>
                 {
-                    x.IsDeleted = true;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    a.IsDeleted = true;
+                    a.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
@@ -121,10 +121,10 @@ namespace Crm.Apps.Activities.Services
 
             await _activitiesStorage.ActivityAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(u => changes.Add(u.WithUpdateLog(userId, x =>
+                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, a =>
                 {
-                    x.IsDeleted = false;
-                    x.ModifyDateTime = DateTime.UtcNow;
+                    a.IsDeleted = false;
+                    a.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
             await _activitiesStorage.AddRangeAsync(changes, ct);
