@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Ajupov.Infrastructure.All" Version="1.5.2" />
+        <PackageReference Include="Ajupov.Utils.All" Version="1.2.1" />
+        <PackageReference Include="Crm.Common.All" Version="1.2.1" />
+    </ItemGroup>
+</Project>
