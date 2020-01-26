@@ -21,7 +21,7 @@ namespace Crm.Apps.Companies.Migrations
                 .WithColumn("Email").AsString(256).NotNullable()
                 .WithColumn("TaxNumber").AsString(64).NotNullable()
                 .WithColumn("RegistrationNumber").AsString(64).NotNullable()
-                .WithColumn("RegistrationDate").AsDateTime2().Nullable()
+                .WithColumn("RegistrationDate").AsDate().Nullable()
                 .WithColumn("EmployeesCount").AsInt32().NotNullable()
                 .WithColumn("YearlyTurnover").AsDecimal(18, 2).NotNullable()
                 .WithColumn("JuridicalPostcode").AsString(8).NotNullable()

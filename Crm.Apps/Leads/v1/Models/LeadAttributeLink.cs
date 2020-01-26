@@ -1,9 +1,11 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Leads.v1.Models
 {
     public class LeadAttributeLink
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
 
         public Guid LeadId { get; set; }

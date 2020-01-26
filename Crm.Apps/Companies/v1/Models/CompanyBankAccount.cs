@@ -1,9 +1,11 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Companies.v1.Models
 {
     public class CompanyBankAccount
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
 
         public Guid CompanyId { get; set; }

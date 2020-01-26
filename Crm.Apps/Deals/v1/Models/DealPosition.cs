@@ -1,9 +1,11 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Deals.v1.Models
 {
     public class DealPosition
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
 
         public Guid DealId { get; set; }

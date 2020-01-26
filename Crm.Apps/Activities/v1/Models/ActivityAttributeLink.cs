@@ -1,9 +1,11 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Activities.v1.Models
 {
     public class ActivityAttributeLink
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
 
         public Guid ActivityId { get; set; }

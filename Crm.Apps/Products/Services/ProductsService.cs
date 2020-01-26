@@ -118,7 +118,7 @@ namespace Crm.Apps.Products.Services
                 x.IsHidden = newProduct.IsHidden;
                 x.IsDeleted = newProduct.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.AttributeLinks = newProduct.AttributeLinks.Map(x.Id);
+                x.AttributeLinks = newProduct.AttributeLinks.Map(x);
                 x.CategoryLinks = newProduct.CategoryLinks.Map(x.Id);
             });
 
