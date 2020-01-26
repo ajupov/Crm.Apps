@@ -8,6 +8,7 @@ namespace Crm.Apps.Deals.v1.Models
         [JsonIgnore]
         public Guid Id { get; set; }
 
+        [JsonIgnore]
         public Guid DealId { get; set; }
 
         public Guid ProductId { get; set; }

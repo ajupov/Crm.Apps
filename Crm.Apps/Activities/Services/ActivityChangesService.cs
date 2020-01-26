@@ -25,7 +25,6 @@ namespace Crm.Apps.Activities.Services
             CancellationToken ct)
         {
             return _activitiesStorage.ActivityChanges
-                .AsNoTracking()
                 .Where(x =>
                     (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.ActivityId.IsEmpty() || x.ActivityId == request.ActivityId) &&

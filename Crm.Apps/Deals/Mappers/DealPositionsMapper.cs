@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ajupov.Utils.All.Guid;
 using Crm.Apps.Deals.v1.Models;
 
 namespace Crm.Apps.Deals.Mappers
@@ -17,8 +16,6 @@ namespace Crm.Apps.Deals.Mappers
 
         public static DealPosition Map(this DealPosition position, Guid dealId)
         {
-            var isNew = position.Id.IsEmpty();
-
             return new DealPosition
             {
                 Id = position.Id,

@@ -8,14 +8,11 @@ namespace Crm.Apps.Products.v1.Models
         [JsonIgnore]
         public Guid Id { get; set; }
 
+        [JsonIgnore]
         public Guid ProductId { get; set; }
 
         public Guid ProductAttributeId { get; set; }
 
         public string Value { get; set; }
-
-        public DateTime CreateDateTime { get; set; }
-
-        public DateTime? ModifyDateTime { get; set; }
     }
 }

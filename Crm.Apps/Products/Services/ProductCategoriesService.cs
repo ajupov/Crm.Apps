@@ -26,14 +26,12 @@ namespace Crm.Apps.Products.Services
         public Task<ProductCategory> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.ProductCategories
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<ProductCategory>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.ProductCategories
-                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -43,7 +41,6 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             return _storage.ProductCategories
-                .AsNoTracking()
                 .Where(x =>
                     (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&

@@ -8,14 +8,11 @@ namespace Crm.Apps.Deals.v1.Models
         [JsonIgnore]
         public Guid Id { get; set; }
 
+        [JsonIgnore]
         public Guid DealId { get; set; }
 
         public Guid DealAttributeId { get; set; }
 
         public string Value { get; set; }
-
-        public DateTime CreateDateTime { get; set; }
-
-        public DateTime? ModifyDateTime { get; set; }
     }
 }

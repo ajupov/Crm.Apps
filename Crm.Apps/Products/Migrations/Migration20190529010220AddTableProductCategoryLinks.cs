@@ -10,9 +10,7 @@ namespace Crm.Apps.Products.Migrations
             Create.Table("ProductCategoryLinks")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ProductId").AsGuid().NotNullable()
-                .WithColumn("CategoryId").AsGuid().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+                .WithColumn("CategoryId").AsGuid().NotNullable();
 
             Create.PrimaryKey("PK_ProductCategoryLinks_Id").OnTable("ProductCategoryLinks")
                 .Column("Id");

@@ -27,7 +27,6 @@ namespace Crm.Apps.Activities.Services
         public Task<Activity> GetAsync(Guid id, CancellationToken ct)
         {
             return _activitiesStorage.Activities
-                .AsNoTracking()
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
@@ -37,7 +36,6 @@ namespace Crm.Apps.Activities.Services
         public Task<List<Activity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _activitiesStorage.Activities
-                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -47,7 +45,6 @@ namespace Crm.Apps.Activities.Services
             CancellationToken ct)
         {
             var temp = await _activitiesStorage.Activities
-                .AsNoTracking()
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)

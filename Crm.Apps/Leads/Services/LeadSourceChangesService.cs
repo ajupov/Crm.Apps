@@ -25,7 +25,6 @@ namespace Crm.Apps.Leads.Services
             CancellationToken ct)
         {
             return _storage.LeadSourceChanges
-                .AsNoTracking()
                 .Where(x =>
                     (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.SourceId.IsEmpty() || x.SourceId == request.SourceId) &&

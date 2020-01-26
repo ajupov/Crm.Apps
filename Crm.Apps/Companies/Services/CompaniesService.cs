@@ -27,7 +27,6 @@ namespace Crm.Apps.Companies.Services
         public Task<Company> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.Companies
-                .AsNoTracking()
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
@@ -36,7 +35,6 @@ namespace Crm.Apps.Companies.Services
         public Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.Companies
-                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -46,7 +44,6 @@ namespace Crm.Apps.Companies.Services
             CancellationToken ct)
         {
             var temp = await _storage.Companies
-                .AsNoTracking()
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>

@@ -14,9 +14,7 @@ namespace Crm.Apps.Companies.Migrations
                 .WithColumn("BankNumber").AsString(64).NotNullable()
                 .WithColumn("BankCorrespondentNumber").AsString(64).NotNullable()
                 .WithColumn("BankName").AsString(256).NotNullable()
-                .WithColumn("IsDeleted").AsBoolean().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+                .WithColumn("IsDeleted").AsBoolean().NotNullable();
 
             Create.PrimaryKey("PK_CompanyBankAccounts_Id").OnTable("CompanyBankAccounts")
                 .Column("Id");

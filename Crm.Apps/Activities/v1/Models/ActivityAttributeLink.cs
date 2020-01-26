@@ -8,14 +8,11 @@ namespace Crm.Apps.Activities.v1.Models
         [JsonIgnore]
         public Guid Id { get; set; }
 
+        [JsonIgnore]
         public Guid ActivityId { get; set; }
 
         public Guid ActivityAttributeId { get; set; }
 
         public string Value { get; set; }
-
-        public DateTime CreateDateTime { get; set; }
-
-        public DateTime? ModifyDateTime { get; set; }
     }
 }

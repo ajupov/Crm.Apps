@@ -11,9 +11,7 @@ namespace Crm.Apps.Activities.Migrations
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ActivityId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
-                .WithColumn("Value").AsString().Nullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+                .WithColumn("Value").AsString().Nullable();
 
             Create.PrimaryKey("PK_ActivityAttributeLinks_Id").OnTable("ActivityAttributeLinks")
                 .Columns("Id");

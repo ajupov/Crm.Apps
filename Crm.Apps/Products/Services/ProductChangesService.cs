@@ -25,7 +25,6 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             return _storage.ProductChanges
-                .AsNoTracking()
                 .Where(x =>
                     (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.ProductId.IsEmpty() || x.ProductId == request.ProductId) &&

@@ -8,6 +8,7 @@ namespace Crm.Apps.Companies.v1.Models
         [JsonIgnore]
         public Guid Id { get; set; }
 
+        [JsonIgnore]
         public Guid CompanyId { get; set; }
 
         public string Number { get; set; }
@@ -19,9 +20,5 @@ namespace Crm.Apps.Companies.v1.Models
         public string BankName { get; set; }
 
         public bool IsDeleted { get; set; }
-
-        public DateTime CreateDateTime { get; set; }
-
-        public DateTime? ModifyDateTime { get; set; }
     }
 }

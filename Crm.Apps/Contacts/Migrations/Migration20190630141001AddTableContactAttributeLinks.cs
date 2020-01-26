@@ -11,9 +11,7 @@ namespace Crm.Apps.Contacts.Migrations
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ContactId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
-                .WithColumn("Value").AsString().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+                .WithColumn("Value").AsString().NotNullable();
 
             Create.PrimaryKey("PK_ContactAttributeLinks_Id").OnTable("ContactAttributeLinks")
                 .Column("Id");

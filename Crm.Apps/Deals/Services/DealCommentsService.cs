@@ -27,7 +27,6 @@ namespace Crm.Apps.Deals.Services
             CancellationToken ct)
         {
             return _storage.DealComments
-                .AsNoTracking()
                 .Where(x =>
                     x.DealId == request.DealId &&
                     (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&

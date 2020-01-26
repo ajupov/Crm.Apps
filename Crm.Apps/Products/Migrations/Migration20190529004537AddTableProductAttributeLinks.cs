@@ -11,9 +11,7 @@ namespace Crm.Apps.Products.Migrations
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ProductId").AsGuid().NotNullable()
                 .WithColumn("AttributeId").AsGuid().NotNullable()
-                .WithColumn("Value").AsString().NotNullable()
-                .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
-                .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
+                .WithColumn("Value").AsString().NotNullable();
 
             Create.PrimaryKey("PK_ProductAttributeLinks_Id").OnTable("ProductAttributeLinks")
                 .Column("Id");

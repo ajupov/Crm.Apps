@@ -27,7 +27,6 @@ namespace Crm.Apps.Leads.Services
             CancellationToken ct)
         {
             return _storage.LeadComments
-                .AsNoTracking()
                 .Where(x =>
                     x.LeadId == request.LeadId &&
                     (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&

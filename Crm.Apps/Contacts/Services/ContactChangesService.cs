@@ -25,7 +25,6 @@ namespace Crm.Apps.Contacts.Services
             CancellationToken ct)
         {
             return _storage.ContactChanges
-                .AsNoTracking()
                 .Where(x =>
                     (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.ContactId.IsEmpty() || x.ContactId == request.ContactId) &&
