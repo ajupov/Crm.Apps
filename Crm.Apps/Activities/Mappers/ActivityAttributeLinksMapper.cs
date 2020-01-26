@@ -21,7 +21,7 @@ namespace Crm.Apps.Activities.Mappers
 
             return new ActivityAttributeLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 ActivityId = activityId,
                 ActivityAttributeId = link.ActivityAttributeId,
                 Value = link.Value,

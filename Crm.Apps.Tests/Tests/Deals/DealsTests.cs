@@ -243,9 +243,10 @@ namespace Crm.Apps.Tests.Tests.Deals
             Assert.Equal(deal.Positions.Single().ProductId, updatedDeal.Positions.Single().ProductId);
             Assert.Equal(deal.Positions.Single().Count, updatedDeal.Positions.Single().Count);
             Assert.Equal(deal.Positions.Single().Price, updatedDeal.Positions.Single().Price);
-            Assert.Equal(deal.AttributeLinks.Single().DealAttributeId,
-                updatedDeal.AttributeLinks.Single().DealAttributeId);
             Assert.Equal(deal.AttributeLinks.Single().Value, updatedDeal.AttributeLinks.Single().Value);
+            Assert.Equal(
+                deal.AttributeLinks.Single().DealAttributeId,
+                updatedDeal.AttributeLinks.Single().DealAttributeId);
         }
 
         [Fact]

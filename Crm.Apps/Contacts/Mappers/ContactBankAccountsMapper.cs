@@ -21,7 +21,7 @@ namespace Crm.Apps.Contacts.Mappers
 
             return new ContactBankAccount
             {
-                Id = isNew ? Guid.NewGuid() : account.Id,
+                Id = account.Id,
                 ContactId = contactId,
                 Number = account.Number,
                 BankNumber = account.BankNumber,

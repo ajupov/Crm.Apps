@@ -225,9 +225,10 @@ namespace Crm.Apps.Tests.Tests.Leads
             Assert.Equal(lead.Apartment, updatedLead.Apartment);
             Assert.Equal(lead.OpportunitySum, updatedLead.OpportunitySum);
             Assert.Equal(lead.IsDeleted, updatedLead.IsDeleted);
-            Assert.Equal(lead.AttributeLinks.Single().LeadAttributeId,
-                updatedLead.AttributeLinks.Single().LeadAttributeId);
             Assert.Equal(lead.AttributeLinks.Single().Value, updatedLead.AttributeLinks.Single().Value);
+            Assert.Equal(
+                lead.AttributeLinks.Single().LeadAttributeId,
+                updatedLead.AttributeLinks.Single().LeadAttributeId);
         }
 
         [Fact]

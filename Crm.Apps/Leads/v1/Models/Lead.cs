@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Leads.v1.Models
 {
@@ -53,6 +54,7 @@ namespace Crm.Apps.Leads.v1.Models
 
         public DateTime? ModifyDateTime { get; set; }
 
+        [JsonIgnore]
         public LeadSource Source { get; set; }
 
         public List<LeadAttributeLink> AttributeLinks { get; set; }

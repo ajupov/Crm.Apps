@@ -21,7 +21,7 @@ namespace Crm.Apps.Deals.Mappers
 
             return new DealAttributeLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 DealId = dealId,
                 DealAttributeId = link.DealAttributeId,
                 Value = link.Value,

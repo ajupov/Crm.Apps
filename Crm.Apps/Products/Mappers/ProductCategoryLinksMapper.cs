@@ -21,7 +21,7 @@ namespace Crm.Apps.Products.Mappers
 
             return new ProductCategoryLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 ProductId = productId,
                 ProductCategoryId = link.ProductCategoryId,
                 CreateDateTime = isNew ? DateTime.UtcNow : link.CreateDateTime,

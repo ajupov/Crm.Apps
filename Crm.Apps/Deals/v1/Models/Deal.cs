@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Crm.Apps.Deals.v1.Models
 {
@@ -39,8 +40,10 @@ namespace Crm.Apps.Deals.v1.Models
 
         public DateTime? ModifyDateTime { get; set; }
 
+        [JsonIgnore]
         public DealType Type { get; set; }
 
+        [JsonIgnore]
         public DealStatus Status { get; set; }
 
         public List<DealPosition> Positions { get; set; }

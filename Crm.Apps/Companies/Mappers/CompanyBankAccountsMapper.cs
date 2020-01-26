@@ -21,7 +21,7 @@ namespace Crm.Apps.Companies.Mappers
 
             return new CompanyBankAccount
             {
-                Id = isNew ? Guid.NewGuid() : account.Id,
+                Id = account.Id,
                 CompanyId = companyId,
                 Number = account.Number,
                 BankNumber = account.BankNumber,

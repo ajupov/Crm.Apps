@@ -21,7 +21,7 @@ namespace Crm.Apps.Leads.Mappers
 
             return new LeadAttributeLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 LeadId = leadId,
                 LeadAttributeId = link.LeadAttributeId,
                 Value = link.Value,

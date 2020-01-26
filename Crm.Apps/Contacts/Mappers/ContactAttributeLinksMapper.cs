@@ -21,7 +21,7 @@ namespace Crm.Apps.Contacts.Mappers
 
             return new ContactAttributeLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 ContactId = contactId,
                 ContactAttributeId = link.ContactAttributeId,
                 Value = link.Value,

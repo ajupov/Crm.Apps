@@ -217,9 +217,10 @@ namespace Crm.Apps.Tests.Tests.Activities
             Assert.Equal(activity.EndDateTime?.Date, updatedActivity.EndDateTime?.Date);
             Assert.Equal(activity.DeadLineDateTime?.Date, updatedActivity.DeadLineDateTime?.Date);
             Assert.Equal(activity.IsDeleted, updatedActivity.IsDeleted);
-            Assert.Equal(activity.AttributeLinks.Single().ActivityAttributeId,
-                updatedActivity.AttributeLinks.Single().ActivityAttributeId);
             Assert.Equal(activity.AttributeLinks.Single().Value, updatedActivity.AttributeLinks.Single().Value);
+            Assert.Equal(
+                activity.AttributeLinks.Single().ActivityAttributeId,
+                updatedActivity.AttributeLinks.Single().ActivityAttributeId);
         }
 
         [Fact]

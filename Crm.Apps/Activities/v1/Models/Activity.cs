@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Crm.Apps.Activities.v1.Models
 {
@@ -45,8 +46,10 @@ namespace Crm.Apps.Activities.v1.Models
 
         public DateTime? ModifyDateTime { get; set; }
 
+        [JsonIgnore]
         public ActivityType Type { get; set; }
 
+        [JsonIgnore]
         public ActivityStatus Status { get; set; }
 
         public List<ActivityAttributeLink> AttributeLinks { get; set; }

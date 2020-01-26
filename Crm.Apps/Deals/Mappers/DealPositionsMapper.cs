@@ -21,7 +21,7 @@ namespace Crm.Apps.Deals.Mappers
 
             return new DealPosition
             {
-                Id = isNew ? Guid.NewGuid() : position.Id,
+                Id = position.Id,
                 DealId = dealId,
                 ProductId = position.ProductId,
                 ProductName = position.ProductName,

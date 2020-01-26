@@ -21,7 +21,7 @@ namespace Crm.Apps.Products.Mappers
 
             return new ProductAttributeLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 ProductId = productId,
                 ProductAttributeId = link.ProductAttributeId,
                 Value = link.Value,

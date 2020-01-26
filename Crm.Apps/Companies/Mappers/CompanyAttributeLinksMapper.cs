@@ -21,7 +21,7 @@ namespace Crm.Apps.Companies.Mappers
 
             return new CompanyAttributeLink
             {
-                Id = isNew ? Guid.NewGuid() : link.Id,
+                Id = link.Id,
                 CompanyId = companyId,
                 CompanyAttributeId = link.CompanyAttributeId,
                 Value = link.Value,

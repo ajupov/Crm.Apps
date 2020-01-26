@@ -219,10 +219,12 @@ namespace Crm.Apps.Tests.Tests.Products
             Assert.Equal(product.Price, updatedProduct.Price);
             Assert.Equal(product.IsHidden, updatedProduct.IsHidden);
             Assert.Equal(product.IsDeleted, updatedProduct.IsDeleted);
-            Assert.Equal(product.AttributeLinks.Single().ProductAttributeId,
-                updatedProduct.AttributeLinks.Single().ProductAttributeId);
             Assert.Equal(product.AttributeLinks.Single().Value, updatedProduct.AttributeLinks.Single().Value);
-            Assert.Equal(product.CategoryLinks.Single().ProductCategoryId,
+            Assert.Equal(
+                product.AttributeLinks.Single().ProductAttributeId,
+                updatedProduct.AttributeLinks.Single().ProductAttributeId);
+            Assert.Equal(
+                product.CategoryLinks.Single().ProductCategoryId,
                 updatedProduct.CategoryLinks.Single().ProductCategoryId);
         }
 
