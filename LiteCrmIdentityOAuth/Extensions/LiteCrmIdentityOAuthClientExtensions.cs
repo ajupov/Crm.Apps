@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 
 namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
 {
@@ -82,8 +83,8 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
                             OnRedirectToAuthorizationEndpoint = context =>
                             {
                                 var hasUserAgent =
-                                    context.HttpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent) &&
-                                    !userAgent.ToString().IsEmpty();
+                                    context.HttpContext.Request.Headers.TryGetValue(
+                                        HeaderNames.UserAgent, out var userAgent) && !userAgent.ToString().IsEmpty();
 
                                 if (hasUserAgent)
                                 {

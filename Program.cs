@@ -14,6 +14,7 @@ using Ajupov.Infrastructure.All.Tracing;
 using Ajupov.Infrastructure.All.UserContext;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.Storages;
+using Crm.Apps.Auth.Settings;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.Storages;
 using Crm.Apps.Contacts.Services;
@@ -67,6 +68,9 @@ namespace Crm.Apps
                         .AddUserContext<IUserContext, UserContext>()
                         .AddHotStorage(builder.Configuration);
 
+                    services
+                        .Configure<AuthSettings>(configuration.GetSection(nameof(AuthSettings)));
+                    
                     services
                         .AddTransient<IProductsService, ProductsService>()
                         .AddTransient<IProductChangesService, ProductChangesService>()
