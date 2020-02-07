@@ -5,6 +5,6 @@
     <ItemGroup>
         <PackageReference Include="Ajupov.Infrastructure.All" Version="1.5.4" />
         <PackageReference Include="Ajupov.Utils.All" Version="1.2.1" />
-        <PackageReference Include="Crm.Common.All" Version="1.2.1" />
+        <PackageReference Include="Crm.Common.All" Version="1.2.2" />
     </ItemGroup>
 </Project>

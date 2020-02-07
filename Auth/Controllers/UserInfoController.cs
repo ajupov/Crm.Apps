@@ -4,15 +4,15 @@ using Ajupov.Infrastructure.All.ApiDocumentation.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc;
 using Crm.Apps.Auth.Models;
+using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Auth.Controllers
 {
     [ApiController]
     [IgnoreApiDocumentation]
-    [Authorize(JwtDefaults.AuthenticationScheme)]
+    [RequireAnyRole(JwtDefaults.AuthenticationScheme)]
     [Route("UserInfo")]
     public class UserInfoController : DefaultApiController
     {
