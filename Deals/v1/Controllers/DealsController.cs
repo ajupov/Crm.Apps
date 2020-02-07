@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
-using Ajupov.Utils.All.Enums;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.v1.Models;
 using Crm.Apps.Deals.v1.RequestParameters;
@@ -33,12 +32,6 @@ namespace Crm.Apps.Deals.v1.Controllers
         {
             _userContext = userContext;
             _dealsService = dealsService;
-        }
-
-        [HttpGet("GetTypes")]
-        public Dictionary<string, DealType> GetTypes()
-        {
-            return EnumsExtensions.GetAsDictionary<DealType>();
         }
 
         [HttpGet("Get")]
