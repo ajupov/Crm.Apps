@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.RequestParameters;
@@ -14,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Products.v1.Controllers
 {
     [ApiController]
+    [RequestContentTypeApplicationJson]
+    [ResponseContentTypeApplicationJson]
     [RequireProductsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Products/Attributes/Changes/v1")]
     public class ProductAttributeChangesController : AllowingCheckControllerBase

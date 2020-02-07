@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.v1.Models;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Companies.v1.Controllers
 {
     [ApiController]
+    [RequestContentTypeApplicationJson]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Companies/v1")]
     public class CompaniesController : AllowingCheckControllerBase

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.v1.Models;
@@ -19,6 +20,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Contacts.v1.Controllers
 {
     [ApiController]
+    [RequestContentTypeApplicationJson]
+    [ResponseContentTypeApplicationJson]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Contacts/Attributes/v1")]
     public class ContactAttributesController : AllowingCheckControllerBase

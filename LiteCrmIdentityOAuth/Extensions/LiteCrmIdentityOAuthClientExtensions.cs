@@ -78,7 +78,6 @@ namespace Crm.Apps.LiteCrmIdentityOAuth.Extensions
                                 var userInfoJson = await UserInfoHelper.GetUserInfoJsonAsync(context);
 
                                 context.AppendRolesToClaims(userInfoJson);
-                                context.AppendUserInfoToCookies(userInfoJson);
                             },
                             OnRedirectToAuthorizationEndpoint = context =>
                             {

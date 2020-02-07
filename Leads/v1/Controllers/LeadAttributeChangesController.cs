@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Leads.v1.Controllers
 {
-    [ApiController]
+    
     [RequireLeadsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Leads/Attributes/Changes/v1")]
     public class LeadAttributeChangesController : AllowingCheckControllerBase

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.v1.Models;
@@ -18,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Activities.v1.Controllers
 {
     [ApiController]
+    [RequestContentTypeApplicationJson]
+    [ResponseContentTypeApplicationJson]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Activities/v1")]
     public class ActivitiesController : AllowingCheckControllerBase

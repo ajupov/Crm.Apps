@@ -36,6 +36,13 @@ namespace Crm.Apps.Auth.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("IsAuthenticated")]
+        public ActionResult<bool> IsAuthenticated()
+        {
+            return HttpContext.User.Identity.IsAuthenticated;
+        }
+
+        [AllowAnonymous]
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout(string redirectUri, CancellationToken ct)
         {

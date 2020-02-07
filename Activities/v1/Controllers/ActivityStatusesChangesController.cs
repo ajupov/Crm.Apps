@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.v1.Models;
 using Crm.Apps.Activities.v1.RequestParameters;
@@ -14,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crm.Apps.Activities.v1.Controllers
 {
     [ApiController]
+    [RequestContentTypeApplicationJson]
+    [ResponseContentTypeApplicationJson]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Activities/Statuses/Changes/v1")]
     public class ActivityStatusesChangesController : AllowingCheckControllerBase
