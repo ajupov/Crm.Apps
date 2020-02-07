@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.v1.Models;
 using Crm.Apps.Leads.v1.RequestParameters;
@@ -13,7 +14,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Crm.Apps.Leads.v1.Controllers
 {
-    
+    [ApiController]
+    [RequestContentTypeApplicationJson]
+    [ResponseContentTypeApplicationJson]
     [RequireLeadsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Leads/Attributes/Changes/v1")]
     public class LeadAttributeChangesController : AllowingCheckControllerBase
