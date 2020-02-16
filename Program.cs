@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.ApiDocumentation;
 using Ajupov.Infrastructure.All.Configuration;
+using Ajupov.Infrastructure.All.Cors;
 using Ajupov.Infrastructure.All.Hosting;
 using Ajupov.Infrastructure.All.HotStorage;
 using Ajupov.Infrastructure.All.Jwt;
@@ -54,6 +55,7 @@ namespace Crm.Apps
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
                     services
+                        .AddSingleOriginCorsPolicy(configuration)
                         .AddMvc(typeof(ValidationFilter))
                         .AddTracing(configuration)
                         .AddApiDocumentation()
@@ -70,7 +72,7 @@ namespace Crm.Apps
 
                     services
                         .Configure<AuthSettings>(configuration.GetSection(nameof(AuthSettings)));
-                    
+
                     services
                         .AddTransient<IProductsService, ProductsService>()
                         .AddTransient<IProductChangesService, ProductChangesService>()
@@ -127,6 +129,7 @@ namespace Crm.Apps
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
+                        .UseSingleOriginCors()
                         .UseAuthentication()
                         .UseAuthorization()
                         .UseMvcMiddleware();

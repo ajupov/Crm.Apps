@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.ApiDocumentation.Attributes;
+using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc;
 using Crm.Apps.Auth.Settings;
 using Microsoft.AspNetCore.Authentication;
@@ -35,6 +36,15 @@ namespace Crm.Apps.Auth.Controllers
             return Challenge(properties);
         }
 
+        [AllowAnonymous]
+        [HttpGet("IsAuthenticated")]
+        public async Task<bool> IsAuthenticated()
+        {
+            var authenticateResult = await HttpContext.AuthenticateAsync(JwtDefaults.AuthenticationScheme);
+            
+            return authenticateResult.Succeeded && authenticateResult.Principal.Identity.IsAuthenticated;
+        }
+        
         [AllowAnonymous]
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout(string redirectUri, CancellationToken ct)
