@@ -4,7 +4,7 @@ namespace Crm.Apps.Products.v1.RequestParameters
 {
     public class ProductCategoryGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
+        public Guid? AccountId { get; set; }
 
         public string Name { get; set; }
 

@@ -6,7 +6,7 @@ namespace Crm.Apps.Deals.v1.RequestParameters
 {
     public class DealAttributeGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
+        public Guid? AccountId { get; set; }
 
         public List<AttributeType> Types { get; set; }
 

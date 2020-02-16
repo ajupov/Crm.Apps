@@ -4,7 +4,7 @@ namespace Crm.Apps.Activities.v1.RequestParameters
 {
     public class ActivityTypeGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
+        public Guid? AccountId { get; set; }
 
         public string Name { get; set; }
 

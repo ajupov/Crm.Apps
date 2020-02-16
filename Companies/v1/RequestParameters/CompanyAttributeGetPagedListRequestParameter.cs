@@ -6,7 +6,7 @@ namespace Crm.Apps.Companies.v1.RequestParameters
 {
     public class CompanyAttributeGetPagedListRequestParameter
     {
-        public Guid AccountId { get; set; }
+        public Guid? AccountId { get; set; }
 
         public List<AttributeType> Types { get; set; }
 
