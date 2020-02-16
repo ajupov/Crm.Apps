@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.ApiDocumentation.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc;
+using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Auth.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,7 +14,8 @@ using Microsoft.Extensions.Options;
 namespace Crm.Apps.Auth.Controllers
 {
     [ApiController]
-    [IgnoreApiDocumentation]
+    [RequestContentTypeApplicationJson]
+    [ResponseContentTypeApplicationJson]
     [Route("Auth")]
     public class AuthController : DefaultApiController
     {
@@ -25,6 +27,7 @@ namespace Crm.Apps.Auth.Controllers
         }
 
         [AllowAnonymous]
+        [IgnoreApiDocumentation]
         [HttpGet("Login")]
         public IActionResult Login(string redirectUri)
         {
@@ -46,6 +49,7 @@ namespace Crm.Apps.Auth.Controllers
         }
         
         [AllowAnonymous]
+        [IgnoreApiDocumentation]
         [HttpGet("Logout")]
         public async Task<IActionResult> Logout(string redirectUri, CancellationToken ct)
         {
