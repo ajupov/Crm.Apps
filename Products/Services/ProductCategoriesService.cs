@@ -42,7 +42,6 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             var productsQueryable = _storage.ProductCategories
-                .AsNoTracking()
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
