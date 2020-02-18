@@ -11,7 +11,7 @@ using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Mappers;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
-using Crm.Apps.Products.v1.RequestParameters;
+using Crm.Apps.Products.v1.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -42,7 +42,8 @@ namespace Crm.Apps.Products.Services
         }
 
         public async Task<List<Product>> GetPagedListAsync(
-            ProductGetPagedListRequestParameter request,
+            Guid accountId,
+            ProductGetPagedListRequest request,
             CancellationToken ct)
         {
             var temp = await _storage.Products
@@ -50,7 +51,7 @@ namespace Crm.Apps.Products.Services
                 .Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks)
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.ParentProductId.IsEmpty() || x.ParentProductId == request.ParentProductId) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (request.VendorCode.IsEmpty() || x.VendorCode == request.VendorCode) &&

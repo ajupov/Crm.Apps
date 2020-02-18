@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using Crm.Apps.Products.v1.Models;
 
-namespace Crm.Apps.Products.v1.RequestParameters
+namespace Crm.Apps.Products.v1.Requests
 {
-    public class ProductGetPagedListRequestParameter
+    public class ProductGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public Guid? ParentProductId { get; set; }
 
         public List<ProductType> Types { get; set; }

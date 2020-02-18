@@ -6,7 +6,7 @@ using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
-using Crm.Apps.Products.v1.RequestParameters;
+using Crm.Apps.Products.v1.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -21,12 +21,11 @@ namespace Crm.Apps.Products.Services
         }
 
         public Task<List<ProductCategoryChange>> GetPagedListAsync(
-            ProductCategoryChangeGetPagedListRequestParameter request,
+            ProductCategoryChangeGetPagedListRequest request,
             CancellationToken ct)
         {
             return _storage.ProductCategoryChanges
                 .Where(x =>
-                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.CategoryId.IsEmpty() || x.CategoryId == request.CategoryId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))

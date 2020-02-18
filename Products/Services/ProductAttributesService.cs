@@ -9,7 +9,7 @@ using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
-using Crm.Apps.Products.v1.RequestParameters;
+using Crm.Apps.Products.v1.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -37,12 +37,13 @@ namespace Crm.Apps.Products.Services
         }
 
         public Task<List<ProductAttribute>> GetPagedListAsync(
-            ProductAttributeGetPagedListRequestParameter request,
+            Guid accountId,
+            ProductAttributeGetPagedListRequest request,
             CancellationToken ct)
         {
             return _storage.ProductAttributes
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
                     (request.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{request.Key}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&

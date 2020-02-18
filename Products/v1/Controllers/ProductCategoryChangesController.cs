@@ -5,7 +5,7 @@ using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.v1.Models;
-using Crm.Apps.Products.v1.RequestParameters;
+using Crm.Apps.Products.v1.Requests;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -36,7 +36,7 @@ namespace Crm.Apps.Products.v1.Controllers
 
         [HttpPost("GetPagedList")]
         public async Task<ActionResult<List<ProductCategoryChange>>> GetPagedList(
-            ProductCategoryChangeGetPagedListRequestParameter request,
+            ProductCategoryChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
             var category = await _productCategoriesService.GetAsync(request.CategoryId, ct);

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.v1.Models;
-using Crm.Apps.Products.v1.RequestParameters;
+using Crm.Apps.Products.v1.Requests;
 
 namespace Crm.Apps.Products.Helpers
 {
     public static class ProductsFiltersHelper
     {
-        public static bool FilterByAdditional(this Product product, ProductGetPagedListRequestParameter request)
+        public static bool FilterByAdditional(this Product product, ProductGetPagedListRequest request)
         {
             return (request.Types == null || !request.Types.Any() ||
                     request.Types.Any(x => TypePredicate(product, x))) &&

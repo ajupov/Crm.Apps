@@ -1,11 +1,9 @@
 using System;
 
-namespace Crm.Apps.Products.v1.RequestParameters
+namespace Crm.Apps.Products.v1.Requests
 {
-    public class ProductCategoryGetPagedListRequestParameter
+    public class ProductCategoryGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public string Name { get; set; }
 
         public bool? IsDeleted { get; set; }

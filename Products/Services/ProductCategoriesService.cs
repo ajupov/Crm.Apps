@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
-using Crm.Apps.Products.v1.RequestParameters;
+using Crm.Apps.Products.v1.Requests;
+using Crm.Apps.Products.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -36,23 +36,34 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<ProductCategory>> GetPagedListAsync(
-            ProductCategoryGetPagedListRequestParameter request,
+        public async Task<ProductCategoryGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            ProductCategoryGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.ProductCategories
+            var productsQueryable = _storage.ProductCategories
+                .AsNoTracking()
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+
+            return new ProductCategoryGetPagedListResponse
+            {
+                TotalCount = await productsQueryable
+                    .CountAsync(ct),
+                LastModifyDateTime = await productsQueryable
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Categories = await productsQueryable
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct),
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, ProductCategory category, CancellationToken ct)

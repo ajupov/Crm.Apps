@@ -1,18 +1,20 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Products.v1.RequestParameters
+namespace Crm.Apps.Products.v1.Requests
 {
-    public class ProductStatusChangeGetPagedListRequestParameter
+    public class ProductStatusGetPagedListRequest
     {
-        [Required]
-        public Guid StatusId { get; set; }
+        public string Name { get; set; }
 
-        public Guid? ChangerUserId { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public int Offset { get; set; }
 

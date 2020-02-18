@@ -1,14 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Products.v1.RequestParameters
+namespace Crm.Apps.Products.v1.Requests
 {
-    public class ProductAttributeChangeGetPagedListRequestParameter
+    public class ProductCategoryChangeGetPagedListRequest
     {
         [Required]
-        public Guid AttributeId { get; set; }
-
-        public Guid? ChangerUserId { get; set; }
+        public Guid CategoryId { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 
