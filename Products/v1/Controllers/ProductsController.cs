@@ -10,6 +10,7 @@ using Ajupov.Utils.All.Enums;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.Requests;
+using Crm.Apps.Products.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -67,16 +68,16 @@ namespace Crm.Apps.Products.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<Product>>> GetPagedList(
+        public async Task<ActionResult<ProductGetPagedListResponse>> GetPagedList(
             ProductGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var products = await _productsService.GetPagedListAsync(_userContext.AccountId, request, ct);
+            var response = await _productsService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
-                products,
+                response,
                 Roles.Products,
-                products.Select(x => x.AccountId));
+                response.Products.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]

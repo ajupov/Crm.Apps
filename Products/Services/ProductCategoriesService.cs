@@ -41,7 +41,7 @@ namespace Crm.Apps.Products.Services
             ProductCategoryGetPagedListRequest request,
             CancellationToken ct)
         {
-            var productsQueryable = _storage.ProductCategories
+            var categories = _storage.ProductCategories
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
@@ -53,15 +53,15 @@ namespace Crm.Apps.Products.Services
 
             return new ProductCategoryGetPagedListResponse
             {
-                TotalCount = await productsQueryable
+                TotalCount = await categories
                     .CountAsync(ct),
-                LastModifyDateTime = await productsQueryable
+                LastModifyDateTime = await categories
                     .MaxAsync(x => x.ModifyDateTime, ct),
-                Categories = await productsQueryable
+                Categories = await categories
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
                     .Take(request.Limit)
-                    .ToListAsync(ct),
+                    .ToListAsync(ct)
             };
         }
 

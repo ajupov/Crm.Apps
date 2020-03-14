@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Products.Storages;
-using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.Requests;
+using Crm.Apps.Products.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -20,19 +19,26 @@ namespace Crm.Apps.Products.Services
             _storage = storage;
         }
 
-        public Task<List<ProductChange>> GetPagedListAsync(
+        public async Task<ProductChangeGetPagedListResponse> GetPagedListAsync(
             ProductChangeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.ProductChanges
+            var changes = _storage.ProductChanges
                 .Where(x =>
                     (request.ProductId.IsEmpty() || x.ProductId == request.ProductId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new ProductChangeGetPagedListResponse
+            {
+                TotalCount = await changes
+                    .CountAsync(ct),
+                Changes = await changes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
     }
 }

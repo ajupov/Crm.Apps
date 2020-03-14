@@ -12,6 +12,7 @@ using Crm.Apps.Products.Mappers;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.Requests;
+using Crm.Apps.Products.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -41,12 +42,12 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Product>> GetPagedListAsync(
+        public async Task<ProductGetPagedListResponse> GetPagedListAsync(
             Guid accountId,
             ProductGetPagedListRequest request,
             CancellationToken ct)
         {
-            var temp = await _storage.Products
+            var products = _storage.Products
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks)
@@ -62,15 +63,21 @@ namespace Crm.Apps.Products.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
 
-            return temp
-                .Where(x => x.FilterByAdditional(request))
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToList();
+            return new ProductGetPagedListResponse
+            {
+                TotalCount = await products
+                    .CountAsync(ct),
+                LastModifyDateTime = await products
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Products = await products
+                    .Where(x => x.FilterByAdditional(request))
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, Product product, CancellationToken ct)

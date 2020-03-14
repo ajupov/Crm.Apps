@@ -9,6 +9,7 @@ using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.Requests;
+using Crm.Apps.Products.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -60,16 +61,16 @@ namespace Crm.Apps.Products.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<ProductStatus>>> GetPagedList(
+        public async Task<ActionResult<ProductStatusGetPagedListResponse>> GetPagedList(
             ProductStatusGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var statuses = await _productStatusesService.GetPagedListAsync(_userContext.AccountId, request, ct);
+            var response = await _productStatusesService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
-                statuses,
+                response,
                 Roles.Products,
-                statuses.Select(x => x.AccountId));
+                response.Statuses.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]

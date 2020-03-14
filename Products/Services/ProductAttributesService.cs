@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Products.v1.Models;
 using Crm.Apps.Products.v1.Requests;
+using Crm.Apps.Products.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services
@@ -36,12 +36,12 @@ namespace Crm.Apps.Products.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<ProductAttribute>> GetPagedListAsync(
+        public async Task<ProductAttributeGetPagedListResponse> GetPagedListAsync(
             Guid accountId,
             ProductAttributeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.ProductAttributes
+            var attributes = _storage.ProductAttributes
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
@@ -50,11 +50,20 @@ namespace Crm.Apps.Products.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+
+            return new ProductAttributeGetPagedListResponse
+            {
+                TotalCount = await attributes
+                    .CountAsync(ct),
+                LastModifyDateTime = await attributes
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Attributes = await attributes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, ProductAttribute attribute, CancellationToken ct)

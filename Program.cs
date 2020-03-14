@@ -24,10 +24,10 @@ using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
-using Crm.Apps.LiteCrmIdentityOAuth.Extensions;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Common.All.UserContext;
+using LiteCrm.OAuth.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,7 +51,7 @@ namespace Crm.Apps
                         .AddAuthorization()
                         .AddJwtAuthentication()
                         .AddJwtValidator(configuration)
-                        .AddLiteCrmIdentityOAuth(configuration)
+                        .AddLiteCrmOAuth(configuration)
                         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
                     services
