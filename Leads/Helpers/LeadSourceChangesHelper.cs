@@ -1,6 +1,6 @@
 ﻿using System;
 using Ajupov.Utils.All.Json;
-using Crm.Apps.Leads.v1.Models;
+using Crm.Apps.Leads.Models;
 
 namespace Crm.Apps.Leads.Helpers
 {

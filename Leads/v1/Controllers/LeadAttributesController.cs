@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
+using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Services;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.v1.Requests;
+using Crm.Apps.Leads.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -68,18 +69,16 @@ namespace Crm.Apps.Leads.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<LeadAttribute>>> GetPagedList(
-            LeadAttributeGetPagedListRequestParameter request,
+        public async Task<ActionResult<LeadAttributeGetPagedListResponse>> GetPagedList(
+            LeadAttributeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            request.AccountId = _userContext.AccountId;
-
-            var attributes = await _leadAttributesService.GetPagedListAsync(request, ct);
+            var response = await _leadAttributesService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
-                attributes,
+                response,
                 Roles.Leads,
-                attributes.Select(x => x.AccountId));
+                response.Attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]

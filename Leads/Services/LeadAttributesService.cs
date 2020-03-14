@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Leads.Helpers;
+using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Storages;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.v1.Requests;
+using Crm.Apps.Leads.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Leads.Services
@@ -36,24 +36,34 @@ namespace Crm.Apps.Leads.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<LeadAttribute>> GetPagedListAsync(
-            LeadAttributeGetPagedListRequestParameter request,
+        public async Task<LeadAttributeGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            LeadAttributeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.LeadAttributes
+            var attributes = _storage.LeadAttributes
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (x.AccountId == accountId) &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
                     (request.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{request.Key}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+
+            return new LeadAttributeGetPagedListResponse
+            {
+                TotalCount = await attributes
+                    .CountAsync(ct),
+                LastModifyDateTime = await attributes
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Attributes = await attributes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, LeadAttribute attribute, CancellationToken ct)

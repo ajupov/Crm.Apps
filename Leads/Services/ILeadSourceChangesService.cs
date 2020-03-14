@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.v1.Requests;
+using Crm.Apps.Leads.v1.Responses;
 
 namespace Crm.Apps.Leads.Services
 {
     public interface ILeadSourceChangesService
     {
-        Task<List<LeadSourceChange>> GetPagedListAsync(
-            LeadSourceChangeGetPagedListRequestParameter request,
+        Task<LeadSourceChangeGetPagedListResponse> GetPagedListAsync(
+            LeadSourceChangeGetPagedListRequest request,
             CancellationToken ct);
     }
 }

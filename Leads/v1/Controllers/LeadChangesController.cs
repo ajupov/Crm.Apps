@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Leads.Services;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.v1.Requests;
+using Crm.Apps.Leads.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -35,14 +34,14 @@ namespace Crm.Apps.Leads.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<LeadChange>>> GetPagedList(
-            LeadChangeGetPagedListRequestParameter request,
+        public async Task<ActionResult<LeadChangeGetPagedListResponse>> GetPagedList(
+            LeadChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
             var lead = await _leadsService.GetAsync(request.LeadId, ct);
-            var changes = await _leadChangesService.GetPagedListAsync(request, ct);
+            var response = await _leadChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, Roles.Leads, lead.AccountId);
+            return ReturnIfAllowed(response, Roles.Leads, lead.AccountId);
         }
     }
 }

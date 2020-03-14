@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Crm.Apps.Leads.v1.Models;
+using Crm.Apps.Leads.Models;
 
 namespace Crm.Apps.Leads.Mappers
 {

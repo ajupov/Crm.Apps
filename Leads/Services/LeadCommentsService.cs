@@ -1,14 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Storages;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.v1.Requests;
+using Crm.Apps.Leads.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Leads.Services
@@ -22,21 +21,27 @@ namespace Crm.Apps.Leads.Services
             _storage = storage;
         }
 
-        public Task<List<LeadComment>> GetPagedListAsync(
-            LeadCommentGetPagedListRequestParameter request,
+        public async Task<LeadCommentGetPagedListResponse> GetPagedListAsync(
+            LeadCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.LeadComments
+            var comments = _storage.LeadComments
                 .Where(x =>
                     x.LeadId == request.LeadId &&
-                    (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&
                     (request.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{request.Value}%")) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new LeadCommentGetPagedListResponse
+            {
+                TotalCount = await comments
+                    .CountAsync(ct),
+                Comments = await comments
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task CreateAsync(Guid userId, LeadComment comment, CancellationToken ct)

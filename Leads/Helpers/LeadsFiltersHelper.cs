@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.Models;
+using Crm.Apps.Leads.v1.Requests;
 
 namespace Crm.Apps.Leads.Helpers
 {
     public static class LeadsFiltersHelper
     {
-        public static bool FilterByAdditional(this Lead lead, LeadGetPagedListRequestParameter request)
+        public static bool FilterByAdditional(this Lead lead, LeadGetPagedListRequest request)
         {
             return (request.SourceIds == null || !request.SourceIds.Any() ||
                     request.SourceIds.Any(x => SourceIdsPredicate(lead, x))) &&

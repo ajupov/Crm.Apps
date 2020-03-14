@@ -6,9 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
+using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Services;
-using Crm.Apps.Leads.v1.Models;
-using Crm.Apps.Leads.v1.RequestParameters;
+using Crm.Apps.Leads.v1.Requests;
+using Crm.Apps.Leads.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -58,18 +59,16 @@ namespace Crm.Apps.Leads.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<Lead>>> GetPagedList(
-            LeadGetPagedListRequestParameter request,
+        public async Task<ActionResult<LeadGetPagedListResponse>> GetPagedList(
+            LeadGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            request.AccountId = request.AccountId;
-
-            var leads = await _leadsService.GetPagedListAsync(request, ct);
+            var response = await _leadsService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
-                leads,
+                response,
                 Roles.Leads,
-                leads.Select(x => x.AccountId));
+                response.Leads.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]
