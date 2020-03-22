@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
+using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Services;
-using Crm.Apps.Activities.v1.Models;
-using Crm.Apps.Activities.v1.RequestParameters;
+using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -70,18 +71,16 @@ namespace Crm.Apps.Activities.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<ActivityAttribute>>> GetPagedList(
-            ActivityAttributeGetPagedListRequestParameter request,
+        public async Task<ActionResult<ActivityAttributeGetPagedListResponse>> GetPagedList(
+            ActivityAttributeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            request.AccountId = _userContext.AccountId;
-
-            var attributes = await _activityAttributesService.GetPagedListAsync(request, ct);
+            var response = await _activityAttributesService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
-                attributes,
+                response,
                 Roles.Sales,
-                attributes.Select(x => x.AccountId));
+                response.Attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]

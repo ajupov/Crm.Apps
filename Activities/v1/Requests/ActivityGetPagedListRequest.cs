@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Crm.Apps.Activities.v1.Models;
+using Crm.Apps.Activities.Models;
 
-namespace Crm.Apps.Activities.v1.RequestParameters
+namespace Crm.Apps.Activities.v1.Requests
 {
-    public class ActivityGetPagedListRequestParameter
+    public class ActivityGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }

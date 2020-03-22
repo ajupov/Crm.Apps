@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Crm.Apps.Activities.v1.Models
+namespace Crm.Apps.Activities.Models
 {
     public class ActivityAttributeLink
     {

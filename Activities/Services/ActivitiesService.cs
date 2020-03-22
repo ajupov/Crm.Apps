@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
 using Crm.Apps.Activities.Mappers;
+using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Storages;
-using Crm.Apps.Activities.v1.Models;
-using Crm.Apps.Activities.v1.RequestParameters;
+using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Activities.Services
 {
     public class ActivitiesService : IActivitiesService
     {
-        private readonly ActivitiesStorage _activitiesStorage;
+        private readonly ActivitiesStorage _storage;
 
-        public ActivitiesService(ActivitiesStorage activitiesStorage)
+        public ActivitiesService(ActivitiesStorage storage)
         {
-            _activitiesStorage = activitiesStorage;
+            _storage = storage;
         }
 
         public Task<Activity> GetAsync(Guid id, CancellationToken ct)
         {
-            return _activitiesStorage.Activities
+            return _storage.Activities
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
@@ -35,21 +35,22 @@ namespace Crm.Apps.Activities.Services
 
         public Task<List<Activity>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _activitiesStorage.Activities
+            return _storage.Activities
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Activity>> GetPagedListAsync(
-            ActivityGetPagedListRequestParameter request,
+        public async Task<ActivityGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            ActivityGetPagedListRequest request,
             CancellationToken ct)
         {
-            var temp = await _activitiesStorage.Activities
+            var activities = _storage.Activities
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (request.Description.IsEmpty() ||
                      EF.Functions.Like(x.Description, $"%{request.Description}%")) &&
@@ -64,15 +65,21 @@ namespace Crm.Apps.Activities.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
 
-            return temp
-                .Where(x => x.FilterByAdditional(request))
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToList();
+            return new ActivityGetPagedListResponse
+            {
+                TotalCount = await activities
+                    .CountAsync(ct),
+                LastModifyDateTime = await activities
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Activities = await activities
+                    .Where(x => x.FilterByAdditional(request))
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, Activity activity, CancellationToken ct)
@@ -102,9 +109,9 @@ namespace Crm.Apps.Activities.Services
                 x.AttributeLinks = activity.AttributeLinks.Map(x.Id);
             });
 
-            var entry = await _activitiesStorage.AddAsync(newActivity, ct);
-            await _activitiesStorage.AddAsync(change, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            var entry = await _storage.AddAsync(newActivity, ct);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
@@ -137,16 +144,16 @@ namespace Crm.Apps.Activities.Services
                 x.AttributeLinks = newActivity.AttributeLinks.Map(x.Id);
             });
 
-            _activitiesStorage.Update(oldActivity);
-            await _activitiesStorage.AddAsync(change, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            _storage.Update(oldActivity);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityChange>();
 
-            await _activitiesStorage.Activities
+            await _storage.Activities
                 .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, a =>
                 {
@@ -154,15 +161,15 @@ namespace Crm.Apps.Activities.Services
                     a.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
-            await _activitiesStorage.AddRangeAsync(changes, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityChange>();
 
-            await _activitiesStorage.Activities
+            await _storage.Activities
                 .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, a =>
                 {
@@ -170,8 +177,8 @@ namespace Crm.Apps.Activities.Services
                     a.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
-            await _activitiesStorage.AddRangeAsync(changes, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

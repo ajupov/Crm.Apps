@@ -1,14 +1,17 @@
-using System;
+﻿using System;
+using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Activities.v1.Models
+namespace Crm.Apps.Activities.Models
 {
-    public class ActivityType
+    public class ActivityAttribute
     {
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }
 
-        public string Name { get; set; }
+        public AttributeType Type { get; set; }
+
+        public string Key { get; set; }
 
         public bool IsDeleted { get; set; }
 

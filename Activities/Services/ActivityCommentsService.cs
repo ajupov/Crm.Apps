@@ -1,42 +1,47 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Storages;
-using Crm.Apps.Activities.v1.Models;
-using Crm.Apps.Activities.v1.RequestParameters;
+using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Activities.Services
 {
     public class ActivityCommentsService : IActivityCommentsService
     {
-        private readonly ActivitiesStorage _activitiesStorage;
+        private readonly ActivitiesStorage _storage;
 
-        public ActivityCommentsService(ActivitiesStorage activitiesStorage)
+        public ActivityCommentsService(ActivitiesStorage storage)
         {
-            _activitiesStorage = activitiesStorage;
+            _storage = storage;
         }
 
-        public Task<List<ActivityComment>> GetPagedListAsync(
-            ActivityCommentGetPagedListRequestParameter request,
+        public async Task<ActivityCommentGetPagedListResponse> GetPagedListAsync(
+            ActivityCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _activitiesStorage.ActivityComments
+            var comments = _storage.ActivityComments
                 .Where(x =>
                     x.ActivityId == request.ActivityId &&
-                    (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&
                     (request.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{request.Value}%")) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new ActivityCommentGetPagedListResponse
+            {
+                TotalCount = await comments
+                    .CountAsync(ct),
+                Comments = await comments
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task CreateAsync(Guid userId, ActivityComment comment, CancellationToken ct)
@@ -50,8 +55,8 @@ namespace Crm.Apps.Activities.Services
                 CreateDateTime = DateTime.UtcNow
             };
 
-            await _activitiesStorage.AddAsync(newComment, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            await _storage.AddAsync(newComment, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

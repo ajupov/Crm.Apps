@@ -1,39 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Activities.Storages;
-using Crm.Apps.Activities.v1.Models;
-using Crm.Apps.Activities.v1.RequestParameters;
+using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Activities.Services
 {
     public class ActivityChangesService : IActivityChangesService
     {
-        private readonly ActivitiesStorage _activitiesStorage;
+        private readonly ActivitiesStorage _storage;
 
-        public ActivityChangesService(ActivitiesStorage activitiesStorage)
+        public ActivityChangesService(ActivitiesStorage storage)
         {
-            _activitiesStorage = activitiesStorage;
+            _storage = storage;
         }
 
-        public Task<List<ActivityChange>> GetPagedListAsync(
-            ActivityChangeGetPagedListRequestParameter request,
+        public async Task<ActivityChangeGetPagedListResponse> GetPagedListAsync(
+            ActivityChangeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _activitiesStorage.ActivityChanges
+            var changes = _storage.ActivityChanges
                 .Where(x =>
-                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.ActivityId.IsEmpty() || x.ActivityId == request.ActivityId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new ActivityChangeGetPagedListResponse
+            {
+                TotalCount = await changes
+                    .CountAsync(ct),
+                Changes = await changes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
     }
 }

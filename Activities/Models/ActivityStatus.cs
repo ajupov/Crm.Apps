@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Apps.Activities.v1.Models
+namespace Crm.Apps.Activities.Models
 {
     public class ActivityStatus
     {

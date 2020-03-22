@@ -1,16 +1,12 @@
 using System;
-using System.Collections.Generic;
-using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Activities.v1.RequestParameters
+namespace Crm.Apps.Activities.v1.Requests
 {
-    public class ActivityAttributeGetPagedListRequestParameter
+    public class ActivityStatusGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
+        public string Name { get; set; }
 
-        public List<AttributeType> Types { get; set; }
-
-        public string Key { get; set; }
+        public bool? IsFinish { get; set; }
 
         public bool? IsDeleted { get; set; }
 

@@ -1,14 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Activities.v1.RequestParameters
+namespace Crm.Apps.Activities.v1.Requests
 {
-    public class ActivityTypeChangeGetPagedListRequestParameter
+    public class ActivityCommentGetPagedListRequest
     {
         [Required]
-        public Guid TypeId { get; set; }
+        public Guid ActivityId { get; set; }
 
-        public Guid? ChangerUserId { get; set; }
+        public string Value { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 

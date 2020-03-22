@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Crm.Apps.Activities.v1.Models
+namespace Crm.Apps.Activities.Models
 {
-    public class ActivityChange
+    public class ActivityAttributeChange
     {
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }
 
-        public Guid ActivityId { get; set; }
+        public Guid AttributeId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

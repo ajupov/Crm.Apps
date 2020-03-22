@@ -3,57 +3,67 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
+using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Storages;
-using Crm.Apps.Activities.v1.Models;
-using Crm.Apps.Activities.v1.RequestParameters;
+using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Activities.Services
 {
     public class ActivityStatusesService : IActivityStatusesService
     {
-        private readonly ActivitiesStorage _activitiesStorage;
+        private readonly ActivitiesStorage _storage;
 
-        public ActivityStatusesService(ActivitiesStorage activitiesStorage)
+        public ActivityStatusesService(ActivitiesStorage storage)
         {
-            _activitiesStorage = activitiesStorage;
+            _storage = storage;
         }
 
         public Task<ActivityStatus> GetAsync(Guid id, CancellationToken ct)
         {
-            return _activitiesStorage.ActivityStatuses
+            return _storage.ActivityStatuses
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<ActivityStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
-            return _activitiesStorage.ActivityStatuses
+            return _storage.ActivityStatuses
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
 
-        public Task<List<ActivityStatus>> GetPagedListAsync(
-            ActivityStatusGetPagedListRequestParameter request,
+        public async Task<ActivityStatusGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            ActivityStatusGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _activitiesStorage.ActivityStatuses
+            var statuses = _storage.ActivityStatuses
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (!request.IsFinish.HasValue || x.IsFinish == request.IsFinish) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+
+            return new ActivityStatusGetPagedListResponse
+            {
+                TotalCount = await statuses
+                    .CountAsync(ct),
+                LastModifyDateTime = await statuses
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Statuses = await statuses
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, ActivityStatus status, CancellationToken ct)
@@ -69,9 +79,9 @@ namespace Crm.Apps.Activities.Services
                 x.CreateDateTime = DateTime.UtcNow;
             });
 
-            var entry = await _activitiesStorage.AddAsync(newStatus, ct);
-            await _activitiesStorage.AddAsync(change, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            var entry = await _storage.AddAsync(newStatus, ct);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
 
             return entry.Entity.Id;
         }
@@ -90,16 +100,16 @@ namespace Crm.Apps.Activities.Services
                 x.ModifyDateTime = DateTime.UtcNow;
             });
 
-            _activitiesStorage.Update(oldStatus);
-            await _activitiesStorage.AddAsync(change, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            _storage.Update(oldStatus);
+            await _storage.AddAsync(change, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task DeleteAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityStatusChange>();
 
-            await _activitiesStorage.ActivityStatuses
+            await _storage.ActivityStatuses
                 .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
                 {
@@ -107,15 +117,15 @@ namespace Crm.Apps.Activities.Services
                     s.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
-            await _activitiesStorage.AddRangeAsync(changes, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
 
         public async Task RestoreAsync(Guid userId, IEnumerable<Guid> ids, CancellationToken ct)
         {
             var changes = new List<ActivityStatusChange>();
 
-            await _activitiesStorage.ActivityStatuses
+            await _storage.ActivityStatuses
                 .Where(x => ids.Contains(x.Id))
                 .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
                 {
@@ -123,8 +133,8 @@ namespace Crm.Apps.Activities.Services
                     s.ModifyDateTime = DateTime.UtcNow;
                 })), ct);
 
-            await _activitiesStorage.AddRangeAsync(changes, ct);
-            await _activitiesStorage.SaveChangesAsync(ct);
+            await _storage.AddRangeAsync(changes, ct);
+            await _storage.SaveChangesAsync(ct);
         }
     }
 }

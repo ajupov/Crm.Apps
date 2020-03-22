@@ -6,9 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
+using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Services;
-using Crm.Apps.Activities.v1.Models;
-using Crm.Apps.Activities.v1.RequestParameters;
+using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -51,27 +52,25 @@ namespace Crm.Apps.Activities.v1.Controllers
             [Required] IEnumerable<Guid> ids,
             CancellationToken ct = default)
         {
-            var statuses = await _activityStatusesService.GetListAsync(ids, ct);
+            var response = await _activityStatusesService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(
-                statuses,
+                response,
                 Roles.Sales,
-                statuses.Select(x => x.AccountId));
+                response.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<ActivityStatus>>> GetPagedList(
-            ActivityStatusGetPagedListRequestParameter request,
+        public async Task<ActionResult<ActivityStatusGetPagedListResponse>> GetPagedList(
+            ActivityStatusGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            request.AccountId = _userContext.AccountId;
-
-            var statuses = await _activityStatusesService.GetPagedListAsync(request, ct);
+            var statuses = await _activityStatusesService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
                 statuses,
                 Roles.Sales,
-                statuses.Select(x => x.AccountId));
+                statuses.Statuses.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]

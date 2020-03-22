@@ -1,20 +1,20 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Activities.v1.RequestParameters
+namespace Crm.Apps.Activities.v1.Requests
 {
-    public class ActivityCommentGetPagedListRequestParameter
+    public class ActivityTypeGetPagedListRequest
     {
-        [Required]
-        public Guid ActivityId { get; set; }
+        public string Name { get; set; }
 
-        public Guid? CommentatorUserId { get; set; }
-
-        public string Value { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public int Offset { get; set; }
 
