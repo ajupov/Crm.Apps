@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crm.Apps.Contacts.v1.Models
+namespace Crm.Apps.Contacts.Models
 {
     public class Contact
     {

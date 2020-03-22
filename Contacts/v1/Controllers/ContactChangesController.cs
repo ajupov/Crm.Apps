@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Contacts.Services;
-using Crm.Apps.Contacts.v1.Models;
-using Crm.Apps.Contacts.v1.RequestParameters;
+using Crm.Apps.Contacts.v1.Requests;
+using Crm.Apps.Contacts.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -35,14 +34,14 @@ namespace Crm.Apps.Contacts.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<ContactChange>>> GetPagedList(
-            ContactChangeGetPagedListRequestParameter request,
+        public async Task<ActionResult<ContactChangeGetPagedListResponse>> GetPagedList(
+            ContactChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
             var contact = await _contactsService.GetAsync(request.ContactId, ct);
-            var changes = await _contactChangesService.GetPagedListAsync(request, ct);
+            var response = await _contactChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, Roles.Sales, contact.AccountId);
+            return ReturnIfAllowed(response, Roles.Sales, contact.AccountId);
         }
     }
 }

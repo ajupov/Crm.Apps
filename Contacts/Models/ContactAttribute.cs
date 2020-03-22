@@ -1,7 +1,7 @@
 ﻿using System;
 using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Contacts.v1.Models
+namespace Crm.Apps.Contacts.Models
 {
     public class ContactAttribute
     {

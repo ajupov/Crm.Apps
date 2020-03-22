@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Crm.Apps.Contacts.v1.Models;
+using Crm.Apps.Contacts.Models;
 
 namespace Crm.Apps.Contacts.Mappers
 {

@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Contacts.Storages;
-using Crm.Apps.Contacts.v1.Models;
-using Crm.Apps.Contacts.v1.RequestParameters;
+using Crm.Apps.Contacts.v1.Requests;
+using Crm.Apps.Contacts.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Contacts.Services
@@ -20,20 +19,26 @@ namespace Crm.Apps.Contacts.Services
             _storage = storage;
         }
 
-        public Task<List<ContactAttributeChange>> GetPagedListAsync(
-            ContactAttributeChangeGetPagedListRequestParameter request,
+        public async Task<ContactAttributeChangeGetPagedListResponse> GetPagedListAsync(
+            ContactAttributeChangeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.ContactAttributeChanges
+            var changes = _storage.ContactAttributeChanges
                 .Where(x =>
-                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.AttributeId.IsEmpty() || x.AttributeId == request.AttributeId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new ContactAttributeChangeGetPagedListResponse
+            {
+                TotalCount = await changes
+                    .CountAsync(ct),
+                Changes = await changes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
     }
 }

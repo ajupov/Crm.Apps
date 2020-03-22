@@ -6,9 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
+using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.Services;
-using Crm.Apps.Contacts.v1.Models;
-using Crm.Apps.Contacts.v1.RequestParameters;
+using Crm.Apps.Contacts.v1.Requests;
+using Crm.Apps.Contacts.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -51,27 +52,25 @@ namespace Crm.Apps.Contacts.v1.Controllers
             [Required] List<Guid> ids,
             CancellationToken ct = default)
         {
-            var contacts = await _contactsService.GetListAsync(ids, ct);
+            var response = await _contactsService.GetListAsync(ids, ct);
 
             return ReturnIfAllowed(
-                contacts,
+                response,
                 Roles.Sales,
-                contacts.Select(x => x.AccountId));
+                response.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<Contact>>> GetPagedList(
-            ContactGetPagedListRequestParameter request,
+        public async Task<ActionResult<ContactGetPagedListResponse>> GetPagedList(
+            ContactGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            request.AccountId = _userContext.AccountId;
-
-            var contacts = await _contactsService.GetPagedListAsync(request, ct);
+            var contacts = await _contactsService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
             return ReturnIfAllowed(
                 contacts,
                 Roles.Sales,
-                contacts.Select(x => x.AccountId));
+                contacts.Contacts.Select(x => x.AccountId));
         }
 
         [HttpPost("Create")]

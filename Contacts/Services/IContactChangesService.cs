@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Contacts.v1.Models;
-using Crm.Apps.Contacts.v1.RequestParameters;
+using Crm.Apps.Contacts.v1.Requests;
+using Crm.Apps.Contacts.v1.Responses;
 
 namespace Crm.Apps.Contacts.Services
 {
     public interface IContactChangesService
     {
-        Task<List<ContactChange>> GetPagedListAsync(
-            ContactChangeGetPagedListRequestParameter request,
+        Task<ContactChangeGetPagedListResponse> GetPagedListAsync(
+            ContactChangeGetPagedListRequest request,
             CancellationToken ct);
     }
 }

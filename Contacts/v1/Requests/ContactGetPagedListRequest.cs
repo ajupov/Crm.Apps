@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crm.Apps.Contacts.v1.RequestParameters
+namespace Crm.Apps.Contacts.v1.Requests
 {
-    public class ContactGetPagedListRequestParameter
+    public class ContactGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public string Surname { get; set; }
 
         public string Name { get; set; }

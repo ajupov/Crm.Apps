@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Contacts.Helpers;
 using Crm.Apps.Contacts.Mappers;
+using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.Storages;
-using Crm.Apps.Contacts.v1.Models;
-using Crm.Apps.Contacts.v1.RequestParameters;
+using Crm.Apps.Contacts.v1.Requests;
+using Crm.Apps.Contacts.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Contacts.Services
@@ -39,15 +39,16 @@ namespace Crm.Apps.Contacts.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Contact>> GetPagedListAsync(
-            ContactGetPagedListRequestParameter request,
+        public async Task<ContactGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            ContactGetPagedListRequest request,
             CancellationToken ct)
         {
-            var temp = await _storage.Contacts
+            var contacts = _storage.Contacts
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    (x.AccountId == accountId) &&
                     (request.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{request.Surname}%")) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (request.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{request.Patronymic}%")) &&
@@ -69,15 +70,21 @@ namespace Crm.Apps.Contacts.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
 
-            return temp
-                .Where(x => x.FilterByAdditional(request))
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToList();
+            return new ContactGetPagedListResponse
+            {
+                TotalCount = await contacts
+                    .CountAsync(ct),
+                LastModifyDateTime = await contacts
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Contacts = await contacts
+                    .Where(x => x.FilterByAdditional(request))
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, Contact contact, CancellationToken ct)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Apps.Contacts.v1.Models
+namespace Crm.Apps.Contacts.Models
 {
     public class ContactComment
     {

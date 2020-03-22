@@ -1,16 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Contacts.v1.RequestParameters
+namespace Crm.Apps.Contacts.v1.Requests
 {
-    public class ContactCommentGetPagedListRequestParameter
+    public class ContactAttributeChangeGetPagedListRequest
     {
         [Required]
-        public Guid ContactId { get; set; }
-
-        public Guid? CommentatorUserId { get; set; }
-
-        public string Value { get; set; }
+        public Guid AttributeId { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 

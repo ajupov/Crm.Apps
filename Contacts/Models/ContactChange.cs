@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Crm.Apps.Contacts.v1.Models
+namespace Crm.Apps.Contacts.Models
 {
-    public class ContactAttributeChange
+    public class ContactChange
     {
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }
 
-        public Guid AttributeId { get; set; }
+        public Guid ContactId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

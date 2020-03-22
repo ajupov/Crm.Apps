@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Contacts.v1.Models;
-using Crm.Apps.Contacts.v1.RequestParameters;
+using Crm.Apps.Contacts.Models;
+using Crm.Apps.Contacts.v1.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Contacts.Helpers
 {
     public static class ContactsFiltersHelper
     {
-        public static bool FilterByAdditional(this Contact contact, ContactGetPagedListRequestParameter request)
+        public static bool FilterByAdditional(this Contact contact, ContactGetPagedListRequest request)
         {
             return (request.BankAccountNumber.IsEmpty() ||
                     contact.BankAccounts.Any(x => x.Number == request.BankAccountNumber)) &&

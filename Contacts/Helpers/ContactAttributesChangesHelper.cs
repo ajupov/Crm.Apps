@@ -1,6 +1,6 @@
 ﻿using System;
 using Ajupov.Utils.All.Json;
-using Crm.Apps.Contacts.v1.Models;
+using Crm.Apps.Contacts.Models;
 
 namespace Crm.Apps.Contacts.Helpers
 {
