@@ -29,7 +29,7 @@ namespace Crm.Apps.Auth.Controllers
         [AllowAnonymous]
         [IgnoreApiDocumentation]
         [HttpGet("Login")]
-        public IActionResult Login(string redirectUri)
+        public ActionResult Login(string redirectUri)
         {
             var properties = new AuthenticationProperties
             {
@@ -41,7 +41,7 @@ namespace Crm.Apps.Auth.Controllers
 
         [AllowAnonymous]
         [HttpGet("IsAuthenticated")]
-        public async Task<bool> IsAuthenticated()
+        public async Task<ActionResult<bool>> IsAuthenticated()
         {
             var authenticateResult = await HttpContext.AuthenticateAsync(JwtDefaults.AuthenticationScheme);
             
@@ -51,7 +51,7 @@ namespace Crm.Apps.Auth.Controllers
         [AllowAnonymous]
         [IgnoreApiDocumentation]
         [HttpGet("Logout")]
-        public async Task<IActionResult> Logout(string redirectUri, CancellationToken ct)
+        public async Task<ActionResult> Logout(string redirectUri, CancellationToken ct)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 

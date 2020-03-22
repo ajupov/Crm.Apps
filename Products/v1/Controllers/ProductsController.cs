@@ -37,7 +37,7 @@ namespace Crm.Apps.Products.v1.Controllers
         }
 
         [HttpGet("GetTypes")]
-        public Dictionary<string, ProductType> GetTypes()
+        public ActionResult<Dictionary<string, ProductType>> GetTypes()
         {
             return EnumsExtensions.GetAsDictionary<ProductType>();
         }
