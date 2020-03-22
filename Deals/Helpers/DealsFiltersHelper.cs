@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Deals.v1.Models;
-using Crm.Apps.Deals.v1.RequestParameters;
+using Crm.Apps.Deals.Models;
+using Crm.Apps.Deals.v1.Requests;
 
 namespace Crm.Apps.Deals.Helpers
 {
     public static class DealsFiltersHelper
     {
-        public static bool FilterByAdditional(this Deal product, DealGetPagedListRequestParameter request)
+        public static bool FilterByAdditional(this Deal product, DealGetPagedListRequest request)
         {
             return (request.TypeIds == null || !request.TypeIds.Any() ||
                     request.TypeIds.Any(x => TypeIdsPredicate(product, x))) &&

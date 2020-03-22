@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
+using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.Services;
-using Crm.Apps.Deals.v1.Models;
-using Crm.Apps.Deals.v1.RequestParameters;
+using Crm.Apps.Deals.v1.Requests;
+using Crm.Apps.Deals.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -37,14 +37,14 @@ namespace Crm.Apps.Deals.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<DealComment>>> GetPagedList(
-            DealCommentGetPagedListRequestParameter request,
+        public async Task<ActionResult<DealCommentGetPagedListResponse>> GetPagedList(
+            DealCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
             var deal = await _dealsService.GetAsync(request.DealId, ct);
-            var comments = await _dealCommentsService.GetPagedListAsync(request, ct);
+            var response = await _dealCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(comments, Roles.Sales, deal.AccountId);
+            return ReturnIfAllowed(response, Roles.Sales, deal.AccountId);
         }
 
         [HttpPost("Create")]

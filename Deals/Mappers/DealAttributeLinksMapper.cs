@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Crm.Apps.Deals.v1.Models;
+using Crm.Apps.Deals.Models;
 
 namespace Crm.Apps.Deals.Mappers
 {

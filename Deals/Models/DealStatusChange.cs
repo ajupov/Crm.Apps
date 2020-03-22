@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Crm.Apps.Deals.v1.Models
+namespace Crm.Apps.Deals.Models
 {
-    public class DealChange
+    public class DealStatusChange
     {
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }
 
-        public Guid DealId { get; set; }
+        public Guid StatusId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

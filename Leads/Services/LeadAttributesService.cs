@@ -43,7 +43,7 @@ namespace Crm.Apps.Leads.Services
         {
             var attributes = _storage.LeadAttributes
                 .Where(x =>
-                    (x.AccountId == accountId) &&
+                    x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
                     (request.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{request.Key}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&

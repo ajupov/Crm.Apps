@@ -49,7 +49,7 @@ namespace Crm.Apps.Leads.Services
                 .Include(x => x.Source)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (x.AccountId == accountId) &&
+                    x.AccountId == accountId &&
                     (request.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{request.Surname}%")) &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (request.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{request.Patronymic}%")) &&

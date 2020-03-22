@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Deals.v1.Models;
-using Crm.Apps.Deals.v1.RequestParameters;
+using Crm.Apps.Deals.v1.Requests;
+using Crm.Apps.Deals.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Deals.Services
@@ -20,20 +19,26 @@ namespace Crm.Apps.Deals.Services
             _storage = storage;
         }
 
-        public Task<List<DealChange>> GetPagedListAsync(
-            DealChangeGetPagedListRequestParameter request,
+        public async Task<DealChangeGetPagedListResponse> GetPagedListAsync(
+            DealChangeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.DealChanges
+            var changes = _storage.DealChanges
                 .Where(x =>
-                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.DealId.IsEmpty() || x.DealId == request.DealId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new DealChangeGetPagedListResponse
+            {
+                TotalCount = await changes
+                    .CountAsync(ct),
+                Changes = await changes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
     }
 }

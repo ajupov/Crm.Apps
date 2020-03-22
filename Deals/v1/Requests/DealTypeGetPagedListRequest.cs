@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
-using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Deals.v1.RequestParameters
+namespace Crm.Apps.Deals.v1.Requests
 {
-    public class DealAttributeGetPagedListRequestParameter
+    public class DealTypeGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
-        public List<AttributeType> Types { get; set; }
-
-        public string Key { get; set; }
+        public string Name { get; set; }
 
         public bool? IsDeleted { get; set; }
 

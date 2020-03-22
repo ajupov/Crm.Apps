@@ -1,18 +1,22 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Deals.v1.RequestParameters
+namespace Crm.Apps.Deals.v1.Requests
 {
-    public class DealChangeGetPagedListRequestParameter
+    public class DealStatusGetPagedListRequest
     {
-        [Required]
-        public Guid DealId { get; set; }
+        public string Name { get; set; }
 
-        public Guid? ChangerUserId { get; set; }
+        public bool? IsFinish { get; set; }
+
+        public bool? IsDeleted { get; set; }
 
         public DateTime? MinCreateDate { get; set; }
 
         public DateTime? MaxCreateDate { get; set; }
+
+        public DateTime? MinModifyDate { get; set; }
+
+        public DateTime? MaxModifyDate { get; set; }
 
         public int Offset { get; set; }
 

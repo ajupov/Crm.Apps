@@ -1,14 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Deals.v1.RequestParameters
+namespace Crm.Apps.Deals.v1.Requests
 {
-    public class DealCommentGetPagedListRequestParameter
+    public class DealCommentGetPagedListRequest
     {
         [Required]
         public Guid DealId { get; set; }
-
-        public Guid? CommentatorUserId { get; set; }
 
         public string Value { get; set; }
 

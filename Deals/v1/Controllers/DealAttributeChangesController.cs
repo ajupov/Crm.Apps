@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Deals.Services;
-using Crm.Apps.Deals.v1.Models;
-using Crm.Apps.Deals.v1.RequestParameters;
+using Crm.Apps.Deals.v1.Requests;
+using Crm.Apps.Deals.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -35,14 +34,14 @@ namespace Crm.Apps.Deals.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<DealAttributeChange>>> GetPagedList(
-            DealAttributeChangeGetPagedListRequestParameter request,
+        public async Task<ActionResult<DealAttributeChangeGetPagedListResponse>> GetPagedList(
+            DealAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
             var attribute = await _dealAttributesService.GetAsync(request.AttributeId, ct);
-            var changes = await _dealAttributeChangesService.GetPagedListAsync(request, ct);
+            var response = await _dealAttributeChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(changes, Roles.Sales, attribute.AccountId);
+            return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);
         }
     }
 }

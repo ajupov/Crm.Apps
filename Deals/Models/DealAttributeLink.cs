@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Crm.Apps.Deals.v1.Models
+namespace Crm.Apps.Deals.Models
 {
     public class DealAttributeLink
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Crm.Apps.Deals.v1.Models
+namespace Crm.Apps.Deals.Models
 {
     public class Deal
     {

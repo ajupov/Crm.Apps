@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Apps.Deals.v1.Models
+namespace Crm.Apps.Deals.Models
 {
     public class DealComment
     {

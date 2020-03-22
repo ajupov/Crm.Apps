@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Deals.Helpers;
+using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Deals.v1.Models;
-using Crm.Apps.Deals.v1.RequestParameters;
+using Crm.Apps.Deals.v1.Requests;
+using Crm.Apps.Deals.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Deals.Services
@@ -36,23 +36,33 @@ namespace Crm.Apps.Deals.Services
                 .ToListAsync(ct);
         }
 
-        public Task<List<DealType>> GetPagedListAsync(
-            DealTypeGetPagedListRequestParameter request,
+        public async Task<DealTypeGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            DealTypeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.DealTypes
+            var types = _storage.DealTypes
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+
+            return new DealTypeGetPagedListResponse
+            {
+                TotalCount = await types
+                    .CountAsync(ct),
+                LastModifyDateTime = await types
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Types = await types
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, DealType type, CancellationToken ct)

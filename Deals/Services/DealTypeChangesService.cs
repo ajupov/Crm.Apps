@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Deals.v1.Models;
-using Crm.Apps.Deals.v1.RequestParameters;
+using Crm.Apps.Deals.v1.Requests;
+using Crm.Apps.Deals.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Deals.Services
@@ -20,20 +19,26 @@ namespace Crm.Apps.Deals.Services
             _storage = storage;
         }
 
-        public Task<List<DealTypeChange>> GetPagedListAsync(
-            DealTypeChangeGetPagedListRequestParameter request,
+        public async Task<DealTypeChangeGetPagedListResponse> GetPagedListAsync(
+            DealTypeChangeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.DealTypeChanges
+            var changes = _storage.DealTypeChanges
                 .Where(x =>
-                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.TypeId.IsEmpty() || x.TypeId == request.TypeId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new DealTypeChangeGetPagedListResponse
+            {
+                TotalCount = await changes
+                    .CountAsync(ct),
+                Changes = await changes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
     }
 }

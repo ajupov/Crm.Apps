@@ -1,14 +1,17 @@
-using System;
+﻿using System;
+using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Deals.v1.Models
+namespace Crm.Apps.Deals.Models
 {
-    public class DealType
+    public class DealAttribute
     {
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }
 
-        public string Name { get; set; }
+        public AttributeType Type { get; set; }
+
+        public string Key { get; set; }
 
         public bool IsDeleted { get; set; }
 

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crm.Apps.Deals.v1.RequestParameters
+namespace Crm.Apps.Deals.v1.Requests
 {
-    public class DealGetPagedListRequestParameter
+    public class DealGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public string Name { get; set; }
 
         public DateTime? MinStartDateTime { get; set; }
