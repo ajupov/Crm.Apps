@@ -47,7 +47,7 @@ namespace Crm.Apps.Products.Services
             ProductGetPagedListRequest request,
             CancellationToken ct)
         {
-            var products = _storage.Products
+            var products = await _storage.Products
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks)
@@ -63,20 +63,21 @@ namespace Crm.Apps.Products.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .ToListAsync(ct);
 
             return new ProductGetPagedListResponse
             {
-                TotalCount = await products
-                    .CountAsync(ct),
-                LastModifyDateTime = await products
-                    .MaxAsync(x => x.ModifyDateTime, ct),
-                Products = await products
+                TotalCount = products.Count,
+                LastModifyDateTime = products
+                    .Max(x => x.ModifyDateTime),
+                Products = products
                     .Where(x => x.FilterByAdditional(request))
+                    .AsQueryable()
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
                     .Take(request.Limit)
-                    .ToListAsync(ct)
+                    .ToList()
             };
         }
 

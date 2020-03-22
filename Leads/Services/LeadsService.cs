@@ -45,7 +45,7 @@ namespace Crm.Apps.Leads.Services
             LeadGetPagedListRequest request,
             CancellationToken ct)
         {
-            var leads = _storage.Leads
+            var leads = await _storage.Leads
                 .Include(x => x.Source)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
@@ -72,21 +72,21 @@ namespace Crm.Apps.Leads.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
-
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .ToListAsync(ct);
 
             return new LeadGetPagedListResponse
             {
-                TotalCount = await leads
-                    .CountAsync(ct),
-                LastModifyDateTime = await leads
-                    .MaxAsync(x => x.ModifyDateTime, ct),
-                Leads = await leads
+                TotalCount = leads.Count,
+                LastModifyDateTime = leads
+                    .Max(x => x.ModifyDateTime),
+                Leads = leads
                     .Where(x => x.FilterByAdditional(request))
+                    .AsQueryable()
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
                     .Take(request.Limit)
-                    .ToListAsync(ct)
+                    .ToList()
             };
         }
 

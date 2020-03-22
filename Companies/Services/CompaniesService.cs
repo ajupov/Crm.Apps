@@ -45,7 +45,7 @@ namespace Crm.Apps.Companies.Services
             CompanyGetPagedListRequest request,
             CancellationToken ct)
         {
-            var companies = _storage.Companies
+            var companies = await _storage.Companies
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
@@ -93,20 +93,21 @@ namespace Crm.Apps.Companies.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .ToListAsync(ct);
 
             return new CompanyGetPagedListResponse
             {
-                TotalCount = await companies
-                    .CountAsync(ct),
-                LastModifyDateTime = await companies
-                    .MaxAsync(x => x.ModifyDateTime, ct),
-                Companies = await companies
+                TotalCount = companies.Count,
+                LastModifyDateTime = companies
+                    .Max(x => x.ModifyDateTime),
+                Companies = companies
                     .Where(x => x.FilterByAdditional(request))
+                    .AsQueryable()
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
                     .Take(request.Limit)
-                    .ToListAsync(ct)
+                    .ToList()
             };
         }
 

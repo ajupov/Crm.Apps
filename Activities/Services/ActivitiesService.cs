@@ -45,7 +45,7 @@ namespace Crm.Apps.Activities.Services
             ActivityGetPagedListRequest request,
             CancellationToken ct)
         {
-            var activities = _storage.Activities
+            var activities = await _storage.Activities
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
@@ -65,20 +65,21 @@ namespace Crm.Apps.Activities.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .ToListAsync(ct);
 
             return new ActivityGetPagedListResponse
             {
-                TotalCount = await activities
-                    .CountAsync(ct),
-                LastModifyDateTime = await activities
-                    .MaxAsync(x => x.ModifyDateTime, ct),
-                Activities = await activities
+                TotalCount = activities.Count,
+                LastModifyDateTime = activities
+                    .Max(x => x.ModifyDateTime),
+                Activities = activities
                     .Where(x => x.FilterByAdditional(request))
+                    .AsQueryable()
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
                     .Take(request.Limit)
-                    .ToListAsync(ct)
+                    .ToList()
             };
         }
 

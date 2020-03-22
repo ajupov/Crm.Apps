@@ -44,7 +44,7 @@ namespace Crm.Apps.Contacts.Services
             ContactGetPagedListRequest request,
             CancellationToken ct)
         {
-            var contacts = _storage.Contacts
+            var contacts = await _storage.Contacts
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
@@ -70,20 +70,21 @@ namespace Crm.Apps.Contacts.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
+                .ToListAsync(ct);
 
             return new ContactGetPagedListResponse
             {
-                TotalCount = await contacts
-                    .CountAsync(ct),
-                LastModifyDateTime = await contacts
-                    .MaxAsync(x => x.ModifyDateTime, ct),
-                Contacts = await contacts
+                TotalCount = contacts.Count,
+                LastModifyDateTime = contacts
+                    .Max(x => x.ModifyDateTime),
+                Contacts = contacts
                     .Where(x => x.FilterByAdditional(request))
+                    .AsQueryable()
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
                     .Take(request.Limit)
-                    .ToListAsync(ct)
+                    .ToList()
             };
         }
 
