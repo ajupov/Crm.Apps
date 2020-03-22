@@ -96,7 +96,7 @@ namespace Crm.Apps.Leads.v1.Controllers
                 lead.AccountId, oldLead.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var leads = await _leadsService.GetListAsync(ids, ct);

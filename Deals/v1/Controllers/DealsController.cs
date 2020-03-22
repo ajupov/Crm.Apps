@@ -96,7 +96,7 @@ namespace Crm.Apps.Deals.v1.Controllers
                 deal.AccountId, oldDeal.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var deals = await _dealsService.GetListAsync(ids, ct);

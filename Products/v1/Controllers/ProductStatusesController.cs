@@ -98,7 +98,7 @@ namespace Crm.Apps.Products.v1.Controllers
                 status.AccountId, oldStatus.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var attributes = await _productStatusesService.GetListAsync(ids, ct);

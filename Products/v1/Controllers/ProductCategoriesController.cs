@@ -98,7 +98,7 @@ namespace Crm.Apps.Products.v1.Controllers
                 category.AccountId, oldCategory.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var attributes = await _userCategoriesService.GetListAsync(ids, ct);

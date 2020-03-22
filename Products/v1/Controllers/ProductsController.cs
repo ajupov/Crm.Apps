@@ -127,7 +127,7 @@ namespace Crm.Apps.Products.v1.Controllers
                 products.Select(x => x.AccountId));
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var products = await _productsService.GetListAsync(ids, ct);

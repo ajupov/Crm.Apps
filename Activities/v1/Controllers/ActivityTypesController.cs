@@ -98,7 +98,7 @@ namespace Crm.Apps.Activities.v1.Controllers
                 oldType.AccountId, oldType.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             var attributes = await _activityTypesService.GetListAsync(ids, ct);

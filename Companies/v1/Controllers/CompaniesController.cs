@@ -110,7 +110,7 @@ namespace Crm.Apps.Companies.v1.Controllers
                 company.AccountId, oldCompany.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var companies = await _companiesService.GetListAsync(ids, ct);

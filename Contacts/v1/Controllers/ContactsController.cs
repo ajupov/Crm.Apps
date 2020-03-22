@@ -98,7 +98,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
                 contact.AccountId, oldContact.AccountId);
         }
 
-        [HttpDelete("Delete")]
+        [HttpPatch("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var contacts = await _contactsService.GetListAsync(ids, ct);
