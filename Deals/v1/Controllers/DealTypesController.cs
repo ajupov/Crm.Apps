@@ -73,7 +73,7 @@ namespace Crm.Apps.Deals.v1.Controllers
                 response.Types.Select(x => x.AccountId));
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult<Guid>> Create(DealType type, CancellationToken ct = default)
         {
             type.AccountId = _userContext.AccountId;
@@ -83,7 +83,7 @@ namespace Crm.Apps.Deals.v1.Controllers
             return Created(nameof(Get), id);
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<ActionResult> Update(DealType type, CancellationToken ct = default)
         {
             var oldType = await _dealTypesService.GetAsync(type.Id, ct);
@@ -98,7 +98,7 @@ namespace Crm.Apps.Deals.v1.Controllers
                 type.AccountId, oldType.AccountId);
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var attributes = await _dealTypesService.GetListAsync(ids, ct);
@@ -109,7 +109,7 @@ namespace Crm.Apps.Deals.v1.Controllers
                 attributes.Select(x => x.AccountId));
         }
 
-        [HttpPost("Restore")]
+        [HttpPatch("Restore")]
         public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var attributes = await _dealTypesService.GetListAsync(ids, ct);

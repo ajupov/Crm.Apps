@@ -47,7 +47,7 @@ namespace Crm.Apps.Companies.v1.Controllers
             return ReturnIfAllowed(response, Roles.Sales, company.AccountId);
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult> Create(CompanyComment comment, CancellationToken ct = default)
         {
             var company = await _companiesService.GetAsync(comment.CompanyId, ct);

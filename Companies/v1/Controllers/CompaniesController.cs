@@ -85,7 +85,7 @@ namespace Crm.Apps.Companies.v1.Controllers
                 response.Companies.Select(x => x.AccountId));
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult<Guid>> Create(Company company, CancellationToken ct = default)
         {
             company.AccountId = _userContext.AccountId;
@@ -95,7 +95,7 @@ namespace Crm.Apps.Companies.v1.Controllers
             return Created(nameof(Get), id);
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<ActionResult> Update(Company company, CancellationToken ct = default)
         {
             var oldCompany = await _companiesService.GetAsync(company.Id, ct);
@@ -110,7 +110,7 @@ namespace Crm.Apps.Companies.v1.Controllers
                 company.AccountId, oldCompany.AccountId);
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var companies = await _companiesService.GetListAsync(ids, ct);
@@ -121,7 +121,7 @@ namespace Crm.Apps.Companies.v1.Controllers
                 companies.Select(x => x.AccountId));
         }
 
-        [HttpPost("Restore")]
+        [HttpPatch("Restore")]
         public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var companies = await _companiesService.GetListAsync(ids, ct);

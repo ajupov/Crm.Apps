@@ -47,7 +47,7 @@ namespace Crm.Apps.Leads.v1.Controllers
             return ReturnIfAllowed(response, Roles.Leads, lead.AccountId);
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult> Create(LeadComment comment, CancellationToken ct = default)
         {
             var lead = await _leadsService.GetAsync(comment.LeadId, ct);

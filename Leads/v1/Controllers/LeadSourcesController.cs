@@ -73,7 +73,7 @@ namespace Crm.Apps.Leads.v1.Controllers
                 response.Sources.Select(x => x.AccountId));
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult<Guid>> Create(LeadSource source, CancellationToken ct = default)
         {
             source.AccountId = _userContext.AccountId;
@@ -83,7 +83,7 @@ namespace Crm.Apps.Leads.v1.Controllers
             return Created(nameof(Get), id);
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<ActionResult> Update(LeadSource source, CancellationToken ct = default)
         {
             var oldSource = await _leadSourcesService.GetAsync(source.Id, ct);
@@ -98,7 +98,7 @@ namespace Crm.Apps.Leads.v1.Controllers
                 source.AccountId, oldSource.AccountId);
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var sources = await _leadSourcesService.GetListAsync(ids, ct);
@@ -109,7 +109,7 @@ namespace Crm.Apps.Leads.v1.Controllers
                 sources.Select(x => x.AccountId));
         }
 
-        [HttpPost("Restore")]
+        [HttpPatch("Restore")]
         public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var sources = await _leadSourcesService.GetListAsync(ids, ct);

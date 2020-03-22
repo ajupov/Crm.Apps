@@ -73,7 +73,7 @@ namespace Crm.Apps.Activities.v1.Controllers
                 response.Activities.Select(x => x.AccountId));
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult<Guid>> Create(Activity activity, CancellationToken ct = default)
         {
             activity.AccountId = _userContext.AccountId;
@@ -83,7 +83,7 @@ namespace Crm.Apps.Activities.v1.Controllers
             return Created("Get", id);
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<ActionResult> Update(Activity activity, CancellationToken ct = default)
         {
             var oldActivity = await _activitiesService.GetAsync(activity.Id, ct);
@@ -98,7 +98,7 @@ namespace Crm.Apps.Activities.v1.Controllers
                 activity.AccountId, oldActivity.AccountId);
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult> Delete([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             var activities = await _activitiesService.GetListAsync(ids, ct);
@@ -109,7 +109,7 @@ namespace Crm.Apps.Activities.v1.Controllers
                 activities.Select(x => x.AccountId));
         }
 
-        [HttpPost("Restore")]
+        [HttpPatch("Restore")]
         public async Task<ActionResult> Restore([Required] IEnumerable<Guid> ids, CancellationToken ct = default)
         {
             var activities = await _activitiesService.GetListAsync(ids, ct);

@@ -73,7 +73,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
                 contacts.Contacts.Select(x => x.AccountId));
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult<Guid>> Create(Contact contact, CancellationToken ct = default)
         {
             contact.AccountId = _userContext.AccountId;
@@ -83,7 +83,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
             return Created(nameof(Get), id);
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<ActionResult> Update(Contact contact, CancellationToken ct = default)
         {
             var oldContact = await _contactsService.GetAsync(contact.Id, ct);
@@ -98,7 +98,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
                 contact.AccountId, oldContact.AccountId);
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var contacts = await _contactsService.GetListAsync(ids, ct);
@@ -109,7 +109,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
                 contacts.Select(x => x.AccountId));
         }
 
-        [HttpPost("Restore")]
+        [HttpPatch("Restore")]
         public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var contacts = await _contactsService.GetListAsync(ids, ct);

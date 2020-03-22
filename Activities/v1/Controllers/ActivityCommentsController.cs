@@ -47,7 +47,7 @@ namespace Crm.Apps.Activities.v1.Controllers
             return ReturnIfAllowed(response, Roles.Sales, activity.AccountId);
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult> Create(ActivityComment comment, CancellationToken ct = default)
         {
             var activity = await _activitiesService.GetAsync(comment.ActivityId, ct);

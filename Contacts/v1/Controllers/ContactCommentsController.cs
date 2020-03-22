@@ -47,7 +47,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
             return ReturnIfAllowed(response, Roles.Sales, contact.AccountId);
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult> Create(ContactComment comment, CancellationToken ct = default)
         {
             var contact = await _contactsService.GetAsync(comment.ContactId, ct);

@@ -47,7 +47,7 @@ namespace Crm.Apps.Deals.v1.Controllers
             return ReturnIfAllowed(response, Roles.Sales, deal.AccountId);
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult> Create(DealComment comment, CancellationToken ct = default)
         {
             var deal = await _dealsService.GetAsync(comment.DealId, ct);

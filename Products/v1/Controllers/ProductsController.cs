@@ -80,7 +80,7 @@ namespace Crm.Apps.Products.v1.Controllers
                 response.Products.Select(x => x.AccountId));
         }
 
-        [HttpPost("Create")]
+        [HttpPut("Create")]
         public async Task<ActionResult<Guid>> Create(Product product, CancellationToken ct = default)
         {
             product.AccountId = _userContext.AccountId;
@@ -90,7 +90,7 @@ namespace Crm.Apps.Products.v1.Controllers
             return Created(nameof(Get), id);
         }
 
-        [HttpPost("Update")]
+        [HttpPatch("Update")]
         public async Task<ActionResult> Update(Product product, CancellationToken ct = default)
         {
             var oldProduct = await _productsService.GetAsync(product.Id, ct);
@@ -127,7 +127,7 @@ namespace Crm.Apps.Products.v1.Controllers
                 products.Select(x => x.AccountId));
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         public async Task<ActionResult> Delete([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var products = await _productsService.GetListAsync(ids, ct);
@@ -138,7 +138,7 @@ namespace Crm.Apps.Products.v1.Controllers
                 products.Select(x => x.AccountId));
         }
 
-        [HttpPost("Restore")]
+        [HttpPatch("Restore")]
         public async Task<ActionResult> Restore([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var products = await _productsService.GetListAsync(ids, ct);
