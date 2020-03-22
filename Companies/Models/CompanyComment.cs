@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Crm.Apps.Companies.v1.Models
+namespace Crm.Apps.Companies.Models
 {
     public class CompanyComment
     {

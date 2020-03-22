@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Companies.Storages;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.v1.Requests;
+using Crm.Apps.Companies.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Services
@@ -20,20 +19,26 @@ namespace Crm.Apps.Companies.Services
             _storage = storage;
         }
 
-        public Task<List<CompanyChange>> GetPagedListAsync(
-            CompanyChangeGetPagedListRequestParameter request,
+        public async Task<CompanyChangeGetPagedListResponse> GetPagedListAsync(
+            CompanyChangeGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.CompanyChanges
+            var changes = _storage.CompanyChanges
                 .Where(x =>
-                    (request.ChangerUserId.IsEmpty() || x.ChangerUserId == request.ChangerUserId) &&
                     (request.CompanyId.IsEmpty() || x.CompanyId == request.CompanyId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new CompanyChangeGetPagedListResponse
+            {
+                TotalCount = await changes
+                    .CountAsync(ct),
+                Changes = await changes
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
     }
 }

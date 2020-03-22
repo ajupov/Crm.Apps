@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Crm.Apps.Companies.v1.Models;
+using Crm.Apps.Companies.Models;
 
-namespace Crm.Apps.Companies.v1.RequestParameters
+namespace Crm.Apps.Companies.v1.Requests
 {
-    public class CompanyGetPagedListRequestParameter
+    public class CompanyGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public Guid? LeadId { get; set; }
 
         public string FullName { get; set; }

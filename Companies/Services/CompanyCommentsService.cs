@@ -1,14 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
+using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Storages;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.v1.Requests;
+using Crm.Apps.Companies.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Services
@@ -22,21 +21,27 @@ namespace Crm.Apps.Companies.Services
             _storage = storage;
         }
 
-        public Task<List<CompanyComment>> GetPagedListAsync(
-            CompanyCommentGetPagedListRequestParameter request,
+        public async Task<CompanyCommentGetPagedListResponse> GetPagedListAsync(
+            CompanyCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            return _storage.CompanyComments
+            var comments = _storage.CompanyComments
                 .Where(x =>
                     x.CompanyId == request.CompanyId &&
-                    (request.CommentatorUserId.IsEmpty() || x.CommentatorUserId == request.CommentatorUserId) &&
                     (request.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{request.Value}%")) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToListAsync(ct);
+                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+
+            return new CompanyCommentGetPagedListResponse
+            {
+                TotalCount = await comments
+                    .CountAsync(ct),
+                Comments = await comments
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task CreateAsync(Guid userId, CompanyComment comment, CancellationToken ct)

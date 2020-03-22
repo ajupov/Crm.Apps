@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.v1.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Helpers
 {
     public static class CompaniesFiltersHelper
     {
-        public static bool FilterByAdditional(this Company company, CompanyGetPagedListRequestParameter request)
+        public static bool FilterByAdditional(this Company company, CompanyGetPagedListRequest request)
         {
             return (request.BankAccountNumber.IsEmpty() ||
                     company.BankAccounts.Any(x => x.BankNumber == request.BankAccountNumber)) &&

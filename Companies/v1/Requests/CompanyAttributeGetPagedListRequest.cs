@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Companies.v1.RequestParameters
+namespace Crm.Apps.Companies.v1.Requests
 {
-    public class CompanyAttributeGetPagedListRequestParameter
+    public class CompanyAttributeGetPagedListRequest
     {
-        public Guid? AccountId { get; set; }
-
         public List<AttributeType> Types { get; set; }
 
         public string Key { get; set; }

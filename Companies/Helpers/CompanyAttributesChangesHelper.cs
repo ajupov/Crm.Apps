@@ -1,6 +1,6 @@
 ﻿using System;
 using Ajupov.Utils.All.Json;
-using Crm.Apps.Companies.v1.Models;
+using Crm.Apps.Companies.Models;
 
 namespace Crm.Apps.Companies.Helpers
 {

@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.v1.Requests;
+using Crm.Apps.Companies.v1.Responses;
 
 namespace Crm.Apps.Companies.Services
 {
     public interface ICompanyCommentsService
     {
-        Task<List<CompanyComment>> GetPagedListAsync(
-            CompanyCommentGetPagedListRequestParameter request,
+        Task<CompanyCommentGetPagedListResponse> GetPagedListAsync(
+            CompanyCommentGetPagedListRequest request,
             CancellationToken ct);
 
         Task CreateAsync(Guid userId, CompanyComment comment, CancellationToken ct);

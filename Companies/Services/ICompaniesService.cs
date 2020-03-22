@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.Models;
+using Crm.Apps.Companies.v1.Requests;
+using Crm.Apps.Companies.v1.Responses;
 
 namespace Crm.Apps.Companies.Services
 {
@@ -13,7 +14,10 @@ namespace Crm.Apps.Companies.Services
 
         Task<List<Company>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 
-        Task<List<Company>> GetPagedListAsync(CompanyGetPagedListRequestParameter request, CancellationToken ct);
+        Task<CompanyGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            CompanyGetPagedListRequest request,
+            CancellationToken ct);
 
         Task<Guid> CreateAsync(Guid userId, Company company, CancellationToken ct);
 

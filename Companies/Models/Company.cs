@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crm.Apps.Companies.v1.Models
+namespace Crm.Apps.Companies.Models
 {
     public class Company
     {

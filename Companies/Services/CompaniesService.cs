@@ -8,9 +8,10 @@ using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Companies.Helpers;
 using Crm.Apps.Companies.Mappers;
+using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Storages;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.v1.Requests;
+using Crm.Apps.Companies.v1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Services
@@ -39,15 +40,16 @@ namespace Crm.Apps.Companies.Services
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Company>> GetPagedListAsync(
-            CompanyGetPagedListRequestParameter request,
+        public async Task<CompanyGetPagedListResponse> GetPagedListAsync(
+            Guid accountId,
+            CompanyGetPagedListRequest request,
             CancellationToken ct)
         {
-            var temp = await _storage.Companies
+            var companies = _storage.Companies
                 .Include(x => x.BankAccounts)
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
-                    (request.AccountId.IsEmpty() || x.AccountId == request.AccountId) &&
+                    x.AccountId == accountId &&
                     (request.LeadId.IsEmpty() || x.LeadId == request.LeadId) &&
                     (request.FullName.IsEmpty() || EF.Functions.Like(x.FullName, $"{request.FullName}%")) &&
                     (request.ShortName.IsEmpty() || EF.Functions.Like(x.ShortName, $"{request.ShortName}%")) &&
@@ -91,15 +93,21 @@ namespace Crm.Apps.Companies.Services
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
                     (!request.MinModifyDate.HasValue || x.ModifyDateTime >= request.MinModifyDate) &&
-                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate))
-                .SortBy(request.SortBy, request.OrderBy)
-                .ToListAsync(ct);
+                    (!request.MaxModifyDate.HasValue || x.ModifyDateTime <= request.MaxModifyDate));
 
-            return temp
-                .Where(x => x.FilterByAdditional(request))
-                .Skip(request.Offset)
-                .Take(request.Limit)
-                .ToList();
+            return new CompanyGetPagedListResponse
+            {
+                TotalCount = await companies
+                    .CountAsync(ct),
+                LastModifyDateTime = await companies
+                    .MaxAsync(x => x.ModifyDateTime, ct),
+                Companies = await companies
+                    .Where(x => x.FilterByAdditional(request))
+                    .SortBy(request.SortBy, request.OrderBy)
+                    .Skip(request.Offset)
+                    .Take(request.Limit)
+                    .ToListAsync(ct)
+            };
         }
 
         public async Task<Guid> CreateAsync(Guid userId, Company company, CancellationToken ct)

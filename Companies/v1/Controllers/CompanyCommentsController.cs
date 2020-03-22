@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
+using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Services;
-using Crm.Apps.Companies.v1.Models;
-using Crm.Apps.Companies.v1.RequestParameters;
+using Crm.Apps.Companies.v1.Requests;
+using Crm.Apps.Companies.v1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
@@ -37,14 +37,14 @@ namespace Crm.Apps.Companies.v1.Controllers
         }
 
         [HttpPost("GetPagedList")]
-        public async Task<ActionResult<List<CompanyComment>>> GetPagedList(
-            CompanyCommentGetPagedListRequestParameter request,
+        public async Task<ActionResult<CompanyCommentGetPagedListResponse>> GetPagedList(
+            CompanyCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
             var company = await _companiesService.GetAsync(request.CompanyId, ct);
-            var comments = await _companyCommentsService.GetPagedListAsync(request, ct);
+            var response = await _companyCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(comments, Roles.Sales, company.AccountId);
+            return ReturnIfAllowed(response, Roles.Sales, company.AccountId);
         }
 
         [HttpPost("Create")]
