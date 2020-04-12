@@ -20,7 +20,7 @@ namespace Crm.Apps.Contacts.Helpers
                         x.BankCorrespondentNumber == request.BankAccountBankCorrespondentNumber)) &&
                    (request.BankAccountBankName.IsEmpty() ||
                     contact.BankAccounts.Any(x =>
-                        EF.Functions.Like(x.BankName, $"{request.BankAccountBankName}%"))) &&
+                        EF.Functions.ILike(x.BankName, $"{request.BankAccountBankName}%"))) &&
                    (request.LeadIds == null || !request.LeadIds.Any() ||
                     request.LeadIds.Any(x => LeadIdsPredicate(contact, x))) &&
                    (request.CompanyIds == null || !request.CompanyIds.Any() ||

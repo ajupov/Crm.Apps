@@ -28,7 +28,7 @@ namespace Crm.Apps.Companies.Services
             var comments = _storage.CompanyComments
                 .Where(x =>
                     x.CompanyId == request.CompanyId &&
-                    (request.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{request.Value}%")) &&
+                    (request.Value.IsEmpty() || EF.Functions.ILike(x.Value, $"{request.Value}%")) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
 

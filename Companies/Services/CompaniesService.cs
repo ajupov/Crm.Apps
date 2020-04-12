@@ -51,8 +51,8 @@ namespace Crm.Apps.Companies.Services
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.LeadId.IsEmpty() || x.LeadId == request.LeadId) &&
-                    (request.FullName.IsEmpty() || EF.Functions.Like(x.FullName, $"{request.FullName}%")) &&
-                    (request.ShortName.IsEmpty() || EF.Functions.Like(x.ShortName, $"{request.ShortName}%")) &&
+                    (request.FullName.IsEmpty() || EF.Functions.ILike(x.FullName, $"{request.FullName}%")) &&
+                    (request.ShortName.IsEmpty() || EF.Functions.ILike(x.ShortName, $"{request.ShortName}%")) &&
                     (request.Phone.IsEmpty() || x.Phone == request.Phone) &&
                     (request.Email.IsEmpty() || x.Email == request.Email) &&
                     (request.TaxNumber.IsEmpty() || x.TaxNumber == request.TaxNumber) &&
@@ -65,29 +65,29 @@ namespace Crm.Apps.Companies.Services
                     (!request.MaxYearlyTurnover.HasValue || x.YearlyTurnover <= request.MaxYearlyTurnover) &&
                     (request.JuridicalPostcode.IsEmpty() || x.JuridicalPostcode == request.JuridicalPostcode) &&
                     (request.JuridicalCountry.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalCountry, $"{request.JuridicalCountry}%")) &&
+                     EF.Functions.ILike(x.JuridicalCountry, $"{request.JuridicalCountry}%")) &&
                     (request.JuridicalRegion.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalRegion, $"{request.JuridicalRegion}%")) &&
+                     EF.Functions.ILike(x.JuridicalRegion, $"{request.JuridicalRegion}%")) &&
                     (request.JuridicalProvince.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalProvince, $"{request.JuridicalProvince}%")) &&
+                     EF.Functions.ILike(x.JuridicalProvince, $"{request.JuridicalProvince}%")) &&
                     (request.JuridicalCity.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalCity, $"{request.JuridicalCity}%")) &&
+                     EF.Functions.ILike(x.JuridicalCity, $"{request.JuridicalCity}%")) &&
                     (request.JuridicalStreet.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalStreet, $"{request.JuridicalStreet}%")) &&
+                     EF.Functions.ILike(x.JuridicalStreet, $"{request.JuridicalStreet}%")) &&
                     (request.JuridicalHouse.IsEmpty() ||
-                     EF.Functions.Like(x.JuridicalHouse, $"{request.JuridicalHouse}%")) &&
+                     EF.Functions.ILike(x.JuridicalHouse, $"{request.JuridicalHouse}%")) &&
                     (request.JuridicalApartment.IsEmpty() || x.JuridicalApartment == request.JuridicalApartment) &&
                     (request.LegalPostcode.IsEmpty() || x.LegalPostcode == request.LegalPostcode) &&
                     (request.LegalCountry.IsEmpty() ||
-                     EF.Functions.Like(x.LegalCountry, $"{request.LegalCountry}%")) &&
+                     EF.Functions.ILike(x.LegalCountry, $"{request.LegalCountry}%")) &&
                     (request.LegalRegion.IsEmpty() ||
-                     EF.Functions.Like(x.LegalRegion, $"{request.LegalRegion}%")) &&
+                     EF.Functions.ILike(x.LegalRegion, $"{request.LegalRegion}%")) &&
                     (request.LegalProvince.IsEmpty() ||
-                     EF.Functions.Like(x.LegalProvince, $"{request.LegalProvince}%")) &&
-                    (request.LegalCity.IsEmpty() || EF.Functions.Like(x.LegalCity, $"{request.LegalCity}%")) &&
+                     EF.Functions.ILike(x.LegalProvince, $"{request.LegalProvince}%")) &&
+                    (request.LegalCity.IsEmpty() || EF.Functions.ILike(x.LegalCity, $"{request.LegalCity}%")) &&
                     (request.LegalStreet.IsEmpty() ||
-                     EF.Functions.Like(x.LegalStreet, $"{request.LegalStreet}%")) &&
-                    (request.LegalHouse.IsEmpty() || EF.Functions.Like(x.LegalHouse, $"{request.LegalHouse}%")) &&
+                     EF.Functions.ILike(x.LegalStreet, $"{request.LegalStreet}%")) &&
+                    (request.LegalHouse.IsEmpty() || EF.Functions.ILike(x.LegalHouse, $"{request.LegalHouse}%")) &&
                     (request.LegalApartment.IsEmpty() || x.LegalApartment == request.LegalApartment) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

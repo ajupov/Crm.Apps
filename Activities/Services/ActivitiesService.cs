@@ -51,10 +51,10 @@ namespace Crm.Apps.Activities.Services
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
                     x.AccountId == accountId &&
-                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.ILike(x.Name, $"{request.Name}%")) &&
                     (request.Description.IsEmpty() ||
-                     EF.Functions.Like(x.Description, $"%{request.Description}%")) &&
-                    (request.Result.IsEmpty() || EF.Functions.Like(x.Result, $"%{request.Result}%")) &&
+                     EF.Functions.ILike(x.Description, $"%{request.Description}%")) &&
+                    (request.Result.IsEmpty() || EF.Functions.ILike(x.Result, $"%{request.Result}%")) &&
                     (!request.MinStartDateTime.HasValue || x.StartDateTime >= request.MinStartDateTime) &&
                     (!request.MaxStartDateTime.HasValue || x.StartDateTime <= request.MaxStartDateTime) &&
                     (!request.MinEndDateTime.HasValue || x.EndDateTime >= request.MinEndDateTime) &&

@@ -54,7 +54,7 @@ namespace Crm.Apps.Products.Services
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.ParentProductId.IsEmpty() || x.ParentProductId == request.ParentProductId) &&
-                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.ILike(x.Name, $"{request.Name}%")) &&
                     (request.VendorCode.IsEmpty() || x.VendorCode == request.VendorCode) &&
                     (request.MinPrice.IsEmpty() || x.Price >= request.MinPrice.Value) &&
                     (request.MaxPrice.IsEmpty() || x.Price <= request.MaxPrice) &&

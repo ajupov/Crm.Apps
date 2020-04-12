@@ -28,7 +28,7 @@ namespace Crm.Apps.Contacts.Services
             var comments = _storage.ContactComments
                 .Where(x =>
                     x.ContactId == request.ContactId &&
-                    (request.Value.IsEmpty() || EF.Functions.Like(x.Value, $"{request.Value}%")) &&
+                    (request.Value.IsEmpty() || EF.Functions.ILike(x.Value, $"{request.Value}%")) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
 

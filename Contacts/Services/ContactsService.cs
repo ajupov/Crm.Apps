@@ -49,20 +49,20 @@ namespace Crm.Apps.Contacts.Services
                 .Include(x => x.AttributeLinks)
                 .Where(x =>
                     (x.AccountId == accountId) &&
-                    (request.Surname.IsEmpty() || EF.Functions.Like(x.Surname, $"{request.Surname}%")) &&
-                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
-                    (request.Patronymic.IsEmpty() || EF.Functions.Like(x.Patronymic, $"{request.Patronymic}%")) &&
+                    (request.Surname.IsEmpty() || EF.Functions.ILike(x.Surname, $"{request.Surname}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.ILike(x.Name, $"{request.Name}%")) &&
+                    (request.Patronymic.IsEmpty() || EF.Functions.ILike(x.Patronymic, $"{request.Patronymic}%")) &&
                     (request.Phone.IsEmpty() || x.Phone == request.Phone) &&
                     (request.Email.IsEmpty() || x.Email == request.Email) &&
                     (request.TaxNumber.IsEmpty() || x.TaxNumber == request.TaxNumber) &&
-                    (request.Post.IsEmpty() || EF.Functions.Like(x.Post, $"{request.Post}%")) &&
+                    (request.Post.IsEmpty() || EF.Functions.ILike(x.Post, $"{request.Post}%")) &&
                     (request.Postcode.IsEmpty() || x.Postcode == request.Postcode) &&
-                    (request.Country.IsEmpty() || EF.Functions.Like(x.Country, $"{request.Country}%")) &&
-                    (request.Region.IsEmpty() || EF.Functions.Like(x.Region, $"{request.Region}%")) &&
-                    (request.Province.IsEmpty() || EF.Functions.Like(x.Province, $"{request.Province}%")) &&
-                    (request.City.IsEmpty() || EF.Functions.Like(x.City, $"{request.City}%")) &&
-                    (request.Street.IsEmpty() || EF.Functions.Like(x.Street, $"{request.Street}%")) &&
-                    (request.House.IsEmpty() || EF.Functions.Like(x.House, $"{request.House}%")) &&
+                    (request.Country.IsEmpty() || EF.Functions.ILike(x.Country, $"{request.Country}%")) &&
+                    (request.Region.IsEmpty() || EF.Functions.ILike(x.Region, $"{request.Region}%")) &&
+                    (request.Province.IsEmpty() || EF.Functions.ILike(x.Province, $"{request.Province}%")) &&
+                    (request.City.IsEmpty() || EF.Functions.ILike(x.City, $"{request.City}%")) &&
+                    (request.Street.IsEmpty() || EF.Functions.ILike(x.Street, $"{request.Street}%")) &&
+                    (request.House.IsEmpty() || EF.Functions.ILike(x.House, $"{request.House}%")) &&
                     (request.Apartment.IsEmpty() || x.Apartment == request.Apartment) &&
                     (request.MinBirthDate == null || x.BirthDate >= request.MinBirthDate.Value) &&
                     (request.MaxBirthDate == null || x.BirthDate <= request.MaxBirthDate) &&

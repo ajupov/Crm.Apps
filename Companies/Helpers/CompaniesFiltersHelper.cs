@@ -20,7 +20,7 @@ namespace Crm.Apps.Companies.Helpers
                         x.BankCorrespondentNumber == request.BankAccountBankCorrespondentNumber)) &&
                    (request.BankAccountBankName.IsEmpty() ||
                     company.BankAccounts.Any(x =>
-                        EF.Functions.Like(x.BankName, $"{request.BankAccountBankName}%"))) &&
+                        EF.Functions.ILike(x.BankName, $"{request.BankAccountBankName}%"))) &&
                    (request.Types == null || !request.Types.Any() ||
                     request.Types.Any(x => TypesPredicate(company, x))) &&
                    (request.IndustryTypes == null || !request.IndustryTypes.Any() ||

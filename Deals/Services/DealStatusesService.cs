@@ -44,7 +44,7 @@ namespace Crm.Apps.Deals.Services
             var statuses = _storage.DealStatuses
                 .Where(x =>
                     x.AccountId == accountId &&
-                    (request.Name.IsEmpty() || EF.Functions.Like(x.Name, $"{request.Name}%")) &&
+                    (request.Name.IsEmpty() || EF.Functions.ILike(x.Name, $"{request.Name}%")) &&
                     (!request.IsFinish.HasValue || x.IsFinish == request.IsFinish) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

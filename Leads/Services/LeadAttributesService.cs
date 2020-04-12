@@ -45,7 +45,7 @@ namespace Crm.Apps.Leads.Services
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&
-                    (request.Key.IsEmpty() || EF.Functions.Like(x.Key, $"{request.Key}%")) &&
+                    (request.Key.IsEmpty() || EF.Functions.ILike(x.Key, $"{request.Key}%")) &&
                     (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
                     (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate) &&
