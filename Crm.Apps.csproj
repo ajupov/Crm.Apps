@@ -11,6 +11,6 @@
         <PackageReference Include="Ajupov.Infrastructure.All" Version="1.6.4" />
         <PackageReference Include="Ajupov.Utils.All" Version="1.4.1" />
         <PackageReference Include="Crm.Common.All" Version="1.2.2" />
-        <PackageReference Include="LiteCrm.OAuth" Version="1.0.1" />
+        <PackageReference Include="LiteCrm.OAuth" Version="1.0.2" />
     </ItemGroup>
 </Project>
