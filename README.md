@@ -1,3 +1,3 @@
 # Crm.Apps
 
-API for http://litecrm.org
+API for https://litecrm.org

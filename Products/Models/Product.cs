@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Crm.Apps.Products.Models
 {
@@ -32,7 +31,6 @@ namespace Crm.Apps.Products.Models
 
         public DateTime? ModifyDateTime { get; set; }
 
-        [JsonIgnore]
         public ProductStatus Status { get; set; }
 
         public List<ProductAttributeLink> AttributeLinks { get; set; }
