@@ -98,7 +98,8 @@ namespace Crm.Apps.Companies.Services
 
             return new CompanyGetPagedListResponse
             {
-                TotalCount = companies.Count,
+                TotalCount = companies
+                    .Count(x => x.FilterByAdditional(request)),
                 LastModifyDateTime = companies
                     .Max(x => x.ModifyDateTime),
                 Companies = companies

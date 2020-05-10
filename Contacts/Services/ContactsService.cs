@@ -75,7 +75,8 @@ namespace Crm.Apps.Contacts.Services
 
             return new ContactGetPagedListResponse
             {
-                TotalCount = contacts.Count,
+                TotalCount = contacts
+                    .Count(x => x.FilterByAdditional(request)),
                 LastModifyDateTime = contacts
                     .Max(x => x.ModifyDateTime),
                 Contacts = contacts

@@ -78,7 +78,8 @@ namespace Crm.Apps.Deals.Services
 
             return new DealGetPagedListResponse
             {
-                TotalCount = deals.Count,
+                TotalCount = deals
+                    .Count(x => x.FilterByAdditional(request)),
                 LastModifyDateTime = deals
                     .Max(x => x.ModifyDateTime),
                 Deals = deals

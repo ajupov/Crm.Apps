@@ -70,7 +70,8 @@ namespace Crm.Apps.Activities.Services
 
             return new ActivityGetPagedListResponse
             {
-                TotalCount = activities.Count,
+                TotalCount = activities
+                    .Count(x => x.FilterByAdditional(request)),
                 LastModifyDateTime = activities
                     .Max(x => x.ModifyDateTime),
                 Activities = activities

@@ -68,7 +68,8 @@ namespace Crm.Apps.Products.Services
 
             return new ProductGetPagedListResponse
             {
-                TotalCount = products.Count,
+                TotalCount = products
+                    .Count(x => x.FilterByAdditional(request)),
                 LastModifyDateTime = products
                     .Max(x => x.ModifyDateTime),
                 Products = products

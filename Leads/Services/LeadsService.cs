@@ -77,7 +77,8 @@ namespace Crm.Apps.Leads.Services
 
             return new LeadGetPagedListResponse
             {
-                TotalCount = leads.Count,
+                TotalCount = leads
+                    .Count(x => x.FilterByAdditional(request)),
                 LastModifyDateTime = leads
                     .Max(x => x.ModifyDateTime),
                 Leads = leads
