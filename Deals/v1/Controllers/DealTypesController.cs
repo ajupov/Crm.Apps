@@ -95,7 +95,7 @@ namespace Crm.Apps.Deals.v1.Controllers
             return await ActionIfAllowed(
                 () => _dealTypesService.UpdateAsync(_userContext.UserId, oldType, type, ct),
                 Roles.Sales,
-                type.AccountId, oldType.AccountId);
+                oldType.AccountId);
         }
 
         [HttpPatch("Delete")]

@@ -95,7 +95,7 @@ namespace Crm.Apps.Products.v1.Controllers
             return await ActionIfAllowed(
                 () => _userCategoriesService.UpdateAsync(_userContext.UserId, oldCategory, category, ct),
                 Roles.Products,
-                category.AccountId, oldCategory.AccountId);
+                oldCategory.AccountId);
         }
 
         [HttpPatch("Delete")]

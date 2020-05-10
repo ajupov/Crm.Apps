@@ -95,7 +95,7 @@ namespace Crm.Apps.Contacts.v1.Controllers
             return await ActionIfAllowed(
                 () => _contactsService.UpdateAsync(_userContext.UserId, oldContact, contact, ct),
                 Roles.Sales,
-                contact.AccountId, oldContact.AccountId);
+                oldContact.AccountId);
         }
 
         [HttpPatch("Delete")]

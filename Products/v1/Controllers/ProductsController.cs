@@ -102,7 +102,7 @@ namespace Crm.Apps.Products.v1.Controllers
             return await ActionIfAllowed(
                 () => _productsService.UpdateAsync(_userContext.UserId, oldProduct, product, ct),
                 Roles.Products,
-                product.AccountId, oldProduct.AccountId);
+                oldProduct.AccountId);
         }
 
         [HttpPost("Hide")]

@@ -107,7 +107,7 @@ namespace Crm.Apps.Companies.v1.Controllers
             return await ActionIfAllowed(
                 () => _companiesService.UpdateAsync(_userContext.UserId, oldCompany, company, ct),
                 Roles.Sales,
-                company.AccountId, oldCompany.AccountId);
+                oldCompany.AccountId);
         }
 
         [HttpPatch("Delete")]

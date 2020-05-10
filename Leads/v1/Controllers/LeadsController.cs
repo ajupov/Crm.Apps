@@ -93,7 +93,7 @@ namespace Crm.Apps.Leads.v1.Controllers
             return await ActionIfAllowed(
                 () => _leadsService.UpdateAsync(_userContext.UserId, oldLead, lead, ct),
                 Roles.Leads,
-                lead.AccountId, oldLead.AccountId);
+                oldLead.AccountId);
         }
 
         [HttpPatch("Delete")]

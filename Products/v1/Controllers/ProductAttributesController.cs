@@ -104,7 +104,7 @@ namespace Crm.Apps.Products.v1.Controllers
             return await ActionIfAllowed(
                 () => _productAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
                 Roles.Products,
-                attribute.AccountId, oldAttribute.AccountId);
+                oldAttribute.AccountId);
         }
 
         [HttpPatch("Delete")]
