@@ -6,8 +6,8 @@ using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.Storages;
-using Crm.Apps.Contacts.v1.Requests;
-using Crm.Apps.Contacts.v1.Responses;
+using Crm.Apps.Contacts.V1.Requests;
+using Crm.Apps.Contacts.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Contacts.Services

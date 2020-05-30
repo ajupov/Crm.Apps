@@ -8,7 +8,8 @@ namespace Crm.Apps.Leads.Storages
 {
     public class LeadsStorage : Storage
     {
-        public LeadsStorage(IOptions<OrmSettings> options) : base(options)
+        public LeadsStorage(IOptions<OrmSettings> options)
+            : base(options)
         {
         }
 

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Deals.v1.Requests
+namespace Crm.Apps.Deals.V1.Requests
 {
     public class DealTypeChangeGetPagedListRequest
     {

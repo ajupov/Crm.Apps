@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Crm.Apps.Products.Models;
 
-namespace Crm.Apps.Products.v1.Requests
+namespace Crm.Apps.Products.V1.Requests
 {
     public class ProductGetPagedListRequest
     {

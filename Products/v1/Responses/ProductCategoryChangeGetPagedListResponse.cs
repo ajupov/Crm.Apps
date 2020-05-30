@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Crm.Apps.Products.Models;
 
-namespace Crm.Apps.Products.v1.Responses
+namespace Crm.Apps.Products.V1.Responses
 {
     public class ProductCategoryChangeGetPagedListResponse
     {

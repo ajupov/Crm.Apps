@@ -8,7 +8,8 @@ namespace Crm.Apps.Contacts.Storages
 {
     public class ContactsStorage : Storage
     {
-        public ContactsStorage(IOptions<OrmSettings> options) : base(options)
+        public ContactsStorage(IOptions<OrmSettings> options)
+            : base(options)
         {
         }
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Leads.v1.Requests
+namespace Crm.Apps.Leads.V1.Requests
 {
     public class LeadAttributeGetPagedListRequest
     {

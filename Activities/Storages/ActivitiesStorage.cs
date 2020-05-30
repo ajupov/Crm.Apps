@@ -8,7 +8,8 @@ namespace Crm.Apps.Activities.Storages
 {
     public class ActivitiesStorage : Storage
     {
-        public ActivitiesStorage(IOptions<OrmSettings> options) : base(options)
+        public ActivitiesStorage(IOptions<OrmSettings> options)
+            : base(options)
         {
         }
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Deals.v1.Requests
+namespace Crm.Apps.Deals.V1.Requests
 {
     public class DealAttributeGetPagedListRequest
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Crm.Common.All.Types.AttributeType;
 
-namespace Crm.Apps.Activities.v1.Requests
+namespace Crm.Apps.Activities.V1.Requests
 {
     public class ActivityAttributeGetPagedListRequest
     {

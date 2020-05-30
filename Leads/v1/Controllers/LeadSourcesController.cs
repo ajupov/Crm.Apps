@@ -8,15 +8,15 @@ using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Services;
-using Crm.Apps.Leads.v1.Requests;
-using Crm.Apps.Leads.v1.Responses;
+using Crm.Apps.Leads.V1.Requests;
+using Crm.Apps.Leads.V1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Leads.v1.Controllers
+namespace Crm.Apps.Leads.V1.Controllers
 {
     [ApiController]
     [RequestContentTypeApplicationJson]

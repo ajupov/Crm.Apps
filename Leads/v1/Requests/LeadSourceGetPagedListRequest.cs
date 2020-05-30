@@ -1,6 +1,6 @@
 using System;
 
-namespace Crm.Apps.Leads.v1.Requests
+namespace Crm.Apps.Leads.V1.Requests
 {
     public class LeadSourceGetPagedListRequest
     {

@@ -3,15 +3,15 @@ using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Products.Services;
-using Crm.Apps.Products.v1.Requests;
-using Crm.Apps.Products.v1.Responses;
+using Crm.Apps.Products.V1.Requests;
+using Crm.Apps.Products.V1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Products.v1.Controllers
+namespace Crm.Apps.Products.V1.Controllers
 {
     [ApiController]
     [RequestContentTypeApplicationJson]

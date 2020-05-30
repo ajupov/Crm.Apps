@@ -3,27 +3,27 @@ using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Deals.Services;
-using Crm.Apps.Deals.v1.Requests;
-using Crm.Apps.Deals.v1.Responses;
+using Crm.Apps.Deals.V1.Requests;
+using Crm.Apps.Deals.V1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Deals.v1.Controllers
+namespace Crm.Apps.Deals.V1.Controllers
 {
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
     [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Deals/Types/Changes/v1")]
-    public class DealTypesChangesController : AllowingCheckControllerBase
+    public class DealTypeChangesController : AllowingCheckControllerBase
     {
         private readonly IDealTypesService _dealTypesService;
         private readonly IDealTypeChangesService _dealTypeChangesService;
 
-        public DealTypesChangesController(
+        public DealTypeChangesController(
             IUserContext userContext,
             IDealTypesService dealTypesService,
             IDealTypeChangesService dealTypeChangesService)

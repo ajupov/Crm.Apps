@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Crm.Apps.Companies.Storages;
-using Crm.Apps.Companies.v1.Requests;
-using Crm.Apps.Companies.v1.Responses;
+using Crm.Apps.Companies.V1.Requests;
+using Crm.Apps.Companies.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Services

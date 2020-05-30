@@ -6,8 +6,8 @@ using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Storages;
-using Crm.Apps.Leads.v1.Requests;
-using Crm.Apps.Leads.v1.Responses;
+using Crm.Apps.Leads.V1.Requests;
+using Crm.Apps.Leads.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Leads.Services

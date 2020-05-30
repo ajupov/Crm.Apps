@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Crm.Apps.Activities.Models;
 
-namespace Crm.Apps.Activities.v1.Requests
+namespace Crm.Apps.Activities.V1.Requests
 {
     public class ActivityGetPagedListRequest
     {

@@ -44,10 +44,10 @@ namespace Crm.Apps.Auth.Controllers
         public async Task<ActionResult<bool>> IsAuthenticated()
         {
             var authenticateResult = await HttpContext.AuthenticateAsync(JwtDefaults.AuthenticationScheme);
-            
+
             return authenticateResult.Succeeded && authenticateResult.Principal.Identity.IsAuthenticated;
         }
-        
+
         [AllowAnonymous]
         [IgnoreApiDocumentation]
         [HttpGet("Logout")]

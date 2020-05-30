@@ -8,15 +8,15 @@ using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.Services;
-using Crm.Apps.Contacts.v1.Requests;
-using Crm.Apps.Contacts.v1.Responses;
+using Crm.Apps.Contacts.V1.Requests;
+using Crm.Apps.Contacts.V1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Crm.Apps.Contacts.v1.Controllers
+namespace Crm.Apps.Contacts.V1.Controllers
 {
     [ApiController]
     [RequestContentTypeApplicationJson]

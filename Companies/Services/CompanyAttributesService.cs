@@ -8,8 +8,8 @@ using Ajupov.Utils.All.String;
 using Crm.Apps.Companies.Helpers;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Storages;
-using Crm.Apps.Companies.v1.Requests;
-using Crm.Apps.Companies.v1.Responses;
+using Crm.Apps.Companies.V1.Requests;
+using Crm.Apps.Companies.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Companies.Services

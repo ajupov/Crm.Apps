@@ -8,7 +8,8 @@ namespace Crm.Apps.Deals.Storages
 {
     public class DealsStorage : Storage
     {
-        public DealsStorage(IOptions<OrmSettings> options) : base(options)
+        public DealsStorage(IOptions<OrmSettings> options)
+            : base(options)
         {
         }
 

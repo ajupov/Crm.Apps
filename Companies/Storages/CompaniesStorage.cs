@@ -8,7 +8,8 @@ namespace Crm.Apps.Companies.Storages
 {
     public class CompaniesStorage : Storage
     {
-        public CompaniesStorage(IOptions<OrmSettings> options) : base(options)
+        public CompaniesStorage(IOptions<OrmSettings> options)
+            : base(options)
         {
         }
 

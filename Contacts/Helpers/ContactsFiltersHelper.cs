@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Contacts.Models;
-using Crm.Apps.Contacts.v1.Requests;
+using Crm.Apps.Contacts.V1.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Contacts.Helpers

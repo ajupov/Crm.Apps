@@ -1,6 +1,6 @@
 using System;
 
-namespace Crm.Apps.Activities.v1.Requests
+namespace Crm.Apps.Activities.V1.Requests
 {
     public class ActivityStatusGetPagedListRequest
     {

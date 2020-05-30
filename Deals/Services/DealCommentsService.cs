@@ -6,8 +6,8 @@ using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Deals.v1.Requests;
-using Crm.Apps.Deals.v1.Responses;
+using Crm.Apps.Deals.V1.Requests;
+using Crm.Apps.Deals.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Deals.Services

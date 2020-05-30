@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Models;
-using Crm.Apps.Activities.v1.Requests;
+using Crm.Apps.Activities.V1.Requests;
 
 namespace Crm.Apps.Activities.Helpers
 {

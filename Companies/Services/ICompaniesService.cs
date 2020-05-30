@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Companies.Models;
-using Crm.Apps.Companies.v1.Requests;
-using Crm.Apps.Companies.v1.Responses;
+using Crm.Apps.Companies.V1.Requests;
+using Crm.Apps.Companies.V1.Responses;
 
 namespace Crm.Apps.Companies.Services
 {

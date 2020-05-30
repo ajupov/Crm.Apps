@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Leads.v1.Requests
+namespace Crm.Apps.Leads.V1.Requests
 {
     public class LeadSourceChangeGetPagedListRequest
     {

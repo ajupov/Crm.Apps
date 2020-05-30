@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Crm.Apps.Contacts.Models;
-using Crm.Apps.Contacts.v1.Requests;
-using Crm.Apps.Contacts.v1.Responses;
+using Crm.Apps.Contacts.V1.Requests;
+using Crm.Apps.Contacts.V1.Responses;
 
 namespace Crm.Apps.Contacts.Services
 {

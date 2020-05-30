@@ -11,8 +11,8 @@ using Crm.Apps.Products.Helpers;
 using Crm.Apps.Products.Mappers;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Storages;
-using Crm.Apps.Products.v1.Requests;
-using Crm.Apps.Products.v1.Responses;
+using Crm.Apps.Products.V1.Requests;
+using Crm.Apps.Products.V1.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Crm.Apps.Products.Services

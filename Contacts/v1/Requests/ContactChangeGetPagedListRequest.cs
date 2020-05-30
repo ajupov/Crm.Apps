@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Crm.Apps.Contacts.v1.Requests
+namespace Crm.Apps.Contacts.V1.Requests
 {
     public class ContactChangeGetPagedListRequest
     {
