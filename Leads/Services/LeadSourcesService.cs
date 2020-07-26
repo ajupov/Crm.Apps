@@ -55,7 +55,7 @@ namespace Crm.Apps.Leads.Services
                 TotalCount = await sources
                     .CountAsync(ct),
                 LastModifyDateTime = await sources
-                    .MaxAsync(x => x.ModifyDateTime, ct),
+                    .MaxAsync(x => x.ModifyDateTime ?? x.CreateDateTime, ct),
                 Sources = await sources
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)

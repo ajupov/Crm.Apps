@@ -56,7 +56,7 @@ namespace Crm.Apps.Deals.Services
                 TotalCount = await types
                     .CountAsync(ct),
                 LastModifyDateTime = await types
-                    .MaxAsync(x => x.ModifyDateTime, ct),
+                    .MaxAsync(x => x.ModifyDateTime ?? x.CreateDateTime, ct),
                 Types = await types
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
