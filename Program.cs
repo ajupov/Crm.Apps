@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.ApiDocumentation;
 using Ajupov.Infrastructure.All.Configuration;
+using Ajupov.Infrastructure.All.Cookies;
 using Ajupov.Infrastructure.All.Cors;
 using Ajupov.Infrastructure.All.Hosting;
 using Ajupov.Infrastructure.All.HotStorage;
@@ -28,7 +29,6 @@ using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Common.All.UserContext;
 using LiteCrm.OAuth.Extensions;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,9 +52,10 @@ namespace Crm.Apps
                         .AddJwtAuthentication()
                         .AddJwtValidator(configuration)
                         .AddLiteCrmOAuth(configuration)
-                        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+                        .AddCookieDefaults();
 
                     services
+                        .AddCookiePolicy()
                         .AddSingleOriginCorsPolicy(configuration)
                         .AddMvc(typeof(ValidationFilter))
                         .AddTracing(configuration)
@@ -129,6 +130,7 @@ namespace Crm.Apps
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
+                        .UseCookiePolicy()
                         .UseSingleOriginCors()
                         .UseAuthentication()
                         .UseAuthorization()
