@@ -56,7 +56,7 @@ namespace Crm.Apps.Products.Services
                 TotalCount = await categories
                     .CountAsync(ct),
                 LastModifyDateTime = await categories
-                    .MaxAsync(x => x.ModifyDateTime ?? x.CreateDateTime, ct),
+                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?) null, ct),
                 Categories = await categories
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
