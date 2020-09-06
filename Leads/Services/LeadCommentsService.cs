@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Sorting;
-using Ajupov.Utils.All.String;
 using Crm.Apps.Leads.Models;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Leads.V1.Requests;
@@ -28,17 +27,12 @@ namespace Crm.Apps.Leads.Services
             var comments = _storage.LeadComments
                 .Where(x =>
                     x.LeadId == request.LeadId &&
-                    (request.Value.IsEmpty() || EF.Functions.ILike(x.Value, $"{request.Value}%")) &&
-                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+                    (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             return new LeadCommentGetPagedListResponse
             {
-                TotalCount = await comments
-                    .CountAsync(ct),
                 Comments = await comments
-                    .SortBy(request.SortBy, request.OrderBy)
-                    .Skip(request.Offset)
+                    .SortBy("CreateDateTime", "desc")
                     .Take(request.Limit)
                     .ToListAsync(ct)
             };

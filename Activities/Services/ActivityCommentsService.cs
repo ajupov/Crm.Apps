@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Sorting;
-using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Storages;
 using Crm.Apps.Activities.V1.Requests;
@@ -28,17 +27,12 @@ namespace Crm.Apps.Activities.Services
             var comments = _storage.ActivityComments
                 .Where(x =>
                     x.ActivityId == request.ActivityId &&
-                    (request.Value.IsEmpty() || EF.Functions.ILike(x.Value, $"{request.Value}%")) &&
-                    (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&
-                    (!request.MaxCreateDate.HasValue || x.CreateDateTime <= request.MaxCreateDate));
+                    (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             return new ActivityCommentGetPagedListResponse
             {
-                TotalCount = await comments
-                    .CountAsync(ct),
                 Comments = await comments
-                    .SortBy(request.SortBy, request.OrderBy)
-                    .Skip(request.Offset)
+                    .SortBy("CreateDateTime", "desc")
                     .Take(request.Limit)
                     .ToListAsync(ct)
             };

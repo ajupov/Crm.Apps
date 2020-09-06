@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using Ajupov.Infrastructure.All.ApiDocumentation.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc;
 using Ajupov.Infrastructure.All.Mvc.Attributes;

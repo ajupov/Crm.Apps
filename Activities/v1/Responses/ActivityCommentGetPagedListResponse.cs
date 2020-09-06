@@ -5,8 +5,6 @@ namespace Crm.Apps.Activities.V1.Responses
 {
     public class ActivityCommentGetPagedListResponse
     {
-        public int TotalCount { get; set; }
-
         public List<ActivityComment> Comments { get; set; }
     }
 }

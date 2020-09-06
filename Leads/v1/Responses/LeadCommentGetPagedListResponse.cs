@@ -5,8 +5,6 @@ namespace Crm.Apps.Leads.V1.Responses
 {
     public class LeadCommentGetPagedListResponse
     {
-        public int TotalCount { get; set; }
-
         public List<LeadComment> Comments { get; set; }
     }
 }
