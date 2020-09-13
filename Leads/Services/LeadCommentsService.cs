@@ -27,12 +27,13 @@ namespace Crm.Apps.Leads.Services
             var comments = _storage.LeadComments
                 .Where(x =>
                     x.LeadId == request.LeadId &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             return new LeadCommentGetPagedListResponse
             {
                 Comments = await comments
-                    .SortBy("CreateDateTime", "desc")
+                    .SortBy(request.SortBy, request.OrderBy)
                     .Take(request.Limit)
                     .ToListAsync(ct)
             };

@@ -27,12 +27,13 @@ namespace Crm.Apps.Activities.Services
             var comments = _storage.ActivityComments
                 .Where(x =>
                     x.ActivityId == request.ActivityId &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             return new ActivityCommentGetPagedListResponse
             {
                 Comments = await comments
-                    .SortBy("CreateDateTime", "desc")
+                    .SortBy(request.SortBy, request.OrderBy)
                     .Take(request.Limit)
                     .ToListAsync(ct)
             };

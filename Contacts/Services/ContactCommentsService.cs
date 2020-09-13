@@ -27,12 +27,13 @@ namespace Crm.Apps.Contacts.Services
             var comments = _storage.ContactComments
                 .Where(x =>
                     x.ContactId == request.ContactId &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             return new ContactCommentGetPagedListResponse
             {
                 Comments = await comments
-                    .SortBy("CreateDateTime", "desc")
+                    .SortBy(request.SortBy, request.OrderBy)
                     .Take(request.Limit)
                     .ToListAsync(ct)
             };

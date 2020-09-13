@@ -27,12 +27,13 @@ namespace Crm.Apps.Deals.Services
             var comments = _storage.DealComments
                 .Where(x =>
                     x.DealId == request.DealId &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             return new DealCommentGetPagedListResponse
             {
                 Comments = await comments
-                    .SortBy("CreateDateTime", "desc")
+                    .SortBy(request.SortBy, request.OrderBy)
                     .Take(request.Limit)
                     .ToListAsync(ct)
             };
