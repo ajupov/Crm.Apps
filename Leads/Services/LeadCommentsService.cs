@@ -24,18 +24,25 @@ namespace Crm.Apps.Leads.Services
             LeadCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            var comments = _storage.LeadComments
+            var queryable = _storage.LeadComments
                 .Where(x =>
                     x.LeadId == request.LeadId &&
-                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime < request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
+
+            var minCreateDateTime = _storage.LeadComments
+                .Where(x => x.LeadId == request.LeadId)
+                .Min(x => x.CreateDateTime);
+
+            var comments = await queryable
+                .SortBy(request.SortBy, request.OrderBy)
+                .Take(request.Limit)
+                .ToListAsync(ct);
 
             return new LeadCommentGetPagedListResponse
             {
-                Comments = await comments
-                    .SortBy(request.SortBy, request.OrderBy)
-                    .Take(request.Limit)
-                    .ToListAsync(ct)
+                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                Comments = comments
             };
         }
 

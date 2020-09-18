@@ -5,6 +5,8 @@ namespace Crm.Apps.Contacts.V1.Responses
 {
     public class ContactCommentGetPagedListResponse
     {
+        public bool HasCommentsBefore { get; set; }
+
         public List<ContactComment> Comments { get; set; }
     }
 }

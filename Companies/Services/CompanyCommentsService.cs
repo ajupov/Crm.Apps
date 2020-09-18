@@ -24,18 +24,25 @@ namespace Crm.Apps.Companies.Services
             CompanyCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            var comments = _storage.CompanyComments
+            var queryable = _storage.CompanyComments
                 .Where(x =>
                     x.CompanyId == request.CompanyId &&
-                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime < request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
+
+            var minCreateDateTime = _storage.CompanyComments
+                .Where(x => x.CompanyId == request.CompanyId)
+                .Min(x => x.CreateDateTime);
+
+            var comments = await queryable
+                .SortBy(request.SortBy, request.OrderBy)
+                .Take(request.Limit)
+                .ToListAsync(ct);
 
             return new CompanyCommentGetPagedListResponse
             {
-                Comments = await comments
-                    .SortBy(request.SortBy, request.OrderBy)
-                    .Take(request.Limit)
-                    .ToListAsync(ct)
+                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                Comments = comments
             };
         }
 

@@ -24,18 +24,25 @@ namespace Crm.Apps.Contacts.Services
             ContactCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            var comments = _storage.ContactComments
+            var queryable = _storage.ContactComments
                 .Where(x =>
                     x.ContactId == request.ContactId &&
-                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime < request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
+
+            var minCreateDateTime = _storage.ContactComments
+                .Where(x => x.ContactId == request.ContactId)
+                .Min(x => x.CreateDateTime);
+
+            var comments = await queryable
+                .SortBy(request.SortBy, request.OrderBy)
+                .Take(request.Limit)
+                .ToListAsync(ct);
 
             return new ContactCommentGetPagedListResponse
             {
-                Comments = await comments
-                    .SortBy(request.SortBy, request.OrderBy)
-                    .Take(request.Limit)
-                    .ToListAsync(ct)
+                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                Comments = comments
             };
         }
 

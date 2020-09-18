@@ -24,18 +24,25 @@ namespace Crm.Apps.Activities.Services
             ActivityCommentGetPagedListRequest request,
             CancellationToken ct)
         {
-            var comments = _storage.ActivityComments
+            var queryable = _storage.ActivityComments
                 .Where(x =>
                     x.ActivityId == request.ActivityId &&
-                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime <= request.BeforeCreateDateTime) &&
+                    (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime < request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
+
+            var minCreateDateTime = _storage.ActivityComments
+                .Where(x => x.ActivityId == request.ActivityId)
+                .Min(x => x.CreateDateTime);
+
+            var comments = await queryable
+                .SortBy(request.SortBy, request.OrderBy)
+                .Take(request.Limit)
+                .ToListAsync(ct);
 
             return new ActivityCommentGetPagedListResponse
             {
-                Comments = await comments
-                    .SortBy(request.SortBy, request.OrderBy)
-                    .Take(request.Limit)
-                    .ToListAsync(ct)
+                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                Comments = comments
             };
         }
 
