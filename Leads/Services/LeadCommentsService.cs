@@ -32,7 +32,7 @@ namespace Crm.Apps.Leads.Services
 
             var minCreateDateTime = _storage.LeadComments
                 .Where(x => x.LeadId == request.LeadId)
-                .Min(x => x.CreateDateTime);
+                .Min(x => x != null ? x.CreateDateTime : (DateTime?) null);
 
             var comments = await queryable
                 .SortBy(request.SortBy, request.OrderBy)
@@ -41,7 +41,7 @@ namespace Crm.Apps.Leads.Services
 
             return new LeadCommentGetPagedListResponse
             {
-                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                HasCommentsBefore = comments.Any() && minCreateDateTime < comments.Min(x => x.CreateDateTime),
                 Comments = comments
             };
         }

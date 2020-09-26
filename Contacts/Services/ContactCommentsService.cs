@@ -32,7 +32,7 @@ namespace Crm.Apps.Contacts.Services
 
             var minCreateDateTime = _storage.ContactComments
                 .Where(x => x.ContactId == request.ContactId)
-                .Min(x => x.CreateDateTime);
+                .Min(x => x != null ? x.CreateDateTime : (DateTime?) null);
 
             var comments = await queryable
                 .SortBy(request.SortBy, request.OrderBy)
@@ -41,7 +41,7 @@ namespace Crm.Apps.Contacts.Services
 
             return new ContactCommentGetPagedListResponse
             {
-                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                HasCommentsBefore = comments.Any() && minCreateDateTime < comments.Min(x => x.CreateDateTime),
                 Comments = comments
             };
         }

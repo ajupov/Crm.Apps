@@ -32,7 +32,7 @@ namespace Crm.Apps.Deals.Services
 
             var minCreateDateTime = _storage.DealComments
                 .Where(x => x.DealId == request.DealId)
-                .Min(x => x.CreateDateTime);
+                .Min(x => x != null ? x.CreateDateTime : (DateTime?) null);
 
             var comments = await queryable
                 .SortBy(request.SortBy, request.OrderBy)
@@ -41,7 +41,7 @@ namespace Crm.Apps.Deals.Services
 
             return new DealCommentGetPagedListResponse
             {
-                HasCommentsBefore = minCreateDateTime < comments.Min(x => x.CreateDateTime),
+                HasCommentsBefore = comments.Any() && minCreateDateTime < comments.Min(x => x.CreateDateTime),
                 Comments = comments
             };
         }
