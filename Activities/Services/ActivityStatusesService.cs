@@ -26,12 +26,14 @@ namespace Crm.Apps.Activities.Services
         public Task<ActivityStatus> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.ActivityStatuses
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<ActivityStatus>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.ActivityStatuses
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -42,6 +44,7 @@ namespace Crm.Apps.Activities.Services
             CancellationToken ct)
         {
             var statuses = _storage.ActivityStatuses
+                .AsNoTracking()
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.ILike(x.Name, $"{request.Name}%")) &&

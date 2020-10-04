@@ -25,12 +25,14 @@ namespace Crm.Apps.Leads.Services
             CancellationToken ct)
         {
             var queryable = _storage.LeadComments
+                .AsNoTracking()
                 .Where(x =>
                     x.LeadId == request.LeadId &&
                     (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime < request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             var minCreateDateTime = _storage.LeadComments
+                .AsNoTracking()
                 .Where(x => x.LeadId == request.LeadId)
                 .Min(x => x != null ? x.CreateDateTime : (DateTime?) null);
 

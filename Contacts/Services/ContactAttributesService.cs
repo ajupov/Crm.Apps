@@ -26,12 +26,14 @@ namespace Crm.Apps.Contacts.Services
         public Task<ContactAttribute> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.ContactAttributes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<ContactAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.ContactAttributes
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -42,6 +44,7 @@ namespace Crm.Apps.Contacts.Services
             CancellationToken ct)
         {
             var attributes = _storage.ContactAttributes
+                .AsNoTracking()
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&

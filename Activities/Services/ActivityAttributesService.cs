@@ -26,12 +26,14 @@ namespace Crm.Apps.Activities.Services
         public Task<ActivityAttribute> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.ActivityAttributes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<ActivityAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.ActivityAttributes
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -42,6 +44,7 @@ namespace Crm.Apps.Activities.Services
             CancellationToken ct)
         {
             var attributes = _storage.ActivityAttributes
+                .AsNoTracking()
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&

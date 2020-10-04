@@ -26,12 +26,14 @@ namespace Crm.Apps.Companies.Services
         public Task<CompanyAttribute> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.CompanyAttributes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<CompanyAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.CompanyAttributes
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -42,6 +44,7 @@ namespace Crm.Apps.Companies.Services
             CancellationToken ct)
         {
             var attributes = _storage.CompanyAttributes
+                .AsNoTracking()
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Types == null || !request.Types.Any() || request.Types.Contains(x.Type)) &&

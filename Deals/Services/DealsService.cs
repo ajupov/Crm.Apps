@@ -28,6 +28,7 @@ namespace Crm.Apps.Deals.Services
         public Task<Deal> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.Deals
+                .AsNoTracking()
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.Positions)
@@ -38,6 +39,7 @@ namespace Crm.Apps.Deals.Services
         public Task<List<Deal>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.Deals
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -48,6 +50,7 @@ namespace Crm.Apps.Deals.Services
             CancellationToken ct)
         {
             var deals = await _storage.Deals
+                .AsNoTracking()
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.Positions)

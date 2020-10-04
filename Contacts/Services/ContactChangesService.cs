@@ -24,6 +24,7 @@ namespace Crm.Apps.Contacts.Services
             CancellationToken ct)
         {
             var changes = _storage.ContactChanges
+                .AsNoTracking()
                 .Where(x =>
                     (request.ContactId.IsEmpty() || x.ContactId == request.ContactId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

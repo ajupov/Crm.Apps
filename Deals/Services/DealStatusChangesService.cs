@@ -24,6 +24,7 @@ namespace Crm.Apps.Deals.Services
             CancellationToken ct)
         {
             var changes = _storage.DealStatusChanges
+                .AsNoTracking()
                 .Where(x =>
                     (request.StatusId.IsEmpty() || x.StatusId == request.StatusId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

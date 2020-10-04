@@ -24,6 +24,7 @@ namespace Crm.Apps.Leads.Services
             CancellationToken ct)
         {
             var changes = _storage.LeadSourceChanges
+                .AsNoTracking()
                 .Where(x =>
                     (request.SourceId.IsEmpty() || x.SourceId == request.SourceId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

@@ -25,12 +25,14 @@ namespace Crm.Apps.Activities.Services
             CancellationToken ct)
         {
             var queryable = _storage.ActivityComments
+                .AsNoTracking()
                 .Where(x =>
                     x.ActivityId == request.ActivityId &&
                     (!request.BeforeCreateDateTime.HasValue || x.CreateDateTime < request.BeforeCreateDateTime) &&
                     (!request.AfterCreateDateTime.HasValue || x.CreateDateTime > request.AfterCreateDateTime));
 
             var minCreateDateTime = _storage.ActivityComments
+                .AsNoTracking()
                 .Where(x => x.ActivityId == request.ActivityId)
                 .Min(x => x != null ? x.CreateDateTime : (DateTime?) null);
 

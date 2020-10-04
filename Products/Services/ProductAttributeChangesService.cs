@@ -24,6 +24,7 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             var changes = _storage.ProductAttributeChanges
+                .AsNoTracking()
                 .Where(x =>
                     (request.AttributeId.IsEmpty() || x.AttributeId == request.AttributeId) &&
                     (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

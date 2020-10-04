@@ -29,6 +29,7 @@ namespace Crm.Apps.Products.Services
         public Task<Product> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.Products
+                .AsNoTracking()
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks)
@@ -38,6 +39,7 @@ namespace Crm.Apps.Products.Services
         public Task<List<Product>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.Products
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -48,6 +50,7 @@ namespace Crm.Apps.Products.Services
             CancellationToken ct)
         {
             var products = await _storage.Products
+                .AsNoTracking()
                 .Include(x => x.Status)
                 .Include(x => x.AttributeLinks)
                 .Include(x => x.CategoryLinks)

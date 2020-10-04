@@ -26,12 +26,14 @@ namespace Crm.Apps.Leads.Services
         public Task<LeadSource> GetAsync(Guid id, CancellationToken ct)
         {
             return _storage.LeadSources
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
         public Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct)
         {
             return _storage.LeadSources
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id)).ToListAsync(ct);
         }
 
@@ -41,6 +43,7 @@ namespace Crm.Apps.Leads.Services
             CancellationToken ct)
         {
             var sources = _storage.LeadSources
+                .AsNoTracking()
                 .Where(x =>
                     x.AccountId == accountId &&
                     (request.Name.IsEmpty() || EF.Functions.ILike(x.Name, $"{request.Name}%")) &&
