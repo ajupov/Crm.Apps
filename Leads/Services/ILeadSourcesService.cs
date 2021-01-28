@@ -10,7 +10,7 @@ namespace Crm.Apps.Leads.Services
 {
     public interface ILeadSourcesService
     {
-        Task<LeadSource> GetAsync(Guid id, CancellationToken ct);
+        Task<LeadSource> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct);
 
         Task<List<LeadSource>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 

@@ -45,7 +45,7 @@ namespace Crm.Apps.Products.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<Product>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var product = await _productsService.GetAsync(id, ct);
+            var product = await _productsService.GetAsync(id, false, ct);
             if (product == null)
             {
                 return NotFound(id);
@@ -93,7 +93,7 @@ namespace Crm.Apps.Products.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(Product product, CancellationToken ct = default)
         {
-            var oldProduct = await _productsService.GetAsync(product.Id, ct);
+            var oldProduct = await _productsService.GetAsync(product.Id, true, ct);
             if (oldProduct == null)
             {
                 return NotFound(product.Id);

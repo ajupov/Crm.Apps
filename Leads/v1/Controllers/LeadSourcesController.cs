@@ -38,7 +38,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<LeadSource>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var source = await _leadSourcesService.GetAsync(id, ct);
+            var source = await _leadSourcesService.GetAsync(id, false, ct);
             if (source == null)
             {
                 return NotFound(id);
@@ -86,7 +86,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(LeadSource source, CancellationToken ct = default)
         {
-            var oldSource = await _leadSourcesService.GetAsync(source.Id, ct);
+            var oldSource = await _leadSourcesService.GetAsync(source.Id, true, ct);
             if (oldSource == null)
             {
                 return NotFound(source.Id);

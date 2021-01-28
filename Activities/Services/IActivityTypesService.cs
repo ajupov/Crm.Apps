@@ -10,7 +10,7 @@ namespace Crm.Apps.Activities.Services
 {
     public interface IActivityTypesService
     {
-        Task<ActivityType> GetAsync(Guid id, CancellationToken ct);
+        Task<ActivityType> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct);
 
         Task<List<ActivityType>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 

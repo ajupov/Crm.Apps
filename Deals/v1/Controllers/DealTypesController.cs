@@ -38,7 +38,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<DealType>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var type = await _dealTypesService.GetAsync(id, ct);
+            var type = await _dealTypesService.GetAsync(id, false, ct);
             if (type == null)
             {
                 return NotFound(id);
@@ -86,7 +86,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(DealType type, CancellationToken ct = default)
         {
-            var oldType = await _dealTypesService.GetAsync(type.Id, ct);
+            var oldType = await _dealTypesService.GetAsync(type.Id, true, ct);
             if (oldType == null)
             {
                 return NotFound(type.Id);

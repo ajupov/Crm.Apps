@@ -41,7 +41,7 @@ namespace Crm.Apps.Leads.V1.Controllers
             LeadCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var lead = await _leadsService.GetAsync(request.LeadId, ct);
+            var lead = await _leadsService.GetAsync(request.LeadId, false, ct);
             var response = await _leadCommentsService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Leads, lead.AccountId);
@@ -50,7 +50,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpPut("Create")]
         public async Task<ActionResult> Create(LeadComment comment, CancellationToken ct = default)
         {
-            var lead = await _leadsService.GetAsync(comment.LeadId, ct);
+            var lead = await _leadsService.GetAsync(comment.LeadId, false, ct);
 
             return await ActionIfAllowed(
                 () => _leadCommentsService.CreateAsync(_userContext.UserId, comment, ct),

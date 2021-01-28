@@ -38,7 +38,7 @@ namespace Crm.Apps.Products.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<ProductCategory>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var category = await _userCategoriesService.GetAsync(id, ct);
+            var category = await _userCategoriesService.GetAsync(id, false, ct);
             if (category == null)
             {
                 return NotFound(id);
@@ -86,7 +86,7 @@ namespace Crm.Apps.Products.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(ProductCategory category, CancellationToken ct = default)
         {
-            var oldCategory = await _userCategoriesService.GetAsync(category.Id, ct);
+            var oldCategory = await _userCategoriesService.GetAsync(category.Id, true, ct);
             if (oldCategory == null)
             {
                 return NotFound(category.Id);

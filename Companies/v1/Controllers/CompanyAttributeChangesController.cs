@@ -38,7 +38,7 @@ namespace Crm.Apps.Companies.V1.Controllers
             CompanyAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var attribute = await _companyAttributesService.GetAsync(request.AttributeId, ct);
+            var attribute = await _companyAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _companyAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);

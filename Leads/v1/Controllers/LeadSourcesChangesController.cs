@@ -38,7 +38,7 @@ namespace Crm.Apps.Leads.V1.Controllers
             LeadSourceChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var source = await _leadSourcesService.GetAsync(request.SourceId, ct);
+            var source = await _leadSourcesService.GetAsync(request.SourceId, false, ct);
             var response = await _leadSourceChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Leads, source.AccountId);

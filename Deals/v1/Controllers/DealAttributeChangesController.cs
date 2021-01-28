@@ -38,7 +38,7 @@ namespace Crm.Apps.Deals.V1.Controllers
             DealAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var attribute = await _dealAttributesService.GetAsync(request.AttributeId, ct);
+            var attribute = await _dealAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _dealAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);

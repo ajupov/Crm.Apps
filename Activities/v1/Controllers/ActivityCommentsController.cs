@@ -41,7 +41,7 @@ namespace Crm.Apps.Activities.V1.Controllers
             ActivityCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var activity = await _activitiesService.GetAsync(request.ActivityId, ct);
+            var activity = await _activitiesService.GetAsync(request.ActivityId, false, ct);
             var response = await _activityCommentsService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, activity.AccountId);
@@ -50,7 +50,7 @@ namespace Crm.Apps.Activities.V1.Controllers
         [HttpPut("Create")]
         public async Task<ActionResult> Create(ActivityComment comment, CancellationToken ct = default)
         {
-            var activity = await _activitiesService.GetAsync(comment.ActivityId, ct);
+            var activity = await _activitiesService.GetAsync(comment.ActivityId, false, ct);
 
             return await ActionIfAllowed(
                 () => _activityCommentsService.CreateAsync(_userContext.UserId, comment, ct),

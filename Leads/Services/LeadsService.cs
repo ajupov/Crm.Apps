@@ -25,10 +25,10 @@ namespace Crm.Apps.Leads.Services
             _storage = storage;
         }
 
-        public Task<Lead> GetAsync(Guid id, CancellationToken ct)
+        public Task<Lead> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct)
         {
             return _storage.Leads
-                .AsNoTracking()
+                .AsTracking(isTrackChanges ? QueryTrackingBehavior.TrackAll : QueryTrackingBehavior.NoTracking)
                 .Include(x => x.Source)
                 .Include(x => x.AttributeLinks)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);

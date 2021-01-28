@@ -50,7 +50,7 @@ namespace Crm.Apps.Companies.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<Company>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var company = await _companiesService.GetAsync(id, ct);
+            var company = await _companiesService.GetAsync(id, false, ct);
             if (company == null)
             {
                 return NotFound(id);
@@ -98,7 +98,7 @@ namespace Crm.Apps.Companies.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(Company company, CancellationToken ct = default)
         {
-            var oldCompany = await _companiesService.GetAsync(company.Id, ct);
+            var oldCompany = await _companiesService.GetAsync(company.Id, true, ct);
             if (oldCompany == null)
             {
                 return NotFound(company.Id);

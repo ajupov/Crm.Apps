@@ -10,7 +10,7 @@ namespace Crm.Apps.Contacts.Services
 {
     public interface IContactAttributesService
     {
-        Task<ContactAttribute> GetAsync(Guid id, CancellationToken ct);
+        Task<ContactAttribute> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct);
 
         Task<List<ContactAttribute>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 

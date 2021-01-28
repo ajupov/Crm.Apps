@@ -38,7 +38,7 @@ namespace Crm.Apps.Deals.V1.Controllers
             DealTypeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var type = await _dealTypesService.GetAsync(request.TypeId, ct);
+            var type = await _dealTypesService.GetAsync(request.TypeId, false, ct);
             var response = await _dealTypeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, type.AccountId);

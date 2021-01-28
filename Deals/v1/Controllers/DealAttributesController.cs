@@ -46,7 +46,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<DealAttribute>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var attribute = await _dealAttributesService.GetAsync(id, ct);
+            var attribute = await _dealAttributesService.GetAsync(id, false, ct);
             if (attribute == null)
             {
                 return NotFound(id);
@@ -94,7 +94,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(DealAttribute attribute, CancellationToken ct = default)
         {
-            var oldAttribute = await _dealAttributesService.GetAsync(attribute.Id, ct);
+            var oldAttribute = await _dealAttributesService.GetAsync(attribute.Id, true, ct);
             if (oldAttribute == null)
             {
                 return NotFound(attribute.Id);

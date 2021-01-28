@@ -46,7 +46,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<LeadAttribute>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var attribute = await _leadAttributesService.GetAsync(id, ct);
+            var attribute = await _leadAttributesService.GetAsync(id, false, ct);
             if (attribute == null)
             {
                 return NotFound(id);
@@ -94,7 +94,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(LeadAttribute attribute, CancellationToken ct = default)
         {
-            var oldAttribute = await _leadAttributesService.GetAsync(attribute.Id, ct);
+            var oldAttribute = await _leadAttributesService.GetAsync(attribute.Id, true, ct);
             if (oldAttribute == null)
             {
                 return NotFound(attribute.Id);

@@ -38,7 +38,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<Lead>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var lead = await _leadsService.GetAsync(id, ct);
+            var lead = await _leadsService.GetAsync(id, false, ct);
             if (lead == null)
             {
                 return NotFound(id);
@@ -84,7 +84,7 @@ namespace Crm.Apps.Leads.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(Lead lead, CancellationToken ct = default)
         {
-            var oldLead = await _leadsService.GetAsync(lead.Id, ct);
+            var oldLead = await _leadsService.GetAsync(lead.Id, true, ct);
             if (oldLead == null)
             {
                 return NotFound(lead.Id);

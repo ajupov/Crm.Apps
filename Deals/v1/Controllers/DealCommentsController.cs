@@ -41,7 +41,7 @@ namespace Crm.Apps.Deals.V1.Controllers
             DealCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var deal = await _dealsService.GetAsync(request.DealId, ct);
+            var deal = await _dealsService.GetAsync(request.DealId, false, ct);
             var response = await _dealCommentsService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, deal.AccountId);
@@ -50,7 +50,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         [HttpPut("Create")]
         public async Task<ActionResult> Create(DealComment comment, CancellationToken ct = default)
         {
-            var deal = await _dealsService.GetAsync(comment.DealId, ct);
+            var deal = await _dealsService.GetAsync(comment.DealId, false, ct);
 
             return await ActionIfAllowed(
                 () => _dealCommentsService.CreateAsync(_userContext.UserId, comment, ct),

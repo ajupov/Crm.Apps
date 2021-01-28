@@ -23,10 +23,10 @@ namespace Crm.Apps.Contacts.Services
             _storage = storage;
         }
 
-        public Task<ContactAttribute> GetAsync(Guid id, CancellationToken ct)
+        public Task<ContactAttribute> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct)
         {
             return _storage.ContactAttributes
-                .AsNoTracking()
+                .AsTracking(isTrackChanges ? QueryTrackingBehavior.TrackAll : QueryTrackingBehavior.NoTracking)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 

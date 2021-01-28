@@ -38,7 +38,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<Contact>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var contact = await _contactsService.GetAsync(id, ct);
+            var contact = await _contactsService.GetAsync(id, false, ct);
             if (contact == null)
             {
                 return NotFound(id);
@@ -86,7 +86,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(Contact contact, CancellationToken ct = default)
         {
-            var oldContact = await _contactsService.GetAsync(contact.Id, ct);
+            var oldContact = await _contactsService.GetAsync(contact.Id, true, ct);
             if (oldContact == null)
             {
                 return NotFound(contact.Id);

@@ -38,7 +38,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
             ContactAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var attribute = await _contactAttributesService.GetAsync(request.AttributeId, ct);
+            var attribute = await _contactAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _contactAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);

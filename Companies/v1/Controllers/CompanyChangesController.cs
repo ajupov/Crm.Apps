@@ -38,7 +38,7 @@ namespace Crm.Apps.Companies.V1.Controllers
             CompanyChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var company = await _companiesService.GetAsync(request.CompanyId, ct);
+            var company = await _companiesService.GetAsync(request.CompanyId, false, ct);
             var response = await _companyChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, company.AccountId);

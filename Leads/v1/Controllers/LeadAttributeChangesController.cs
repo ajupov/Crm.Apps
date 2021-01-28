@@ -38,7 +38,7 @@ namespace Crm.Apps.Leads.V1.Controllers
             LeadAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var attribute = await _leadAttributesService.GetAsync(request.AttributeId, ct);
+            var attribute = await _leadAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _leadAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Leads, attribute.AccountId);

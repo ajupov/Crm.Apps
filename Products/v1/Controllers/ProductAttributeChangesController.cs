@@ -38,7 +38,7 @@ namespace Crm.Apps.Products.V1.Controllers
             ProductAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var attribute = await _productAttributesService.GetAsync(request.AttributeId, ct);
+            var attribute = await _productAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _productAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Products, attribute.AccountId);

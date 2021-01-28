@@ -38,7 +38,7 @@ namespace Crm.Apps.Products.V1.Controllers
             ProductCategoryChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var category = await _productCategoriesService.GetAsync(request.CategoryId, ct);
+            var category = await _productCategoriesService.GetAsync(request.CategoryId, false, ct);
             var response = await _productCategoryChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Products, category.AccountId);

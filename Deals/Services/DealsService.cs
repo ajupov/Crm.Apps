@@ -25,10 +25,10 @@ namespace Crm.Apps.Deals.Services
             _storage = storage;
         }
 
-        public Task<Deal> GetAsync(Guid id, CancellationToken ct)
+        public Task<Deal> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct)
         {
             return _storage.Deals
-                .AsNoTracking()
+                .AsTracking(isTrackChanges ? QueryTrackingBehavior.TrackAll : QueryTrackingBehavior.NoTracking)
                 .Include(x => x.Type)
                 .Include(x => x.Status)
                 .Include(x => x.Positions)

@@ -10,7 +10,7 @@ namespace Crm.Apps.Deals.Services
 {
     public interface IDealsService
     {
-        Task<Deal> GetAsync(Guid id, CancellationToken ct);
+        Task<Deal> GetAsync(Guid id, bool isTrackChanges, CancellationToken ct);
 
         Task<List<Deal>> GetListAsync(IEnumerable<Guid> ids, CancellationToken ct);
 

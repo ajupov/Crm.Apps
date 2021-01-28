@@ -38,7 +38,7 @@ namespace Crm.Apps.Activities.V1.Controllers
             ActivityChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var activity = await _activitiesService.GetAsync(request.ActivityId, ct);
+            var activity = await _activitiesService.GetAsync(request.ActivityId, false, ct);
             var response = await _activityChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, activity.AccountId);

@@ -38,7 +38,7 @@ namespace Crm.Apps.Products.V1.Controllers
             ProductStatusChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var status = await _productStatusesService.GetAsync(request.StatusId, ct);
+            var status = await _productStatusesService.GetAsync(request.StatusId, false, ct);
             var response = await _userStatusChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Products, status.AccountId);

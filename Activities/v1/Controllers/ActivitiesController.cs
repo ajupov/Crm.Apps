@@ -38,7 +38,7 @@ namespace Crm.Apps.Activities.V1.Controllers
         [HttpGet("Get")]
         public async Task<ActionResult<Activity>> Get([Required] Guid id, CancellationToken ct = default)
         {
-            var activity = await _activitiesService.GetAsync(id, ct);
+            var activity = await _activitiesService.GetAsync(id, false, ct);
             if (activity == null)
             {
                 return NotFound(id);
@@ -86,7 +86,7 @@ namespace Crm.Apps.Activities.V1.Controllers
         [HttpPatch("Update")]
         public async Task<ActionResult> Update(Activity activity, CancellationToken ct = default)
         {
-            var oldActivity = await _activitiesService.GetAsync(activity.Id, ct);
+            var oldActivity = await _activitiesService.GetAsync(activity.Id, true, ct);
             if (oldActivity == null)
             {
                 return NotFound(activity.Id);

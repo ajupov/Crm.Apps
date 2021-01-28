@@ -41,7 +41,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
             ContactCommentGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var contact = await _contactsService.GetAsync(request.ContactId, ct);
+            var contact = await _contactsService.GetAsync(request.ContactId, false, ct);
             var response = await _contactCommentsService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, contact.AccountId);
@@ -50,7 +50,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
         [HttpPut("Create")]
         public async Task<ActionResult> Create(ContactComment comment, CancellationToken ct = default)
         {
-            var contact = await _contactsService.GetAsync(comment.ContactId, ct);
+            var contact = await _contactsService.GetAsync(comment.ContactId, false, ct);
 
             return await ActionIfAllowed(
                 () => _contactCommentsService.CreateAsync(_userContext.UserId, comment, ct),

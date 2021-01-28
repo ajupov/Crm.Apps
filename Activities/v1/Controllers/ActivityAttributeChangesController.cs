@@ -38,7 +38,7 @@ namespace Crm.Apps.Activities.V1.Controllers
             ActivityAttributeChangeGetPagedListRequest request,
             CancellationToken ct = default)
         {
-            var attribute = await _activityAttributesService.GetAsync(request.AttributeId, ct);
+            var attribute = await _activityAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _activityAttributeChangesService.GetPagedListAsync(request, ct);
 
             return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);
