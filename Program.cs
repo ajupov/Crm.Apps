@@ -31,7 +31,6 @@ using Crm.Common.All.UserContext;
 using LiteCrm.OAuth.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -128,15 +127,14 @@ namespace Crm.Apps
                     }
 
                     builder
+                        .UseForwardedHeaders()
+                        .UseHttpsRedirection()
+                        .UseHsts()
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()
                         .UseCookiePolicy()
                         .UseSingleOriginCors()
-                        .UseForwardedHeaders(new ForwardedHeadersOptions
-                        {
-                            ForwardedHeaders = ForwardedHeaders.XForwardedProto
-                        })
                         .UseAuthentication()
                         .UseAuthorization()
                         .UseMvcMiddleware();
