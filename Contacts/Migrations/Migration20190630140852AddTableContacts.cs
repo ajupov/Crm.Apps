@@ -10,7 +10,7 @@ namespace Crm.Apps.Contacts.Migrations
             Create.Table("Contacts")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
-                .WithColumn("LeadId").AsGuid().NotNullable()
+                .WithColumn("LeadId").AsGuid().Nullable()
                 .WithColumn("CompanyId").AsGuid().Nullable()
                 .WithColumn("CreateUserId").AsGuid().NotNullable()
                 .WithColumn("ResponsibleUserId").AsGuid().Nullable()

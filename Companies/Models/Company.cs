@@ -9,7 +9,7 @@ namespace Crm.Apps.Companies.Models
 
         public Guid AccountId { get; set; }
 
-        public Guid LeadId { get; set; }
+        public Guid? LeadId { get; set; }
 
         public Guid CreateUserId { get; set; }
 

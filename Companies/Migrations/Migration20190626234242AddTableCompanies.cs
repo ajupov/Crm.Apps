@@ -10,7 +10,7 @@ namespace Crm.Apps.Companies.Migrations
             Create.Table("Companies")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
-                .WithColumn("LeadId").AsGuid().NotNullable()
+                .WithColumn("LeadId").AsGuid().Nullable()
                 .WithColumn("CreateUserId").AsGuid().NotNullable()
                 .WithColumn("ResponsibleUserId").AsGuid().Nullable()
                 .WithColumn("Type").AsByte().NotNullable()
