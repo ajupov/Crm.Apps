@@ -12,7 +12,7 @@
         <PackageReference Include="Ajupov.Infrastructure.All" Version="1.7.1" />
         <PackageReference Include="Ajupov.Utils.All" Version="1.5.0" />
         <PackageReference Include="Crm.Common.All" Version="1.3.0" />
-        <PackageReference Include="LiteCrm.OAuth" Version="1.4.0" />
+        <PackageReference Include="LiteCrm.OAuth" Version="1.4.2" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
     </ItemGroup>
 </Project>
