@@ -123,13 +123,13 @@ namespace Crm.Apps
                 {
                     if (context.HostingEnvironment.IsDevelopment())
                     {
-                        builder.UseDeveloperExceptionPage();
+                        builder.UseDeveloperExceptionPage()
+                            .UseForwardedHeaders()
+                            .UseHttpsRedirection()
+                            .UseHsts();
                     }
 
                     builder
-                        .UseForwardedHeaders()
-                        .UseHttpsRedirection()
-                        .UseHsts()
                         .UseApiDocumentationsMiddleware()
                         .UseMigrationsMiddleware()
                         .UseMetricsMiddleware()

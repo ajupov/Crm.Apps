@@ -9,7 +9,7 @@ API for [Lite CRM](https://litecrm.org)
 1. Run `posgres` in the Docker: `docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres`
 2. Clone file `appsettings.local-example.json` and rename to `appsettings.local.json`
 3. Build and run application
-4. The application will be run on https://localhost:9000
+4. The application will be run on http://localhost:9000
 
 ## Development
 1. Clone this repository
