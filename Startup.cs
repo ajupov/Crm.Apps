@@ -23,6 +23,7 @@ using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
+using Crm.Apps.Settings.Services;
 using Crm.Common.All.UserContext;
 using LiteCrm.OAuth.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -115,6 +116,12 @@ namespace Crm.Apps
                 .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
                 .AddTransient<IActivityAttributesService, ActivityAttributesService>()
                 .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>();
+
+            services
+                .AddTransient<IAccountSettingsService, AccountSettingsService>()
+                .AddTransient<IAccountSettingChangesService, AccountSettingChangesService>()
+                .AddTransient<IUserSettingsService, UserSettingsService>()
+                .AddTransient<IUserSettingChangesService, UserSettingChangesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
