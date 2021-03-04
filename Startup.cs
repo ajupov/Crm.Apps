@@ -19,6 +19,8 @@ using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
+using Crm.Apps.Flags.Services;
+using Crm.Apps.Flags.Storages;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
@@ -66,6 +68,7 @@ namespace Crm.Apps
                 .AddOrm<ContactsStorage>(Configuration)
                 .AddOrm<DealsStorage>(Configuration)
                 .AddOrm<ActivitiesStorage>(Configuration)
+                .AddOrm<FlagsStorage>(Configuration)
                 .AddUserContext<IUserContext, UserContext>()
                 .AddHotStorage(Configuration);
 
@@ -118,6 +121,8 @@ namespace Crm.Apps
                 .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>();
 
             services
+                .AddTransient<IAccountFlagsService, AccountFlagsService>()
+                .AddTransient<IUserFlagsService, UserFlagsService>()
                 .AddTransient<IAccountSettingsService, AccountSettingsService>()
                 .AddTransient<IAccountSettingChangesService, AccountSettingChangesService>()
                 .AddTransient<IUserSettingsService, UserSettingsService>()
