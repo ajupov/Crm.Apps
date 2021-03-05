@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
@@ -32,6 +33,12 @@ namespace Crm.Apps.Flags.V1.Controllers
         public Task<bool> IsSet(AccountFlagType type, CancellationToken ct = default)
         {
             return _accountFlagsService.IsSetAsync(_userContext.AccountId, type, ct);
+        }
+
+        [HttpGet("GetNotSetList")]
+        public Task<IEnumerable<AccountFlagType>> GetNotSetList(CancellationToken ct = default)
+        {
+            return _accountFlagsService.GetNotSetListAsync(_userContext.AccountId, ct);
         }
 
         [HttpPut("Set")]

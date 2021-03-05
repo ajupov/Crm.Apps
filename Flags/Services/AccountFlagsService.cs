@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Enums;
 using Crm.Apps.Flags.Models;
 using Crm.Apps.Flags.Storages;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +24,21 @@ namespace Crm.Apps.Flags.Services
             return _storage.AccountFlags
                 .AsNoTracking()
                 .AnyAsync(x => x.AccountId == accountId && x.Type == type, cancellationToken: ct);
+        }
+
+        public async Task<IEnumerable<AccountFlagType>> GetNotSetListAsync(Guid accountId, CancellationToken ct)
+        {
+            var allFlags = EnumsExtensions.GetValues<AccountFlagType>();
+
+            var setFlags = await _storage.AccountFlags
+                .AsNoTracking()
+                .Where(x => x.AccountId == accountId)
+                .Select(x => x.Type)
+                .ToListAsync(ct);
+
+            return allFlags
+                .Except(setFlags)
+                .ToList();
         }
 
         public async Task SetAsync(Guid accountId, AccountFlagType type, CancellationToken ct)
