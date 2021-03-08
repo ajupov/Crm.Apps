@@ -6,7 +6,7 @@ namespace Crm.Apps.Products.Helpers
 {
     public static class ProductCategoryChangesHelper
     {
-        public static ProductCategoryChange WithCreateLog(
+        public static ProductCategoryChange CreateWithLog(
             this ProductCategory category,
             Guid userId,
             Action<ProductCategory> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductCategoryChange WithUpdateLog(
+        public static ProductCategoryChange UpdateWithLog(
             this ProductCategory category,
             Guid userId,
             Action<ProductCategory> action)

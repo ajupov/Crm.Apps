@@ -6,7 +6,7 @@ namespace Crm.Apps.Products.Helpers
 {
     public static class ProductStatusChangesHelper
     {
-        public static ProductStatusChange WithCreateLog(
+        public static ProductStatusChange CreateWithLog(
             this ProductStatus status,
             Guid userId,
             Action<ProductStatus> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductStatusChange WithUpdateLog(
+        public static ProductStatusChange UpdateWithLog(
             this ProductStatus status,
             Guid userId,
             Action<ProductStatus> action)

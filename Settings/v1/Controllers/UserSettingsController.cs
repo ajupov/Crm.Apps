@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
@@ -29,10 +28,10 @@ namespace Crm.Apps.Settings.V1.Controllers
             _userSettingsService = userSettingsService;
         }
 
-        [HttpGet("GetList")]
-        public Task<List<UserSetting>> GetList(CancellationToken ct = default)
+        [HttpGet("Get")]
+        public Task<UserSetting> GetList(CancellationToken ct = default)
         {
-            return _userSettingsService.GetListAsync(_userContext.UserId, ct);
+            return _userSettingsService.GetAsync(_userContext.UserId, ct);
         }
     }
 }

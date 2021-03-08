@@ -6,7 +6,7 @@ namespace Crm.Apps.Contacts.Helpers
 {
     public static class ContactAttributesChangesHelper
     {
-        public static ContactAttributeChange WithCreateLog(
+        public static ContactAttributeChange CreateWithLog(
             this ContactAttribute attribute,
             Guid userId,
             Action<ContactAttribute> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Contacts.Helpers
             };
         }
 
-        public static ContactAttributeChange WithUpdateLog(
+        public static ContactAttributeChange UpdateWithLog(
             this ContactAttribute attribute,
             Guid userId,
             Action<ContactAttribute> action)

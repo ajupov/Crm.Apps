@@ -6,7 +6,7 @@ namespace Crm.Apps.Companies.Helpers
 {
     public static class CompanyAttributesChangesHelper
     {
-        public static CompanyAttributeChange WithCreateLog(
+        public static CompanyAttributeChange CreateWithLog(
             this CompanyAttribute attribute,
             Guid userId,
             Action<CompanyAttribute> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Companies.Helpers
             };
         }
 
-        public static CompanyAttributeChange WithUpdateLog(
+        public static CompanyAttributeChange UpdateWithLog(
             this CompanyAttribute attribute,
             Guid userId,
             Action<CompanyAttribute> action)

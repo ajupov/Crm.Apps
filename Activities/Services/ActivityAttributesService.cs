@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
@@ -72,9 +73,9 @@ namespace Crm.Apps.Activities.Services
         public async Task<Guid> CreateAsync(Guid userId, ActivityAttribute attribute, CancellationToken ct)
         {
             var newAttribute = new ActivityAttribute();
-            var change = newAttribute.WithCreateLog(userId, x =>
+            var change = newAttribute.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !attribute.Id.IsEmpty() ? attribute.Id : Guid.NewGuid();
                 x.AccountId = attribute.AccountId;
                 x.Type = attribute.Type;
                 x.Key = attribute.Key;
@@ -95,7 +96,7 @@ namespace Crm.Apps.Activities.Services
             ActivityAttribute newAttribute,
             CancellationToken ct)
         {
-            var change = oldAttribute.WithUpdateLog(userId, x =>
+            var change = oldAttribute.UpdateWithLog(userId, x =>
             {
                 x.AccountId = newAttribute.AccountId;
                 x.Type = newAttribute.Type;
@@ -115,7 +116,7 @@ namespace Crm.Apps.Activities.Services
 
             await _storage.ActivityAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, a =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, a =>
                 {
                     a.IsDeleted = true;
                     a.ModifyDateTime = DateTime.UtcNow;
@@ -131,7 +132,7 @@ namespace Crm.Apps.Activities.Services
 
             await _storage.ActivityAttributes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, a =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, a =>
                 {
                     a.IsDeleted = false;
                     a.ModifyDateTime = DateTime.UtcNow;

@@ -90,7 +90,7 @@ namespace Crm.Apps.Products.Services
             var newProduct = new Product();
             var change = newProduct.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !product.Id.IsEmpty() ? product.Id : Guid.NewGuid();
                 x.AccountId = product.AccountId;
                 x.ParentProductId = product.ParentProductId;
                 x.Type = product.Type;

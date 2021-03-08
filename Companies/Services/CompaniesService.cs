@@ -120,7 +120,7 @@ namespace Crm.Apps.Companies.Services
             var newCompany = new Company();
             var change = newCompany.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !company.Id.IsEmpty() ? company.Id : Guid.NewGuid();
                 x.AccountId = company.AccountId;
                 x.Type = company.Type;
                 x.IndustryType = company.IndustryType;

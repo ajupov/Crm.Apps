@@ -6,7 +6,7 @@ namespace Crm.Apps.Deals.Helpers
 {
     public static class DealStatusChangesHelper
     {
-        public static DealStatusChange WithCreateLog(this DealStatus status, Guid userId, Action<DealStatus> action)
+        public static DealStatusChange CreateWithLog(this DealStatus status, Guid userId, Action<DealStatus> action)
         {
             action(status);
 
@@ -20,7 +20,7 @@ namespace Crm.Apps.Deals.Helpers
             };
         }
 
-        public static DealStatusChange WithUpdateLog(this DealStatus status, Guid userId, Action<DealStatus> action)
+        public static DealStatusChange UpdateWithLog(this DealStatus status, Guid userId, Action<DealStatus> action)
         {
             var oldValueJson = status.ToJsonString();
 

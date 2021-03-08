@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Decimal;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Deals.Helpers;
@@ -100,7 +101,7 @@ namespace Crm.Apps.Deals.Services
             var newDeal = new Deal();
             var change = newDeal.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !deal.Id.IsEmpty() ? deal.Id : Guid.NewGuid();
                 x.AccountId = deal.AccountId;
                 x.TypeId = deal.TypeId;
                 x.StatusId = deal.StatusId;

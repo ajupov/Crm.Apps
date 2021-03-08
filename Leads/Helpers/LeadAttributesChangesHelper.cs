@@ -6,7 +6,7 @@ namespace Crm.Apps.Leads.Helpers
 {
     public static class LeadAttributesChangesHelper
     {
-        public static LeadAttributeChange WithCreateLog(
+        public static LeadAttributeChange CreateWithLog(
             this LeadAttribute attribute,
             Guid userId,
             Action<LeadAttribute> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Leads.Helpers
             };
         }
 
-        public static LeadAttributeChange WithUpdateLog(
+        public static LeadAttributeChange UpdateWithLog(
             this LeadAttribute attribute,
             Guid userId,
             Action<LeadAttribute> action)

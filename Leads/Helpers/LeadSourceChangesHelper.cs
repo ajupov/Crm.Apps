@@ -6,7 +6,7 @@ namespace Crm.Apps.Leads.Helpers
 {
     public static class LeadSourceChangesHelper
     {
-        public static LeadSourceChange WithCreateLog(this LeadSource source, Guid userId, Action<LeadSource> action)
+        public static LeadSourceChange CreateWithLog(this LeadSource source, Guid userId, Action<LeadSource> action)
         {
             action(source);
 
@@ -20,7 +20,7 @@ namespace Crm.Apps.Leads.Helpers
             };
         }
 
-        public static LeadSourceChange WithUpdateLog(this LeadSource source, Guid userId, Action<LeadSource> action)
+        public static LeadSourceChange UpdateWithLog(this LeadSource source, Guid userId, Action<LeadSource> action)
         {
             var oldValueJson = source.ToJsonString();
 

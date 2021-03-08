@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
@@ -92,7 +93,7 @@ namespace Crm.Apps.Activities.Services
             var newActivity = new Activity();
             var change = newActivity.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !activity.Id.IsEmpty() ? activity.Id : Guid.NewGuid();
                 x.AccountId = activity.AccountId;
                 x.TypeId = activity.TypeId;
                 x.StatusId = activity.StatusId;

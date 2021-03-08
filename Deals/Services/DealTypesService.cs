@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Deals.Helpers;
@@ -71,9 +72,9 @@ namespace Crm.Apps.Deals.Services
         public async Task<Guid> CreateAsync(Guid userId, DealType type, CancellationToken ct)
         {
             var newType = new DealType();
-            var change = newType.WithCreateLog(userId, x =>
+            var change = newType.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !type.Id.IsEmpty() ? type.Id : Guid.NewGuid();
                 x.AccountId = type.AccountId;
                 x.Name = type.Name;
                 x.IsDeleted = type.IsDeleted;
@@ -93,7 +94,7 @@ namespace Crm.Apps.Deals.Services
             DealType newType,
             CancellationToken ct)
         {
-            var change = oldType.WithUpdateLog(userId, x =>
+            var change = oldType.UpdateWithLog(userId, x =>
             {
                 x.Name = newType.Name;
                 x.IsDeleted = newType.IsDeleted;
@@ -111,7 +112,7 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, t =>
                 {
                     t.IsDeleted = true;
                     t.ModifyDateTime = DateTime.UtcNow;
@@ -127,7 +128,7 @@ namespace Crm.Apps.Deals.Services
 
             await _storage.DealTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, t =>
                 {
                     t.IsDeleted = false;
                     t.ModifyDateTime = DateTime.UtcNow;

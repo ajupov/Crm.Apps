@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Mvc.Attributes;
+using Ajupov.Utils.All.Enums;
 using Crm.Apps.Settings.Models;
 using Crm.Apps.Settings.Services;
 using Crm.Common.All.BaseControllers;
@@ -29,10 +30,26 @@ namespace Crm.Apps.Settings.V1.Controllers
             _accountSettingsService = accountSettingsService;
         }
 
-        [HttpGet("GetList")]
-        public Task<List<AccountSetting>> GetList(CancellationToken ct = default)
+        [HttpGet("Get")]
+        public Task<AccountSetting> GetList(CancellationToken ct = default)
         {
-            return _accountSettingsService.GetListAsync(_userContext.AccountId, ct);
+            return _accountSettingsService.GetAsync(_userContext.AccountId, ct);
+        }
+
+        [HttpGet("GetActivityIndustries")]
+        public Dictionary<string, AccountSettingActivityIndustry> GetActivityIndustries()
+        {
+            return EnumsExtensions.GetAsDictionary<AccountSettingActivityIndustry>();
+        }
+
+        [HttpPatch("SetActivityIndustry")]
+        public Task SetActivityIndustry(AccountSettingActivityIndustry industry, CancellationToken ct = default)
+        {
+            return _accountSettingsService.SetActivityIndustryAsync(
+                _userContext.UserId,
+                _userContext.AccountId,
+                industry,
+                ct);
         }
     }
 }

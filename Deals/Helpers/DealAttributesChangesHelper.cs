@@ -6,7 +6,7 @@ namespace Crm.Apps.Deals.Helpers
 {
     public static class DealAttributesChangesHelper
     {
-        public static DealAttributeChange WithCreateLog(
+        public static DealAttributeChange CreateWithLog(
             this DealAttribute attribute,
             Guid userId,
             Action<DealAttribute> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Deals.Helpers
             };
         }
 
-        public static DealAttributeChange WithUpdateLog(
+        public static DealAttributeChange UpdateWithLog(
             this DealAttribute attribute,
             Guid userId,
             Action<DealAttribute> action)

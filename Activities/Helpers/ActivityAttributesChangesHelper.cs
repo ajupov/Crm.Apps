@@ -6,7 +6,7 @@ namespace Crm.Apps.Activities.Helpers
 {
     public static class ActivityAttributesChangesHelper
     {
-        public static ActivityAttributeChange WithCreateLog(
+        public static ActivityAttributeChange CreateWithLog(
             this ActivityAttribute attribute,
             Guid userId,
             Action<ActivityAttribute> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Activities.Helpers
             };
         }
 
-        public static ActivityAttributeChange WithUpdateLog(
+        public static ActivityAttributeChange UpdateWithLog(
             this ActivityAttribute attribute,
             Guid userId,
             Action<ActivityAttribute> action)

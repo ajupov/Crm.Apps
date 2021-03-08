@@ -6,7 +6,7 @@ namespace Crm.Apps.Activities.Helpers
 {
     public static class ActivityTypeChangesHelper
     {
-        public static ActivityTypeChange WithCreateLog(this ActivityType type, Guid userId, Action<ActivityType> action)
+        public static ActivityTypeChange CreateWithLog(this ActivityType type, Guid userId, Action<ActivityType> action)
         {
             action(type);
 
@@ -20,7 +20,7 @@ namespace Crm.Apps.Activities.Helpers
             };
         }
 
-        public static ActivityTypeChange WithUpdateLog(this ActivityType type, Guid userId, Action<ActivityType> action)
+        public static ActivityTypeChange UpdateWithLog(this ActivityType type, Guid userId, Action<ActivityType> action)
         {
             var oldValueJson = type.ToJsonString();
 

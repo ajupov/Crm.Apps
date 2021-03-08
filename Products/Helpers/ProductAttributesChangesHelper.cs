@@ -6,7 +6,7 @@ namespace Crm.Apps.Products.Helpers
 {
     public static class ProductAttributesChangesHelper
     {
-        public static ProductAttributeChange WithCreateLog(
+        public static ProductAttributeChange CreateWithLog(
             this ProductAttribute attribute,
             Guid userId,
             Action<ProductAttribute> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Products.Helpers
             };
         }
 
-        public static ProductAttributeChange WithUpdateLog(
+        public static ProductAttributeChange UpdateWithLog(
             this ProductAttribute attribute,
             Guid userId,
             Action<ProductAttribute> action)

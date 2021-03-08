@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Activities.Helpers;
@@ -71,9 +72,9 @@ namespace Crm.Apps.Activities.Services
         public async Task<Guid> CreateAsync(Guid userId, ActivityType type, CancellationToken ct)
         {
             var newType = new ActivityType();
-            var change = newType.WithCreateLog(userId, t =>
+            var change = newType.CreateWithLog(userId, t =>
             {
-                t.Id = Guid.NewGuid();
+                t.Id = !type.Id.IsEmpty() ? type.Id : Guid.NewGuid();
                 t.AccountId = type.AccountId;
                 t.Name = type.Name;
                 t.IsDeleted = type.IsDeleted;
@@ -93,7 +94,7 @@ namespace Crm.Apps.Activities.Services
             ActivityType newType,
             CancellationToken ct)
         {
-            var change = oldType.WithUpdateLog(userId, t =>
+            var change = oldType.UpdateWithLog(userId, t =>
             {
                 t.Name = newType.Name;
                 t.IsDeleted = newType.IsDeleted;
@@ -111,7 +112,7 @@ namespace Crm.Apps.Activities.Services
 
             await _storage.ActivityTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, t =>
                 {
                     t.IsDeleted = true;
                     t.ModifyDateTime = DateTime.UtcNow;
@@ -127,7 +128,7 @@ namespace Crm.Apps.Activities.Services
 
             await _storage.ActivityTypes
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, t =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, t =>
                 {
                     t.IsDeleted = false;
                     t.ModifyDateTime = DateTime.UtcNow;

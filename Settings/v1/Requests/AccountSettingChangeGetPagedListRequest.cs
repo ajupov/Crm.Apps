@@ -1,12 +1,12 @@
-using System.ComponentModel.DataAnnotations;
-using Crm.Apps.Settings.Models;
+using System;
 
 namespace Crm.Apps.Settings.V1.Requests
 {
     public class AccountSettingChangeGetPagedListRequest
     {
-        [Required]
-        public AccountSettingType Type { get; set; }
+        public DateTime? MinCreateDate { get; set; }
+
+        public DateTime? MaxCreateDate { get; set; }
 
         public int Offset { get; set; }
 

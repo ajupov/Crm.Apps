@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Leads.Helpers;
@@ -70,9 +71,9 @@ namespace Crm.Apps.Leads.Services
         public async Task<Guid> CreateAsync(Guid userId, LeadSource source, CancellationToken ct)
         {
             var newSource = new LeadSource();
-            var change = newSource.WithCreateLog(userId, x =>
+            var change = newSource.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !source.Id.IsEmpty() ? source.Id : Guid.NewGuid();
                 x.AccountId = source.AccountId;
                 x.Name = source.Name;
                 x.IsDeleted = source.IsDeleted;
@@ -92,7 +93,7 @@ namespace Crm.Apps.Leads.Services
             LeadSource newSource,
             CancellationToken ct)
         {
-            var change = oldSource.WithUpdateLog(userId, x =>
+            var change = oldSource.UpdateWithLog(userId, x =>
             {
                 x.Name = newSource.Name;
                 x.IsDeleted = newSource.IsDeleted;
@@ -110,7 +111,7 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadSources
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, s =>
                 {
                     s.IsDeleted = true;
                     s.ModifyDateTime = DateTime.UtcNow;
@@ -126,7 +127,7 @@ namespace Crm.Apps.Leads.Services
 
             await _storage.LeadSources
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, s =>
                 {
                     s.IsDeleted = false;
                     s.ModifyDateTime = DateTime.UtcNow;

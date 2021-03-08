@@ -6,7 +6,7 @@ namespace Crm.Apps.Deals.Helpers
 {
     public static class DealTypeChangesHelper
     {
-        public static DealTypeChange WithCreateLog(this DealType type, Guid userId, Action<DealType> action)
+        public static DealTypeChange CreateWithLog(this DealType type, Guid userId, Action<DealType> action)
         {
             action(type);
 
@@ -20,7 +20,7 @@ namespace Crm.Apps.Deals.Helpers
             };
         }
 
-        public static DealTypeChange WithUpdateLog(this DealType type, Guid userId, Action<DealType> action)
+        public static DealTypeChange UpdateWithLog(this DealType type, Guid userId, Action<DealType> action)
         {
             var oldValueJson = type.ToJsonString();
 

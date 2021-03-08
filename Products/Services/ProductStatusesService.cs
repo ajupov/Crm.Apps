@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
@@ -71,9 +72,9 @@ namespace Crm.Apps.Products.Services
         public async Task<Guid> CreateAsync(Guid userId, ProductStatus status, CancellationToken ct)
         {
             var newStatus = new ProductStatus();
-            var change = newStatus.WithCreateLog(userId, x =>
+            var change = newStatus.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !status.Id.IsEmpty() ? status.Id : Guid.NewGuid();
                 x.AccountId = status.AccountId;
                 x.Name = status.Name;
                 x.IsDeleted = status.IsDeleted;
@@ -93,7 +94,7 @@ namespace Crm.Apps.Products.Services
             ProductStatus newStatus,
             CancellationToken ct)
         {
-            var change = oldStatus.WithUpdateLog(userId, x =>
+            var change = oldStatus.UpdateWithLog(userId, x =>
             {
                 x.Name = newStatus.Name;
                 x.IsDeleted = newStatus.IsDeleted;
@@ -111,7 +112,7 @@ namespace Crm.Apps.Products.Services
 
             await _storage.ProductStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, s =>
                 {
                     s.IsDeleted = true;
                     s.ModifyDateTime = DateTime.UtcNow;
@@ -127,7 +128,7 @@ namespace Crm.Apps.Products.Services
 
             await _storage.ProductStatuses
                 .Where(x => ids.Contains(x.Id))
-                .ForEachAsync(x => changes.Add(x.WithUpdateLog(userId, s =>
+                .ForEachAsync(x => changes.Add(x.UpdateWithLog(userId, s =>
                 {
                     s.IsDeleted = false;
                     s.ModifyDateTime = DateTime.UtcNow;

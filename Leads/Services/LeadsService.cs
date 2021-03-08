@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Utils.All.Decimal;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Leads.Helpers;
@@ -99,7 +100,7 @@ namespace Crm.Apps.Leads.Services
             var newLead = new Lead();
             var change = newLead.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !lead.Id.IsEmpty() ? lead.Id : Guid.NewGuid();
                 x.AccountId = lead.AccountId;
                 x.SourceId = lead.SourceId;
                 x.CreateUserId = userId;

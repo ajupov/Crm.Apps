@@ -26,6 +26,7 @@ using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
 using Crm.Apps.Settings.Services;
+using Crm.Apps.Settings.Storages;
 using Crm.Common.All.UserContext;
 using LiteCrm.OAuth.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +70,7 @@ namespace Crm.Apps
                 .AddOrm<DealsStorage>(Configuration)
                 .AddOrm<ActivitiesStorage>(Configuration)
                 .AddOrm<FlagsStorage>(Configuration)
+                .AddOrm<SettingsStorage>(Configuration)
                 .AddUserContext<IUserContext, UserContext>()
                 .AddHotStorage(Configuration);
 

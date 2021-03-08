@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Contacts.Helpers;
@@ -97,7 +98,7 @@ namespace Crm.Apps.Contacts.Services
             var newContact = new Contact();
             var change = newContact.CreateWithLog(userId, x =>
             {
-                x.Id = Guid.NewGuid();
+                x.Id = !contact.Id.IsEmpty() ? contact.Id : Guid.NewGuid();
                 x.AccountId = contact.AccountId;
                 x.LeadId = contact.LeadId;
                 x.CompanyId = contact.CompanyId;

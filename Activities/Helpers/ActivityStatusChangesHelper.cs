@@ -6,7 +6,7 @@ namespace Crm.Apps.Activities.Helpers
 {
     public static class ActivityStatusChangesHelper
     {
-        public static ActivityStatusChange WithCreateLog(
+        public static ActivityStatusChange CreateWithLog(
             this ActivityStatus status,
             Guid userId,
             Action<ActivityStatus> action)
@@ -23,7 +23,7 @@ namespace Crm.Apps.Activities.Helpers
             };
         }
 
-        public static ActivityStatusChange WithUpdateLog(
+        public static ActivityStatusChange UpdateWithLog(
             this ActivityStatus status,
             Guid userId,
             Action<ActivityStatus> action)
