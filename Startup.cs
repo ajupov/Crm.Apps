@@ -9,6 +9,8 @@ using Ajupov.Infrastructure.All.Migrations;
 using Ajupov.Infrastructure.All.Orm;
 using Ajupov.Infrastructure.All.Tracing;
 using Ajupov.Infrastructure.All.UserContext;
+using Crm.Apps.Account.Services;
+using Crm.Apps.Account.Storages;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.Storages;
 using Crm.Apps.Auth.Settings;
@@ -18,14 +20,12 @@ using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.Storages;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.Storages;
-using Crm.Apps.Flags.Services;
-using Crm.Apps.Flags.Storages;
 using Crm.Apps.Leads.Services;
 using Crm.Apps.Leads.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
-using Crm.Apps.Settings.Services;
-using Crm.Apps.Settings.Storages;
+using Crm.Apps.User.Services;
+using Crm.Apps.User.Storages;
 using Crm.Common.All.UserContext;
 using LiteCrm.OAuth.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -62,14 +62,14 @@ namespace Crm.Apps
                 .AddApiDocumentation()
                 .AddMetrics(Configuration)
                 .AddMigrator(Configuration)
+                .AddOrm<AccountStorage>(Configuration)
+                .AddOrm<UserStorage>(Configuration)
                 .AddOrm<ProductsStorage>(Configuration)
                 .AddOrm<LeadsStorage>(Configuration)
                 .AddOrm<CompaniesStorage>(Configuration)
                 .AddOrm<ContactsStorage>(Configuration)
                 .AddOrm<DealsStorage>(Configuration)
                 .AddOrm<ActivitiesStorage>(Configuration)
-                .AddOrm<FlagsStorage>(Configuration)
-                .AddOrm<SettingsStorage>(Configuration)
                 .AddUserContext<IUserContext, UserContext>()
                 .AddHotStorage(Configuration);
 
@@ -77,6 +77,12 @@ namespace Crm.Apps
                 .Configure<AuthSettings>(Configuration.GetSection(nameof(AuthSettings)));
 
             services
+                .AddTransient<IAccountFlagsService, AccountFlagsService>()
+                .AddTransient<IUserFlagsService, UserFlagsService>()
+                .AddTransient<IAccountSettingsService, AccountSettingsService>()
+                .AddTransient<IAccountSettingChangesService, AccountSettingChangesService>()
+                .AddTransient<IUserSettingsService, UserSettingsService>()
+                .AddTransient<IUserSettingChangesService, UserSettingChangesService>()
                 .AddTransient<IProductsService, ProductsService>()
                 .AddTransient<IProductChangesService, ProductChangesService>()
                 .AddTransient<IProductCategoriesService, ProductCategoriesService>()
@@ -120,14 +126,6 @@ namespace Crm.Apps
                 .AddTransient<IActivityTypeChangesService, ActivityTypeChangesService>()
                 .AddTransient<IActivityAttributesService, ActivityAttributesService>()
                 .AddTransient<IActivityAttributeChangesService, ActivityAttributeChangesService>();
-
-            services
-                .AddTransient<IAccountFlagsService, AccountFlagsService>()
-                .AddTransient<IUserFlagsService, UserFlagsService>()
-                .AddTransient<IAccountSettingsService, AccountSettingsService>()
-                .AddTransient<IAccountSettingChangesService, AccountSettingChangesService>()
-                .AddTransient<IUserSettingsService, UserSettingsService>()
-                .AddTransient<IUserSettingChangesService, UserSettingChangesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
