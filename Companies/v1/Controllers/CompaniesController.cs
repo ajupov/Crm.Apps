@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Services;
@@ -21,7 +21,7 @@ namespace Crm.Apps.Companies.V1.Controllers
 {
     [ApiController]
     [RequestContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireCompaniesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Companies/v1")]
     public class CompaniesController : AllowingCheckControllerBase
     {
@@ -56,7 +56,7 @@ namespace Crm.Apps.Companies.V1.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(company, Roles.Sales, company.AccountId);
+            return ReturnIfAllowed(company, Roles.Companies, company.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -66,10 +66,7 @@ namespace Crm.Apps.Companies.V1.Controllers
         {
             var companies = await _companiesService.GetListAsync(ids, ct);
 
-            return ReturnIfAllowed(
-                companies,
-                Roles.Sales,
-                companies.Select(x => x.AccountId));
+            return ReturnIfAllowed(companies, Roles.Companies, companies.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
@@ -81,7 +78,7 @@ namespace Crm.Apps.Companies.V1.Controllers
 
             return ReturnIfAllowed(
                 response,
-                Roles.Sales,
+                Roles.Companies,
                 response.Companies.Select(x => x.AccountId));
         }
 
@@ -106,7 +103,7 @@ namespace Crm.Apps.Companies.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _companiesService.UpdateAsync(_userContext.UserId, oldCompany, company, ct),
-                Roles.Sales,
+                Roles.Companies,
                 oldCompany.AccountId);
         }
 
@@ -117,7 +114,7 @@ namespace Crm.Apps.Companies.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _companiesService.DeleteAsync(_userContext.UserId, companies.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Companies,
                 companies.Select(x => x.AccountId));
         }
 
@@ -128,7 +125,7 @@ namespace Crm.Apps.Companies.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _companiesService.RestoreAsync(_userContext.UserId, companies.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Companies,
                 companies.Select(x => x.AccountId));
         }
     }

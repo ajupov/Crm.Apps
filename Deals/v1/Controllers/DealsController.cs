@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Deals.Models;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.V1.Requests;
@@ -21,7 +21,7 @@ namespace Crm.Apps.Deals.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireDealsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Deals/v1")]
     public class DealsController : AllowingCheckControllerBase
     {
@@ -44,7 +44,7 @@ namespace Crm.Apps.Deals.V1.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(deal, Roles.Sales, deal.AccountId);
+            return ReturnIfAllowed(deal, Roles.Deals, deal.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -52,10 +52,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         {
             var deals = await _dealsService.GetListAsync(ids, ct);
 
-            return ReturnIfAllowed(
-                deals,
-                Roles.Sales,
-                deals.Select(x => x.AccountId));
+            return ReturnIfAllowed(deals, Roles.Deals, deals.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
@@ -65,10 +62,7 @@ namespace Crm.Apps.Deals.V1.Controllers
         {
             var response = await _dealsService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
-            return ReturnIfAllowed(
-                response,
-                Roles.Sales,
-                response.Deals.Select(x => x.AccountId));
+            return ReturnIfAllowed(response, Roles.Deals, response.Deals.Select(x => x.AccountId));
         }
 
         [HttpPut("Create")]
@@ -92,7 +86,7 @@ namespace Crm.Apps.Deals.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _dealsService.UpdateAsync(_userContext.UserId, oldDeal, deal, ct),
-                Roles.Sales,
+                Roles.Deals,
                 oldDeal.AccountId);
         }
 
@@ -103,7 +97,7 @@ namespace Crm.Apps.Deals.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _dealsService.DeleteAsync(_userContext.UserId, deals.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Deals,
                 deals.Select(x => x.AccountId));
         }
 
@@ -114,7 +108,7 @@ namespace Crm.Apps.Deals.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _dealsService.RestoreAsync(_userContext.UserId, deals.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Deals,
                 deals.Select(x => x.AccountId));
         }
     }

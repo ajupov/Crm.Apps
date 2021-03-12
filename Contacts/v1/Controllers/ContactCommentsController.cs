@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.V1.Requests;
@@ -17,7 +17,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireContactsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Contacts/Comments/v1")]
     public class ContactCommentsController : AllowingCheckControllerBase
     {
@@ -44,7 +44,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
             var contact = await _contactsService.GetAsync(request.ContactId, false, ct);
             var response = await _contactCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, contact.AccountId);
+            return ReturnIfAllowed(response, Roles.Contacts, contact.AccountId);
         }
 
         [HttpPut("Create")]
@@ -54,7 +54,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _contactCommentsService.CreateAsync(_userContext.UserId, comment, ct),
-                Roles.Sales,
+                Roles.Contacts,
                 contact.AccountId);
         }
     }

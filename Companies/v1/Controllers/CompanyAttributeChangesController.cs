@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.V1.Requests;
 using Crm.Apps.Companies.V1.Responses;
@@ -16,7 +16,7 @@ namespace Crm.Apps.Companies.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireCompaniesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Companies/Attributes/Changes/v1")]
     public class CompanyAttributeChangesController : AllowingCheckControllerBase
     {
@@ -41,7 +41,7 @@ namespace Crm.Apps.Companies.V1.Controllers
             var attribute = await _companyAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _companyAttributeChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);
+            return ReturnIfAllowed(response, Roles.Companies, attribute.AccountId);
         }
     }
 }

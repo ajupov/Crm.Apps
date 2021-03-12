@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Settings.Models;
 using Crm.Apps.Settings.Services;
 using Crm.Common.All.BaseControllers;
@@ -29,7 +29,7 @@ namespace Crm.Apps.Settings.V1.Controllers
         }
 
         [HttpGet("Get")]
-        public Task<UserSetting> GetList(CancellationToken ct = default)
+        public Task<UserSetting> Get(CancellationToken ct = default)
         {
             return _userSettingsService.GetAsync(_userContext.UserId, ct);
         }

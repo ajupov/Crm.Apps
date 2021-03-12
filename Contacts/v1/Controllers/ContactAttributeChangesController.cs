@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Contacts.Services;
 using Crm.Apps.Contacts.V1.Requests;
 using Crm.Apps.Contacts.V1.Responses;
@@ -16,7 +16,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireContactsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Contacts/Attributes/Changes/v1")]
     public class ContactAttributeChangesController : AllowingCheckControllerBase
     {
@@ -41,7 +41,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
             var attribute = await _contactAttributesService.GetAsync(request.AttributeId, false, ct);
             var response = await _contactAttributeChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, attribute.AccountId);
+            return ReturnIfAllowed(response, Roles.Contacts, attribute.AccountId);
         }
     }
 }

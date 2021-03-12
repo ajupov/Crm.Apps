@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Companies.Models;
 using Crm.Apps.Companies.Services;
 using Crm.Apps.Companies.V1.Requests;
@@ -17,7 +17,7 @@ namespace Crm.Apps.Companies.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireCompaniesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Companies/Comments/v1")]
     public class CompanyCommentsController : AllowingCheckControllerBase
     {
@@ -44,7 +44,7 @@ namespace Crm.Apps.Companies.V1.Controllers
             var company = await _companiesService.GetAsync(request.CompanyId, false, ct);
             var response = await _companyCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, company.AccountId);
+            return ReturnIfAllowed(response, Roles.Companies, company.AccountId);
         }
 
         [HttpPut("Create")]
@@ -54,7 +54,7 @@ namespace Crm.Apps.Companies.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _companyCommentsService.CreateAsync(_userContext.UserId, comment, ct),
-                Roles.Sales,
+                Roles.Companies,
                 company.AccountId);
         }
     }

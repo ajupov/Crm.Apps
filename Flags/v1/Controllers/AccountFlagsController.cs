@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Flags.Models;
 using Crm.Apps.Flags.Services;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Crm.Apps.Flags.V1.Controllers
 {
@@ -21,12 +22,17 @@ namespace Crm.Apps.Flags.V1.Controllers
     {
         private readonly IUserContext _userContext;
         private readonly IAccountFlagsService _accountFlagsService;
+        private readonly ILogger<AccountFlagsController> _logger;
 
-        public AccountFlagsController(IUserContext userContext, IAccountFlagsService accountFlagsService)
+        public AccountFlagsController(
+            IUserContext userContext,
+            IAccountFlagsService accountFlagsService,
+            ILogger<AccountFlagsController> logger)
             : base(userContext)
         {
             _userContext = userContext;
             _accountFlagsService = accountFlagsService;
+            _logger = logger;
         }
 
         [HttpGet("IsSet")]

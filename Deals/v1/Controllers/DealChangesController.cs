@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Deals.Services;
 using Crm.Apps.Deals.V1.Requests;
 using Crm.Apps.Deals.V1.Responses;
@@ -16,7 +16,7 @@ namespace Crm.Apps.Deals.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireDealsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Deals/Changes/v1")]
     public class DealChangesController : AllowingCheckControllerBase
     {
@@ -41,7 +41,7 @@ namespace Crm.Apps.Deals.V1.Controllers
             var deal = await _dealsService.GetAsync(request.DealId, false, ct);
             var response = await _dealChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, deal.AccountId);
+            return ReturnIfAllowed(response, Roles.Deals, deal.AccountId);
         }
     }
 }

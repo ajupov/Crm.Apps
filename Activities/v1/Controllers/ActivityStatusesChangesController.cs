@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.V1.Requests;
 using Crm.Apps.Activities.V1.Responses;
@@ -16,7 +16,7 @@ namespace Crm.Apps.Activities.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireActivitiesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Activities/Statuses/Changes/v1")]
     public class ActivityStatusesChangesController : AllowingCheckControllerBase
     {
@@ -41,7 +41,7 @@ namespace Crm.Apps.Activities.V1.Controllers
             var status = await _activityStatusesService.GetAsync(request.StatusId, false, ct);
             var response = await _activityStatusChangesService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, status.AccountId);
+            return ReturnIfAllowed(response, Roles.Activities, status.AccountId);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Settings.Models;
 using Crm.Apps.Settings.Services;
@@ -31,7 +31,7 @@ namespace Crm.Apps.Settings.V1.Controllers
         }
 
         [HttpGet("Get")]
-        public Task<AccountSetting> GetList(CancellationToken ct = default)
+        public Task<AccountSetting> Get(CancellationToken ct = default)
         {
             return _accountSettingsService.GetAsync(_userContext.AccountId, ct);
         }

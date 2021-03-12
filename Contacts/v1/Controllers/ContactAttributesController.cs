@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Ajupov.Utils.All.Enums;
 using Crm.Apps.Contacts.Models;
 using Crm.Apps.Contacts.Services;
@@ -23,7 +23,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireContactsRole(JwtDefaults.AuthenticationScheme)]
     [Route("Contacts/Attributes/v1")]
     public class ContactAttributesController : AllowingCheckControllerBase
     {
@@ -52,7 +52,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(attribute, Roles.Sales, attribute.AccountId);
+            return ReturnIfAllowed(attribute, Roles.Contacts, attribute.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -62,10 +62,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
         {
             var attributes = await _contactAttributesService.GetListAsync(ids, ct);
 
-            return ReturnIfAllowed(
-                attributes,
-                Roles.Sales,
-                attributes.Select(x => x.AccountId));
+            return ReturnIfAllowed(attributes, Roles.Contacts, attributes.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
@@ -75,10 +72,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
         {
             var response = await _contactAttributesService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
-            return ReturnIfAllowed(
-                response,
-                Roles.Sales,
-                response.Attributes.Select(x => x.AccountId));
+            return ReturnIfAllowed(response, Roles.Contacts, response.Attributes.Select(x => x.AccountId));
         }
 
         [HttpPut("Create")]
@@ -102,7 +96,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _contactAttributesService.UpdateAsync(_userContext.UserId, oldAttribute, attribute, ct),
-                Roles.Sales,
+                Roles.Contacts,
                 oldAttribute.AccountId);
         }
 
@@ -113,7 +107,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _contactAttributesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Contacts,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -124,7 +118,7 @@ namespace Crm.Apps.Contacts.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _contactAttributesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Contacts,
                 attributes.Select(x => x.AccountId));
         }
     }

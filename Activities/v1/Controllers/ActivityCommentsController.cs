@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.V1.Requests;
@@ -17,7 +17,7 @@ namespace Crm.Apps.Activities.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireActivitiesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Activities/Comments/v1")]
     public class ActivityCommentsController : AllowingCheckControllerBase
     {
@@ -44,7 +44,7 @@ namespace Crm.Apps.Activities.V1.Controllers
             var activity = await _activitiesService.GetAsync(request.ActivityId, false, ct);
             var response = await _activityCommentsService.GetPagedListAsync(request, ct);
 
-            return ReturnIfAllowed(response, Roles.Sales, activity.AccountId);
+            return ReturnIfAllowed(response, Roles.Activities, activity.AccountId);
         }
 
         [HttpPut("Create")]
@@ -54,7 +54,7 @@ namespace Crm.Apps.Activities.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _activityCommentsService.CreateAsync(_userContext.UserId, comment, ct),
-                Roles.Sales,
+                Roles.Activities,
                 activity.AccountId);
         }
     }

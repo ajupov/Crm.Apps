@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Security.Claims;
+using Ajupov.Infrastructure.All.Api;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Auth.Models;
 using Crm.Common.All.Roles.Attributes;
 using Crm.Common.All.UserContext;

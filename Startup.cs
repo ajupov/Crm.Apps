@@ -1,12 +1,11 @@
-﻿using Ajupov.Infrastructure.All.ApiDocumentation;
+﻿using Ajupov.Infrastructure.All.Api;
+using Ajupov.Infrastructure.All.ApiDocumentation;
 using Ajupov.Infrastructure.All.Cookies;
 using Ajupov.Infrastructure.All.Cors;
 using Ajupov.Infrastructure.All.HotStorage;
 using Ajupov.Infrastructure.All.Jwt;
 using Ajupov.Infrastructure.All.Metrics;
 using Ajupov.Infrastructure.All.Migrations;
-using Ajupov.Infrastructure.All.Mvc;
-using Ajupov.Infrastructure.All.Mvc.Filters;
 using Ajupov.Infrastructure.All.Orm;
 using Ajupov.Infrastructure.All.Tracing;
 using Ajupov.Infrastructure.All.UserContext;
@@ -58,7 +57,7 @@ namespace Crm.Apps
             services
                 .AddCookiePolicy()
                 .AddSingleOriginCorsPolicy(Configuration)
-                .AddMvc(typeof(ValidationFilter))
+                .AddApiControllers()
                 .AddTracing(Configuration)
                 .AddApiDocumentation()
                 .AddMetrics(Configuration)
@@ -135,8 +134,11 @@ namespace Crm.Apps
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage()
-                    .UseForwardedHeaders()
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseForwardedHeaders()
                     .UseHttpsRedirection()
                     .UseHsts();
             }
@@ -147,8 +149,9 @@ namespace Crm.Apps
                 .UseCookiePolicy()
                 .UseSingleOriginCors()
                 .UseAuthentication()
+                .UseRouting()
                 .UseAuthorization()
-                .UseMvcMiddleware();
+                .UseControllers();
         }
     }
 }

@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Infrastructure.All.Mvc.Attributes;
 using Crm.Apps.Activities.Models;
 using Crm.Apps.Activities.Services;
 using Crm.Apps.Activities.V1.Requests;
@@ -21,7 +21,7 @@ namespace Crm.Apps.Activities.V1.Controllers
     [ApiController]
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
-    [RequireSalesRole(JwtDefaults.AuthenticationScheme)]
+    [RequireActivitiesRole(JwtDefaults.AuthenticationScheme)]
     [Route("Activities/Types/v1")]
     public class ActivityTypesController : AllowingCheckControllerBase
     {
@@ -44,7 +44,7 @@ namespace Crm.Apps.Activities.V1.Controllers
                 return NotFound(id);
             }
 
-            return ReturnIfAllowed(type, Roles.Sales, type.AccountId);
+            return ReturnIfAllowed(type, Roles.Activities, type.AccountId);
         }
 
         [HttpPost("GetList")]
@@ -54,10 +54,7 @@ namespace Crm.Apps.Activities.V1.Controllers
         {
             var types = await _activityTypesService.GetListAsync(ids, ct);
 
-            return ReturnIfAllowed(
-                types,
-                Roles.Sales,
-                types.Select(x => x.AccountId));
+            return ReturnIfAllowed(types, Roles.Activities, types.Select(x => x.AccountId));
         }
 
         [HttpPost("GetPagedList")]
@@ -67,10 +64,7 @@ namespace Crm.Apps.Activities.V1.Controllers
         {
             var response = await _activityTypesService.GetPagedListAsync(_userContext.AccountId, request, ct);
 
-            return ReturnIfAllowed(
-                response,
-                Roles.Sales,
-                response.Types.Select(x => x.AccountId));
+            return ReturnIfAllowed(response, Roles.Activities, response.Types.Select(x => x.AccountId));
         }
 
         [HttpPut("Create")]
@@ -94,7 +88,7 @@ namespace Crm.Apps.Activities.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.UpdateAsync(_userContext.UserId, oldType, type, ct),
-                Roles.Sales,
+                Roles.Activities,
                 oldType.AccountId);
         }
 
@@ -105,7 +99,7 @@ namespace Crm.Apps.Activities.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.DeleteAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Activities,
                 attributes.Select(x => x.AccountId));
         }
 
@@ -116,7 +110,7 @@ namespace Crm.Apps.Activities.V1.Controllers
 
             return await ActionIfAllowed(
                 () => _activityTypesService.RestoreAsync(_userContext.UserId, attributes.Select(x => x.Id), ct),
-                Roles.Sales,
+                Roles.Activities,
                 attributes.Select(x => x.AccountId));
         }
     }
