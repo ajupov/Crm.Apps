@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
@@ -60,7 +59,7 @@ namespace Crm.Apps.Products.Services
                 TotalCount = await statuses
                     .CountAsync(ct),
                 LastModifyDateTime = await statuses
-                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?) null, ct),
+                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?)null, ct),
                 Statuses = await statuses
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
@@ -74,7 +73,7 @@ namespace Crm.Apps.Products.Services
             var newStatus = new ProductStatus();
             var change = newStatus.CreateWithLog(userId, x =>
             {
-                x.Id = !status.Id.IsEmpty() ? status.Id : Guid.NewGuid();
+                x.Id = status.Id;
                 x.AccountId = status.AccountId;
                 x.Name = status.Name;
                 x.IsDeleted = status.IsDeleted;

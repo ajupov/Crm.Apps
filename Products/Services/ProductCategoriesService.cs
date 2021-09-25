@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ajupov.Utils.All.Guid;
 using Ajupov.Utils.All.Sorting;
 using Ajupov.Utils.All.String;
 using Crm.Apps.Products.Helpers;
@@ -60,7 +59,7 @@ namespace Crm.Apps.Products.Services
                 TotalCount = await categories
                     .CountAsync(ct),
                 LastModifyDateTime = await categories
-                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?) null, ct),
+                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?)null, ct),
                 Categories = await categories
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
@@ -74,7 +73,7 @@ namespace Crm.Apps.Products.Services
             var newCategory = new ProductCategory();
             var change = newCategory.CreateWithLog(userId, x =>
             {
-                x.Id = !category.Id.IsEmpty() ? category.Id : Guid.NewGuid();
+                x.Id = category.Id;
                 x.AccountId = category.AccountId;
                 x.Name = category.Name;
                 x.IsDeleted = category.IsDeleted;

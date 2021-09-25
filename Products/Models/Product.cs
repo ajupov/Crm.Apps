@@ -21,7 +21,7 @@ namespace Crm.Apps.Products.Models
 
         public decimal Price { get; set; }
 
-        public byte[] Image { get; set; }
+        public string Image { get; set; }
 
         public bool IsHidden { get; set; }
 

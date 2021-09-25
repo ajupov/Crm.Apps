@@ -2,7 +2,7 @@
 {
     public enum AccountFlagType
     {
-        IsShownSelectionOfActivityIndustry = 1,
+        IsShownSelectionOfTaskIndustry = 1,
         IsShownCreationDefaultEntities = 2
     }
 }

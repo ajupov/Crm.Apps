@@ -61,7 +61,7 @@ namespace Crm.Apps.Products.Services
                 TotalCount = await attributes
                     .CountAsync(ct),
                 LastModifyDateTime = await attributes
-                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?) null, ct),
+                    .MaxAsync(x => x != null ? x.ModifyDateTime ?? x.CreateDateTime : (DateTime?)null, ct),
                 Attributes = await attributes
                     .SortBy(request.SortBy, request.OrderBy)
                     .Skip(request.Offset)
@@ -75,7 +75,7 @@ namespace Crm.Apps.Products.Services
             var newAttribute = new ProductAttribute();
             var change = newAttribute.CreateWithLog(userId, x =>
             {
-                x.Id = !attribute.Id.IsEmpty() ? attribute.Id : Guid.NewGuid();
+                x.Id = attribute.Id;
                 x.AccountId = attribute.AccountId;
                 x.Type = attribute.Type;
                 x.Key = attribute.Key;

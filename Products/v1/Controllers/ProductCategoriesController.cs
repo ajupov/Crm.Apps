@@ -73,7 +73,7 @@ namespace Crm.Apps.Products.V1.Controllers
                 response.Categories.Select(x => x.AccountId));
         }
 
-        [HttpPut("Create")]
+        [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create(ProductCategory category, CancellationToken ct = default)
         {
             category.AccountId = _userContext.AccountId;

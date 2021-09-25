@@ -73,7 +73,7 @@ namespace Crm.Apps.Products.V1.Controllers
                 response.Statuses.Select(x => x.AccountId));
         }
 
-        [HttpPut("Create")]
+        [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create(ProductStatus status, CancellationToken ct = default)
         {
             status.AccountId = _userContext.AccountId;

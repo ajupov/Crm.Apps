@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Utils.All.Enums;
 using Ajupov.Utils.All.Guid;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Services;
@@ -15,7 +14,6 @@ using Crm.Apps.Products.V1.Responses;
 using Crm.Common.All.BaseControllers;
 using Crm.Common.All.Roles;
 using Crm.Common.All.Roles.Attributes;
-using Crm.Common.All.Types.AttributeType;
 using Crm.Common.All.UserContext;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,12 +34,6 @@ namespace Crm.Apps.Products.V1.Controllers
         {
             _userContext = userContext;
             _productAttributesService = productAttributesService;
-        }
-
-        [HttpGet("GetTypes")]
-        public ActionResult<Dictionary<string, AttributeType>> GetTypes()
-        {
-            return EnumsExtensions.GetAsDictionary<AttributeType>();
         }
 
         [HttpGet("Get")]
@@ -82,7 +74,7 @@ namespace Crm.Apps.Products.V1.Controllers
                 response.Attributes.Select(x => x.AccountId));
         }
 
-        [HttpPut("Create")]
+        [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create(ProductAttribute attribute, CancellationToken ct = default)
         {
             attribute.AccountId = _userContext.AccountId;

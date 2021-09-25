@@ -36,16 +36,16 @@ namespace Crm.Apps.Account.V1.Controllers
             return _accountSettingsService.GetAsync(_userContext.AccountId, ct);
         }
 
-        [HttpGet("GetActivityIndustries")]
-        public Dictionary<string, AccountSettingActivityIndustry> GetActivityIndustries()
+        [HttpGet("GetTaskIndustries")]
+        public Dictionary<string, AccountSettingTaskIndustry> GetTaskIndustries()
         {
-            return EnumsExtensions.GetAsDictionary<AccountSettingActivityIndustry>();
+            return EnumsExtensions.GetAsDictionary<AccountSettingTaskIndustry>();
         }
 
-        [HttpPatch("SetActivityIndustry")]
-        public Task SetActivityIndustry(AccountSettingActivityIndustry industry, CancellationToken ct = default)
+        [HttpPatch("SetTaskIndustry")]
+        public Task SetTaskIndustry(AccountSettingTaskIndustry industry, CancellationToken ct = default)
         {
-            return _accountSettingsService.SetActivityIndustryAsync(
+            return _accountSettingsService.SetTaskIndustryAsync(
                 _userContext.UserId,
                 _userContext.AccountId,
                 industry,

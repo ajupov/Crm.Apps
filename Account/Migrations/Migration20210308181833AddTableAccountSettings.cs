@@ -10,7 +10,7 @@ namespace Crm.Apps.Account.Migrations
             Create.Table("AccountSettings")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("AccountId").AsGuid().NotNullable()
-                .WithColumn("ActivityIndustry").AsInt32().Nullable()
+                .WithColumn("TaskIndustry").AsInt32().Nullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
 

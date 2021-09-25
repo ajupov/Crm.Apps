@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Utils.All.Enums;
 using Crm.Apps.Products.Models;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.V1.Requests;
@@ -34,12 +33,6 @@ namespace Crm.Apps.Products.V1.Controllers
         {
             _userContext = userContext;
             _productsService = productsService;
-        }
-
-        [HttpGet("GetTypes")]
-        public ActionResult<Dictionary<string, ProductType>> GetTypes()
-        {
-            return EnumsExtensions.GetAsDictionary<ProductType>();
         }
 
         [HttpGet("Get")]
@@ -80,7 +73,7 @@ namespace Crm.Apps.Products.V1.Controllers
                 response.Products.Select(x => x.AccountId));
         }
 
-        [HttpPut("Create")]
+        [HttpPost("Create")]
         public async Task<ActionResult<Guid>> Create(Product product, CancellationToken ct = default)
         {
             product.AccountId = _userContext.AccountId;
@@ -105,7 +98,7 @@ namespace Crm.Apps.Products.V1.Controllers
                 oldProduct.AccountId);
         }
 
-        [HttpPost("Hide")]
+        [HttpPatch("Hide")]
         public async Task<ActionResult> Hide([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var products = await _productsService.GetListAsync(ids, ct);
@@ -116,7 +109,7 @@ namespace Crm.Apps.Products.V1.Controllers
                 products.Select(x => x.AccountId));
         }
 
-        [HttpPost("Show")]
+        [HttpPatch("Show")]
         public async Task<ActionResult> Show([Required] List<Guid> ids, CancellationToken ct = default)
         {
             var products = await _productsService.GetListAsync(ids, ct);

@@ -9,6 +9,6 @@ namespace Crm.Apps.Account.Services
     {
         Task<AccountSetting> GetAsync(Guid accountId, CancellationToken ct);
 
-        Task SetActivityIndustryAsync(Guid userId, Guid accountId, AccountSettingActivityIndustry industry, CancellationToken ct);
+        Task SetTaskIndustryAsync(Guid userId, Guid accountId, AccountSettingTaskIndustry industry, CancellationToken ct);
     }
 }

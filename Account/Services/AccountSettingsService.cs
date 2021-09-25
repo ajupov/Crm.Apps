@@ -24,13 +24,13 @@ namespace Crm.Apps.Account.Services
                 .SingleOrDefaultAsync(x => x.AccountId == accountId, ct);
         }
 
-        public Task SetActivityIndustryAsync(
+        public Task SetTaskIndustryAsync(
             Guid userId,
             Guid accountId,
-            AccountSettingActivityIndustry industry,
+            AccountSettingTaskIndustry industry,
             CancellationToken ct)
         {
-            return SetAsync(userId, accountId, x => x.ActivityIndustry = industry, ct);
+            return SetAsync(userId, accountId, x => x.TaskIndustry = industry, ct);
         }
 
         private async Task SetAsync(
