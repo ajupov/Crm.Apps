@@ -98,10 +98,8 @@ namespace Crm.Apps.Tasks.Services
                 x.AccountId = task.AccountId;
                 x.TypeId = task.TypeId;
                 x.StatusId = task.StatusId;
-                x.LeadId = task.LeadId;
-                x.CompanyId = task.CompanyId;
-                x.ContactId = task.ContactId;
-                x.DealId = task.DealId;
+                x.CustomerId = task.CustomerId;
+                x.OrderId = task.OrderId;
                 x.CreateUserId = userId;
                 x.ResponsibleUserId = task.ResponsibleUserId;
                 x.Name = task.Name;
@@ -134,10 +132,8 @@ namespace Crm.Apps.Tasks.Services
                 x.AccountId = newTask.AccountId;
                 x.TypeId = newTask.TypeId;
                 x.StatusId = newTask.StatusId;
-                x.LeadId = newTask.LeadId;
-                x.CompanyId = newTask.CompanyId;
-                x.ContactId = newTask.ContactId;
-                x.DealId = newTask.DealId;
+                x.CustomerId = newTask.CustomerId;
+                x.OrderId = newTask.OrderId;
                 x.ResponsibleUserId = newTask.ResponsibleUserId;
                 x.Name = newTask.Name;
                 x.Description = newTask.Description;

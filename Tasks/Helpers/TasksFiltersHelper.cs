@@ -15,14 +15,10 @@ namespace Crm.Apps.Tasks.Helpers
                     request.TypeIds.Any(x => TypeIdsPredicate(task, x))) &&
                    (request.StatusIds == null || !request.StatusIds.Any() ||
                     request.StatusIds.Any(x => StatusIdsPredicate(task, x))) &&
-                   (request.LeadIds == null || !request.LeadIds.Any() ||
-                    request.LeadIds.Any(x => LeadIdsPredicate(task, x))) &&
-                   (request.CompanyIds == null || !request.CompanyIds.Any() ||
-                    request.CompanyIds.Any(x => CompanyIdsPredicate(task, x))) &&
-                   (request.ContactIds == null || !request.ContactIds.Any() ||
-                    request.ContactIds.Any(x => ContactIdsPredicate(task, x))) &&
-                   (request.DealIds == null || !request.DealIds.Any() ||
-                    request.DealIds.Any(x => DealIdsPredicate(task, x))) &&
+                   (request.CustomerIds == null || !request.CustomerIds.Any() ||
+                    request.CustomerIds.Any(x => CustomerIdsPredicate(task, x))) &&
+                   (request.OrderIds == null || !request.OrderIds.Any() ||
+                    request.OrderIds.Any(x => OrderIdsPredicate(task, x))) &&
                    (request.CreateUserIds == null || !request.CreateUserIds.Any() ||
                     request.CreateUserIds.Any(x => CreateUserIdsPredicate(task, x))) &&
                    (request.ResponsibleUserIds == null || !request.ResponsibleUserIds.Any() ||
@@ -45,24 +41,14 @@ namespace Crm.Apps.Tasks.Helpers
             return task.StatusId == id;
         }
 
-        private static bool LeadIdsPredicate(Task task, Guid id)
+        private static bool CustomerIdsPredicate(Task task, Guid id)
         {
-            return task.LeadId == id;
+            return task.CustomerId == id;
         }
 
-        private static bool CompanyIdsPredicate(Task task, Guid id)
+        private static bool OrderIdsPredicate(Task task, Guid id)
         {
-            return task.CompanyId == id;
-        }
-
-        private static bool ContactIdsPredicate(Task task, Guid id)
-        {
-            return task.ContactId == id;
-        }
-
-        private static bool DealIdsPredicate(Task task, Guid id)
-        {
-            return task.DealId == id;
+            return task.OrderId == id;
         }
 
         private static bool CreateUserIdsPredicate(Task task, Guid id)
