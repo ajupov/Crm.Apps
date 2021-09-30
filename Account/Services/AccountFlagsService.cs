@@ -26,7 +26,7 @@ namespace Crm.Apps.Account.Services
                 .AnyAsync(x => x.AccountId == accountId && x.Type == type, cancellationToken: ct);
         }
 
-        public async Task<IEnumerable<AccountFlagType>> GetNotSetListAsync(Guid accountId, CancellationToken ct)
+        public async Task<List<AccountFlagType>> GetNotSetListAsync(Guid accountId, CancellationToken ct)
         {
             var allFlags = EnumsExtensions.GetValues<AccountFlagType>();
 
@@ -43,15 +43,27 @@ namespace Crm.Apps.Account.Services
 
         public async Task SetAsync(Guid accountId, AccountFlagType type, CancellationToken ct)
         {
-            var flag = new AccountFlag
+            var flag = await _storage.AccountFlags
+                .FirstOrDefaultAsync(x => x.Type == type && x.AccountId == accountId, ct);
+            if (flag != null)
             {
-                Id = Guid.NewGuid(),
-                AccountId = accountId,
-                Type = type,
-                SetDateTime = DateTime.UtcNow
-            };
+                flag.SetDateTime = DateTime.UtcNow;
 
-            await _storage.AddAsync(flag, ct);
+                _storage.Update(flag);
+            }
+            else
+            {
+                flag = new AccountFlag
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountId,
+                    Type = type,
+                    SetDateTime = DateTime.UtcNow
+                };
+
+                await _storage.AddAsync(flag, ct);
+            }
+
             await _storage.SaveChangesAsync(ct);
         }
     }

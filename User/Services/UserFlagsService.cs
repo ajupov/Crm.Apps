@@ -26,7 +26,7 @@ namespace Crm.Apps.User.Services
                 .AnyAsync(x => x.UserId == userId && x.Type == type, cancellationToken: ct);
         }
 
-        public async Task<IEnumerable<UserFlagType>> GetNotSetListAsync(Guid userId, CancellationToken ct)
+        public async Task<List<UserFlagType>> GetNotSetListAsync(Guid userId, CancellationToken ct)
         {
             {
                 var allFlags = EnumsExtensions.GetValues<UserFlagType>();
@@ -45,15 +45,26 @@ namespace Crm.Apps.User.Services
 
         public async Task SetAsync(Guid userId, UserFlagType type, CancellationToken ct)
         {
-            var flag = new UserFlag
+            var flag = await _storage.UserFlags.FirstOrDefaultAsync(x => x.Type == type && x.UserId == userId, ct);
+            if (flag != null)
             {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                Type = type,
-                SetDateTime = DateTime.UtcNow
-            };
+                flag.SetDateTime = DateTime.UtcNow;
 
-            await _storage.AddAsync(flag, ct);
+                _storage.Update(flag);
+            }
+            else
+            {
+                flag = new UserFlag
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    Type = type,
+                    SetDateTime = DateTime.UtcNow
+                };
+
+                await _storage.AddAsync(flag, ct);
+            }
+
             await _storage.SaveChangesAsync(ct);
         }
     }

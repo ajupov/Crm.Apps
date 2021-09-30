@@ -36,7 +36,7 @@ namespace Crm.Apps.User.V1.Controllers
         }
 
         [HttpGet("GetNotSetList")]
-        public Task<IEnumerable<UserFlagType>> GetNotSetList(CancellationToken ct = default)
+        public Task<List<UserFlagType>> GetNotSetList(CancellationToken ct = default)
         {
             return _userFlagsService.GetNotSetListAsync(_userContext.UserId, ct);
         }

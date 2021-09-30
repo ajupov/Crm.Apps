@@ -36,7 +36,7 @@ namespace Crm.Apps.Account.V1.Controllers
         }
 
         [HttpGet("GetNotSetList")]
-        public Task<IEnumerable<AccountFlagType>> GetNotSetList(CancellationToken ct = default)
+        public Task<List<AccountFlagType>> GetNotSetList(CancellationToken ct = default)
         {
             return _accountFlagsService.GetNotSetListAsync(_userContext.AccountId, ct);
         }

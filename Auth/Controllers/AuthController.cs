@@ -41,11 +41,11 @@ namespace Crm.Apps.Auth.Controllers
 
         [AllowAnonymous]
         [HttpGet("IsAuthenticated")]
-        public async Task<ActionResult<bool>> IsAuthenticated()
+        public async Task<bool> IsAuthenticated()
         {
             var authenticateResult = await HttpContext.AuthenticateAsync(JwtDefaults.AuthenticationScheme);
 
-            return authenticateResult.Succeeded && authenticateResult.Principal.Identity.IsAuthenticated;
+            return authenticateResult.Succeeded && (authenticateResult.Principal?.Identity?.IsAuthenticated ?? false);
         }
 
         [AllowAnonymous]

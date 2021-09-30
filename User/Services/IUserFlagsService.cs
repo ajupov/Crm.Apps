@@ -10,7 +10,7 @@ namespace Crm.Apps.User.Services
     {
         Task<bool> IsSetAsync(Guid userId, UserFlagType type, CancellationToken ct);
 
-        Task<IEnumerable<UserFlagType>> GetNotSetListAsync(Guid userId, CancellationToken ct);
+        Task<List<UserFlagType>> GetNotSetListAsync(Guid userId, CancellationToken ct);
 
         Task SetAsync(Guid userId, UserFlagType type, CancellationToken ct);
     }
