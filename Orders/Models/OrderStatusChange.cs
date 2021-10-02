@@ -4,6 +4,7 @@ namespace Crm.Apps.Orders.Models
 {
     public class OrderStatusChange
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }

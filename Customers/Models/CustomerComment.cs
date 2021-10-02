@@ -4,6 +4,7 @@ namespace Crm.Apps.Customers.Models
 {
     public class CustomerComment
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid CustomerId { get; set; }

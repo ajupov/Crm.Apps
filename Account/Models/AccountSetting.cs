@@ -4,6 +4,7 @@ namespace Crm.Apps.Account.Models
 {
     public class AccountSetting
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }

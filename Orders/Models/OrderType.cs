@@ -4,6 +4,7 @@ namespace Crm.Apps.Orders.Models
 {
     public class OrderType
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }

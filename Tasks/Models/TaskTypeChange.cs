@@ -4,6 +4,7 @@ namespace Crm.Apps.Tasks.Models
 {
     public class TaskTypeChange
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }

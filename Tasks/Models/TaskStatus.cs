@@ -4,6 +4,7 @@ namespace Crm.Apps.Tasks.Models
 {
     public class TaskStatus
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }

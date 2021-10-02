@@ -4,6 +4,7 @@ namespace Crm.Apps.Products.Models
 {
     public class ProductStatus
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }

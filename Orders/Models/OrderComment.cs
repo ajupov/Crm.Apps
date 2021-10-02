@@ -4,6 +4,7 @@ namespace Crm.Apps.Orders.Models
 {
     public class OrderComment
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid OrderId { get; set; }

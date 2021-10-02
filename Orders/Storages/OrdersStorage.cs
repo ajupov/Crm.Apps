@@ -31,7 +31,7 @@ namespace Crm.Apps.Orders.Storages
 
         public DbSet<OrderComment> OrderComments { get; set; }
 
-        public DbSet<OrderItem> OrderLines { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

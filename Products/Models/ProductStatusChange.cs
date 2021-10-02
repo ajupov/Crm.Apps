@@ -4,6 +4,7 @@ namespace Crm.Apps.Products.Models
 {
     public class ProductStatusChange
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }

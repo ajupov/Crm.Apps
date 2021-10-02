@@ -4,6 +4,7 @@ namespace Crm.Apps.User.Models
 {
     public class UserSettingChange
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid ChangerUserId { get; set; }

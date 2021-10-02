@@ -20,7 +20,6 @@ namespace Crm.Apps.Orders.Migrations
                 .WithColumn("EndDateTime").AsDateTime2().Nullable()
                 .WithColumn("Sum").AsDecimal().NotNullable()
                 .WithColumn("SumWithoutDiscount").AsDecimal().NotNullable()
-                .WithColumn("FinishProbability").AsByte().NotNullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("ModifyDateTime").AsDateTime2().Nullable();

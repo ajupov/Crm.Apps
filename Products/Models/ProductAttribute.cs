@@ -5,6 +5,7 @@ namespace Crm.Apps.Products.Models
 {
     public class ProductAttribute
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }

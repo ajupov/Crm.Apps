@@ -5,6 +5,7 @@ namespace Crm.Apps.Tasks.Models
 {
     public class Task
     {
+        [NonDefaultGuid]
         public Guid Id { get; set; }
 
         public Guid AccountId { get; set; }
