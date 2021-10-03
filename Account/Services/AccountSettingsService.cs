@@ -27,10 +27,10 @@ namespace Crm.Apps.Account.Services
         public Task SetTaskIndustryAsync(
             Guid userId,
             Guid accountId,
-            AccountSettingTaskIndustry industry,
+            AccountSettingActivityIndustry industry,
             CancellationToken ct)
         {
-            return SetAsync(userId, accountId, x => x.TaskIndustry = industry, ct);
+            return SetAsync(userId, accountId, x => x.ActivityIndustry = industry, ct);
         }
 
         private async Task SetAsync(

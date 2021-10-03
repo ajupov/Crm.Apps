@@ -9,7 +9,7 @@ namespace Crm.Apps.Account.Models
 
         public Guid AccountId { get; set; }
 
-        public AccountSettingTaskIndustry? TaskIndustry { get; set; }
+        public AccountSettingActivityIndustry? ActivityIndustry { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

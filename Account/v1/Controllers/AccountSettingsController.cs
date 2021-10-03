@@ -37,13 +37,13 @@ namespace Crm.Apps.Account.V1.Controllers
         }
 
         [HttpGet("GetTaskIndustries")]
-        public Dictionary<string, AccountSettingTaskIndustry> GetTaskIndustries()
+        public Dictionary<string, AccountSettingActivityIndustry> GetTaskIndustries()
         {
-            return EnumsExtensions.GetAsDictionary<AccountSettingTaskIndustry>();
+            return EnumsExtensions.GetAsDictionary<AccountSettingActivityIndustry>();
         }
 
         [HttpPatch("SetTaskIndustry")]
-        public Task SetTaskIndustry(AccountSettingTaskIndustry industry, CancellationToken ct = default)
+        public Task SetTaskIndustry(AccountSettingActivityIndustry industry, CancellationToken ct = default)
         {
             return _accountSettingsService.SetTaskIndustryAsync(
                 _userContext.UserId,
