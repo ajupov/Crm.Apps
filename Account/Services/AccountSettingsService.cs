@@ -24,7 +24,7 @@ namespace Crm.Apps.Account.Services
                 .SingleOrDefaultAsync(x => x.AccountId == accountId, ct);
         }
 
-        public Task SetTaskIndustryAsync(
+        public Task SetActivityIndustryAsync(
             Guid userId,
             Guid accountId,
             AccountSettingActivityIndustry industry,

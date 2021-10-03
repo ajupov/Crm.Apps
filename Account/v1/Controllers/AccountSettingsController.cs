@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Ajupov.Infrastructure.All.Api.Attributes;
 using Ajupov.Infrastructure.All.Jwt;
-using Ajupov.Utils.All.Enums;
 using Crm.Apps.Account.Models;
 using Crm.Apps.Account.Services;
 using Crm.Common.All.BaseControllers;
@@ -36,16 +34,10 @@ namespace Crm.Apps.Account.V1.Controllers
             return _accountSettingsService.GetAsync(_userContext.AccountId, ct);
         }
 
-        [HttpGet("GetTaskIndustries")]
-        public Dictionary<string, AccountSettingActivityIndustry> GetTaskIndustries()
+        [HttpPut("SetActivityIndustry")]
+        public Task SetActivityIndustry(AccountSettingActivityIndustry industry, CancellationToken ct = default)
         {
-            return EnumsExtensions.GetAsDictionary<AccountSettingActivityIndustry>();
-        }
-
-        [HttpPatch("SetTaskIndustry")]
-        public Task SetTaskIndustry(AccountSettingActivityIndustry industry, CancellationToken ct = default)
-        {
-            return _accountSettingsService.SetTaskIndustryAsync(
+            return _accountSettingsService.SetActivityIndustryAsync(
                 _userContext.UserId,
                 _userContext.AccountId,
                 industry,
