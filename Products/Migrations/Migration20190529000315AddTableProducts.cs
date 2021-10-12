@@ -14,7 +14,7 @@ namespace Crm.Apps.Products.Migrations
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("StatusId").AsGuid().NotNullable()
                 .WithColumn("Name").AsString(64).NotNullable()
-                .WithColumn("VendorCode").AsString(16).NotNullable()
+                .WithColumn("VendorCode").AsString(16).Nullable()
                 .WithColumn("Price").AsDecimal(18, 2).NotNullable()
                 .WithColumn("Image").AsString(2048).Nullable()
                 .WithColumn("IsHidden").AsBoolean().NotNullable()
