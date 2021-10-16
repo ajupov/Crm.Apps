@@ -40,6 +40,10 @@ namespace Crm.Apps.Orders.Services
         {
             return _storage.Orders
                 .AsNoTracking()
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .Include(x => x.Items)
+                .Include(x => x.AttributeLinks)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -94,6 +98,9 @@ namespace Crm.Apps.Orders.Services
         public async Task<Guid> CreateAsync(Guid userId, Order order, CancellationToken ct)
         {
             var newOrder = new Order();
+            var type = await _storage.OrderTypes.FirstAsync(t => t.Id == order.TypeId, ct);
+            var status = await _storage.OrderStatuses.FirstAsync(t => t.Id == order.StatusId, ct);
+
             var change = newOrder.CreateWithLog(userId, x =>
             {
                 x.Id = order.Id;
@@ -110,6 +117,8 @@ namespace Crm.Apps.Orders.Services
                 x.SumWithoutDiscount = order.SumWithoutDiscount;
                 x.IsDeleted = order.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.Type = type;
+                x.Status = status;
                 x.AttributeLinks = order.AttributeLinks.Map(x.Id);
                 x.Items = order.Items.Map(x.Id);
             });

@@ -39,6 +39,8 @@ namespace Crm.Apps.Customers.Services
         {
             return _storage.Customers
                 .AsNoTracking()
+                .Include(x => x.Source)
+                .Include(x => x.AttributeLinks)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -87,6 +89,8 @@ namespace Crm.Apps.Customers.Services
         public async Task<Guid> CreateAsync(Guid userId, Customer customer, CancellationToken ct)
         {
             var newCustomer = new Customer();
+            var source = await _storage.CustomerSources.FirstAsync(t => t.Id == customer.SourceId, ct);
+
             var change = newCustomer.CreateWithLog(userId, x =>
             {
                 x.Id = customer.Id;
@@ -103,6 +107,7 @@ namespace Crm.Apps.Customers.Services
                 x.Image = customer.Image;
                 x.IsDeleted = customer.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.Source = source;
                 x.AttributeLinks = customer.AttributeLinks.Map(x.Id);
             });
 

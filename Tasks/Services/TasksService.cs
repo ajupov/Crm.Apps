@@ -40,6 +40,9 @@ namespace Crm.Apps.Tasks.Services
         {
             return _storage.Tasks
                 .AsNoTracking()
+                .Include(x => x.Type)
+                .Include(x => x.Status)
+                .Include(x => x.AttributeLinks)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -92,6 +95,9 @@ namespace Crm.Apps.Tasks.Services
         public async Task<Guid> CreateAsync(Guid userId, CrmTask task, CancellationToken ct)
         {
             var newTask = new CrmTask();
+            var type = await _storage.TaskTypes.FirstAsync(t => t.Id == task.TypeId, ct);
+            var status = await _storage.TaskStatuses.FirstAsync(t => t.Id == task.StatusId, ct);
+
             var change = newTask.CreateWithLog(userId, x =>
             {
                 x.Id = task.Id;
@@ -111,6 +117,8 @@ namespace Crm.Apps.Tasks.Services
                 x.DeadLineDateTime = task.DeadLineDateTime;
                 x.IsDeleted = task.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.Type = type;
+                x.Status = status;
                 x.AttributeLinks = task.AttributeLinks.Map(x.Id);
             });
 

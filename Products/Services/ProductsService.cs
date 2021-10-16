@@ -40,6 +40,9 @@ namespace Crm.Apps.Products.Services
         {
             return _storage.Products
                 .AsNoTracking()
+                .Include(x => x.Status)
+                .Include(x => x.AttributeLinks)
+                .Include(x => x.CategoryLinks)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -88,6 +91,8 @@ namespace Crm.Apps.Products.Services
         public async Task<Guid> CreateAsync(Guid userId, Product product, CancellationToken ct)
         {
             var newProduct = new Product();
+            var status = await _storage.ProductStatuses.FirstAsync(t => t.Id == product.StatusId, ct);
+
             var change = newProduct.CreateWithLog(userId, x =>
             {
                 x.Id = product.Id;
@@ -102,6 +107,7 @@ namespace Crm.Apps.Products.Services
                 x.IsHidden = product.IsHidden;
                 x.IsDeleted = product.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
+                x.Status = status;
                 x.AttributeLinks = product.AttributeLinks.Map(x.Id);
                 x.CategoryLinks = product.CategoryLinks.Map(x.Id);
             });
