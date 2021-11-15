@@ -18,6 +18,8 @@ using Crm.Apps.Orders.Services;
 using Crm.Apps.Orders.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
+using Crm.Apps.Suppliers.Services;
+using Crm.Apps.Suppliers.Storages;
 using Crm.Apps.Tasks.Services;
 using Crm.Apps.Tasks.Storages;
 using Crm.Apps.User.Services;
@@ -64,6 +66,7 @@ namespace Crm.Apps
                 .AddOrm<CustomersStorage>(Configuration)
                 .AddOrm<OrdersStorage>(Configuration)
                 .AddOrm<TasksStorage>(Configuration)
+                .AddOrm<SuppliersStorage>(Configuration)
                 .AddUserContext<IUserContext, UserContext>()
                 .AddHotStorage(Configuration);
 
@@ -109,7 +112,12 @@ namespace Crm.Apps
                 .AddTransient<ITaskTypesService, TaskTypesService>()
                 .AddTransient<ITaskTypeChangesService, TaskTypeChangesService>()
                 .AddTransient<ITaskAttributesService, TaskAttributesService>()
-                .AddTransient<ITaskAttributeChangesService, TaskAttributeChangesService>();
+                .AddTransient<ITaskAttributeChangesService, TaskAttributeChangesService>()
+                .AddTransient<ISuppliersService, SuppliersService>()
+                .AddTransient<ISupplierChangesService, SupplierChangesService>()
+                .AddTransient<ISupplierCommentsService, SupplierCommentsService>()
+                .AddTransient<ISupplierAttributesService, SupplierAttributesService>()
+                .AddTransient<ISupplierAttributeChangesService, SupplierAttributeChangesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

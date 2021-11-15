@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Crm.Apps.Suppliers.Models
 {
@@ -13,10 +14,16 @@ namespace Crm.Apps.Suppliers.Models
 
         public string Name { get; set; }
 
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 
         public DateTime? ModifyDateTime { get; set; }
+
+        public List<SupplierAttributeLink> AttributeLinks { get; set; }
     }
 }
