@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Crm.Apps.Orders.Models
@@ -20,5 +21,7 @@ namespace Crm.Apps.Orders.Models
         public decimal Price { get; set; }
 
         public decimal Count { get; set; }
+
+        public List<Guid> UniqueElementIds { get; set; }
     }
 }
