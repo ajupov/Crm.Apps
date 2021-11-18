@@ -22,6 +22,6 @@ namespace Crm.Apps.Orders.Models
 
         public decimal Count { get; set; }
 
-        public List<Guid> UniqueElementIds { get; set; }
+        // public List<Guid> UniqueElementIds { get; set; }
     }
 }
