@@ -9,7 +9,7 @@ namespace Crm.Apps.Stock.Models
 
         public Guid ChangerUserId { get; set; }
 
-        public Guid ElementId { get; set; }
+        public Guid StockItemUniqueElementId { get; set; }
 
         public DateTime CreateDateTime { get; set; }
 

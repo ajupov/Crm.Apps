@@ -10,7 +10,7 @@ namespace Crm.Apps.Stock.Models
         public Guid Id { get; set; }
 
         [JsonIgnore]
-        public Guid ArrivalId { get; set; }
+        public Guid StockConsumptionId { get; set; }
 
         public Guid ProductId { get; set; }
 

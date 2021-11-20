@@ -12,6 +12,8 @@ namespace Crm.Apps.Stock.Models
 
         public Guid? CreateUserId { get; set; }
 
+        public Guid ProductId { get; set; }
+
         public StockItemUniqueElementStatus Status { get; set; }
 
         public string Value { get; set; }

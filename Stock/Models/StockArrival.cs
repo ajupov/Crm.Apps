@@ -14,6 +14,8 @@ namespace Crm.Apps.Stock.Models
 
         public StockArrivalType Type { get; set; }
 
+        public Guid? OrderId { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime CreateDateTime { get; set; }

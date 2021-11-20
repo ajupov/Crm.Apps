@@ -10,11 +10,11 @@ namespace Crm.Apps.Stock.Models
 
         public Guid AccountId { get; set; }
 
-        public Guid? OrderId { get; set; }
-
         public Guid? CreateUserId { get; set; }
 
         public StockConsumptionType Type { get; set; }
+
+        public Guid? OrderId { get; set; }
 
         public bool IsDeleted { get; set; }
 
