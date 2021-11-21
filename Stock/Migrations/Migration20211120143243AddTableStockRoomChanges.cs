@@ -10,7 +10,7 @@ namespace Crm.Apps.Stock.Migrations
             Create.Table("StockRoomChanges")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("ChangerUserId").AsGuid().NotNullable()
-                .WithColumn("TypeId").AsGuid().NotNullable()
+                .WithColumn("StockRoomId").AsGuid().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("OldValueJson").AsString().Nullable()
                 .WithColumn("NewValueJson").AsString().Nullable();
@@ -18,15 +18,15 @@ namespace Crm.Apps.Stock.Migrations
             Create.PrimaryKey("PK_StockRoomChanges_Id").OnTable("StockRoomChanges")
                 .Column("Id");
 
-            Create.Index("IX_StockRoomChanges_TypeId_CreateDateTime").OnTable("StockRoomChanges")
-                .OnColumn("TypeId").Ascending()
+            Create.Index("IX_StockRoomChanges_StockRoomId_CreateDateTime").OnTable("StockRoomChanges")
+                .OnColumn("StockRoomId").Ascending()
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_StockRoomChanges_TypeId_CreateDateTime").OnTable("StockRoomChanges");
+            Delete.Index("IX_StockRoomChanges_StockRoomId_CreateDateTime").OnTable("StockRoomChanges");
             Delete.PrimaryKey("PK_StockRoomChanges_Id").FromTable("StockRoomChanges");
             Delete.Table("StockRoomChanges");
         }

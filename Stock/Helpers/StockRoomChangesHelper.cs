@@ -12,7 +12,7 @@ namespace Crm.Apps.Stock.Helpers
 
             return new StockRoomChange
             {
-                RoomId = room.Id,
+                StockRoomId = room.Id,
                 ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = string.Empty,
@@ -28,7 +28,7 @@ namespace Crm.Apps.Stock.Helpers
 
             return new StockRoomChange
             {
-                RoomId = room.Id,
+                StockRoomId = room.Id,
                 ChangerUserId = userId,
                 CreateDateTime = DateTime.UtcNow,
                 OldValueJson = oldValueJson,
