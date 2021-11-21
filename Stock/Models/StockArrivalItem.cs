@@ -16,6 +16,6 @@ namespace Crm.Apps.Stock.Models
 
         public decimal Count { get; set; }
 
-        public List<Guid> UniqueElementIds { get; set; }
+        // public List<Guid> UniqueElementIds { get; set; }
     }
 }

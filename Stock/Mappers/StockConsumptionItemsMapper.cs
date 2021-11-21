@@ -22,7 +22,8 @@ namespace Crm.Apps.Stock.Mappers
                 StockConsumptionId = consumptionId,
                 ProductId = item.ProductId,
                 Count = item.Count,
-                UniqueElementIds = item.UniqueElementIds
+
+                // UniqueElementIds = item.UniqueElementIds
             };
         }
     }

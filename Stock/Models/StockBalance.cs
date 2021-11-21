@@ -25,6 +25,6 @@ namespace Crm.Apps.Stock.Models
 
         public DateTime? ModifyDateTime { get; set; }
 
-        public List<Guid> UniqueElementIds { get; set; }
+        // public List<Guid> UniqueElementIds { get; set; }
     }
 }

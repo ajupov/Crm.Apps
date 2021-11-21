@@ -82,7 +82,8 @@ namespace Crm.Apps.Stock.Services
                 x.Count = balance.Count;
                 x.IsDeleted = balance.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
-                x.UniqueElementIds = balance.UniqueElementIds;
+
+                // x.UniqueElementIds = balance.UniqueElementIds;
             });
 
             var entry = await _storage.AddAsync(newStockBalance, ct);
@@ -106,7 +107,8 @@ namespace Crm.Apps.Stock.Services
                 x.Count = newBalance.Count;
                 x.IsDeleted = newBalance.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
-                x.UniqueElementIds = newBalance.UniqueElementIds;
+
+                // x.UniqueElementIds = newBalance.UniqueElementIds;
             });
 
             _storage.Update(oldBalance);

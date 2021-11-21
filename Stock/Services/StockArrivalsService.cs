@@ -27,7 +27,6 @@ namespace Crm.Apps.Stock.Services
         {
             return _storage.StockArrivals
                 .AsTracking(isTrackChanges ? QueryTrackingBehavior.TrackAll : QueryTrackingBehavior.NoTracking)
-                .Include(x => x.Type)
                 .Include(x => x.Items)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
@@ -36,7 +35,6 @@ namespace Crm.Apps.Stock.Services
         {
             return _storage.StockArrivals
                 .AsNoTracking()
-                .Include(x => x.Type)
                 .Include(x => x.Items)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
@@ -49,7 +47,6 @@ namespace Crm.Apps.Stock.Services
         {
             var arrivals = await _storage.StockArrivals
                 .AsNoTracking()
-                .Include(x => x.Type)
                 .Include(x => x.Items)
                 .Where(x => x.AccountId == accountId &&
                             (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
