@@ -1,5 +1,6 @@
 ﻿using System;
 using Crm.Common.All.Types.AttributeType;
+using Crm.Common.All.Validation.Attributes;
 
 namespace Crm.Apps.Customers.Models
 {

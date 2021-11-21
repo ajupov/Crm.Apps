@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Crm.Common.All.Validation.Attributes;
 
 namespace Crm.Apps.Tasks.Models
 {
