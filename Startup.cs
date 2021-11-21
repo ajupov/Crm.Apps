@@ -18,6 +18,8 @@ using Crm.Apps.Orders.Services;
 using Crm.Apps.Orders.Storages;
 using Crm.Apps.Products.Services;
 using Crm.Apps.Products.Storages;
+using Crm.Apps.Stock.Services;
+using Crm.Apps.Stock.Storages;
 using Crm.Apps.Suppliers.Services;
 using Crm.Apps.Suppliers.Storages;
 using Crm.Apps.Tasks.Services;
@@ -67,6 +69,7 @@ namespace Crm.Apps
                 .AddOrm<OrdersStorage>(Configuration)
                 .AddOrm<TasksStorage>(Configuration)
                 .AddOrm<SuppliersStorage>(Configuration)
+                .AddOrm<StockStorage>(Configuration)
                 .AddUserContext<IUserContext, UserContext>()
                 .AddHotStorage(Configuration);
 
@@ -117,7 +120,15 @@ namespace Crm.Apps
                 .AddTransient<ISupplierChangesService, SupplierChangesService>()
                 .AddTransient<ISupplierCommentsService, SupplierCommentsService>()
                 .AddTransient<ISupplierAttributesService, SupplierAttributesService>()
-                .AddTransient<ISupplierAttributeChangesService, SupplierAttributeChangesService>();
+                .AddTransient<ISupplierAttributeChangesService, SupplierAttributeChangesService>()
+                .AddTransient<IStockArrivalsService, StockArrivalsService>()
+                .AddTransient<IStockArrivalChangesService, StockArrivalChangesService>()
+                .AddTransient<IStockBalancesService, StockBalancesService>()
+                .AddTransient<IStockBalanceChangesService, StockBalanceChangesService>()
+                .AddTransient<IStockConsumptionsService, StockConsumptionsService>()
+                .AddTransient<IStockConsumptionChangesService, StockConsumptionChangesService>()
+                .AddTransient<IStockRoomsService, StockRoomsService>()
+                .AddTransient<IStockRoomChangesService, StockRoomChangesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
