@@ -17,7 +17,7 @@ namespace Crm.Apps.Stock.V1.Controllers
     [RequestContentTypeApplicationJson]
     [ResponseContentTypeApplicationJson]
     [RequireOrdersRole(JwtDefaults.AuthenticationScheme)]
-    [Route("Orders/Types/Changes/v1")]
+    [Route("Stock/Rooms/Changes/v1")]
     public class StockRoomChangesController : AllowingCheckControllerBase
     {
         private readonly IStockRoomsService _stockRoomsService;
