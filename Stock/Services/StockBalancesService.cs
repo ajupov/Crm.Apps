@@ -26,6 +26,7 @@ namespace Crm.Apps.Stock.Services
         {
             return _storage.StockBalances
                 .AsTracking(isTrackChanges ? QueryTrackingBehavior.TrackAll : QueryTrackingBehavior.NoTracking)
+                .Include(x => x.Room)
                 .FirstOrDefaultAsync(x => x.Id == id, ct);
         }
 
@@ -33,6 +34,7 @@ namespace Crm.Apps.Stock.Services
         {
             return _storage.StockBalances
                 .AsNoTracking()
+                .Include(x => x.Room)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync(ct);
         }
@@ -44,6 +46,7 @@ namespace Crm.Apps.Stock.Services
         {
             var balances = await _storage.StockBalances
                 .AsNoTracking()
+                .Include(x => x.Room)
                 .Where(x => x.AccountId == accountId &&
                             (!request.IsDeleted.HasValue || x.IsDeleted == request.IsDeleted) &&
                             (!request.MinCreateDate.HasValue || x.CreateDateTime >= request.MinCreateDate) &&

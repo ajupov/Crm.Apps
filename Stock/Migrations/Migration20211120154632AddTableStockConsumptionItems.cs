@@ -10,6 +10,7 @@ namespace Crm.Apps.Stock.Migrations
             Create.Table("StockConsumptionItems")
                 .WithColumn("Id").AsGuid().NotNullable()
                 .WithColumn("StockConsumptionId").AsGuid().NotNullable()
+                .WithColumn("RoomId").AsGuid().NotNullable()
                 .WithColumn("ProductId").AsGuid().NotNullable()
                 .WithColumn("Count").AsDecimal().NotNullable();
 
@@ -20,9 +21,9 @@ namespace Crm.Apps.Stock.Migrations
                 .FromTable("StockConsumptionItems").ForeignColumn("StockConsumptionId")
                 .ToTable("StockConsumptions").PrimaryColumn("Id");
 
-            Create.UniqueConstraint("UQ_StockConsumptionItems_StockConsumptionId_ProductId")
+            Create.UniqueConstraint("UQ_StockConsumptionItems_StockConsumptionId_RoomId_ProductId")
                 .OnTable("StockConsumptionItems")
-                .Columns("StockConsumptionId", "ProductId");
+                .Columns("StockConsumptionId", "RoomId", "ProductId");
 
             Create.Index("IX_StockConsumptionItems_StockConsumptionId").OnTable("StockConsumptionItems")
                 .OnColumn("StockConsumptionId").Ascending()
@@ -32,7 +33,7 @@ namespace Crm.Apps.Stock.Migrations
         public override void Down()
         {
             Delete.Index("IX_StockConsumptionItems_StockConsumptionId").OnTable("StockConsumptionItems");
-            Delete.UniqueConstraint("UQ_StockConsumptionItems_StockConsumptionId_ProductId")
+            Delete.UniqueConstraint("UQ_StockConsumptionItems_StockConsumptionId_RoomId_ProductId")
                 .FromTable("StockConsumptionItems");
             Delete.ForeignKey("FK_StockConsumptionItems_StockConsumptionId").OnTable("StockConsumptionItems");
             Delete.PrimaryKey("PK_StockConsumptionItems_Id").FromTable("StockConsumptionItems");

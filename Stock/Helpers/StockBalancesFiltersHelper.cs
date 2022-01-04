@@ -17,19 +17,19 @@ namespace Crm.Apps.Stock.Helpers
                     request.ProductIds.Any(x => ProductIdsPredicate(balance, x)));
         }
 
+        private static bool CreateUserIdsPredicate(StockBalance balance, Guid id)
+        {
+            return balance.CreateUserId == id;
+        }
+
         private static bool RoomIdsPredicate(StockBalance balance, Guid id)
         {
             return balance.RoomId == id;
         }
 
-        private static bool CreateUserIdsPredicate(StockBalance product, Guid id)
+        private static bool ProductIdsPredicate(StockBalance balance, Guid id)
         {
-            return product.CreateUserId == id;
-        }
-
-        private static bool ProductIdsPredicate(StockBalance product, Guid id)
-        {
-            return product.ProductId == id;
+            return balance.ProductId == id;
         }
     }
 }

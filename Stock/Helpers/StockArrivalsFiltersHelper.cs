@@ -15,13 +15,15 @@ namespace Crm.Apps.Stock.Helpers
                     request.CreateUserIds.Any(x => CreateUserIdsPredicate(arrival, x))) &&
                    (request.OrderIds == null || !request.OrderIds.Any() ||
                     request.OrderIds.Any(x => OrderIdsPredicate(arrival, x))) &&
+                   (request.ItemsRoomIds == null || !request.ItemsRoomIds.Any() ||
+                    request.ItemsRoomIds.Any(x => ItemsRoomIdsPredicate(arrival, x))) &&
                    (request.ItemsProductIds == null || !request.ItemsProductIds.Any() ||
                     request.ItemsProductIds.Any(x => ItemsProductIdsPredicate(arrival, x)));
         }
 
-        private static bool TypesPredicate(StockArrival product, StockArrivalType type)
+        private static bool TypesPredicate(StockArrival arrival, StockArrivalType type)
         {
-            return product.Type == type;
+            return arrival.Type == type;
         }
 
         private static bool OrderIdsPredicate(StockArrival arrival, Guid id)
@@ -29,15 +31,21 @@ namespace Crm.Apps.Stock.Helpers
             return arrival.OrderId == id;
         }
 
-        private static bool CreateUserIdsPredicate(StockArrival product, Guid id)
+        private static bool CreateUserIdsPredicate(StockArrival arrival, Guid id)
         {
-            return product.CreateUserId == id;
+            return arrival.CreateUserId == id;
         }
 
-        private static bool ItemsProductIdsPredicate(StockArrival product, Guid id)
+        private static bool ItemsRoomIdsPredicate(StockArrival arrival, Guid id)
         {
-            return product.Items == null || !product.Items.Any() ||
-                   product.Items.Any(x => x.ProductId == id);
+            return arrival.Items == null || !arrival.Items.Any() ||
+                   arrival.Items.Any(x => x.RoomId == id);
+        }
+
+        private static bool ItemsProductIdsPredicate(StockArrival arrival, Guid id)
+        {
+            return arrival.Items == null || !arrival.Items.Any() ||
+                   arrival.Items.Any(x => x.ProductId == id);
         }
     }
 }

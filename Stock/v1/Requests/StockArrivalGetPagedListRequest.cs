@@ -22,6 +22,8 @@ namespace Crm.Apps.Stock.V1.Requests
 
         public List<Guid> OrderIds { get; set; }
 
+        public List<Guid> ItemsRoomIds { get; set; }
+
         public List<Guid> ItemsProductIds { get; set; }
 
         public int Offset { get; set; }

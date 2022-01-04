@@ -17,13 +17,15 @@ namespace Crm.Apps.Stock.Helpers
                     request.CreateUserIds.Any(x => CreateUserIdsPredicate(consumption, x))) &&
                    (request.OrderIds == null || !request.OrderIds.Any() ||
                     request.OrderIds.Any(x => OrderIdsPredicate(consumption, x))) &&
+                   (request.ItemsRoomIds == null || !request.ItemsRoomIds.Any() ||
+                    request.ItemsRoomIds.Any(x => ItemsRoomIdsPredicate(consumption, x))) &&
                    (request.ItemsProductIds == null || !request.ItemsProductIds.Any() ||
                     request.ItemsProductIds.Any(x => ItemsProductIdsPredicate(consumption, x)));
         }
 
-        private static bool TypesPredicate(StockConsumption product, StockConsumptionType type)
+        private static bool TypesPredicate(StockConsumption consumption, StockConsumptionType type)
         {
-            return product.Type == type;
+            return consumption.Type == type;
         }
 
         private static bool OrderIdsPredicate(StockConsumption consumption, Guid id)
@@ -31,15 +33,21 @@ namespace Crm.Apps.Stock.Helpers
             return consumption.OrderId == id;
         }
 
-        private static bool CreateUserIdsPredicate(StockConsumption product, Guid id)
+        private static bool CreateUserIdsPredicate(StockConsumption consumption, Guid id)
         {
-            return product.CreateUserId == id;
+            return consumption.CreateUserId == id;
         }
 
-        private static bool ItemsProductIdsPredicate(StockConsumption product, Guid id)
+        private static bool ItemsRoomIdsPredicate(StockConsumption consumption, Guid id)
         {
-            return product.Items == null || !product.Items.Any() ||
-                   product.Items.Any(x => x.ProductId == id);
+            return consumption.Items == null || !consumption.Items.Any() ||
+                   consumption.Items.Any(x => x.RoomId == id);
+        }
+
+        private static bool ItemsProductIdsPredicate(StockConsumption consumption, Guid id)
+        {
+            return consumption.Items == null || !consumption.Items.Any() ||
+                   consumption.Items.Any(x => x.ProductId == id);
         }
     }
 }

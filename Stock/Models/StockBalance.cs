@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Crm.Common.All.Validation.Attributes;
 
 namespace Crm.Apps.Stock.Models
@@ -24,6 +23,8 @@ namespace Crm.Apps.Stock.Models
         public DateTime CreateDateTime { get; set; }
 
         public DateTime? ModifyDateTime { get; set; }
+
+        public StockRoom Room { get; set; }
 
         // public List<Guid> UniqueElementIds { get; set; }
     }

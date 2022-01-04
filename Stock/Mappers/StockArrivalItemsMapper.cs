@@ -20,6 +20,7 @@ namespace Crm.Apps.Stock.Mappers
             {
                 Id = item.Id,
                 StockArrivalId = arrivalId,
+                RoomId = item.RoomId,
                 ProductId = item.ProductId,
                 Count = item.Count,
 
