@@ -85,7 +85,9 @@ namespace Crm.Apps.Stock.Services
                 x.AccountId = arrival.AccountId;
                 x.CreateUserId = userId;
                 x.Type = arrival.Type;
+                x.SupplierId = arrival.SupplierId;
                 x.OrderId = arrival.OrderId;
+                x.InventoryId = arrival.InventoryId;
                 x.IsDeleted = arrival.IsDeleted;
                 x.CreateDateTime = DateTime.UtcNow;
                 x.Items = arrival.Items.Map(x.Id);
@@ -108,7 +110,9 @@ namespace Crm.Apps.Stock.Services
             {
                 x.AccountId = newArrival.AccountId;
                 x.Type = newArrival.Type;
+                x.SupplierId = newArrival.SupplierId;
                 x.OrderId = newArrival.OrderId;
+                x.InventoryId = newArrival.InventoryId;
                 x.IsDeleted = newArrival.IsDeleted;
                 x.ModifyDateTime = DateTime.UtcNow;
                 x.Items = newArrival.Items.Map(x.Id);

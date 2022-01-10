@@ -12,7 +12,9 @@ namespace Crm.Apps.Stock.Migrations
                 .WithColumn("AccountId").AsGuid().NotNullable()
                 .WithColumn("Type").AsByte().NotNullable()
                 .WithColumn("CreateUserId").AsGuid().Nullable()
+                .WithColumn("SupplierId").AsGuid().Nullable()
                 .WithColumn("OrderId").AsGuid().Nullable()
+                .WithColumn("InventoryId").AsGuid().Nullable()
                 .WithColumn("IsDeleted").AsBoolean().NotNullable()
                 .WithColumn("CreateDateTime").AsDateTime2().NotNullable()
                 .WithColumn("ModifyDateTime").AsDateTime2().Nullable();
@@ -25,15 +27,17 @@ namespace Crm.Apps.Stock.Migrations
                 .OnColumn("CreateDateTime").Descending()
                 .WithOptions().NonClustered();
 
-            Create.Index("IX_StockConsumptions_AccountId_OrderId").OnTable("StockConsumptions")
+            Create.Index("IX_StockConsumptions_AccountId_SupplierId_OrderId_InventoryId").OnTable("StockConsumptions")
                 .OnColumn("AccountId").Ascending()
+                .OnColumn("SupplierId").Ascending()
                 .OnColumn("OrderId").Ascending()
+                .OnColumn("InventoryId").Ascending()
                 .WithOptions().NonClustered();
         }
 
         public override void Down()
         {
-            Delete.Index("IX_StockConsumptions_AccountId_OrderId").OnTable("StockConsumptions");
+            Delete.Index("IX_StockConsumptions_AccountId_SupplierId_OrderId_InventoryId").OnTable("StockConsumptions");
             Delete.Index("IX_StockConsumptions_AccountId_CreateDateTime").OnTable("StockConsumptions");
             Delete.PrimaryKey("PK_StockConsumptions_Id").FromTable("StockConsumptions");
             Delete.Table("StockConsumptions");

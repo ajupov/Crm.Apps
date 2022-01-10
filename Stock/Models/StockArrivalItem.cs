@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Crm.Apps.Stock.Models
@@ -18,8 +17,7 @@ namespace Crm.Apps.Stock.Models
 
         public decimal Count { get; set; }
 
-        public StockRoom Room { get; set; }
-
         // public List<Guid> UniqueElementIds { get; set; }
+        public StockRoom Room { get; set; }
     }
 }

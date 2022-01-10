@@ -13,8 +13,12 @@ namespace Crm.Apps.Stock.Helpers
                     request.Types.Any(x => TypesPredicate(arrival, x))) &&
                    (request.CreateUserIds == null || !request.CreateUserIds.Any() ||
                     request.CreateUserIds.Any(x => CreateUserIdsPredicate(arrival, x))) &&
+                   (request.SupplierIds == null || !request.SupplierIds.Any() ||
+                    request.SupplierIds.Any(x => SupplierIdsPredicate(arrival, x))) &&
                    (request.OrderIds == null || !request.OrderIds.Any() ||
                     request.OrderIds.Any(x => OrderIdsPredicate(arrival, x))) &&
+                   (request.InventoryIds == null || !request.InventoryIds.Any() ||
+                    request.InventoryIds.Any(x => InventoryIdsPredicate(arrival, x))) &&
                    (request.ItemsRoomIds == null || !request.ItemsRoomIds.Any() ||
                     request.ItemsRoomIds.Any(x => ItemsRoomIdsPredicate(arrival, x))) &&
                    (request.ItemsProductIds == null || !request.ItemsProductIds.Any() ||
@@ -26,9 +30,19 @@ namespace Crm.Apps.Stock.Helpers
             return arrival.Type == type;
         }
 
+        private static bool SupplierIdsPredicate(StockArrival arrival, Guid id)
+        {
+            return arrival.SupplierId == id;
+        }
+
         private static bool OrderIdsPredicate(StockArrival arrival, Guid id)
         {
             return arrival.OrderId == id;
+        }
+
+        private static bool InventoryIdsPredicate(StockArrival arrival, Guid id)
+        {
+            return arrival.InventoryId == id;
         }
 
         private static bool CreateUserIdsPredicate(StockArrival arrival, Guid id)

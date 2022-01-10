@@ -20,7 +20,11 @@ namespace Crm.Apps.Stock.V1.Requests
 
         public List<Guid> CreateUserIds { get; set; }
 
+        public List<Guid> SupplierIds { get; set; }
+
         public List<Guid> OrderIds { get; set; }
+
+        public List<Guid> InventoryIds { get; set; }
 
         public List<Guid> ItemsRoomIds { get; set; }
 
